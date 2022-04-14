@@ -1,8 +1,8 @@
 # official_connect
 
-A new Flutter project.
-
+The Official Student information system app for MSRIT students
 ## Getting Started
+#todo : we need to make a proper todo for documentation purpose.
 
 This project is a starting point for a Flutter application.
 
