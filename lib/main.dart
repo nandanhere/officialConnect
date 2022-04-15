@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/LoginScreen.dart';
+import 'package:official_connect/Screens/Settings.dart';
 import 'package:official_connect/Screens/home.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
         home: Home(),
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
+          Home.id: (context) => Home(),
+          Settings.id: (context) => Settings(),
         },
       ),
     );
