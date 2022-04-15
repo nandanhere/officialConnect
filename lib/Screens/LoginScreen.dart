@@ -161,7 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {
                                 fillForm = true;
                                 depthVal = -1 * depthVal;
-                                //Navigator.pushNamed(context, )
                               });
                             } else {
                               setState(() {
@@ -170,28 +169,31 @@ class _LoginScreenState extends State<LoginScreen> {
                               _submit();
                             }
                           },
-                          child: Neumorphic(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
-                              style: NeumorphicStyle(
-                                  depth: depthVal,
-                                  intensity: 0.5,
-                                  color: const Color(0x00c00000),
-                                  boxShape: NeumorphicBoxShape.roundRect(
-                                      BorderRadius.circular(30))),
-                              child: fillForm
-                                  ? const Text(
-                                      "Login",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                          fontSize: 20,
-                                          fontFamily: 'Comfortaa'),
-                                    )
-                                  : const Icon(Icons.chevron_right_rounded)),
+                          child: Hero(
+                            tag: "bar",
+                            child: Neumorphic(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                style: NeumorphicStyle(
+                                    depth: depthVal,
+                                    intensity: 0.5,
+                                    color: const Color(0x00c00000),
+                                    boxShape: NeumorphicBoxShape.roundRect(
+                                        BorderRadius.circular(30))),
+                                child: fillForm
+                                    ? const Text(
+                                        "Login",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Comfortaa'),
+                                      )
+                                    : const Icon(Icons.chevron_right_rounded)),
+                          ),
                         ),
                   if (!sisData.isValidData)
-                    Text(
+                    const Text(
                       "Error! please check the entered details",
                       style: TextStyle(
                           color: Colors.red,
