@@ -53,7 +53,7 @@ class Home extends StatelessWidget {
                         ),
                         Button(
                           icon: FontAwesomeIcons.calendarDay,
-                          route: "",
+                          route: "attendance",
                           selected: false,
                         )
                       ],
@@ -67,17 +67,12 @@ class Home extends StatelessWidget {
                           selected: false,
                         ),
                         Button(
-                          icon: FontAwesomeIcons.chartLine,
-                          route: "",
+                          icon: FontAwesomeIcons.gear,
+                          route: "settings",
                           selected: false,
                         )
                       ],
                     ),
-                    Button(
-                      icon: FontAwesomeIcons.gear,
-                      route: "settings",
-                      selected: false,
-                    )
                   ],
                 ),
               ),
