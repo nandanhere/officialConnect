@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/LoginScreen.dart';
+import 'package:official_connect/Screens/home.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: LoginScreen(),
+        home: Home(),
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
         },
