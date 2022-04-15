@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
+import 'package:official_connect/Screens/AttendanceScreen.dart';
 import 'package:official_connect/Screens/LoginScreen.dart';
 import 'package:official_connect/Screens/Settings.dart';
 import 'package:official_connect/Screens/home.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
           LoginScreen.id: (context) => LoginScreen(),
           Home.id: (context) => Home(),
           Settings.id: (context) => Settings(),
+          AttendanceScreen.id: (context) => AttendanceScreen()
         },
       ),
     );

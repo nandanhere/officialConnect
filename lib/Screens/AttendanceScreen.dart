@@ -5,6 +5,7 @@ import 'package:official_connect/Screens/home.dart';
 import 'package:provider/provider.dart';
 
 class AttendanceScreen extends StatefulWidget {
+  static const String id = "attendance";
   const AttendanceScreen({Key? key}) : super(key: key);
 
   @override
