@@ -9,6 +9,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
+    print(sisData.data['attendance']);
     if (sisData.usn == "" || sisData.data.isEmpty)
       return LoginScreen();
     else {
