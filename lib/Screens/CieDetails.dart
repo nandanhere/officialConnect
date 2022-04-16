@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:official_connect/Classes/Marks.dart';
-import 'package:official_connect/Providers/sisdata.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CieDetails extends StatelessWidget {
