@@ -37,45 +37,42 @@ class Home extends StatelessWidget {
                 depth: 10,
                 boxShape:
                     NeumorphicBoxShape.roundRect(BorderRadius.circular(20))),
-            child: Hero(
-              tag: "bar",
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Button(
-                          icon: FontAwesomeIcons.house,
-                          route: "",
-                          selected: true,
-                        ),
-                        Button(
-                          icon: FontAwesomeIcons.calendarDay,
-                          route: "attendance",
-                          selected: false,
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Button(
-                          icon: FontAwesomeIcons.graduationCap,
-                          route: "cie",
-                          selected: false,
-                        ),
-                        Button(
-                          icon: FontAwesomeIcons.gear,
-                          route: "settings",
-                          selected: false,
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Button(
+                        icon: FontAwesomeIcons.house,
+                        route: "",
+                        selected: true,
+                      ),
+                      Button(
+                        icon: FontAwesomeIcons.calendarDay,
+                        route: "attendance",
+                        selected: false,
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Button(
+                        icon: FontAwesomeIcons.graduationCap,
+                        route: "cie",
+                        selected: false,
+                      ),
+                      Button(
+                        icon: FontAwesomeIcons.gear,
+                        route: "settings",
+                        selected: false,
+                      )
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
