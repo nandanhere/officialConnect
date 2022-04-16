@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:official_connect/Classes/CieDetails.dart';
+import 'package:official_connect/Screens/CieDetails.dart';
 import 'package:official_connect/Classes/Marks.dart';
 
 class CieInfo extends StatelessWidget {
