@@ -3,14 +3,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:official_connect/Screens/CieDetails.dart';
+import 'package:official_connect/Classes/Marks.dart';
 
 class Settings extends StatelessWidget {
   static const String id = "settings";
   Settings({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    int args = ModalRoute.of(context)!.settings.arguments as int;
     return ChangeNotifierProvider<ValueNotifier<int>>(
-      create: (_) => ValueNotifier<int>(3),
+      create: (_) => ValueNotifier<int>(args),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -79,13 +83,76 @@ class screenWidget extends StatelessWidget {
             color: NeumorphicColors.background,
           ),
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: ListOfElements());
+          child: ListOfSettings());
+    }
+    if (page == 2) {
+      final size = MediaQuery.of(context).size;
+      final sisData = Provider.of<SisData>(context);
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          color: NeumorphicColors.background,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SfCartesianChart(
+                  primaryXAxis: CategoryAxis(),
+                  isTransposed: true,
+                  primaryYAxis: NumericAxis(minimum: 0, maximum: 50),
+                  series: <ChartSeries<Marks, String>>[
+                    BarSeries<Marks, String>(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                          colors: [
+                            Colors.blue,
+                            Colors.red,
+                          ],
+                        ),
+                        // Bind data source
+                        dataSource: sisData.marks,
+                        xValueMapper: (Marks a, _) => RegExp(r'\((.*)\)')
+                            .firstMatch(a.subjectName)!
+                            .group(1),
+                        yValueMapper: (Marks b, _) =>
+                            int.parse(b.finalCie.split('/').first))
+                  ],
+                ),
+                ...sisData.marks
+                    .map((e) => SizedBox(
+                          width: size.width * .95,
+                          height: size.height * .2,
+                          child: Card(
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (ctx) =>
+                                        CieDetails(subjectDetails: e)));
+                              },
+                              title: Text(e.subjectName),
+                              subtitle: Text(
+                                e.finalCie,
+                                style: const TextStyle(fontSize: 20),
+                                textAlign: TextAlign.end,
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList()
+              ],
+            ),
+          ),
+        ),
+      );
     } else
       return Container();
   }
 }
 
-class ListOfElements extends StatelessWidget {
+class ListOfSettings extends StatelessWidget {
   List<Widget> tiles = [
     Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
     Element(icon: Icons.lock, onPressed: () {}, text: "Change Password"),
