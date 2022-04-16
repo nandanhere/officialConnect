@@ -49,11 +49,13 @@ class Home extends StatelessWidget {
                         icon: FontAwesomeIcons.house,
                         route: "",
                         selected: true,
+                        screen_number: 0,
                       ),
                       Button(
                         icon: FontAwesomeIcons.calendarDay,
                         route: "attendance",
                         selected: false,
+                        screen_number: 1,
                       )
                     ],
                   ),
@@ -62,13 +64,15 @@ class Home extends StatelessWidget {
                     children: [
                       Button(
                         icon: FontAwesomeIcons.graduationCap,
-                        route: "cie",
+                        route: "settings",
                         selected: false,
+                        screen_number: 2,
                       ),
                       Button(
                         icon: FontAwesomeIcons.gear,
                         route: "settings",
                         selected: false,
+                        screen_number: 3,
                       )
                     ],
                   ),
@@ -87,7 +91,12 @@ class Button extends StatelessWidget {
   final double size = 60;
   final String route;
   final bool selected;
-  Button({required this.icon, required this.route, required this.selected});
+  final int screen_number;
+  Button(
+      {required this.icon,
+      required this.route,
+      required this.selected,
+      required this.screen_number});
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +104,7 @@ class Button extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: IconButton(
         onPressed: () {
-          Navigator.pushNamed(context, route);
+          Navigator.pushNamed(context, route, arguments: screen_number);
         },
         color: selected ? Color(0xFF852528) : Colors.black87,
         icon: FaIcon(icon),
