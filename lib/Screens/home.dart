@@ -12,9 +12,10 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
-    if (sisData.usn == "" || sisData.data.isEmpty)
+    if (sisData.usn == "")
       return LoginScreen();
     else {
+      if (sisData.data.isEmpty) return CircularProgressIndicator();
       return Scaffold(
         backgroundColor: Color(0xFF852528),
         appBar: AppBar(
