@@ -61,7 +61,9 @@ class Attendance {
     }).toList();
   }
 
-  int howManyCanIMiss() {
+  int howManyCanIMiss(int forPercent) {
+    if (forPercent == 75) {}
+    if (forPercent == 80) {}
     return 0;
   }
 }
