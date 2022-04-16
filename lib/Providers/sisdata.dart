@@ -46,7 +46,7 @@ class SisData with ChangeNotifier {
           1;
       _data = await convert.jsonDecode(prefs.getString('data')!);
       if (needToUpdate) {
-        // print("updating");
+        print("updating");
         await prefs.setBool('hasData', false);
         await getData("", "");
         // print(_data['prevResults'][0]);
