@@ -63,7 +63,7 @@ class Home extends StatelessWidget {
                       children: [
                         Button(
                           icon: FontAwesomeIcons.graduationCap,
-                          route: "",
+                          route: "cie",
                           selected: false,
                         ),
                         Button(

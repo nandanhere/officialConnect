@@ -3,6 +3,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/AttendanceScreen.dart';
 import 'package:official_connect/Screens/LoginScreen.dart';
 import 'package:official_connect/Screens/Settings.dart';
+import 'package:official_connect/Screens/cieScreen.dart';
 import 'package:official_connect/Screens/home.dart';
 import 'package:provider/provider.dart';
 
@@ -24,12 +25,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Home(),
+        home: const Home(),
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
-          Home.id: (context) => Home(),
+          Home.id: (context) => const Home(),
           Settings.id: (context) => Settings(),
-          AttendanceScreen.id: (context) => AttendanceScreen()
+          AttendanceScreen.id: (context) => const AttendanceScreen(),
+          CieScreen.id: (context) => const CieScreen(),
         },
       ),
     );
