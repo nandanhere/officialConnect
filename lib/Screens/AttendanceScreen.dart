@@ -4,30 +4,45 @@ import 'package:official_connect/Screens/LoginScreen.dart';
 import 'package:official_connect/Screens/home.dart';
 import 'package:provider/provider.dart';
 
-class AttendanceScreen extends StatefulWidget {
+class AttendanceScreen extends StatelessWidget {
   static const String id = "attendance";
+
   const AttendanceScreen({Key? key}) : super(key: key);
 
   @override
-  State<AttendanceScreen> createState() => _AttendanceScreenState();
-}
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final sisData = Provider.of<SisData>(context);
 
-class _AttendanceScreenState extends State<AttendanceScreen> {
-  Future goToHomeScreen() {
-    return Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const Home()));
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text('Attendance Screen'),
-          centerTitle: true,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        title: Text('Attendance Screen'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ...sisData.attendances.map((e) => SizedBox(
+                    width: size.width * .95,
+                    height: size.height * .2,
+                    child: Card(
+                      child: ListTile(
+                        onTap: () => print("attendance details"),
+                        title: Text(e.subjectName),
+                        subtitle: Text(
+                          e.percentage,
+                          style: const TextStyle(fontSize: 20),
+                          textAlign: TextAlign.end,
+                          ),
+                      ),
+                    ),
+                  )).toList()
+            ],
+          ),
         ),
-        body: Center(
-            child: IconButton(
-          icon: Icon(Icons.home),
-          onPressed: goToHomeScreen,
-        )),
-      );
+      ),
+    );
+  }
 }

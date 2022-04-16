@@ -16,6 +16,7 @@ class CieScreen extends StatelessWidget {
     final sisData = Provider.of<SisData>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.red,
         title: const Text("Cie details"),
       ),
       body: Center(
