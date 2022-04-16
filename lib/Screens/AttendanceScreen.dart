@@ -17,8 +17,8 @@ class AttendanceScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: Text('Attendance Screen'),
-        centerTitle: true,
+        title: Text('Attendance Details'),
+        // centerTitle: true,
       ),
       body: Center(
         child: SingleChildScrollView(
