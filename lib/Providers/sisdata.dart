@@ -83,7 +83,7 @@ class SisData with ChangeNotifier {
 
       _course = _data["courseSmall"];
 
-      _semester = _data["sem"];
+      _semester = _data["Semester"];
 
       _batch = _data["BATCH:"];
 
