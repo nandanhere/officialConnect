@@ -11,7 +11,6 @@ class CieDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final data = [
       [subjectDetails.t1, "t1"],
       [subjectDetails.t2, "t2"],
