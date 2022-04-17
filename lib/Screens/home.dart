@@ -26,7 +26,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
-    if (sisData.usn == "")
+    if (sisData.usn == "" && sisData.data.isEmpty)
       return LoginScreen();
     else {
       if (sisData.data.isEmpty) return CircularProgressIndicator();

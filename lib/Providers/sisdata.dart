@@ -34,10 +34,12 @@ class SisData with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('hasData')) {
       _hasData = prefs.getBool('hasData')!;
-      notifyListeners();
       var time = prefs.getInt('timeStamp');
       _usn = prefs.getString('usn') ?? "";
+      prefs.setString('usn', "");
       _dob = prefs.getString('dob') ?? "";
+      notifyListeners();
+
       // print("data was there before");
       needToUpdate = DateTime.fromMillisecondsSinceEpoch(time!)
               .difference(DateTime.now())
@@ -48,7 +50,7 @@ class SisData with ChangeNotifier {
       if (needToUpdate) {
         print("updating");
         await prefs.setBool('hasData', false);
-        await getData("", "");
+        await getData("", "", true);
         // print(_data['prevResults'][0]);
       }
       setVariables();
@@ -58,17 +60,22 @@ class SisData with ChangeNotifier {
   }
 
   void setVariables() async {
-    if (_data.isEmpty) getData("", "");
-    _previousResults = PreviousResult.getList(_data['prevResults']);
-    _attendances = Attendance.getList(_data['attendance']);
-    _fees = FeesData.getList(_data['fees']);
-    _marks = Marks.getList(_data['marks']);
-    _creditsEarned = int.parse(_data['earned']);
-    _toEarn = int.parse(_data['to_earn']);
-    _section = _data['sec'];
-    _course = _data['course'];
-    _semester = _data['sem'];
-    _name = _data['name'];
+    print("setting variables");
+    if (_data.isEmpty && _usn != "") getData("", "", true);
+    try {
+      _previousResults = PreviousResult.getList(_data['prevResults']);
+      _attendances = Attendance.getList(_data['attendance']);
+      _fees = FeesData.getList(_data['fees']);
+      _marks = Marks.getList(_data['marks']);
+      _creditsEarned = int.parse(_data['earned']);
+      _toEarn = int.parse(_data['to_earn']);
+      _section = _data['sec'];
+      _course = _data['course'];
+      _semester = _data['sem'];
+      _name = _data['name'];
+    } catch (e) {
+      _hasData = false;
+    }
   }
 
   void cleanData() async {
@@ -76,34 +83,51 @@ class SisData with ChangeNotifier {
     prefs.clear();
     _usn = "";
     _data = {};
+    isValidData = true;
+    _hasData = false;
+    _usn = "";
+    _dob = "";
     notifyListeners();
   }
 
-  Future<void> getData(String usn, String dob) async {
+  Future<void> getData(String usn, String dob, bool update) async {
+    _hasData = false;
+    notifyListeners();
+    // usn == "" means we are updating the values.
+    print("getting data");
     var url = Uri.parse(
-        "https://sis-scraper-rit.herokuapp.com/getsisdata/${(_usn == "") ? usn : _usn}/${(_dob == "") ? dob : _dob}");
+        "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}");
     http.Response resp = await http.get(url);
     if (resp.statusCode == 200) {
       final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
-      _data = temp.isEmpty ? _data : temp;
-      try {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool('hasData', true);
-        prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
-        prefs.setString('data', resp.body);
-        prefs.setString('dob', (_usn == "") ? usn : _usn);
-        prefs.setString('usn', (_dob == "") ? dob : _dob);
-      } finally {
-        if (usn != "" && dob != "") {
-          _usn = usn;
-          _dob = dob;
+      _data = (temp.isEmpty && update) ? _data : temp;
+      if (_data.isNotEmpty) {
+        try {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
+          if (resp.body != "{}") prefs.setString('data', resp.body);
+          if (!update) {
+            prefs.setBool('hasData', true);
+            prefs.setString('dob', usn);
+            prefs.setString('usn', dob);
+          }
+        } finally {
+          if (usn != "" && dob != "") {
+            _usn = usn;
+            _dob = dob;
+          }
         }
       }
-
-      if (_data.isEmpty) isValidData = false;
+      if (_data.isEmpty) {
+        isValidData = false;
+      } else {
+        isValidData = true;
+      }
       _hasData = true;
       needToUpdate = false;
-      setVariables();
+      if (_data.isNotEmpty) {
+        setVariables();
+      }
       notifyListeners();
     }
   }

@@ -15,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  @override
   final _formKey = GlobalKey<FormState>();
   double depthVal = 5;
   bool isPressed = false;
@@ -45,22 +44,29 @@ class _LoginScreenState extends State<LoginScreen> {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
       Provider.of<SisData>(context, listen: false)
-          .getData(usnController.text, dobController.text);
+          .getData(usnController.text, dobController.text, false);
       // print(usnController.text + " " + dobController.text);
     }
   }
 
+  void _submitUSN(value) {
+    usnController.text = value;
+    passwordFocus.requestFocus();
+    if (dobController.text == "") {
+      _selectDate(context);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
-    usnController.text = "1ms19is076";
-    dobController.text = "2000-12-08";
+    // usnController.text = "";
+    // dobController.text = "";
     TextFormField usnForm = TextFormField(
       // autofocus: true,
       controller: usnController,
-      key: ValueKey('usn'),
-      onFieldSubmitted: (val) {
-        _selectDate(context);
-      },
+      key: const ValueKey('usn'),
+      onFieldSubmitted: _submitUSN,
       decoration: const InputDecoration(
         labelText: "USN",
       ),
@@ -77,10 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
 // TODO : i think its not worth allowing the user to type the dob. let them just select it with the selector. we can directly open selector after entering usn. that is what i will do here.
     TextFormField dobForm = TextFormField(
       readOnly: true,
-      key: ValueKey('dob'),
+      key: const ValueKey('dob'),
       controller: dobController,
       focusNode: passwordFocus,
-      validator: (value) {},
       decoration: InputDecoration(
           labelText: "Date of Birth",
           suffix: IconButton(
@@ -154,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 10,
                   ),
                   (isPressed && !sisData.hasData)
-                      ? CircularProgressIndicator()
+                      ? const CircularProgressIndicator()
                       : GestureDetector(
                           onTap: () {
                             if (!fillForm) {
