@@ -50,7 +50,8 @@ class CieInfo extends StatelessWidget {
                           .firstMatch(a.subjectName)!
                           .group(1),
                       yValueMapper: (Marks b, _) =>
-                          int.parse(b.finalCie.split('/').first))
+                          // int.parse(b.finalCie.split('/').first))
+                          double.parse(b.finalCie.split('/').first).round())
                 ],
               ),
               ...sisData.marks
