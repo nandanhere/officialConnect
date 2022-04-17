@@ -21,13 +21,25 @@ class CieDetails extends StatelessWidget {
     print(subjectDetails.subjectName);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cie details"),
+        foregroundColor: const Color(0xFF852528),
+        backgroundColor: Colors.white,
+        title: Text(
+          "Cie details",
+          style: TextStyle(
+              color: const Color(0xFF852528),
+              fontSize: MediaQuery.of(context).size.width * 0.06,
+              fontFamily: 'Comfortaa'),
+        ),
       ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(subjectDetails.subjectName),
+              Text(subjectDetails.subjectName,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: MediaQuery.of(context).size.width * 0.05,
+                      fontFamily: 'Comfortaa')),
               SfCartesianChart(
                 primaryXAxis: CategoryAxis(),
                 isTransposed: true,
