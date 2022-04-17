@@ -26,6 +26,13 @@ class SisData with ChangeNotifier {
   String _course = "";
   String _semester = "";
   String _name = "";
+  String _batch = "";
+  String _categoryAlloted = "";
+  String _categoryClaimed = "";
+  String _courseFullName = "";
+  String _email = "";
+  String _phone = "";
+  String _studentImage = "";
 
   SisData() {
     setup();
@@ -53,27 +60,46 @@ class SisData with ChangeNotifier {
         await getData("", "", true);
         // print(_data['prevResults'][0]);
       }
-      setVariables();
+      await setVariables();
 
       notifyListeners();
     }
   }
 
-  void setVariables() async {
+  Future<void> setVariables() async {
     print("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
       _previousResults = PreviousResult.getList(_data['prevResults']);
       _attendances = Attendance.getList(_data['attendance']);
       _fees = FeesData.getList(_data['fees']);
+
       _marks = Marks.getList(_data['marks']);
       _creditsEarned = int.parse(_data['earned']);
       _toEarn = int.parse(_data['to_earn']);
-      _section = _data['sec'];
-      _course = _data['course'];
-      _semester = _data['sem'];
       _name = _data['name'];
+
+      _section = _data["sec"];
+
+      _course = _data["courseSmall"];
+
+      _semester = _data["sem"];
+
+      _batch = _data["BATCH:"];
+
+      _categoryAlloted = _data["Category Alloted:"];
+
+      _categoryClaimed = _data["Category Claimed:"];
+
+      _courseFullName = _data["Course:"];
+
+      _email = _data["Email Id:"];
+
+      _phone = _data["MOBILE:"];
+
+      _studentImage = _data["studentImage"];
     } catch (e) {
+      print(e);
       _hasData = false;
     }
   }
@@ -180,11 +206,35 @@ class SisData with ChangeNotifier {
     return _semester;
   }
 
+  String get batch {
+    return _batch;
+  }
+
+  String get categoryAlloted {
+    return _categoryAlloted;
+  }
+
+  String get categoryClaimed {
+    return _categoryClaimed;
+  }
+
+  String get courseFullName {
+    return _courseFullName;
+  }
+
+  String get email {
+    return _email;
+  }
+
   String get studentName {
     return _name;
   }
 
   bool get updating {
     return needToUpdate;
+  }
+
+  String get studentImage {
+    return _studentImage;
   }
 }

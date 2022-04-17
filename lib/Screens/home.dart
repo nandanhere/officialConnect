@@ -30,10 +30,11 @@ class Home extends StatelessWidget {
       return LoginScreen();
     else {
       if (sisData.data.isEmpty) return CircularProgressIndicator();
+      print(sisData.studentImage);
       return Scaffold(
         backgroundColor: Color(0xFF852528),
         appBar: AppBar(
-          title: Expanded(
+          title: FittedBox(
             child: Text(
                 "Hi, ${Provider.of<SisData>(context).studentName.firstFew(2)}",
                 style: const TextStyle(
