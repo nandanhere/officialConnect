@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
+import 'package:official_connect/Screens/LoadingScreen.dart';
 import 'package:official_connect/Screens/LoginScreen.dart';
 import 'package:official_connect/Screens/UnifiedScreen.dart';
 import 'package:official_connect/Screens/home.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: Unified(),
+        //  home: LoadingScreen(),
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           Unified.id: (context) => Unified(),
