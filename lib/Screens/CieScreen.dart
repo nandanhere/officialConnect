@@ -13,17 +13,21 @@ class CieInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     final sisData = Provider.of<SisData>(context);
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(width * 0.08),
         color: NeumorphicColors.background,
       ),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: EdgeInsets.only(
+          left: width * 0.05,
+          right: width * 0.05,
+          top: height * 0.06,
+          bottom: height * 0.13),
       child: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(
-              bottom: size.height * 0.1, top: size.height * 0.04),
           child: Column(
             children: [
               SfCartesianChart(
@@ -54,7 +58,10 @@ class CieInfo extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: NeumorphicButton(
                           padding: EdgeInsets.only(
-                              top: 10, bottom: 10, left: 10, right: 2),
+                              top: height * 0.015,
+                              bottom: height * 0.015,
+                              left: width * 0.025,
+                              right: width * 0.01),
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (ctx) =>
