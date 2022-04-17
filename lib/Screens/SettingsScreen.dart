@@ -6,12 +6,19 @@ class SettingsInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(width * 0.08),
           color: NeumorphicColors.background,
         ),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: EdgeInsets.only(
+            left: width * 0.05,
+            right: width * 0.05,
+            top: height * 0.06,
+            bottom: height * 0.13),
         child: ListOfSettings());
   }
 }
@@ -32,10 +39,7 @@ class ListOfSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: tiles[index],
-        );
+        return tiles[index];
       },
       itemCount: tiles.length,
     );
@@ -57,9 +61,8 @@ class Element extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(8.0),
       child: NeumorphicButton(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         onPressed: toggle
             ? () {
                 darkMode.value = !darkMode.value;
