@@ -23,10 +23,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const Home(),
+        home: Unified(),
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
-          Home.id: (context) => const Home(),
           Unified.id: (context) => Unified(),
         },
       ),

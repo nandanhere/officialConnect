@@ -106,10 +106,10 @@ class SisData with ChangeNotifier {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
           if (resp.body != "{}") prefs.setString('data', resp.body);
+          prefs.setBool('hasData', true);
           if (!update) {
-            prefs.setBool('hasData', true);
-            prefs.setString('dob', usn);
-            prefs.setString('usn', dob);
+            prefs.setString('dob', dob);
+            prefs.setString('usn', usn);
           }
         } finally {
           if (usn != "" && dob != "") {
