@@ -29,7 +29,6 @@ class Home extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
-    print(sisData.studentImage);
     return Container(
         height: height,
         decoration: BoxDecoration(
@@ -46,29 +45,99 @@ class Home extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
+                  Column(
                     children: [
-                      Text(
-                        "Hi, ${sisData.studentName.firstFew(2).split(" ")[0]} \n"
-                        " ${sisData.studentName.firstFew(2).split(" ")[1]} ",
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 30,
-                          fontFamily: 'Comfortaa',
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              "Hi, ${sisData.studentName.firstFew(2).split(" ")[0]} \n"
+                              " ${sisData.studentName.firstFew(2).split(" ")[1]} ",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 30,
+                                fontFamily: 'Comfortaa',
+                              ),
+                            ),
+                            Neumorphic(
+                              style: const NeumorphicStyle(
+                                  boxShape: NeumorphicBoxShape.circle(),
+                                  depth: 2,
+                                  intensity: 1),
+                              child: CircleAvatar(
+                                backgroundImage: CachedNetworkImageProvider(
+                                    sisData.studentImage),
+                                backgroundColor: Colors.grey,
+                                radius: width * 0.1,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Neumorphic(
-                        style: const NeumorphicStyle(
-                            boxShape: NeumorphicBoxShape.circle(),
-                            depth: 2,
-                            intensity: 1),
-                        child: CircleAvatar(
-                          backgroundImage:
-                              CachedNetworkImageProvider(sisData.studentImage),
-                          backgroundColor: Colors.grey,
-                          radius: width * 0.1,
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 8.0, right: 8, top: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Class ",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: width * 0.05,
+                                  fontFamily: 'Comfortaa'),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: height * 0.01,
+                                  horizontal: width * 0.02),
+                              child: Text(
+                                "${sisData.semester}-${sisData.section[4]}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
+                                    fontSize: width * 0.04,
+                                    fontFamily: 'Comfortaa'),
+                              ),
+                              // decoration: BoxDecoration(
+                              // border: Border.all(width: 1.3),
+                              // borderRadius: BorderRadius.circular(width)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Course ",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: width * 0.05,
+                                  fontFamily: 'Comfortaa'),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: height * 0.01,
+                                  horizontal: width * 0.02),
+                              child: Text(
+                                sisData.course,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
+                                    fontSize: width * 0.04,
+                                    fontFamily: 'Comfortaa'),
+                              ),
+                              // decoration: BoxDecoration(
+                              // border: Border.all(width: 1.3),
+                              // borderRadius: BorderRadius.circular(width)),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -86,83 +155,19 @@ class Home extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Neumorphic(
-                        padding: EdgeInsets.only(left: width * 0.03),
-                        style: NeumorphicStyle(
-                            depth: 3,
-                            boxShape: NeumorphicBoxShape.roundRect(
-                                BorderRadius.circular(width))),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Class ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: width * 0.05,
-                                  fontFamily: 'Comfortaa'),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: height * 0.01,
-                                  horizontal: width * 0.02),
-                              child: Text(
-                                "${sisData.semester}-${sisData.section[4]}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontSize: width * 0.04,
-                                    fontFamily: 'Comfortaa'),
-                              ),
-                              decoration: BoxDecoration(
-                                  border: Border.all(width: 1.3),
-                                  borderRadius: BorderRadius.circular(width)),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Neumorphic(
-                        padding: EdgeInsets.only(left: width * 0.03),
-                        style: NeumorphicStyle(
-                            depth: 3,
-                            boxShape: NeumorphicBoxShape.roundRect(
-                                BorderRadius.circular(width))),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Course ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: width * 0.05,
-                                  fontFamily: 'Comfortaa'),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: height * 0.01,
-                                  horizontal: width * 0.02),
-                              child: Text(
-                                sisData.course,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontSize: width * 0.04,
-                                    fontFamily: 'Comfortaa'),
-                              ),
-                              decoration: BoxDecoration(
-                                  border: Border.all(width: 1.3),
-                                  borderRadius: BorderRadius.circular(width)),
-                            ),
-                          ],
-                        ),
-                      ),
                       const Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Text(
-                          "Your Fees Paid",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold),
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Fees Paid",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Comfortaa',
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                       ...sisData.fees.map((e) => Padding(
