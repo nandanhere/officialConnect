@@ -24,9 +24,7 @@ class SettingsInfo extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(width * 0.08),
-          color: sisData.darkMode
-              ? NeumorphicColors.darkBackground
-              : NeumorphicColors.background,
+          color: sisData.darkMode ? Colors.black : NeumorphicColors.background,
         ),
         padding: EdgeInsets.only(
             left: width * 0.05,
@@ -40,13 +38,17 @@ class SettingsInfo extends StatelessWidget {
                   child: NeumorphicButton(
                     onPressed: e.toggle
                         ? () {
-                            e.darkMode.value = !e.darkMode.value;
-                            sisData.darkMode = e.darkMode.value;
+                            sisData.darkMode = !sisData.darkMode;
                           }
                         : e.onPressed,
                     style: NeumorphicStyle(
+                        shadowLightColor:
+                            sisData.darkMode ? Colors.white : null,
+                        shadowDarkColor: sisData.darkMode
+                            ? NeumorphicColors.background
+                            : null,
                         color: sisData.darkMode
-                            ? NeumorphicColors.darkBackground
+                            ? Color.fromARGB(1, 77, 74, 74)
                             : NeumorphicColors.background,
                         depth: 3,
                         boxShape: NeumorphicBoxShape.roundRect(
@@ -66,19 +68,14 @@ class SettingsInfo extends StatelessWidget {
                             fontFamily: 'Comfortaa'),
                       ),
                       trailing: e.toggle
-                          ? ValueListenableBuilder(
-                              valueListenable: e.darkMode,
-                              builder: (context, bool dark, child) =>
-                                  NeumorphicSwitch(
-                                style: const NeumorphicSwitchStyle(
-                                    trackDepth: 10, thumbDepth: 2),
-                                height: 20,
-                                value: dark,
-                                onChanged: (value) {
-                                  e.darkMode.value = value;
-                                  sisData.darkMode = e.darkMode.value;
-                                },
-                              ),
+                          ? NeumorphicSwitch(
+                              style: const NeumorphicSwitchStyle(
+                                  trackDepth: 10, thumbDepth: 2),
+                              height: 20,
+                              value: sisData.darkMode,
+                              onChanged: (value) {
+                                sisData.darkMode = value;
+                              },
                             )
                           : null,
                     ),
@@ -99,5 +96,4 @@ class Element {
       required this.text,
       this.toggle = false,
       required this.icon});
-  ValueNotifier<bool> darkMode = ValueNotifier(false);
 }
