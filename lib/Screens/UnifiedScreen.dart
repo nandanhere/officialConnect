@@ -93,7 +93,7 @@ class screenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (page == 3) {
-      return const SettingsInfo();
+      return SettingsInfo();
     } else if (page == 2) {
       return const CieInfo();
     } else if (page == 1) {

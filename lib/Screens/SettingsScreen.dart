@@ -4,30 +4,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class SettingsInfo extends StatelessWidget {
-  const SettingsInfo({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final sisData = Provider.of<SisData>(context);
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
-    return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(width * 0.08),
-          color: NeumorphicColors.background,
-        ),
-        padding: EdgeInsets.only(
-            left: width * 0.05,
-            right: width * 0.05,
-            top: height * 0.06,
-            bottom: height * 0.13),
-        child: ListOfSettings());
-  }
-}
-
-class ListOfSettings extends StatelessWidget {
-  List<Widget> tiles = [
+  List<Element> tiles = [
     Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
     Element(icon: Icons.lock, onPressed: () {}, text: "Change Password"),
     Element(icon: Icons.doorbell, onPressed: () {}, text: "Notification"),
@@ -40,16 +17,79 @@ class ListOfSettings extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return tiles[index];
-      },
-      itemCount: tiles.length,
-    );
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
+    final sisData = Provider.of<SisData>(context);
+    return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(width * 0.08),
+          color: sisData.darkMode
+              ? NeumorphicColors.darkBackground
+              : NeumorphicColors.background,
+        ),
+        padding: EdgeInsets.only(
+            left: width * 0.05,
+            right: width * 0.05,
+            top: height * 0.06,
+            bottom: height * 0.13),
+        child: ListView(
+          children: [
+            ...tiles.map((e) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: NeumorphicButton(
+                    onPressed: e.toggle
+                        ? () {
+                            e.darkMode.value = !e.darkMode.value;
+                            sisData.darkMode = e.darkMode.value;
+                          }
+                        : e.onPressed,
+                    style: NeumorphicStyle(
+                        color: sisData.darkMode
+                            ? NeumorphicColors.darkBackground
+                            : NeumorphicColors.background,
+                        depth: 3,
+                        boxShape: NeumorphicBoxShape.roundRect(
+                            BorderRadius.circular(20))),
+                    child: ListTile(
+                      leading: Icon(
+                        e.icon,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                      title: Text(
+                        e.text,
+                        style: TextStyle(
+                            color:
+                                sisData.darkMode ? Colors.white : Colors.black,
+                            fontSize: 15,
+                            fontFamily: 'Comfortaa'),
+                      ),
+                      trailing: e.toggle
+                          ? ValueListenableBuilder(
+                              valueListenable: e.darkMode,
+                              builder: (context, bool dark, child) =>
+                                  NeumorphicSwitch(
+                                style: const NeumorphicSwitchStyle(
+                                    trackDepth: 10, thumbDepth: 2),
+                                height: 20,
+                                value: dark,
+                                onChanged: (value) {
+                                  e.darkMode.value = value;
+                                  sisData.darkMode = e.darkMode.value;
+                                },
+                              ),
+                            )
+                          : null,
+                    ),
+                  ),
+                ))
+          ],
+        ));
   }
 }
 
-class Element extends StatelessWidget {
+class Element {
   final Function() onPressed;
   final String text;
   bool toggle;
@@ -59,47 +99,5 @@ class Element extends StatelessWidget {
       required this.text,
       this.toggle = false,
       required this.icon});
-
   ValueNotifier<bool> darkMode = ValueNotifier(false);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: NeumorphicButton(
-        onPressed: toggle
-            ? () {
-                darkMode.value = !darkMode.value;
-              }
-            : onPressed,
-        style: NeumorphicStyle(
-            depth: 3,
-            boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20))),
-        child: ListTile(
-          leading: Icon(
-            icon,
-            color: Colors.red,
-            size: 30,
-          ),
-          title: Text(
-            text,
-            style: TextStyle(
-                color: Colors.black, fontSize: 15, fontFamily: 'Comfortaa'),
-          ),
-          trailing: toggle
-              ? ValueListenableBuilder(
-                  valueListenable: darkMode,
-                  builder: (context, bool dark, child) => NeumorphicSwitch(
-                    style: NeumorphicSwitchStyle(trackDepth: 10, thumbDepth: 2),
-                    height: 20,
-                    value: dark,
-                    onChanged: (value) {
-                      darkMode.value = value;
-                    },
-                  ),
-                )
-              : null,
-        ),
-      ),
-    );
-  }
 }
