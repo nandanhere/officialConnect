@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class SettingsInfo extends StatelessWidget {
@@ -6,6 +8,7 @@ class SettingsInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sisData = Provider.of<SisData>(context);
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;

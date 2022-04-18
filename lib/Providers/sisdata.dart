@@ -33,6 +33,7 @@ class SisData with ChangeNotifier {
   String _email = "";
   String _phone = "";
   String _studentImage = "";
+  bool darkMode = false;
 
   SisData() {
     setup();
