@@ -14,7 +14,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return Scaffold(
       backgroundColor: Colors.red,
       body: Center(
-        child:  SpinKitWave (
+        child: SpinKitSpinningLines(
           color: Colors.white,
           size: 100.0,
         ),
