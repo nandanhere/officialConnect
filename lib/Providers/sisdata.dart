@@ -33,7 +33,7 @@ class SisData with ChangeNotifier {
   String _email = "";
   String _phone = "";
   String _studentImage = "";
-  bool darkMode = false;
+  bool _darkMode = false;
 
   SisData() {
     setup();
@@ -165,6 +165,15 @@ class SisData with ChangeNotifier {
 
   String get usn {
     return _usn;
+  }
+
+  set darkMode(bool val) {
+    _darkMode = val;
+    notifyListeners();
+  }
+
+  bool get darkMode {
+    return _darkMode;
   }
 
   bool get hasData {
