@@ -15,6 +15,10 @@ class Unified extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
+
     if (sisData.usn == "" && sisData.data.isEmpty) {
       return LoginScreen();
     } else {
@@ -33,7 +37,9 @@ class Unified extends StatelessWidget {
             ),
           ],
         ),
-        backgroundColor: Color.fromARGB(1, 77, 74, 74),
+        backgroundColor: sisData.darkMode
+            ? NeumorphicColors.darkBackground
+            : Color.fromARGB(1, 77, 74, 74),
         // backgroundColor: const Color(0xFF852528),
         body: Stack(
           children: [
@@ -46,39 +52,42 @@ class Unified extends StatelessWidget {
               left: 0,
               right: 0,
               bottom: 0,
-              child: SizedBox(
+              child: Container(
                   height: MediaQuery.of(context).size.height * 0.12,
                   child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(width * 0.05),
+                          topLeft: Radius.circular(width * 0.05)),
                       child: ValueListenableBuilder(
-                    valueListenable: screenNumber,
-                    builder: (context, int listeningValue, child) =>
-                        BottomNavigationBar(
-                      selectedItemColor: const Color(0xFF852528),
-                      unselectedItemColor: Colors.grey,
-                      items: const [
-                        BottomNavigationBarItem(
-                            icon: FaIcon(FontAwesomeIcons.house),
-                            label: "Home",
-                            backgroundColor: NeumorphicColors.background),
-                        BottomNavigationBarItem(
-                            icon: FaIcon(FontAwesomeIcons.calendarDay),
-                            label: "Attendance",
-                            backgroundColor: NeumorphicColors.background),
-                        BottomNavigationBarItem(
-                            icon: FaIcon(FontAwesomeIcons.graduationCap),
-                            label: "Results",
-                            backgroundColor: NeumorphicColors.background),
-                        BottomNavigationBarItem(
-                            icon: FaIcon(FontAwesomeIcons.gear),
-                            label: "Settings",
-                            backgroundColor: NeumorphicColors.background),
-                      ],
-                      currentIndex: listeningValue,
-                      onTap: (index) {
-                        screenNumber.value = index;
-                      },
-                    ),
-                  ))),
+                        valueListenable: screenNumber,
+                        builder: (context, int listeningValue, child) =>
+                            BottomNavigationBar(
+                          selectedItemColor: const Color(0xFF852528),
+                          unselectedItemColor: Colors.grey,
+                          items: const [
+                            BottomNavigationBarItem(
+                                icon: FaIcon(FontAwesomeIcons.house),
+                                label: "Home",
+                                backgroundColor: NeumorphicColors.background),
+                            BottomNavigationBarItem(
+                                icon: FaIcon(FontAwesomeIcons.calendarDay),
+                                label: "Attendance",
+                                backgroundColor: NeumorphicColors.background),
+                            BottomNavigationBarItem(
+                                icon: FaIcon(FontAwesomeIcons.graduationCap),
+                                label: "Results",
+                                backgroundColor: NeumorphicColors.background),
+                            BottomNavigationBarItem(
+                                icon: FaIcon(FontAwesomeIcons.gear),
+                                label: "Settings",
+                                backgroundColor: NeumorphicColors.background),
+                          ],
+                          currentIndex: listeningValue,
+                          onTap: (index) {
+                            screenNumber.value = index;
+                          },
+                        ),
+                      ))),
             ),
           ],
         ),
