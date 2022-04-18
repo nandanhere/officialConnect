@@ -12,7 +12,7 @@ extension StringCasingExtension on String {
   String toTitleCase() => replaceAll(RegExp(' +'), ' ')
       .split(' ')
       .map((str) => str.toCapitalized())
-      .join(' ');
+      .join('\n');
 }
 
 extension WordSelection on String {
@@ -29,6 +29,7 @@ class Home extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
+    print(sisData.studentImage);
     return Container(
         height: height,
         decoration: BoxDecoration(
@@ -45,102 +46,113 @@ class Home extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.02, vertical: height * 0.02),
+                    child: Neumorphic(
+                      style: NeumorphicStyle(
+                          depth: 3,
+                          intensity: 1,
+                          boxShape: NeumorphicBoxShape.roundRect(
+                              BorderRadius.circular(20))),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: width * 0.05, vertical: height * 0.025),
+                        child: Column(
                           children: [
-                            Text(
-                              "Hi, ${sisData.studentName.firstFew(2).split(" ")[0]} \n"
-                              " ${sisData.studentName.firstFew(2).split(" ")[1]} ",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 30,
-                                fontFamily: 'Comfortaa',
+                            Padding(
+                              padding: EdgeInsets.only(bottom: height * 0.02),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  FittedBox(
+                                    child: Text(
+                                      "Hi, ${sisData.studentName.toTitleCase()} ",
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 30,
+                                        fontFamily: 'Comfortaa',
+                                      ),
+                                    ),
+                                  ),
+                                  Neumorphic(
+                                    style: const NeumorphicStyle(
+                                        boxShape: NeumorphicBoxShape.circle(),
+                                        depth: 2,
+                                        intensity: 1),
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                              sisData.studentImage),
+                                      backgroundColor: Colors.grey,
+                                      radius: width * 0.1,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Neumorphic(
-                              style: const NeumorphicStyle(
-                                  boxShape: NeumorphicBoxShape.circle(),
-                                  depth: 2,
-                                  intensity: 1),
-                              child: CircleAvatar(
-                                backgroundImage: CachedNetworkImageProvider(
-                                    sisData.studentImage),
-                                backgroundColor: Colors.grey,
-                                radius: width * 0.1,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Class ",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: width * 0.05,
+                                      fontFamily: 'Comfortaa'),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: height * 0.01,
+                                      horizontal: width * 0.02),
+                                  child: Text(
+                                    "${sisData.semester}-${sisData.section[4]}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'Comfortaa'),
+                                  ),
+                                  // decoration: BoxDecoration(
+                                  // border: Border.all(width: 1.3),
+                                  // borderRadius: BorderRadius.circular(width)),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Course ",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: width * 0.05,
+                                      fontFamily: 'Comfortaa'),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: height * 0.01,
+                                      horizontal: width * 0.02),
+                                  child: Text(
+                                    sisData.course,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'Comfortaa'),
+                                  ),
+                                  // decoration: BoxDecoration(
+                                  // border: Border.all(width: 1.3),
+                                  // borderRadius: BorderRadius.circular(width)),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8.0, right: 8, top: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Class ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: width * 0.05,
-                                  fontFamily: 'Comfortaa'),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: height * 0.01,
-                                  horizontal: width * 0.02),
-                              child: Text(
-                                "${sisData.semester}-${sisData.section[4]}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54,
-                                    fontSize: width * 0.04,
-                                    fontFamily: 'Comfortaa'),
-                              ),
-                              // decoration: BoxDecoration(
-                              // border: Border.all(width: 1.3),
-                              // borderRadius: BorderRadius.circular(width)),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Course ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: width * 0.05,
-                                  fontFamily: 'Comfortaa'),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: height * 0.01,
-                                  horizontal: width * 0.02),
-                              child: Text(
-                                sisData.course,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54,
-                                    fontSize: width * 0.04,
-                                    fontFamily: 'Comfortaa'),
-                              ),
-                              // decoration: BoxDecoration(
-                              // border: Border.all(width: 1.3),
-                              // borderRadius: BorderRadius.circular(width)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   Container(
                     padding: EdgeInsets.only(
@@ -155,19 +167,16 @@ class Home extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Fees Paid",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Comfortaa',
-                                fontWeight: FontWeight.bold),
-                          ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: width * 0.2, vertical: height * 0.02),
+                        child: const Text(
+                          "Your Fees Paid",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontFamily: 'Comfortaa',
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                       ...sisData.fees.map((e) => Padding(
@@ -183,23 +192,87 @@ class Home extends StatelessWidget {
                                   depth: 2,
                                   boxShape: NeumorphicBoxShape.roundRect(
                                       BorderRadius.circular(20))),
-                              child: ListTile(
+                              child: ExpansionTile(
                                 title: Text(
-                                  e.academicYear,
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontFamily: 'Comfortaa'),
-                                ),
-                                trailing: Text(
                                   e.amountPaid,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black,
-                                      fontSize: 15,
+                                      fontSize: width * 0.06,
                                       fontFamily: 'Comfortaa'),
-                                  textAlign: TextAlign.end,
                                 ),
+                                subtitle: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: width * 0.02,
+                                      vertical: height * 0.01),
+                                  child: Text(
+                                    "For Year ${e.yearNumber} on ${e.date}",
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'Comfortaa'),
+                                  ),
+                                ),
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: width * 0.04,
+                                        vertical: height * 0.02),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Challan No:",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: width * 0.04,
+                                              fontFamily: 'Comfortaa'),
+                                        ),
+                                        Text(
+                                          e.challanNumber,
+                                          style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: width * 0.04,
+                                              fontFamily: 'Comfortaa'),
+                                          textAlign: TextAlign.end,
+                                        ),
+                                      ],
+                                    ), //ChallanNo
+                                  ),
+                                  (e.mode != "CASH")
+                                      ? Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: width * 0.04,
+                                              vertical: height * 0.02),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Cheque No:",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: width * 0.04,
+                                                    fontFamily: 'Comfortaa'),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  e.chequeNumber,
+                                                  style: TextStyle(
+                                                      color: Colors.black54,
+                                                      fontSize: width * 0.04,
+                                                      fontFamily: 'Comfortaa'),
+                                                  textAlign: TextAlign.end,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
                               ),
                             ),
                           ))
