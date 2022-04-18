@@ -67,7 +67,7 @@ class Home extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  FittedBox(
+                                  Expanded(
                                     child: Text(
                                       "Hi, ${sisData.studentName.toTitleCase()} ",
                                       style: const TextStyle(
