@@ -24,14 +24,17 @@ class Unified extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              sisData.cleanData();
-            },
-          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                sisData.cleanData();
+              },
+            ),
+          ],
         ),
-        backgroundColor: const Color(0xFF852528),
+        backgroundColor: Color.fromARGB(1, 77, 74, 74),
+        // backgroundColor: const Color(0xFF852528),
         body: Stack(
           children: [
             Positioned(

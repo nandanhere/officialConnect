@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,7 @@ class Home extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
+    print(sisData.studentImage);
     return Container(
         height: height,
         decoration: BoxDecoration(
@@ -42,154 +44,163 @@ class Home extends StatelessWidget {
         child: SingleChildScrollView(
           child: Center(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      "Hi, ${sisData.studentName.firstFew(2).split(" ")[0]} \n"
-                      " ${sisData.studentName.firstFew(2).split(" ")[1]} ",
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 30,
-                        fontFamily: 'Comfortaa',
-                      ),
-                    ),
-                    Neumorphic(
-                      style: const NeumorphicStyle(
-                          boxShape: NeumorphicBoxShape.circle(),
-                          depth: 2,
-                          intensity: 1),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          sisData.studentImage.toString(),
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        "Hi, ${sisData.studentName.firstFew(2).split(" ")[0]} \n"
+                        " ${sisData.studentName.firstFew(2).split(" ")[1]} ",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 30,
+                          fontFamily: 'Comfortaa',
                         ),
-                        backgroundColor: Colors.grey,
-                        radius: width * 0.1,
                       ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                      left: width * 0.1,
-                      right: width * 0.1,
-                      top: height * 0.03,
-                      bottom: height * 0.015),
-                  child: Divider(
-                    thickness: 1.6,
+                      Neumorphic(
+                        style: const NeumorphicStyle(
+                            boxShape: NeumorphicBoxShape.circle(),
+                            depth: 2,
+                            intensity: 1),
+                        child: CircleAvatar(
+                          backgroundImage:
+                              CachedNetworkImageProvider(sisData.studentImage),
+                          backgroundColor: Colors.grey,
+                          radius: width * 0.1,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Neumorphic(
-                      padding: EdgeInsets.only(left: width * 0.03),
-                      style: NeumorphicStyle(
-                          depth: 3,
-                          boxShape: NeumorphicBoxShape.roundRect(
-                              BorderRadius.circular(width))),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Class ",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: width * 0.05,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: height * 0.01,
-                                horizontal: width * 0.02),
-                            child: Text(
-                              "${sisData.semester}-${sisData.section[4]}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: width * 0.04,
-                                  fontFamily: 'Comfortaa'),
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1.3),
-                                borderRadius: BorderRadius.circular(width)),
-                          ),
-                        ],
-                      ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        left: width * 0.1,
+                        right: width * 0.1,
+                        top: height * 0.03,
+                        bottom: height * 0.015),
+                    child: const Divider(
+                      thickness: 1.6,
                     ),
-                    Neumorphic(
-                      padding: EdgeInsets.only(left: width * 0.03),
-                      style: NeumorphicStyle(
-                          depth: 3,
-                          boxShape: NeumorphicBoxShape.roundRect(
-                              BorderRadius.circular(width))),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Course ",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: width * 0.05,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: height * 0.01,
-                                horizontal: width * 0.02),
-                            child: Text(
-                              "${sisData.course}adf",
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Neumorphic(
+                        padding: EdgeInsets.only(left: width * 0.03),
+                        style: NeumorphicStyle(
+                            depth: 3,
+                            boxShape: NeumorphicBoxShape.roundRect(
+                                BorderRadius.circular(width))),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Class ",
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold,
                                   color: Colors.black,
-                                  fontSize: width * 0.04,
+                                  fontSize: width * 0.05,
                                   fontFamily: 'Comfortaa'),
                             ),
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1.3),
-                                borderRadius: BorderRadius.circular(width)),
-                          ),
-                        ],
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: height * 0.01,
+                                  horizontal: width * 0.02),
+                              child: Text(
+                                "${sisData.semester}-${sisData.section[4]}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontSize: width * 0.04,
+                                    fontFamily: 'Comfortaa'),
+                              ),
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1.3),
+                                  borderRadius: BorderRadius.circular(width)),
+                            ),
+                          ],
+                        ),
                       ),
-                    )
-                  ],
-                ),
-                //             ...sisData.fees.map((e) => Padding(
-                //     padding: const EdgeInsets.all(8.0),
-                //   child: NeumorphicButton(
-                //     padding: EdgeInsets.only(
-                //         top: height * 0.015,
-                //         bottom: height * 0.015,
-                //         left: width * 0.025,
-                //         right: width * 0.01),
-                //     onPressed: () {},//TODO receipt download maybe?
-                //     style: NeumorphicStyle(
-                //         depth: 3,
-                //         boxShape: NeumorphicBoxShape.roundRect(
-                //             BorderRadius.circular(20))),
-                //     child: ListTile(
-                //       title: Text(
-                //         e.subjectName,
-                //         style: const TextStyle(
-                //             color: Colors.black,
-                //             fontSize: 16,
-                //             fontFamily: 'Comfortaa'),
-                //       ),
-                //       trailing: Text(
-                //         e.percentage,
-                //         style: const TextStyle(
-                //             fontWeight: FontWeight.bold,
-                //             color: Colors.black,
-                //             fontSize: 20,
-                //             fontFamily: 'Comfortaa'),
-                //         textAlign: TextAlign.end,
-                //       ),
-                //     ),
-                //   ),
-                // ))
-              ],
-            ),
+                      Neumorphic(
+                        padding: EdgeInsets.only(left: width * 0.03),
+                        style: NeumorphicStyle(
+                            depth: 3,
+                            boxShape: NeumorphicBoxShape.roundRect(
+                                BorderRadius.circular(width))),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Course ",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: width * 0.05,
+                                  fontFamily: 'Comfortaa'),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: height * 0.01,
+                                  horizontal: width * 0.02),
+                              child: Text(
+                                sisData.course,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontSize: width * 0.04,
+                                    fontFamily: 'Comfortaa'),
+                              ),
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1.3),
+                                  borderRadius: BorderRadius.circular(width)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Text(
+                          "Your Fees Paid",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontFamily: 'Comfortaa',
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      ...sisData.fees.map((e) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: NeumorphicButton(
+                              padding: EdgeInsets.only(
+                                  top: height * 0.015,
+                                  bottom: height * 0.015,
+                                  left: width * 0.025,
+                                  right: width * 0.01),
+                              onPressed: () {}, //TODO receipt download maybe?
+                              style: NeumorphicStyle(
+                                  depth: 2,
+                                  boxShape: NeumorphicBoxShape.roundRect(
+                                      BorderRadius.circular(20))),
+                              child: ListTile(
+                                title: Text(
+                                  e.academicYear,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      fontFamily: 'Comfortaa'),
+                                ),
+                                trailing: Text(
+                                  e.amountPaid,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontFamily: 'Comfortaa'),
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                            ),
+                          ))
+                    ],
+                  )
+                ]),
           ),
         ));
   }
