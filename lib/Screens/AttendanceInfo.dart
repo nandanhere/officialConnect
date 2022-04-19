@@ -2,9 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
-class AttendanceInfo extends StatelessWidget {
+late TooltipBehavior _tooltipBehavior;
+
+class AttendanceInfo extends StatefulWidget {
   const AttendanceInfo({Key? key}) : super(key: key);
+
+  @override
+  State<AttendanceInfo> createState() => _AttendanceInfoState();
+}
+
+class _AttendanceInfoState extends State<AttendanceInfo> {
+  late TooltipBehavior _tooltipBehavior;
+  @override
+  void initState() {
+    // documentation at https://help.syncfusion.com/flutter/circular-charts/tooltip for more customisation
+    _tooltipBehavior = TooltipBehavior(
+        enable: true,
+        format: "point.x : point.y%",
+        tooltipPosition: TooltipPosition.pointer);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +46,35 @@ class AttendanceInfo extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(
+                height: height * 0.5,
+                child: SfCircularChart(
+                  onTooltipRender: (TooltipArgs args) {
+                    if (args.pointIndex != null)
+                      args.header = sisData
+                          .attendances[args.pointIndex!.toInt()].subjectName;
+                  },
+                  tooltipBehavior: _tooltipBehavior,
+                  series: <CircularSeries>[
+                    RadialBarSeries(
+                      maximumValue: 100,
+                      dataSource: sisData.attendances.map(
+                        (e) {
+                          return [
+                            int.parse(e.percentage.replaceFirst("%", "")),
+                            e.code
+                          ];
+                        },
+                      ).toList(),
+                      pointRadiusMapper: (data, _) => data[1],
+                      xValueMapper: (a, b) => a[1],
+                      yValueMapper: (a, b) => a[0],
+                      cornerStyle: CornerStyle.bothCurve,
+                      enableTooltip: true,
+                    )
+                  ],
+                ),
+              ),
               ...sisData.attendances
                   .map((e) => Padding(
                         padding: const EdgeInsets.all(8.0),

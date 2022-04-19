@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
         view: DateRangePickerView.decade,
         selectionMode: DateRangePickerSelectionMode.single,
         minDate: DateTime(1990, 01, 01),
-        maxDate: DateTime(2019, 01, 01),
+        maxDate: DateTime(2009, 01, 01),
         navigationDirection: DateRangePickerNavigationDirection.vertical,
         onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
           selectedDate = args.value;
