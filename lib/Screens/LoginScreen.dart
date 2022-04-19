@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 
 import 'package:intl/intl.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = "login";
@@ -25,19 +27,67 @@ class _LoginScreenState extends State<LoginScreen> {
   DateFormat formatter = DateFormat('yyyy-MM-dd');
   var selectedDate = DateTime.now();
 
-  _selectDate(BuildContext context) async {
-    final selected = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2000, 12, 08),
-      firstDate: DateTime(1990),
-      lastDate: DateTime(2025),
+  Widget getDateRangePicker() {
+    return SfDateRangePickerTheme(
+      data: SfDateRangePickerThemeData(
+          // TODO : dark mode stuff
+          // brightness: Brightness.dark,
+          // backgroundColor: Colors.grey,
+
+          ),
+      child: SfDateRangePicker(
+        view: DateRangePickerView.decade,
+        selectionMode: DateRangePickerSelectionMode.single,
+        minDate: DateTime(1990, 01, 01),
+        maxDate: DateTime(2019, 01, 01),
+        navigationDirection: DateRangePickerNavigationDirection.vertical,
+        onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+          selectedDate = args.value;
+          setState(() {
+            dobController.text = formatter.format(selectedDate);
+          });
+        },
+      ),
     );
-    if (selected != null && selected != selectedDate) {
-      setState(() {
-        selectedDate = selected;
-        dobController.text = formatter.format(selected);
-      });
-    }
+  }
+
+// TODO : Make this more organised.
+  _selectDate(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          final size = MediaQuery.of(context).size;
+          return AlertDialog(
+              title: Text('Pick a date'),
+              content: SizedBox(
+                height: size.height * 0.5,
+                width: size.width * 0.8,
+                child: Column(
+                  children: <Widget>[
+                    getDateRangePicker(),
+                    MaterialButton(
+                      child: Text("OK"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                ),
+              ));
+        });
+
+    // final selected = await showDatePicker(
+    //   context: context,
+    //   initialDate: DateTime(2000, 12, 08),
+    //   firstDate: DateTime(1990),
+    //   lastDate: DateTime(2025),
+    // );
+    // if (selected != null && selected != selectedDate) {
+    //   setState(() {
+    //     selectedDate = selected;
+    //     dobController.text = formatter.format(selected);
+    //   });
+    // }
   }
 
   void _submit() {
@@ -158,7 +208,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  (isPressed && !sisData.hasData)
+                  (isPressed &&
+                          !sisData.hasData &&
+                          _formKey.currentState!.validate())
                       ? const CircularProgressIndicator()
                       : GestureDetector(
                           onTap: () {
