@@ -45,7 +45,7 @@ class Attendance {
       required this.absentDates,
       required this.presentDates});
   static List<Attendance> getList(List<dynamic> data) {
-    return data.map((e) {
+    final list = data.map((e) {
       List<ClassDay> presentDates = ClassDay.getList(e['present_dates']);
       List<ClassDay> absentDates = ClassDay.getList(e['absent_dates']);
       return Attendance(
@@ -59,6 +59,9 @@ class Attendance {
           absentDates: absentDates,
           presentDates: presentDates);
     }).toList();
+
+    list.sort((a, b) => a.code.compareTo(b.code));
+    return list;
   }
 
   int howManyCanIMiss(int forPercent) {
