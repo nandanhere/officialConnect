@@ -21,20 +21,23 @@ class Unified extends StatelessWidget {
       if (sisData.data.isEmpty) return CircularProgressIndicator();
       ValueNotifier<int> screenNumber = ValueNotifier(0);
       return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                sisData.cleanData();
-              },
-            ),
-          ],
-        ),
-        backgroundColor: Color.fromARGB(1, 77, 74, 74),
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent,
+        //   elevation: 0,
+        //   actions: [
+        //     Neumorphic(
+        //       child: IconButton(
+        //         icon: Icon(Icons.logout),
+        //         onPressed: () {
+        //           sisData.cleanData();
+        //         },
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        // backgroundColor: Color.fromARGB(1, 77, 74, 74),
         // backgroundColor: const Color(0xFF852528),
+        backgroundColor: NeumorphicColors.background,
         body: Stack(
           children: [
             Positioned(
