@@ -3,7 +3,6 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/AttendanceGraph.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AttendanceInfo extends StatelessWidget {
   const AttendanceInfo({Key? key}) : super(key: key);
@@ -17,9 +16,17 @@ class AttendanceInfo extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(width * 0.08),
-        color: NeumorphicColors.background,
-      ),
+          gradient: LinearGradient(
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft,
+              colors: (sisData.darkMode)
+                  ? [Colors.black, Colors.black, Colors.blueGrey]
+                  : [
+                      NeumorphicColors.background,
+                      NeumorphicColors.background,
+                      Colors.white,
+                      Colors.white
+                    ])),
       padding: EdgeInsets.only(
           left: width * 0.05,
           right: width * 0.05,
@@ -29,10 +36,12 @@ class AttendanceInfo extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const Text(
+              Text(
                 "Attendance Info",
                 style: TextStyle(
-                    color: Colors.black, fontSize: 40, fontFamily: 'Comfortaa'),
+                    color: sisData.darkMode ? Colors.white : Colors.black,
+                    fontSize: 40,
+                    fontFamily: 'Comfortaa'),
               ),
               AttendanceGraph(
                   height: height,
@@ -49,23 +58,35 @@ class AttendanceInfo extends StatelessWidget {
                               right: width * 0.01),
                           onPressed: () => print("attendance details"),
                           style: NeumorphicStyle(
+                              shadowLightColor:
+                                  sisData.darkMode ? Colors.white : null,
+                              shadowDarkColor: sisData.darkMode
+                                  ? NeumorphicColors.background
+                                  : null,
+                              color: sisData.darkMode
+                                  ? Color.fromARGB(1, 77, 74, 74)
+                                  : NeumorphicColors.background,
                               depth: 3,
                               boxShape: NeumorphicBoxShape.roundRect(
                                   BorderRadius.circular(20))),
                           child: ListTile(
                             title: Text(
                               e.subjectName,
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
+                              style: TextStyle(
+                                  color: sisData.darkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: width * 0.045,
                                   fontFamily: 'Comfortaa'),
                             ),
                             trailing: Text(
                               e.percentage,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: 20,
+                                  color: sisData.darkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: width * 0.055,
                                   fontFamily: 'Comfortaa'),
                               textAlign: TextAlign.end,
                             ),

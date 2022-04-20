@@ -13,11 +13,6 @@ extension StringCasingExtension on String {
       .join('\n');
 }
 
-extension WordSelection on String {
-  String firstFew(int n) =>
-      this.toTitleCase().split(" ").sublist(0, n).join(" ");
-}
-
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -30,9 +25,16 @@ class Home extends StatelessWidget {
     return Container(
         height: height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(width * 0.08),
-          color: NeumorphicColors.background,
-        ),
+            gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                end: Alignment.topLeft,
+                colors: (sisData.darkMode)
+                    ? [Colors.black, Colors.black, Colors.blueGrey]
+                    : [
+                        NeumorphicColors.background,
+                        NeumorphicColors.background,
+                        Colors.white
+                      ])),
         padding: EdgeInsets.only(
             left: width * 0.08,
             right: width * 0.08,
@@ -48,6 +50,14 @@ class Home extends StatelessWidget {
                         horizontal: width * 0.02, vertical: height * 0.02),
                     child: Neumorphic(
                       style: NeumorphicStyle(
+                          shadowLightColor:
+                              sisData.darkMode ? Colors.white : null,
+                          shadowDarkColor: sisData.darkMode
+                              ? NeumorphicColors.background
+                              : null,
+                          color: sisData.darkMode
+                              ? Color.fromARGB(1, 77, 74, 74)
+                              : NeumorphicColors.background,
                           depth: 3,
                           intensity: 1,
                           boxShape: NeumorphicBoxShape.roundRect(
@@ -66,16 +76,29 @@ class Home extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: AutoSizeText(
-                                      "Hi, ${sisData.studentName.toTitleCase()} 🤠",
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        // fontSize: 30,
+                                      //🤠
+                                      "Hi, ${sisData.studentName.toTitleCase()} ",
+                                      style: TextStyle(
+                                        color: sisData.darkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: width * 0.09,
+                                        fontWeight: FontWeight.bold,
                                         fontFamily: 'Comfortaa',
                                       ),
                                     ),
                                   ),
                                   Neumorphic(
-                                    style: const NeumorphicStyle(
+                                    style: NeumorphicStyle(
+                                        shadowLightColor: sisData.darkMode
+                                            ? Colors.white
+                                            : null,
+                                        shadowDarkColor: sisData.darkMode
+                                            ? NeumorphicColors.background
+                                            : null,
+                                        color: sisData.darkMode
+                                            ? Color.fromARGB(1, 77, 74, 74)
+                                            : NeumorphicColors.background,
                                         boxShape: NeumorphicBoxShape.circle(),
                                         depth: 2,
                                         intensity: 1),
@@ -97,7 +120,9 @@ class Home extends StatelessWidget {
                                 Text(
                                   "Class ",
                                   style: TextStyle(
-                                      color: Colors.black,
+                                      color: sisData.darkMode
+                                          ? Colors.white
+                                          : Colors.black,
                                       fontSize: width * 0.05,
                                       fontFamily: 'Comfortaa'),
                                 ),
@@ -109,7 +134,9 @@ class Home extends StatelessWidget {
                                     "${sisData.semester}-${sisData.section[4]}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black54,
+                                        color: sisData.darkMode
+                                            ? Colors.white54
+                                            : Colors.black54,
                                         fontSize: width * 0.04,
                                         fontFamily: 'Comfortaa'),
                                   ),
@@ -125,7 +152,9 @@ class Home extends StatelessWidget {
                                 Text(
                                   "Course ",
                                   style: TextStyle(
-                                      color: Colors.black,
+                                      color: sisData.darkMode
+                                          ? Colors.white
+                                          : Colors.black,
                                       fontSize: width * 0.05,
                                       fontFamily: 'Comfortaa'),
                                 ),
@@ -137,7 +166,9 @@ class Home extends StatelessWidget {
                                     sisData.course,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black54,
+                                        color: sisData.darkMode
+                                            ? Colors.white54
+                                            : Colors.black54,
                                         fontSize: width * 0.04,
                                         fontFamily: 'Comfortaa'),
                                   ),
@@ -168,11 +199,13 @@ class Home extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: width * 0.2, vertical: height * 0.02),
-                        child: const Text(
+                        child: Text(
                           "Your Fees Paid",
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
+                              color: sisData.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: width * 0.05,
                               fontFamily: 'Comfortaa',
                               fontWeight: FontWeight.bold),
                         ),
@@ -187,6 +220,14 @@ class Home extends StatelessWidget {
                                   right: width * 0.01),
                               onPressed: () {}, //TODO receipt download maybe?
                               style: NeumorphicStyle(
+                                  shadowLightColor:
+                                      sisData.darkMode ? Colors.white : null,
+                                  shadowDarkColor: sisData.darkMode
+                                      ? NeumorphicColors.background
+                                      : null,
+                                  color: sisData.darkMode
+                                      ? Color.fromARGB(1, 77, 74, 74)
+                                      : NeumorphicColors.background,
                                   depth: 2,
                                   boxShape: NeumorphicBoxShape.roundRect(
                                       BorderRadius.circular(20))),
@@ -195,7 +236,9 @@ class Home extends StatelessWidget {
                                   e.amountPaid,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                      color: sisData.darkMode
+                                          ? Colors.white
+                                          : Colors.black,
                                       fontSize: width * 0.06,
                                       fontFamily: 'Comfortaa'),
                                 ),
@@ -206,7 +249,9 @@ class Home extends StatelessWidget {
                                   child: Text(
                                     "For Year ${e.yearNumber} on ${e.date}",
                                     style: TextStyle(
-                                        color: Colors.black54,
+                                        color: sisData.darkMode
+                                            ? Colors.white54
+                                            : Colors.black54,
                                         fontSize: width * 0.04,
                                         fontFamily: 'Comfortaa'),
                                   ),
@@ -223,14 +268,18 @@ class Home extends StatelessWidget {
                                         Text(
                                           "Challan No:",
                                           style: TextStyle(
-                                              color: Colors.black,
+                                              color: sisData.darkMode
+                                                  ? Colors.white
+                                                  : Colors.black,
                                               fontSize: width * 0.04,
                                               fontFamily: 'Comfortaa'),
                                         ),
                                         Text(
                                           e.challanNumber,
                                           style: TextStyle(
-                                              color: Colors.black54,
+                                              color: sisData.darkMode
+                                                  ? Colors.white54
+                                                  : Colors.black54,
                                               fontSize: width * 0.04,
                                               fontFamily: 'Comfortaa'),
                                           textAlign: TextAlign.end,
@@ -252,7 +301,9 @@ class Home extends StatelessWidget {
                                               Text(
                                                 "Cheque No:",
                                                 style: TextStyle(
-                                                    color: Colors.black,
+                                                    color: sisData.darkMode
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                     fontSize: width * 0.04,
                                                     fontFamily: 'Comfortaa'),
                                               ),
@@ -260,7 +311,9 @@ class Home extends StatelessWidget {
                                                 child: Text(
                                                   e.chequeNumber,
                                                   style: TextStyle(
-                                                      color: Colors.black54,
+                                                      color: sisData.darkMode
+                                                          ? Colors.white54
+                                                          : Colors.black54,
                                                       fontSize: width * 0.04,
                                                       fontFamily: 'Comfortaa'),
                                                   textAlign: TextAlign.end,
