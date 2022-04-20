@@ -1,7 +1,5 @@
-import 'dart:ffi';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -29,7 +27,6 @@ class Home extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
-    print(sisData.studentImage);
     return Container(
         height: height,
         decoration: BoxDecoration(
@@ -68,11 +65,11 @@ class Home extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      "Hi, ${sisData.studentName.toTitleCase()} ",
+                                    child: AutoSizeText(
+                                      "Hi, ${sisData.studentName.toTitleCase()} 🤠",
                                       style: const TextStyle(
                                         color: Colors.black,
-                                        fontSize: 30,
+                                        // fontSize: 30,
                                         fontFamily: 'Comfortaa',
                                       ),
                                     ),
@@ -82,6 +79,7 @@ class Home extends StatelessWidget {
                                         boxShape: NeumorphicBoxShape.circle(),
                                         depth: 2,
                                         intensity: 1),
+                                    // TODO : show circular progress indicator while loading image
                                     child: CircleAvatar(
                                       backgroundImage:
                                           CachedNetworkImageProvider(

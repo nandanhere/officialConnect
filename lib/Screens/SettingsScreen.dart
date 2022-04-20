@@ -4,10 +4,12 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class SettingsInfo extends StatelessWidget {
+  void _logOut(BuildContext context) {}
+
   List<Element> tiles = [
     Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
     Element(icon: Icons.lock, onPressed: () {}, text: "Change Password"),
-    Element(icon: Icons.doorbell, onPressed: () {}, text: "Notification"),
+    Element(icon: Icons.doorbell, onPressed: () {}, text: "Log Out"),
     Element(
       icon: Icons.settings,
       onPressed: () {},
@@ -33,6 +35,7 @@ class SettingsInfo extends StatelessWidget {
             bottom: height * 0.13),
         child: ListView(
           children: [
+            // TODO : what is going on here? it is too convoluted.
             ...tiles.map((e) => Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: NeumorphicButton(
@@ -56,7 +59,7 @@ class SettingsInfo extends StatelessWidget {
                     child: ListTile(
                       leading: Icon(
                         e.icon,
-                        color: Colors.red,
+                        color: Color(0xFF852528),
                         size: 30,
                       ),
                       title: Text(
@@ -80,7 +83,61 @@ class SettingsInfo extends StatelessWidget {
                           : null,
                     ),
                   ),
-                ))
+                )),
+            const SizedBox(
+              height: 100,
+            ),
+            Center(
+              child: NeumorphicButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (ctx) {
+                        return AlertDialog(
+                          backgroundColor: NeumorphicColors.background,
+                          title: const Text(
+                            'Do you want to Log out?',
+                            style: TextStyle(
+                                color: Colors.black, fontFamily: 'Comfortaa'),
+                          ),
+                          content: const Text(
+                            'All stored data will be wiped out',
+                            style: TextStyle(
+                                color: Colors.black, fontFamily: 'Comfortaa'),
+                          ),
+                          actions: <Widget>[
+                            NeumorphicButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
+                              child: const Text('No'),
+                            ),
+                            NeumorphicButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                                sisData.cleanData();
+                              },
+                              child: const Text('Yes'),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                style: NeumorphicStyle(
+                  depth: 3,
+                  boxShape: NeumorphicBoxShape.roundRect(
+                    BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text(
+                  "Sign out",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontFamily: 'Comfortaa'),
+                ),
+              ),
+            ),
           ],
         ));
   }
