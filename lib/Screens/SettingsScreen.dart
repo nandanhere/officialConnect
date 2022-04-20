@@ -25,9 +25,17 @@ class SettingsInfo extends StatelessWidget {
     final sisData = Provider.of<SisData>(context);
     return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(width * 0.08),
-          color: sisData.darkMode ? Colors.black : NeumorphicColors.background,
-        ),
+            gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                end: Alignment.topLeft,
+                colors: (sisData.darkMode)
+                    ? [Colors.black, Colors.black, Colors.blueGrey]
+                    : [
+                        NeumorphicColors.background,
+                        NeumorphicColors.background,
+                        Colors.white,
+                        Colors.white
+                      ])),
         padding: EdgeInsets.only(
             left: width * 0.05,
             right: width * 0.05,
@@ -67,14 +75,14 @@ class SettingsInfo extends StatelessWidget {
                         style: TextStyle(
                             color:
                                 sisData.darkMode ? Colors.white : Colors.black,
-                            fontSize: 15,
+                            fontSize: width * 0.045,
                             fontFamily: 'Comfortaa'),
                       ),
                       trailing: e.toggle
                           ? NeumorphicSwitch(
                               style: const NeumorphicSwitchStyle(
                                   trackDepth: 10, thumbDepth: 2),
-                              height: 20,
+                              height: width * 0.055,
                               value: sisData.darkMode,
                               onChanged: (value) {
                                 sisData.darkMode = value;
@@ -85,7 +93,7 @@ class SettingsInfo extends StatelessWidget {
                   ),
                 )),
             const SizedBox(
-              height: 100,
+              height: 50,
             ),
             Center(
               child: NeumorphicButton(

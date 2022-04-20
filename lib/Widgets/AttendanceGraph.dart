@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:official_connect/Classes/Attendance.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:provider/provider.dart';
+import 'package:official_connect/Providers/sisdata.dart';
 
 class AttendanceGraph extends StatefulWidget {
   const AttendanceGraph(
@@ -31,9 +34,19 @@ class _AttendanceGraphState extends State<AttendanceGraph> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final sisData = Provider.of<SisData>(context);
     return SizedBox(
       height: widget.height * 0.5,
       child: SfCircularChart(
+        legend: Legend(
+            isVisible: true,
+            toggleSeriesVisibility: true,
+            textStyle: TextStyle(
+                color: sisData.darkMode ? Colors.white : Colors.black,
+                fontSize: width * 0.04,
+                fontFamily: 'Comfortaa')),
         onTooltipRender: (TooltipArgs args) {
           if (args.pointIndex != null) {
             args.header =

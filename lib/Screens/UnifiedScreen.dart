@@ -16,8 +16,6 @@ class Unified extends StatelessWidget {
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
     final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
 
     if (sisData.usn == "" && sisData.data.isEmpty) {
       return LoginScreen();
@@ -25,22 +23,6 @@ class Unified extends StatelessWidget {
       if (sisData.data.isEmpty) return CircularProgressIndicator();
       ValueNotifier<int> screenNumber = ValueNotifier(0);
       return Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Colors.transparent,
-        //   elevation: 0,
-        //   actions: [
-        //     Neumorphic(
-        //       child: IconButton(
-        //         icon: Icon(Icons.logout),
-        //         onPressed: () {
-        //           sisData.cleanData();
-        //         },
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        // backgroundColor: Color.fromARGB(1, 77, 74, 74),
-        // backgroundColor: const Color(0xFF852528),
         backgroundColor: NeumorphicColors.background,
         body: Stack(
           children: [
@@ -62,23 +44,35 @@ class Unified extends StatelessWidget {
                         BottomNavigationBar(
                       selectedItemColor: const Color(0xFF852528),
                       unselectedItemColor: Colors.grey,
-                      items: const [
+                      items: [
                         BottomNavigationBarItem(
-                            icon: FaIcon(FontAwesomeIcons.house),
-                            label: "Home",
-                            backgroundColor: NeumorphicColors.background),
+                          icon: FaIcon(FontAwesomeIcons.house),
+                          label: "Home",
+                          backgroundColor: sisData.darkMode
+                              ? Colors.black54
+                              : NeumorphicColors.background,
+                        ),
                         BottomNavigationBarItem(
-                            icon: FaIcon(FontAwesomeIcons.calendarDay),
-                            label: "Attendance",
-                            backgroundColor: NeumorphicColors.background),
+                          icon: FaIcon(FontAwesomeIcons.calendarDay),
+                          label: "Attendance",
+                          backgroundColor: sisData.darkMode
+                              ? Colors.black54
+                              : NeumorphicColors.background,
+                        ),
                         BottomNavigationBarItem(
-                            icon: FaIcon(FontAwesomeIcons.graduationCap),
-                            label: "Results",
-                            backgroundColor: NeumorphicColors.background),
+                          icon: FaIcon(FontAwesomeIcons.graduationCap),
+                          label: "Results",
+                          backgroundColor: sisData.darkMode
+                              ? Colors.black54
+                              : NeumorphicColors.background,
+                        ),
                         BottomNavigationBarItem(
-                            icon: FaIcon(FontAwesomeIcons.gear),
-                            label: "Settings",
-                            backgroundColor: NeumorphicColors.background),
+                          icon: FaIcon(FontAwesomeIcons.gear),
+                          label: "Settings",
+                          backgroundColor: sisData.darkMode
+                              ? Colors.black54
+                              : NeumorphicColors.background,
+                        ),
                       ],
                       currentIndex: listeningValue,
                       onTap: (index) {
