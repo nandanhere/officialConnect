@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/sisdata.dart';
+import 'package:official_connect/Screens/LoadingScreen.dart';
 import 'package:official_connect/Screens/home.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Screens/AttendanceInfo.dart';
@@ -20,7 +21,7 @@ class Unified extends StatelessWidget {
     if (sisData.usn == "" && sisData.data.isEmpty) {
       return LoginScreen();
     } else {
-      if (sisData.data.isEmpty) return CircularProgressIndicator();
+      if (sisData.data.isEmpty) return LoadingScreen();
       ValueNotifier<int> screenNumber = ValueNotifier(0);
       return Scaffold(
         backgroundColor: NeumorphicColors.background,
