@@ -3,14 +3,15 @@ import 'package:official_connect/Classes/Marks.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:math';
 
-class CieGraph extends StatefulWidget {
-  const CieGraph({Key? key, required this.subjectDetails}) : super(key: key);
+class CieDetailsGraph extends StatefulWidget {
+  const CieDetailsGraph({Key? key, required this.subjectDetails})
+      : super(key: key);
   final Marks subjectDetails;
   @override
-  State<CieGraph> createState() => _CieGraphState();
+  State<CieDetailsGraph> createState() => _CieDetailsGraphState();
 }
 
-class _CieGraphState extends State<CieGraph> {
+class _CieDetailsGraphState extends State<CieDetailsGraph> {
   late TooltipBehavior _tooltipBehavior;
 
   @override

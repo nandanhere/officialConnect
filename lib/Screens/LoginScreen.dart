@@ -110,8 +110,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
-    usnController.text = "1ms19is076";
-    dobController.text = "2000-12-08";
+    // usnController.text = "1ms19is076";
+    // dobController.text = "2000-12-08";
     TextFormField usnForm = TextFormField(
       // autofocus: true,
       controller: usnController,

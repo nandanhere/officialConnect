@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Classes/Marks.dart';
+import 'package:official_connect/Widgets/CieDetailsGraph.dart';
 
 class CieDetails extends StatelessWidget {
   final Marks subjectDetails;
@@ -30,7 +31,7 @@ class CieDetails extends StatelessWidget {
                     fontSize: MediaQuery.of(context).size.width * 0.05,
                     fontFamily: 'Comfortaa'),
               ),
-              CieDetails(subjectDetails: subjectDetails)
+              CieDetailsGraph(subjectDetails: subjectDetails)
             ],
           ),
         ),
