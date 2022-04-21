@@ -45,6 +45,10 @@ class Home extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Image.asset(
+                    'images/logo.png',
+                    color: sisData.darkMode ? (Colors.white) : null,
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: width * 0.02, vertical: height * 0.02),
@@ -76,13 +80,12 @@ class Home extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: AutoSizeText(
-                                      //🤠
-                                      "Hi, ${sisData.studentName.toTitleCase()} ",
+                                      "Hi, ${sisData.studentName.toTitleCase()} 🤠",
                                       style: TextStyle(
                                         color: sisData.darkMode
                                             ? Colors.white
                                             : Colors.black,
-                                        fontSize: width * 0.09,
+                                        // fontSize: width * 0.09,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: 'Comfortaa',
                                       ),
