@@ -2,27 +2,80 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsInfo extends StatelessWidget {
   void _logOut(BuildContext context) {}
+  void _launchURL(String url) async {
+    if (!await launch(url)) throw 'Could not launch $url';
+  }
 
-  List<Element> tiles = [
-    Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
-    Element(icon: Icons.lock, onPressed: () {}, text: "Change Password"),
-    Element(icon: Icons.doorbell, onPressed: () {}, text: "Log Out"),
-    Element(
-      icon: Icons.settings,
-      onPressed: () {},
-      text: "Dark Mode",
-      toggle: true,
-    ),
-  ];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
+
+    List<Element> tiles = [
+      Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
+      Element(
+          icon: Icons.lock,
+          onPressed: () {
+            _launchURL("https://google.com");
+          },
+          text: "Feedback"),
+      Element(
+          icon: Icons.info_outline_rounded,
+          onPressed: () => showDialog(
+                builder: (context) => AlertDialog(
+                    title: FittedBox(
+                      child: Image.asset(
+                        "images/logo.png",
+                      ),
+                    ),
+                    content: Column(
+                      children: [
+                        Text(
+                          "RIT Connect",
+                          style: TextStyle(
+                              color: sisData.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: width * 0.075,
+                              fontFamily: 'Comfortaa'),
+                        ),
+                        SizedBox(
+                          height: height * 0.02,
+                        ),
+                        Text(
+                          "by",
+                          style: TextStyle(
+                              color: sisData.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: width * 0.055,
+                              fontFamily: 'Comfortaa'),
+                        ),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, 'Cancel'),
+                        child: const Text('Ok'),
+                      ),
+                    ]),
+                context: context,
+              ),
+          text: "About"),
+      Element(
+        icon: Icons.settings,
+        onPressed: () {},
+        text: "Dark Mode",
+        toggle: true,
+      ),
+    ];
+
     return Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
