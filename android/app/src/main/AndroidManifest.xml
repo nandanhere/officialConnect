@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.official_connect">
+     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="official_connect"
+        android:label="Connect"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

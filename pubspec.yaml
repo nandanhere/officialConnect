@@ -48,6 +48,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.2
+
   flutter_spinkit: ^5.1.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -58,7 +60,12 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
+flutter_icons: 
+  android: true
+  ios: true
+  image_path: "dev_assets/icon.png"
+  adaptive_icon_background: "#191919"
+  adaptive_icon_foreground: "dev_assets/icon.png"
 # The following section is specific to Flutter.
 flutter:
 

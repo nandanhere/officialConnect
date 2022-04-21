@@ -43,9 +43,11 @@ class SisData with ChangeNotifier {
     if (prefs.containsKey('hasData')) {
       _hasData = prefs.getBool('hasData')!;
       var time = prefs.getInt('timeStamp');
+
       _usn = prefs.getString('usn') ?? "";
       prefs.setString('usn', "");
       _dob = prefs.getString('dob') ?? "";
+      _darkMode = prefs.getBool('darkMode') ?? false;
       notifyListeners();
 
       // print("data was there before");
@@ -137,6 +139,7 @@ class SisData with ChangeNotifier {
           if (!update) {
             prefs.setString('dob', dob);
             prefs.setString('usn', usn);
+            prefs.setBool('darkMode', false);
           }
         } finally {
           if (usn != "" && dob != "") {
@@ -167,8 +170,14 @@ class SisData with ChangeNotifier {
     return _usn;
   }
 
+  Future<void> setDark(bool val) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', val);
+  }
+
   set darkMode(bool val) {
     _darkMode = val;
+    setDark(val);
     notifyListeners();
   }
 
