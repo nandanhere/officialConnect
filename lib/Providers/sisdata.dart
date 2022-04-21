@@ -115,6 +115,7 @@ class SisData with ChangeNotifier {
     isValidData = true;
     _hasData = false;
     _usn = "";
+    _darkMode = false;
     _dob = "";
     notifyListeners();
   }
