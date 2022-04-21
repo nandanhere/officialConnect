@@ -79,6 +79,14 @@ class AttendanceInfo extends StatelessWidget {
                                   fontSize: width * 0.045,
                                   fontFamily: 'Comfortaa'),
                             ),
+                            subtitle: Text("(${e.code})",
+                           style: TextStyle(
+                                  color: sisData.darkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: width * 0.045,
+                                  fontFamily: 'Comfortaa'),
+                            ),
                             trailing: Text(
                               e.percentage,
                               style: TextStyle(

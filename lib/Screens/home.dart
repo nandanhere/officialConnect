@@ -29,7 +29,7 @@ class Home extends StatelessWidget {
                 begin: Alignment.bottomRight,
                 end: Alignment.topLeft,
                 colors: (sisData.darkMode)
-                    ? [Colors.black, Colors.black, Colors.blueGrey]
+                    ? [Colors.black, Colors.black, Colors.black87]
                     : [
                         NeumorphicColors.background,
                         NeumorphicColors.background,
@@ -58,7 +58,7 @@ class Home extends StatelessWidget {
                           color: sisData.darkMode
                               ? Color.fromARGB(1, 77, 74, 74)
                               : NeumorphicColors.background,
-                          depth: 3,
+                          depth: 2,
                           intensity: 1,
                           boxShape: NeumorphicBoxShape.roundRect(
                               BorderRadius.circular(20))),
