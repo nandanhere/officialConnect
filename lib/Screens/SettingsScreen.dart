@@ -158,45 +158,101 @@ class SettingsInfo extends StatelessWidget {
                       context: context,
                       builder: (ctx) {
                         return AlertDialog(
-                          backgroundColor: NeumorphicColors.background,
-                          title: const Text(
+                          backgroundColor: sisData.darkMode
+                              ? Colors.black
+                              : NeumorphicColors.background,
+                          title: Text(
                             'Do you want to Log out?',
                             style: TextStyle(
-                                color: Colors.black, fontFamily: 'Comfortaa'),
+                                color: sisData.darkMode
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontFamily: 'Comfortaa'),
                           ),
-                          content: const Text(
+                          content: Text(
                             'All stored data will be wiped out',
                             style: TextStyle(
-                                color: Colors.black, fontFamily: 'Comfortaa'),
+                                color: sisData.darkMode
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontFamily: 'Comfortaa'),
                           ),
                           actions: <Widget>[
                             NeumorphicButton(
+                              style: NeumorphicStyle(
+                                shadowLightColor:
+                                    sisData.darkMode ? Colors.white : null,
+                                shadowDarkColor: sisData.darkMode
+                                    ? NeumorphicColors.background
+                                    : null,
+                                color: sisData.darkMode
+                                    ? Color.fromARGB(1, 77, 74, 74)
+                                    : NeumorphicColors.background,
+                                depth: 2,
+                                boxShape: NeumorphicBoxShape.roundRect(
+                                  BorderRadius.circular(20),
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                               },
-                              child: const Text('No'),
+                              child: Text(
+                                'No',
+                                style: TextStyle(
+                                    color: sisData.darkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontFamily: 'Comfortaa'),
+                              ),
                             ),
                             NeumorphicButton(
+                              style: NeumorphicStyle(
+                                shadowLightColor:
+                                    sisData.darkMode ? Colors.white : null,
+                                shadowDarkColor: sisData.darkMode
+                                    ? NeumorphicColors.background
+                                    : null,
+                                color: sisData.darkMode
+                                    ? Color.fromARGB(1, 77, 74, 74)
+                                    : NeumorphicColors.background,
+                                depth: 2,
+                                boxShape: NeumorphicBoxShape.roundRect(
+                                  BorderRadius.circular(20),
+                                ),
+                              ),
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                                 sisData.cleanData();
                               },
-                              child: const Text('Yes'),
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(
+                                    color: sisData.darkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontFamily: 'Comfortaa'),
+                              ),
                             ),
                           ],
                         );
                       });
                 },
                 style: NeumorphicStyle(
-                  depth: 3,
+                  shadowLightColor: sisData.darkMode ? Colors.white : null,
+                  shadowDarkColor:
+                      sisData.darkMode ? NeumorphicColors.background : null,
+                  color: sisData.darkMode
+                      ? Color.fromARGB(1, 77, 74, 74)
+                      : NeumorphicColors.background,
+                  depth: 2,
                   boxShape: NeumorphicBoxShape.roundRect(
                     BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   "Sign out",
                   style: TextStyle(
-                      color: Colors.black,
+                      color: sisData.darkMode ? Colors.white : Colors.black,
                       fontSize: 15,
                       fontFamily: 'Comfortaa'),
                 ),
