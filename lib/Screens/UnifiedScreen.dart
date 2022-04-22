@@ -10,6 +10,8 @@ import 'package:official_connect/Screens/SettingsScreen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'LoginScreen.dart';
 
+ValueNotifier<int> screenNumber = ValueNotifier(0);
+
 class Unified extends StatelessWidget {
   static const String id = "unified";
   Unified({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class Unified extends StatelessWidget {
       return LoginScreen();
     } else {
       if (sisData.data.isEmpty) return const LoadingScreen();
-      ValueNotifier<int> screenNumber = ValueNotifier(0);
+
       return Scaffold(
         backgroundColor: NeumorphicColors.background,
         body: Stack(
@@ -95,13 +97,48 @@ class screenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (page == 3) {
-      return SettingsInfo();
+      return GestureDetector(
+          child: SettingsInfo(),
+          onHorizontalDragUpdate: (val) {
+            if (val.delta.dx > 10) {
+              screenNumber.value = 2;
+            } else if (val.delta.dx < -10) {
+              screenNumber.value = 3;
+            }
+          });
     } else if (page == 2) {
-      return const CieInfo();
+      return GestureDetector(
+        child: const CieInfo(),
+        onHorizontalDragUpdate: (val) {
+          if (val.delta.dx > 10) {
+            screenNumber.value = 1;
+          } else if (val.delta.dx < -10) {
+            screenNumber.value = 3;
+          }
+        },
+      );
     } else if (page == 1) {
-      return const AttendanceInfo();
+      return GestureDetector(
+        child: const AttendanceInfo(),
+        onPanUpdate: (val) {
+          if (val.delta.dx > 10) {
+            screenNumber.value = 0;
+          } else if (val.delta.dx < -10) {
+            screenNumber.value = 2;
+          }
+        },
+      );
     } else {
-      return const Home();
+      return GestureDetector(
+        child: const Home(),
+        onHorizontalDragUpdate: (val) {
+          if (val.delta.dx > 10) {
+            screenNumber.value = 0;
+          } else if (val.delta.dx < -10) {
+            screenNumber.value = 1;
+          }
+        },
+      );
     }
   }
 }
