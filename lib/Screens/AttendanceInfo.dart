@@ -3,6 +3,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/AttendanceGraph.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import './AttendanceDetails.dart';
 
 class AttendanceInfo extends StatelessWidget {
   const AttendanceInfo({Key? key}) : super(key: key);
@@ -57,7 +58,11 @@ class AttendanceInfo extends StatelessWidget {
                               bottom: height * 0.015,
                               left: width * 0.025,
                               right: width * 0.01),
-                          onPressed: () => print("attendance details"),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) =>
+                                    AttendanceDetails(attendanceDetails: e)));
+                          },
                           style: NeumorphicStyle(
                               shadowLightColor:
                                   sisData.darkMode ? Colors.white : null,
