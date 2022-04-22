@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
+import "dart:math";
 
 extension StringCasingExtension on String {
   String toCapitalized() =>
@@ -21,6 +22,25 @@ class Home extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+    final emojis = [
+      "😀",
+      "😊",
+      "🤠",
+      "😸",
+      "😋",
+      "🎉",
+      "👋",
+      "😛",
+      "😇",
+      "🤗",
+      "😎",
+      "👽",
+      "💩",
+      "👻",
+      "😺",
+      "🤟"
+    ];
+    final emoji = emojis[Random().nextInt(emojis.length)];
     final sisData = Provider.of<SisData>(context);
     return Container(
         height: height,
@@ -29,7 +49,8 @@ class Home extends StatelessWidget {
                 begin: Alignment.bottomRight,
                 end: Alignment.topLeft,
                 colors: (sisData.darkMode)
-                    ? [Colors.black, Colors.black, Colors.black87]
+                    ? [Colors.black, Colors.black, Colors.blueGrey]
+                    // ? [Colors.black, Colors.black, Colors.black87] Equal people seem to like both.. idk what to do about it
                     : [
                         NeumorphicColors.background,
                         NeumorphicColors.background,
@@ -41,6 +62,7 @@ class Home extends StatelessWidget {
             top: height * 0.06,
             bottom: height * 0.13),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Center(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -80,7 +102,7 @@ class Home extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: AutoSizeText(
-                                      "Hi, ${sisData.studentName.toTitleCase()} 🤠",
+                                      "Hi, ${sisData.studentName.toTitleCase()} ${emoji} ",
                                       style: TextStyle(
                                         color: sisData.darkMode
                                             ? Colors.white

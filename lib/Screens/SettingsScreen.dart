@@ -29,6 +29,8 @@ class SettingsInfo extends StatelessWidget {
           icon: Icons.info_outline_rounded,
           onPressed: () => showDialog(
                 builder: (context) => AlertDialog(
+                    backgroundColor:
+                        sisData.darkMode ? Colors.black : Colors.white,
                     title: FittedBox(
                       child: Image.asset(
                         "images/logo.png",
@@ -95,6 +97,7 @@ class SettingsInfo extends StatelessWidget {
             top: height * 0.06,
             bottom: height * 0.13),
         child: ListView(
+          physics: const BouncingScrollPhysics(),
           children: [
             // TODO : what is going on here? it is too convoluted.
             ...tiles.map((e) => Padding(

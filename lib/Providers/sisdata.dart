@@ -50,7 +50,7 @@ class SisData with ChangeNotifier {
       _darkMode = prefs.getBool('darkMode') ?? false;
       notifyListeners();
 
-      // print("data was there before");
+      // debugPrint("data was there before");
       needToUpdate = DateTime.fromMillisecondsSinceEpoch(time!)
               .difference(DateTime.now())
               .inDays
@@ -58,10 +58,10 @@ class SisData with ChangeNotifier {
           1;
       _data = await convert.jsonDecode(prefs.getString('data')!);
       if (needToUpdate) {
-        print("updating");
+        debugPrint("updating");
         await prefs.setBool('hasData', false);
         await getData("", "", true);
-        // print(_data['prevResults'][0]);
+        // debugPrint(_data['prevResults'][0]);
       }
       await setVariables();
 
@@ -70,39 +70,58 @@ class SisData with ChangeNotifier {
   }
 
   Future<void> setVariables() async {
-    print("setting variables");
+    debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
+      const debug = false;
       _previousResults = PreviousResult.getList(_data['prevResults']);
+      if (debug) debugPrint("Previous Results");
       _attendances = Attendance.getList(_data['attendance']);
+      if (debug) debugPrint("Attendances");
       _fees = FeesData.getList(_data['fees']);
+      if (debug) debugPrint("Fees");
 
       _marks = Marks.getList(_data['marks']);
+      if (debug) debugPrint("Marks");
       _creditsEarned = int.parse(_data['earned']);
+      if (debug) debugPrint("Earned");
       _toEarn = int.parse(_data['to_earn']);
+      if (debug) debugPrint("To earn");
       _name = _data['name'];
+      if (debug) debugPrint("name");
 
       _section = _data["sec"];
 
+      if (debug) debugPrint("sec");
+
       _course = _data["courseSmall"];
+      if (debug) debugPrint("courseSmall");
 
       _semester = _data["sem"];
+      if (debug) debugPrint("sem");
 
       _batch = _data["BATCH:"];
+      if (debug) debugPrint("batch");
 
       _categoryAlloted = _data["Category Alloted:"];
+      if (debug) debugPrint("category alotted");
 
       _categoryClaimed = _data["Category Claimed:"];
+      if (debug) debugPrint("category claimed ");
 
       _courseFullName = _data["Course:"];
+      if (debug) debugPrint("Course");
 
       _email = _data["Email Id:"];
+      if (debug) debugPrint("Email Id");
 
       _phone = _data["MOBILE:"];
+      if (debug) debugPrint("Mobile");
 
       _studentImage = _data["studentImage"];
+      if (debug) debugPrint("Student Image");
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       _hasData = false;
     }
   }
@@ -124,7 +143,7 @@ class SisData with ChangeNotifier {
     _hasData = false;
     notifyListeners();
     // usn == "" means we are updating the values.
-    print("getting data");
+    debugPrint("getting data");
     var url = Uri.parse(
         "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}");
     http.Response resp = await http.get(url);
