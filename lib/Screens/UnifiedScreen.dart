@@ -21,7 +21,7 @@ class Unified extends StatelessWidget {
     if (sisData.usn == "" && sisData.data.isEmpty) {
       return LoginScreen();
     } else {
-      if (sisData.data.isEmpty) return LoadingScreen();
+      if (sisData.data.isEmpty) return const LoadingScreen();
       ValueNotifier<int> screenNumber = ValueNotifier(0);
       return Scaffold(
         backgroundColor: NeumorphicColors.background,
@@ -47,28 +47,28 @@ class Unified extends StatelessWidget {
                       unselectedItemColor: Colors.grey,
                       items: [
                         BottomNavigationBarItem(
-                          icon: FaIcon(FontAwesomeIcons.house),
+                          icon: const FaIcon(FontAwesomeIcons.house),
                           label: "Home",
                           backgroundColor: sisData.darkMode
                               ? Colors.black54
                               : NeumorphicColors.background,
                         ),
                         BottomNavigationBarItem(
-                          icon: FaIcon(FontAwesomeIcons.calendarDay),
+                          icon: const FaIcon(FontAwesomeIcons.calendarDay),
                           label: "Attendance",
                           backgroundColor: sisData.darkMode
                               ? Colors.black54
                               : NeumorphicColors.background,
                         ),
                         BottomNavigationBarItem(
-                          icon: FaIcon(FontAwesomeIcons.graduationCap),
+                          icon: const FaIcon(FontAwesomeIcons.graduationCap),
                           label: "Results",
                           backgroundColor: sisData.darkMode
                               ? Colors.black54
                               : NeumorphicColors.background,
                         ),
                         BottomNavigationBarItem(
-                          icon: FaIcon(FontAwesomeIcons.gear),
+                          icon: const FaIcon(FontAwesomeIcons.gear),
                           label: "Settings",
                           backgroundColor: sisData.darkMode
                               ? Colors.black54

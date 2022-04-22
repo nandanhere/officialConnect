@@ -35,6 +35,7 @@ class CieInfo extends StatelessWidget {
           bottom: height * 0.13),
       child: Center(
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               Padding(

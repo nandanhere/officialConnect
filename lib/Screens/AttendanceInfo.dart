@@ -34,6 +34,7 @@ class AttendanceInfo extends StatelessWidget {
           bottom: height * 0.13),
       child: Center(
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               Text(
@@ -79,8 +80,9 @@ class AttendanceInfo extends StatelessWidget {
                                   fontSize: width * 0.045,
                                   fontFamily: 'Comfortaa'),
                             ),
-                            subtitle: Text("(${e.code})",
-                           style: TextStyle(
+                            subtitle: Text(
+                              "(${e.code})",
+                              style: TextStyle(
                                   color: sisData.darkMode
                                       ? Colors.white
                                       : Colors.black,
