@@ -99,7 +99,7 @@ class AttendanceDetails extends StatelessWidget {
         appBar: AppBar(title: Text("Attendance details")),
         body: Container(
             alignment: Alignment.center,
-            color: Colors.grey,
+            // color: Colors.grey,
             child:
                 // Column(
                 //   children: [
@@ -109,7 +109,7 @@ class AttendanceDetails extends StatelessWidget {
                   child: GridView.count(
                     mainAxisSpacing: 20.0,
                     crossAxisCount: 7,
-                    children: [
+                    children: const [
                       Text("Mon"),
                       Text("Tue"),
                       Text("Wed"),
@@ -124,7 +124,7 @@ class AttendanceDetails extends StatelessWidget {
                     child: GridView.count(
                   crossAxisCount: 7,
                   mainAxisSpacing: 20.0,
-                  children: [],
+                  children:const [],
                 ))
               ],
             )
