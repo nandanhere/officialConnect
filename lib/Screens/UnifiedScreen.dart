@@ -24,7 +24,7 @@ class Unified extends StatelessWidget {
       return LoginScreen();
     } else {
       if (sisData.data.isEmpty) return const LoadingScreen();
-      PageController _mycont = PageController(initialPage: 0);
+      PageController _myCont = PageController(initialPage: screenNumber.value);
       return Scaffold(
         backgroundColor: NeumorphicColors.background,
         body: Stack(
@@ -34,7 +34,7 @@ class Unified extends StatelessWidget {
                     valueListenable: screenNumber,
                     builder: (context, int listeningScreenValue, child) =>
                         PageView(
-                          controller: _mycont,
+                          controller: _myCont,
                           children: [
                             const Home(),
                             const AttendanceInfo(),
@@ -56,7 +56,7 @@ class Unified extends StatelessWidget {
                     valueListenable: screenNumber,
                     builder: (context, int listeningValue, child) =>
                         BottomNavigationBar(
-                      selectedItemColor: const Color(0xFF852528),
+                      selectedItemColor: const Color(0xffba3237),
                       unselectedItemColor: Colors.grey,
                       items: [
                         BottomNavigationBarItem(
@@ -90,9 +90,9 @@ class Unified extends StatelessWidget {
                       ],
                       currentIndex: listeningValue,
                       onTap: (index) {
-                        _mycont.animateToPage(index,
+                        _myCont.animateToPage(index,
                             curve: Curves.easeIn,
-                            duration: Duration(milliseconds: 300));
+                            duration: Duration(milliseconds: 250));
                       },
                     ),
                   ))),

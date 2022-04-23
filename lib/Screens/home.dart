@@ -54,6 +54,7 @@ class Home extends StatelessWidget {
                   : [
                       NeumorphicColors.background,
                       NeumorphicColors.background,
+                      Colors.white,
                       Colors.white
                     ])),
       padding: EdgeInsets.only(
@@ -103,7 +104,7 @@ class Home extends StatelessWidget {
                                   color: sisData.darkMode
                                       ? Colors.white
                                       : Colors.black,
-                                  // fontSize: width * 0.09,
+                                  fontSize: width * 0.07,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'Comfortaa',
                                 ),
@@ -208,7 +209,8 @@ class Home extends StatelessWidget {
                   right: width * 0.1,
                   top: height * 0.03,
                   bottom: height * 0.015),
-              child: const Divider(
+              child: Divider(
+                color: sisData.darkMode ? Colors.white38 : Colors.black26,
                 thickness: 1.6,
               ),
             ),
