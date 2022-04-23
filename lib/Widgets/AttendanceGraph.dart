@@ -46,7 +46,9 @@ class _AttendanceGraphState extends State<AttendanceGraph> {
             textStyle: TextStyle(
                 color: sisData.darkMode ? Colors.white : Colors.black,
                 fontSize: width * 0.04,
-                fontFamily: 'Comfortaa')),
+                fontFamily: 'Comfortaa'),
+            position: LegendPosition.bottom,
+            overflowMode: LegendItemOverflowMode.wrap),
         onTooltipRender: (TooltipArgs args) {
           if (args.pointIndex != null) {
             args.header =
