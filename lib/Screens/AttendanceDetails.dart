@@ -51,6 +51,15 @@ class AttendanceDetails extends StatelessWidget {
     }
   }
 
+  bool isPresntInDates(List<ClassDay> dates, DateTime date) {
+    for (int i = 0; i < dates.length; i++) {
+      if (dates[i].date.isAtSameMomentAs(date)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<int> allDateList = [];
@@ -64,17 +73,26 @@ class AttendanceDetails extends StatelessWidget {
     var toDate = calcToDate(maxPresentDate, maxAbsentDate);
     // ignore: avoid_print
     var dateDiff = toDate.difference(fromDate).inDays;
+
     for (int i = 0; i < dateDiff.toInt(); i++) {
-    
+      if (isPresntInDates(attendanceDetails.presentDates, fromDate)) {
+        allDateList.add(1);
+      } else if (isPresntInDates(attendanceDetails.absentDates, fromDate)) {
+        allDateList.add(0);
+      } else {
+        allDateList.add(-1);
+      }
+      fromDate = fromDate.add(const Duration(days: 1));
     }
+    
 
     // DateTime i = fromDate;
     // for (; i != toDate; i.add(Duration(days: 1))) {
     //   // ignore: iterable_contains_unrelated_type
-    //   if (attendanceDetails.presentDates.contains(i)) {
+    //   if (isPresntInDates(attendanceDetails.absentDates, i)) {
     //     print("it works");
-
     //   }
+
     // }
 
     return Scaffold(
