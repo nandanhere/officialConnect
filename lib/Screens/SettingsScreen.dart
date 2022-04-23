@@ -30,7 +30,7 @@ class SettingsInfo extends StatelessWidget {
           onPressed: () => showDialog(
                 builder: (context) => AlertDialog(
                     backgroundColor:
-                        sisData.darkMode ? Colors.black : Colors.white,
+                        sisData.darkMode ? Colors.black87 : Colors.white,
                     title: FittedBox(
                       child: Image.asset(
                         "images/logo.png",
@@ -123,7 +123,7 @@ class SettingsInfo extends StatelessWidget {
                     child: ListTile(
                       leading: Icon(
                         e.icon,
-                        color: Color(0xFF852528),
+                        color: Color(0xffd93b3f),
                         size: 30,
                       ),
                       title: Text(
