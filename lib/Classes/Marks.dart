@@ -1,6 +1,15 @@
 class Marks {
-  final String a1, a2, finalCie, t1, t2, subjectName;
-  final Map<String, dynamic> averages;
+  final String a1,
+      a2,
+      finalCie,
+      t1,
+      t2,
+      subjectName,
+      avga1,
+      avga2,
+      avgt1,
+      avgt2;
+  //final Map<String, dynamic> averages;
   Marks({
     required this.subjectName,
     required this.a1,
@@ -8,12 +17,18 @@ class Marks {
     required this.finalCie,
     required this.t1,
     required this.t2,
-    required this.averages,
+    required this.avga1,
+    required this.avga2,
+    required this.avgt1,
+    required this.avgt2,
   });
   static List<Marks> getList(List<dynamic> data) {
     final list = data
         .map((e) => Marks(
-            averages: e['class_average'],
+            avga1: e['class_average']["a1"],
+            avga2: e['class_average']["a2"],
+            avgt1: e['class_average']["t1"],
+            avgt2: e['class_average']["t2"],
             subjectName: e['name'],
             a1: e['a1'],
             a2: e['a2'],
@@ -21,7 +36,7 @@ class Marks {
             t1: e['t1'],
             t2: e['t2']))
         .toList();
-    print(list[0].averages);
+    print(list[0].avga1 + list[0].avga2 + list[0].avgt1 + list[0].avgt2);
     final reg = RegExp(r".*\((.*)\)");
     list.sort((a, b) {
       if (reg.hasMatch(a.subjectName) && reg.hasMatch(b.subjectName)) {

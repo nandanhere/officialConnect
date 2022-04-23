@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Classes/Marks.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:provider/provider.dart';
+import 'package:official_connect/Providers/sisdata.dart';
 
 class CieGraph extends StatefulWidget {
   const CieGraph({Key? key, required this.marks}) : super(key: key);
@@ -25,6 +27,8 @@ class _CieGraphState extends State<CieGraph> {
 
   @override
   Widget build(BuildContext context) {
+    final sisData = Provider.of<SisData>(context);
+
     return SfCartesianChart(
       onTooltipRender: (TooltipArgs args) {
         if (args.pointIndex != null) {
@@ -33,7 +37,11 @@ class _CieGraphState extends State<CieGraph> {
         }
       },
       tooltipBehavior: _tooltipBehavior,
-      primaryXAxis: CategoryAxis(),
+      primaryXAxis: CategoryAxis(
+          labelStyle: TextStyle(
+              color: sisData.darkMode ? Colors.white54 : Colors.black54,
+              fontSize: MediaQuery.of(context).size.width * 0.025,
+              fontFamily: 'Comfortaa')),
       isTransposed: true,
       primaryYAxis: NumericAxis(minimum: 0, maximum: 50),
       series: <ChartSeries<Marks, String>>[

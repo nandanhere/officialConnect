@@ -18,7 +18,7 @@ class SettingsInfo extends StatelessWidget {
     final sisData = Provider.of<SisData>(context);
 
     List<Element> tiles = [
-      Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
+      //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
       Element(
           icon: Icons.lock,
           onPressed: () {
@@ -99,6 +99,20 @@ class SettingsInfo extends StatelessWidget {
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: height * 0.04),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Settings",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      color: sisData.darkMode ? Colors.white : Colors.black,
+                      fontSize: 40,
+                      fontFamily: 'Comfortaa'),
+                ),
+              ),
+            ),
             // TODO : what is going on here? it is too convoluted.
             ...tiles.map((e) => Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -115,7 +129,7 @@ class SettingsInfo extends StatelessWidget {
                             ? NeumorphicColors.background
                             : null,
                         color: sisData.darkMode
-                            ? Color.fromARGB(1, 77, 74, 74)
+                            ? const Color.fromARGB(1, 77, 74, 74)
                             : NeumorphicColors.background,
                         depth: 3,
                         boxShape: NeumorphicBoxShape.roundRect(
@@ -123,7 +137,7 @@ class SettingsInfo extends StatelessWidget {
                     child: ListTile(
                       leading: Icon(
                         e.icon,
-                        color: Color(0xffd93b3f),
+                        color: const Color(0xffd93b3f),
                         size: 30,
                       ),
                       title: Text(
