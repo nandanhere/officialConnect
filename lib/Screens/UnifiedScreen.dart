@@ -24,7 +24,7 @@ class Unified extends StatelessWidget {
       return LoginScreen();
     } else {
       if (sisData.data.isEmpty) return const LoadingScreen();
-      PageController _myCont = PageController(initialPage: screenNumber.value);
+      PageController _myCont = PageController(initialPage: 0);
       return Scaffold(
         backgroundColor: NeumorphicColors.background,
         body: Stack(
