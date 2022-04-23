@@ -10,9 +10,39 @@ class AttendanceDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Attendance details")),
-      body: Center(
-        child: Text(attendanceDetails.subjectName),
-      ),
-    );
+      body: Container(
+            alignment: Alignment.center,
+            color: Colors.grey,
+            child:
+                // Column(
+                //   children: [
+                Column(
+              children: [
+                Expanded(
+                  child: GridView.count(
+                    mainAxisSpacing: 20.0,
+                    crossAxisCount: 7,
+                    children: [
+                      Text("Mon"),
+                      Text("Tue"),
+                      Text("Wed"),
+                      Text("Thur"),
+                      Text("Fri"),
+                      Text("Sat"),
+                      Text("Sun"),
+                    ],
+                  ),
+                ),
+                
+              ],
+            )
+            //   ],
+            // ),
+            )
+        // Center(
+        //   child: Text(attendanceDetails.subjectName),
+        // ),
+        );
+    
   }
 }
