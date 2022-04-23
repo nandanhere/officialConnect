@@ -95,50 +95,22 @@ class screenWidget extends StatelessWidget {
   int page = 0;
   screenWidget({required this.page});
   @override
-  Widget build(BuildContext context) {
-    if (page == 3) {
-      return GestureDetector(
-          child: SettingsInfo(),
-          onHorizontalDragUpdate: (val) {
-            if (val.delta.dx > 10) {
-              screenNumber.value = 2;
-            } else if (val.delta.dx < -10) {
-              screenNumber.value = 3;
-            }
-          });
-    } else if (page == 2) {
-      return GestureDetector(
-        child: const CieInfo(),
-        onHorizontalDragUpdate: (val) {
-          if (val.delta.dx > 10) {
-            screenNumber.value = 1;
-          } else if (val.delta.dx < -10) {
-            screenNumber.value = 3;
-          }
+  Widget build(BuildContext context) => PageView(
+        controller: PageController(initialPage: 0),
+        children: [Home(), AttendanceInfo(), CieInfo(), SettingsInfo()],
+        onPageChanged: (page) {
+          screenNumber.value = page;
         },
       );
-    } else if (page == 1) {
-      return GestureDetector(
-        child: const AttendanceInfo(),
-        onPanUpdate: (val) {
-          if (val.delta.dx > 10) {
-            screenNumber.value = 0;
-          } else if (val.delta.dx < -10) {
-            screenNumber.value = 2;
-          }
-        },
-      );
-    } else {
-      return GestureDetector(
-        child: const Home(),
-        onHorizontalDragUpdate: (val) {
-          if (val.delta.dx > 10) {
-            screenNumber.value = 0;
-          } else if (val.delta.dx < -10) {
-            screenNumber.value = 1;
-          }
-        },
-      );
-    }
-  }
+  // {
+  //   if (page == 3) {
+  //     return SettingsInfo();
+  //   } else if (page == 2) {
+  //     return const CieInfo();
+  //   } else if (page == 1) {
+  //     return const AttendanceInfo();
+  //   } else {
+  //     return const Home();
+  //   }
+  // }
 }
