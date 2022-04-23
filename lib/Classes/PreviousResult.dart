@@ -13,15 +13,15 @@ class Subject {
       required this.gpa,
       required this.grade,
       required this.subjectName});
-  static List<Subject> getList(List<dynamic> data) {
+  static List<Subject> getList(List<Map<String, dynamic>> data) {
     return data
         .map((e) => Subject(
             courseCode: e['COURSE CODE'],
-            creditsEarned: e['Credits Earned'],
-            creditsRegistered: e['Credits Reg'],
-            gpa: e['GPA'],
-            grade: e['Grade'],
-            subjectName: e['SUBJECT NAME']))
+            creditsEarned: e['Credits Earned'].toString(),
+            creditsRegistered: e['Credits Reg.'].toString(),
+            gpa: e['GPA'].toString(),
+            grade: e['Grade'].toString(),
+            subjectName: e['SUBJECT NAME'].toString()))
         .toList();
   }
   // TODO : add reference examples like below
@@ -29,7 +29,8 @@ class Subject {
 }
 
 class PreviousResult {
-  final cgpa, creditsEarned, creditsRegistered, sgpa, results, term;
+  final cgpa, creditsEarned, creditsRegistered, sgpa, term;
+  final List<Subject> results;
 
   PreviousResult(
       {required this.cgpa,
@@ -39,14 +40,14 @@ class PreviousResult {
       required this.results,
       required this.term});
   static List<PreviousResult> getList(List<dynamic> data) {
-    List<Subject> results = [];
     return data
         .map((e) => PreviousResult(
             cgpa: e['CGPA'],
             creditsEarned: e["Credits Earned"],
             creditsRegistered: e['Credits Registered'],
             sgpa: e['SGPA'],
-            results: results,
+            results:
+                Subject.getList(List<Map<String, dynamic>>.from(e['results'])),
             term: e['term']))
         .toList();
   }

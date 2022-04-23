@@ -42,6 +42,8 @@ class Home extends StatelessWidget {
     ];
     final emoji = emojis[Random().nextInt(emojis.length)];
     final sisData = Provider.of<SisData>(context);
+    print(sisData.previousResults[0].results.first.courseCode);
+
     return Container(
       height: height,
       decoration: BoxDecoration(
