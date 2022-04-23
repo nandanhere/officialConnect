@@ -36,7 +36,7 @@ class Unified extends StatelessWidget {
                           children: [
                             const Home(),
                             const AttendanceInfo(),
-                            const CieInfo(),
+                            CieInfo(),
                             SettingsInfo()
                           ],
                           onPageChanged: (page) {
