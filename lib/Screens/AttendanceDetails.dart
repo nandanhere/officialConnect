@@ -6,11 +6,13 @@ class AttendanceDetails extends StatelessWidget {
   const AttendanceDetails({Key? key, required this.attendanceDetails})
       : super(key: key);
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Attendance details")),
-      body: Container(
+        appBar: AppBar(title: Text("Attendance details")),
+        body: Container(
             alignment: Alignment.center,
             color: Colors.grey,
             child:
@@ -33,7 +35,12 @@ class AttendanceDetails extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+                Expanded(
+                    child: GridView.count(
+                  crossAxisCount: 7,
+                  mainAxisSpacing: 20.0,
+                  children: [],
+                ))
               ],
             )
             //   ],
@@ -43,6 +50,5 @@ class AttendanceDetails extends StatelessWidget {
         //   child: Text(attendanceDetails.subjectName),
         // ),
         );
-    
   }
 }
