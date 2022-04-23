@@ -9,49 +9,7 @@ import './AttendanceDetails.dart';
 class AttendanceInfo extends StatelessWidget {
   const AttendanceInfo({Key? key}) : super(key: key);
 
-  DateTime calcMinDate(List<ClassDay> dates) {
-    //Calculates min date
-    DateTime minDate = dates[0].date;
-    for (int i = 0; i < dates.length; i++) {
-      if (dates[i].date.isBefore(minDate)) {
-        minDate = dates[i].date;
-      }
-    }
-    return minDate;
-  }
 
-  DateTime calcMaxDate(List<ClassDay> dates) {
-    //Calculates max date
-    DateTime maxDate = dates[0].date;
-    for (int i = 0; i < dates.length; i++) {
-      if (dates[i].date.isAfter(maxDate)) {
-        maxDate = dates[i].date;
-      }
-    }
-    return maxDate;
-  }
-
-  DateTime calcFromDate(DateTime pDate, DateTime aDate) {
-    //calculates from date
-    if (pDate.isBefore(aDate)) {
-      return pDate;
-    } else if (pDate.isAfter(aDate)) {
-      return aDate;
-    } else {
-      return pDate;
-    }
-  }
-
-  DateTime calcToDate(DateTime pDate, DateTime aDate) {
-    //calculates to date
-    if (pDate.isBefore(aDate)) {
-      return aDate;
-    } else if (pDate.isAfter(aDate)) {
-      return pDate;
-    } else {
-      return pDate;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,17 +63,8 @@ class AttendanceInfo extends StatelessWidget {
                               left: width * 0.025,
                               right: width * 0.01),
                           onPressed: () {
-                            List allDateList = [];
-                            var minAbsentDate = calcMinDate(e.absentDates);
-                            var maxAbsentDate = calcMaxDate(e.absentDates);
-                            var minPresentDate = calcMinDate(
-                                e.presentDates); //max and min date variables
-                            var maxPresentDate = calcMaxDate(e.presentDates);
-                            var fromDate =
-                                calcFromDate(minPresentDate, minAbsentDate);
-                            var toDate =
-                                calcToDate(maxPresentDate, maxAbsentDate);
-
+                           
+                         
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (ctx) =>
                                     AttendanceDetails(attendanceDetails: e)));
