@@ -8,6 +8,7 @@ class CieDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final averages = subjectDetails.averages;
     return Scaffold(
       appBar: AppBar(
         foregroundColor: const Color(0xFF852528),
@@ -31,7 +32,10 @@ class CieDetails extends StatelessWidget {
                     fontSize: MediaQuery.of(context).size.width * 0.05,
                     fontFamily: 'Comfortaa'),
               ),
-              CieDetailsGraph(subjectDetails: subjectDetails)
+              CieDetailsGraph(subjectDetails: subjectDetails),
+              Text("average score of class in :"),
+              for (String k in averages.keys)
+                Text(k + ":" + averages[k].toString()),
             ],
           ),
         ),
