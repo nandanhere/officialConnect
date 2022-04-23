@@ -24,7 +24,7 @@ class Unified extends StatelessWidget {
       return LoginScreen();
     } else {
       if (sisData.data.isEmpty) return const LoadingScreen();
-
+      PageController _mycont = PageController(initialPage: 0);
       return Scaffold(
         backgroundColor: NeumorphicColors.background,
         body: Stack(
@@ -33,7 +33,18 @@ class Unified extends StatelessWidget {
                 child: ValueListenableBuilder(
                     valueListenable: screenNumber,
                     builder: (context, int listeningScreenValue, child) =>
-                        screenWidget(page: listeningScreenValue))),
+                        PageView(
+                          controller: _mycont,
+                          children: [
+                            const Home(),
+                            const AttendanceInfo(),
+                            const CieInfo(),
+                            SettingsInfo()
+                          ],
+                          onPageChanged: (page) {
+                            screenNumber.value = page;
+                          },
+                        ))),
             Positioned(
               left: 0,
               right: 0,
@@ -79,7 +90,9 @@ class Unified extends StatelessWidget {
                       ],
                       currentIndex: listeningValue,
                       onTap: (index) {
-                        screenNumber.value = index;
+                        _mycont.animateToPage(index,
+                            curve: Curves.easeIn,
+                            duration: Duration(milliseconds: 300));
                       },
                     ),
                   ))),
@@ -89,28 +102,4 @@ class Unified extends StatelessWidget {
       );
     }
   }
-}
-
-class screenWidget extends StatelessWidget {
-  int page = 0;
-  screenWidget({required this.page});
-  @override
-  Widget build(BuildContext context) => PageView(
-        controller: PageController(initialPage: 0),
-        children: [Home(), AttendanceInfo(), CieInfo(), SettingsInfo()],
-        onPageChanged: (page) {
-          screenNumber.value = page;
-        },
-      );
-  // {
-  //   if (page == 3) {
-  //     return SettingsInfo();
-  //   } else if (page == 2) {
-  //     return const CieInfo();
-  //   } else if (page == 1) {
-  //     return const AttendanceInfo();
-  //   } else {
-  //     return const Home();
-  //   }
-  // }
 }
