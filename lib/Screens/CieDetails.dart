@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Classes/Marks.dart';
 import 'package:official_connect/Widgets/CieDetailsGraph.dart';
+import 'package:provider/provider.dart';
+import 'package:official_connect/Providers/sisdata.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:provider/provider.dart';
+import 'package:official_connect/Providers/sisdata.dart';
 
 class CieDetails extends StatelessWidget {
   final Marks subjectDetails;
@@ -8,34 +13,73 @@ class CieDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final averages = subjectDetails.averages;
+    final sisData = Provider.of<SisData>(context);
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: const Color(0xFF852528),
-        backgroundColor: Colors.white,
-        title: Text(
-          "Cie details",
-          style: TextStyle(
-              color: const Color(0xFF852528),
-              fontSize: MediaQuery.of(context).size.width * 0.06,
-              fontFamily: 'Comfortaa'),
-        ),
-      ),
-      body: Center(
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   foregroundColor: const Color(0xFF852528),
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   title: Text(
+      //     "CIE details",
+      //     style: TextStyle(
+      //         color: const Color(0xFF852528),
+      //         fontSize: MediaQuery.of(context).size.width * 0.06,
+      //         fontFamily: 'Comfortaa'),
+      //   ),
+      // ),
+      body: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                end: Alignment.topLeft,
+                colors: (sisData.darkMode)
+                    ? [Colors.black, Colors.black, Colors.blueGrey]
+                    : [
+                        NeumorphicColors.background,
+                        NeumorphicColors.background,
+                        Colors.white,
+                        Colors.white
+                      ])),
+        padding: EdgeInsets.only(
+            left: width * 0.05,
+            right: width * 0.05,
+            top: height * 0.06,
+            bottom: height * 0.25),
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.04),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "CIE Details",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: sisData.darkMode ? Colors.white : Colors.black,
+                        fontSize: 40,
+                        fontFamily: 'Comfortaa'),
+                  ),
+                ),
+              ),
               Text(
                 subjectDetails.subjectName,
                 style: TextStyle(
-                    color: Colors.black,
+                    color: sisData.darkMode ? Colors.white : Colors.black,
                     fontSize: MediaQuery.of(context).size.width * 0.05,
                     fontFamily: 'Comfortaa'),
               ),
-              CieDetailsGraph(subjectDetails: subjectDetails),
-              Text("average score of class in :"),
-              for (String k in averages.keys)
-                Text(k + ":" + averages[k].toString()),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.height * 0.04,
+                  horizontal: MediaQuery.of(context).size.width * 0.04,
+                ),
+                child: CieDetailsGraph(subjectDetails: subjectDetails),
+              ),
             ],
           ),
         ),
