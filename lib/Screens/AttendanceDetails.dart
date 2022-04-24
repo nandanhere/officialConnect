@@ -50,6 +50,7 @@ class AttendanceDetails extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Row(
+                    
                     children: [
                       IconButton(
                           onPressed: () {
