@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/Attendance.dart';
+import 'package:official_connect/Providers/sisdata.dart';
+import 'package:provider/provider.dart';
 
 class AttendanceDetails extends StatelessWidget {
   final Attendance attendanceDetails;
@@ -63,6 +65,10 @@ class AttendanceDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sisData = Provider.of<SisData>(context);
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     List<int> allDateList = [];
     var minAbsentDate = calcMinDate(attendanceDetails.absentDates);
     var maxAbsentDate = calcMaxDate(attendanceDetails.absentDates);
@@ -105,19 +111,19 @@ class AttendanceDetails extends StatelessWidget {
     }
 
     Widget buildNumber(int number) => Neumorphic(
-      style: NeumorphicStyle(color: getColor(number)),
-          child: Center(
-            child: Container()
-          ),
+          style: NeumorphicStyle(color: getColor(number)),
+          child: Center(child: Container()),
         );
 
-    // ignore: dead_code
     Widget buildGridView() => GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
-              mainAxisSpacing: 20,
-              crossAxisSpacing: 15,
-              mainAxisExtent: 12),
+            crossAxisCount: 7,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 15,
+            mainAxisExtent: 12,
+          ),
+          primary: true,
+          shrinkWrap: true,
           itemCount: allDateList.length,
           itemBuilder: (context, index) {
             final item = allDateList[index];
@@ -125,39 +131,125 @@ class AttendanceDetails extends StatelessWidget {
           },
         );
     return Scaffold(
-      appBar: AppBar(title: const Text("Attendance details")),
+      // appBar: AppBar(title: const Text("Attendance details")),
       backgroundColor: NeumorphicColors.background,
       body: Container(
-        margin: EdgeInsets.all(8),
-        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                end: Alignment.topLeft,
+                colors: (sisData.darkMode)
+                    ? [Colors.black, Colors.black, Colors.blueGrey]
+                    : [
+                        NeumorphicColors.background,
+                        NeumorphicColors.background,
+                        Colors.white,
+                        Colors.white
+                      ])),
+        margin: const EdgeInsets.all(8),
+        // alignment: Alignment.center,
         // color: Colors.grey,
-        child:
-            // Column(
-            //   children: [
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: width * 0.05,
+            right: width * 0.05,
+            top: height * 0.06,
+          ),
+          // padding: EdgeInsets.only(
+          //     left: width * 0.05,
+          //     right: width * 0.05,
+          //     top: height * 0.06,
+          //     bottom: height * 0.25),
 
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-          children: [
-              Row(
-                
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text("Mon" , style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
-                  Text("Tue" , style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
-                  Text("Wed",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
-                  Text("Thur",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
-                  Text("Fri",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
-                  Text("Sat",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
-                  Text("Sun",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
-                ],
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.04),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Attendance Details",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: sisData.darkMode ? Colors.white : Colors.black,
+                        fontSize: 40,
+                        fontFamily: 'Comfortaa'),
+                  ),
+                ),
+              ),
+              Text(
+                "${attendanceDetails.subjectName} (${attendanceDetails.code})",
+                style: TextStyle(
+                    color: sisData.darkMode ? Colors.white : Colors.black,
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                    fontFamily: 'Comfortaa'),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.height * 0.04,
+                  horizontal: MediaQuery.of(context).size.width * 0.04,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text(
+                      "Mon",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Tue",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Wed",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Thur",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Fri",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Sat",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Sun",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
               ),
               Expanded(
                 child: buildGridView(),
               ),
-          ],
+            ],
+          ),
         ),
-            ),
       ),
     );
   }
