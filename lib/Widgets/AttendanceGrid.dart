@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
@@ -165,8 +166,8 @@ class AttendanceGrid extends StatelessWidget {
           style: NeumorphicStyle(color: getColor(day[0])),
           child: Center(
               child: InkWell(
-                  // onTap: () => print(day),
-                  )),
+            onTap: () => print(day),
+          )),
         );
 
     Widget buildGridView() => GridView.builder(
@@ -175,84 +176,89 @@ class AttendanceGrid extends StatelessWidget {
             mainAxisSpacing: 20,
             crossAxisSpacing: 15,
             mainAxisExtent: 12,
+            
           ),
-          primary: true,
           itemCount: allDateList.length,
+          physics: const ScrollPhysics(),
           itemBuilder: (context, index) {
             final item = allDateList[index];
             return buildNumber(item);
           },
         );
     // TODO : make the scrolling corret here.
-    return SizedBox(
-      width: width,
-      height: height,
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * 0.04,
-              horizontal: MediaQuery.of(context).size.width * 0.04,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  "Mon",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  "Tue",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  "Wed",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  "Thur",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  "Fri",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  "Sat",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Text(
-                  "Sun",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ],
-            ),
+    return SingleChildScrollView(
+      scrollDirection: Axis. horizontal,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.height * 0.04,
+            horizontal: MediaQuery.of(context).size.width * 0.04,
           ),
-          Expanded(
-            child: buildGridView(),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                
+                children: const [
+                  Text(
+                    "Mon",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Tue",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Wed",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Thur",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Fri",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Sat",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Sun",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ],
+              ),
+              Expanded(
+                child: buildGridView(),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

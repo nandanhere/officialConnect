@@ -22,7 +22,7 @@ class SettingsInfo extends StatelessWidget {
       Element(
           icon: Icons.lock,
           onPressed: () {
-            _launchURL("https://google.com");
+            _launchURL("https://forms.gle/FyF3PZxxonNf8kUz5");
           },
           text: "Feedback"),
       Element(
