@@ -105,21 +105,19 @@ class AttendanceDetails extends StatelessWidget {
     }
 
     Widget buildNumber(int number) => Neumorphic(
-          
+      style: NeumorphicStyle(color: getColor(number)),
           child: Center(
-            child: Text(
-              number.toString(),
-              style: TextStyle(  backgroundColor: getColor(number)), 
-              textAlign: TextAlign.center,
-            ),
+            child: Container()
           ),
         );
 
     // ignore: dead_code
     Widget buildGridView() => GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7, mainAxisSpacing: 20 , crossAxisSpacing: 15 , mainAxisExtent: 12),
-        
+              crossAxisCount: 7,
+              mainAxisSpacing: 20,
+              crossAxisSpacing: 15,
+              mainAxisExtent: 12),
           itemCount: allDateList.length,
           itemBuilder: (context, index) {
             final item = allDateList[index];
@@ -136,27 +134,30 @@ class AttendanceDetails extends StatelessWidget {
         child:
             // Column(
             //   children: [
-            Expanded(
-          child: Column(
-            children: [
+
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+          children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Mon"),
-                  Text("Tue"),
-                  Text("Wed"),
-                  Text("Thur"),
-                  Text("Fri"),
-                  Text("Sat"),
-                  Text("Sun"),
+                  Text("Mon" , style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
+                  Text("Tue" , style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
+                  Text("Wed",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
+                  Text("Thur",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
+                  Text("Fri",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
+                  Text("Sat",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
+                  Text("Sun",style: TextStyle(fontWeight: FontWeight.bold ,), textAlign: TextAlign.left,),
                 ],
               ),
               Expanded(
                 child: buildGridView(),
               ),
-            ],
-          ),
+          ],
         ),
+            ),
       ),
     );
   }
