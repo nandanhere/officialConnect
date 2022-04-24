@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/Attendance.dart';
 
 class AttendanceDetails extends StatelessWidget {
@@ -84,7 +85,6 @@ class AttendanceDetails extends StatelessWidget {
       }
       fromDate = fromDate.add(const Duration(days: 1));
     }
-    
 
     // DateTime i = fromDate;
     // for (; i != toDate; i.add(Duration(days: 1))) {
@@ -94,21 +94,50 @@ class AttendanceDetails extends StatelessWidget {
     //   }
 
     // }
+    Color getColor(int number) {
+      if (number == 1) {
+        return Colors.blue;
+      }
+      if (number == 0) {
+        return Colors.red;
+      }
+      return Colors.grey;
+    }
 
+    Widget buildNumber(int number) => Container(
+            child: Neumorphic(
+          child: Center(
+            child: Text(
+              number.toString(),
+              style: TextStyle(color: Colors.black),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ));
+
+    // ignore: dead_code
+    Widget buildGridView() => GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 7, mainAxisSpacing: 20),
+          itemCount: allDateList.length,
+          itemBuilder: (context, index) {
+            final item = allDateList[index];
+            return buildNumber(item);
+          },
+        );
     return Scaffold(
-        appBar: AppBar(title: Text("Attendance details")),
+        appBar: AppBar(title: const Text("Attendance details")),
+        backgroundColor: NeumorphicColors.background,
         body: Container(
             alignment: Alignment.center,
             // color: Colors.grey,
             child:
                 // Column(
                 //   children: [
-                Column(
-              children: [
                 Expanded(
-                  child: GridView.count(
-                    mainAxisSpacing: 20.0,
-                    crossAxisCount: 7,
+              child: Column(
+                children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: const [
                       Text("Mon"),
                       Text("Tue"),
@@ -119,14 +148,11 @@ class AttendanceDetails extends StatelessWidget {
                       Text("Sun"),
                     ],
                   ),
-                ),
-                Expanded(
-                    child: GridView.count(
-                  crossAxisCount: 7,
-                  mainAxisSpacing: 20.0,
-                  children:const [],
-                ))
-              ],
+                  Expanded(
+                    child: buildGridView(),
+                  ),
+                ],
+              ),
             )
             //   ],
             // ),
@@ -135,5 +161,7 @@ class AttendanceDetails extends StatelessWidget {
         //   child: Text(attendanceDetails.subjectName),
         // ),
         );
+
+    // ignore: dead_code
   }
 }

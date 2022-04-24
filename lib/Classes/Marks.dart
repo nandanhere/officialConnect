@@ -1,3 +1,4 @@
+// ignore: file_names
 class Marks {
   final String a1,
       a2,
