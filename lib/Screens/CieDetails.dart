@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Classes/Marks.dart';
 import 'package:official_connect/Widgets/CieDetailsGraph.dart';
+import 'package:official_connect/Widgets/CieTable.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -32,25 +33,25 @@ class CieDetails extends StatelessWidget {
       //         fontFamily: 'Comfortaa'),
       //   ),
       // ),
-      body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.bottomRight,
-                end: Alignment.topLeft,
-                colors: (sisData.darkMode)
-                    ? [Colors.black, Colors.black, Colors.blueGrey]
-                    : [
-                        NeumorphicColors.background,
-                        NeumorphicColors.background,
-                        Colors.white,
-                        Colors.white
-                      ])),
-        padding: EdgeInsets.only(
-            left: width * 0.05,
-            right: width * 0.05,
-            top: height * 0.06,
-            bottom: height * 0.25),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.bottomRight,
+                  end: Alignment.topLeft,
+                  colors: (sisData.darkMode)
+                      ? [Colors.black, Colors.black, Colors.blueGrey]
+                      : [
+                          NeumorphicColors.background,
+                          NeumorphicColors.background,
+                          Colors.white,
+                          Colors.white
+                        ])),
+          padding: EdgeInsets.only(
+              left: width * 0.05,
+              right: width * 0.05,
+              top: height * 0.06,
+              bottom: height * 0.25),
           child: Column(
             children: [
               Padding(
@@ -91,6 +92,9 @@ class CieDetails extends StatelessWidget {
                 ),
                 child: CieDetailsGraph(subjectDetails: subjectDetails),
               ),
+              CieTable(
+                marks: subjectDetails,
+              )
             ],
           ),
         ),

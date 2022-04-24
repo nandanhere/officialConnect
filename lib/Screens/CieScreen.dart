@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:official_connect/Screens/ResultsDetails.dart';
 import 'package:official_connect/Widgets/CieGraph.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -118,6 +119,15 @@ class CieInfo extends StatelessWidget {
                                     boxShape: NeumorphicBoxShape.roundRect(
                                         BorderRadius.circular(20))),
                                 child: ListTile(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ResultsDetails(
+                                          previousResult: e,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                   title: Text(
                                     e.term,
                                     style: TextStyle(
@@ -211,9 +221,12 @@ class CieInfo extends StatelessWidget {
                                     left: width * 0.025,
                                     right: width * 0.01),
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
                                       builder: (ctx) =>
-                                          CieDetails(subjectDetails: e)));
+                                          CieDetails(subjectDetails: e),
+                                    ),
+                                  );
                                 },
                                 style: NeumorphicStyle(
                                     shadowLightColor:

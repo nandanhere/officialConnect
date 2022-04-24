@@ -37,7 +37,6 @@ class Marks {
             t1: e['t1'],
             t2: e['t2']))
         .toList();
-    print(list[0].avga1 + list[0].avga2 + list[0].avgt1 + list[0].avgt2);
     final reg = RegExp(r".*\((.*)\)");
     list.sort((a, b) {
       if (reg.hasMatch(a.subjectName) && reg.hasMatch(b.subjectName)) {

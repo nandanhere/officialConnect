@@ -58,9 +58,10 @@ class _CieDetailsGraphState extends State<CieDetailsGraph> {
       primaryYAxis: NumericAxis(
           minimum: 0,
           maximum: data
-              .map((e) => double.tryParse(e[0].split('/').first) ?? 0)
-              .toList()
-              .reduce(max)),
+                  .map((e) => double.tryParse(e[0].split('/').last) ?? 0)
+                  .toList()
+                  .reduce(max) +
+              1),
       series: <ChartSeries<List<String>, String>>[
         BarSeries<List<String>, String>(
           legendItemText: "My Score",
