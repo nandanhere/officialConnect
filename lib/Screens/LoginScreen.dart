@@ -110,6 +110,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
+    // some first year student's deets
+    // usnController.text = "1MS21CS035-T";
+    // dobController.text = "2003-06-11";
+    // prateek
+    usnController.text = "1ms19cs030";
+    dobController.text = "2000-11-15";
+    // nadnan
     // usnController.text = "1ms19is076";
     // dobController.text = "2000-12-08";
     TextFormField usnForm = TextFormField(
@@ -249,9 +256,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                   if (!sisData.isValidData)
-                    const Text(
-                      "Error! please check the entered details",
-                      style: TextStyle(
+                    Text(
+                      sisData.errorMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
                           color: Colors.red,
                           fontSize: 10,
                           fontFamily: 'Comfortaa'),

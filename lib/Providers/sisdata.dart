@@ -33,8 +33,8 @@ class SisData with ChangeNotifier {
   String _email = "";
   String _phone = "";
   String _studentImage = "";
+  String _errorMessage = "";
   bool _darkMode = false;
-
   SisData() {
     setup();
   }
@@ -122,7 +122,12 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint("Student Image");
     } catch (e) {
       debugPrint(e.toString());
-      _hasData = false;
+      _hasData = true;
+      isValidData = false;
+      _errorMessage =
+          "Error in processing data! Contact Your IT department to resolve this issue";
+      _data = {};
+      notifyListeners();
     }
   }
 
@@ -170,6 +175,7 @@ class SisData with ChangeNotifier {
       }
       if (_data.isEmpty) {
         isValidData = false;
+        _errorMessage = "Error! please check the entered details";
       } else {
         isValidData = true;
       }
@@ -251,6 +257,10 @@ class SisData with ChangeNotifier {
 
   String get categoryAlloted {
     return _categoryAlloted;
+  }
+
+  String get errorMessage {
+    return _errorMessage;
   }
 
   String get categoryClaimed {

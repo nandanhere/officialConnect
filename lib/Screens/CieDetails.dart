@@ -18,6 +18,7 @@ class CieDetails extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     return Scaffold(
+      backgroundColor: NeumorphicColors.background,
       // appBar: AppBar(
       //   centerTitle: true,
       //   foregroundColor: const Color(0xFF852528),
@@ -32,7 +33,7 @@ class CieDetails extends StatelessWidget {
       //   ),
       // ),
       body: Container(
-        decoration: BoxDecoration(  
+        decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.bottomRight,
                 end: Alignment.topLeft,
@@ -43,7 +44,7 @@ class CieDetails extends StatelessWidget {
                         NeumorphicColors.background,
                         Colors.white,
                         Colors.white
-                      ])),  
+                      ])),
         padding: EdgeInsets.only(
             left: width * 0.05,
             right: width * 0.05,
@@ -56,13 +57,23 @@ class CieDetails extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: height * 0.04),
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child: Text(
-                    "CIE Details",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: sisData.darkMode ? Colors.white : Colors.black,
-                        fontSize: 40,
-                        fontFamily: 'Comfortaa'),
+                  child: Row(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.chevron_left)),
+                      Text(
+                        "CIE Details",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color:
+                                sisData.darkMode ? Colors.white : Colors.black,
+                            fontSize: 40,
+                            fontFamily: 'Comfortaa'),
+                      ),
+                    ],
                   ),
                 ),
               ),
