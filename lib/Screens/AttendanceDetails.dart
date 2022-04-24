@@ -3,6 +3,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/Attendance.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class AttendanceDetails extends StatelessWidget {
   final Attendance attendanceDetails;
@@ -80,8 +81,42 @@ class AttendanceDetails extends StatelessWidget {
     var toDate = calcToDate(maxPresentDate, maxAbsentDate);
     // ignore: avoid_print
     var dateDiff = toDate.difference(fromDate).inDays;
-
+    var startDay = DateFormat('EEEE').format(fromDate);
+    //DateTime.now()
+    int k = 0;
+    switch (startDay.toString()) {
+      case 'Monday':
+        print("mon it is");
+        break;
+      case 'Tuesday':
+        k = 1;
+        print("tue it is");
+        break;
+      case 'Wednesday':
+        k = 2;
+        print("wed it is");
+        break;
+      case 'Thursday':
+        k = 3;
+        print("thur it is");
+        break;
+      case 'Friday':
+        k = 4;
+        print("fri it is");
+        break;
+      case 'Saturday':
+        k = 5;
+        print("sat it is");
+        break;
+      case 'Sunday':
+        k = 6;
+        print('sun it is');
+    }
+    for (int i = 0; i < k; i++) {
+      allDateList.add(-1);
+    }
     for (int i = 0; i < dateDiff.toInt(); i++) {
+      //adding colors to the allDateList
       if (isPresntInDates(attendanceDetails.presentDates, fromDate)) {
         allDateList.add(1);
       } else if (isPresntInDates(attendanceDetails.absentDates, fromDate)) {
@@ -91,7 +126,7 @@ class AttendanceDetails extends StatelessWidget {
       }
       fromDate = fromDate.add(const Duration(days: 1));
     }
-
+    print(dateDiff);
     // DateTime i = fromDate;
     // for (; i != toDate; i.add(Duration(days: 1))) {
     //   // ignore: iterable_contains_unrelated_type
