@@ -42,7 +42,6 @@ class Home extends StatelessWidget {
     ];
     final emoji = emojis[Random().nextInt(emojis.length)];
     final sisData = Provider.of<SisData>(context);
-    print(sisData.previousResults[0].results.first.courseCode);
 
     return Container(
       height: height,
@@ -127,8 +126,16 @@ class Home extends StatelessWidget {
                                   intensity: 1),
                               // TODO : show circular progress indicator while loading image
                               child: CircleAvatar(
-                                backgroundImage: CachedNetworkImageProvider(
-                                    sisData.studentImage),
+                                child: (sisData.studentImage ==
+                                        "http://parents.msrit.edu/images/defaultimages.png")
+                                    ? Icon(Icons.person)
+                                    : null,
+                                backgroundImage: (sisData.studentImage !=
+                                        "http://parents.msrit.edu/images/defaultimages.png")
+                                    ? CachedNetworkImageProvider(
+                                        sisData.studentImage,
+                                      )
+                                    : null,
                                 backgroundColor: Colors.grey,
                                 radius: width * 0.1,
                               ),

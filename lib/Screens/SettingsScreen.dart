@@ -172,6 +172,9 @@ class SettingsInfo extends StatelessWidget {
                       context: context,
                       builder: (ctx) {
                         return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           backgroundColor: sisData.darkMode
                               ? Colors.black
                               : NeumorphicColors.background,

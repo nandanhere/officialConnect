@@ -18,7 +18,7 @@ class Unified extends StatelessWidget {
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
 
-    if (sisData.usn == "" && sisData.data.isEmpty) {
+    if ((sisData.usn == "" && !sisData.hasData) || !sisData.isValidData) {
       return LoginScreen();
     } else {
       if (sisData.data.isEmpty) return const LoadingScreen();

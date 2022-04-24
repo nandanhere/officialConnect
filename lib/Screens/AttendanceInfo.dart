@@ -9,8 +9,6 @@ import './AttendanceDetails.dart';
 class AttendanceInfo extends StatelessWidget {
   const AttendanceInfo({Key? key}) : super(key: key);
 
-
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -63,8 +61,6 @@ class AttendanceInfo extends StatelessWidget {
                               left: width * 0.025,
                               right: width * 0.01),
                           onPressed: () {
-                           
-                         
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (ctx) =>
                                     AttendanceDetails(attendanceDetails: e)));
