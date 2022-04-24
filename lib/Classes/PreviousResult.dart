@@ -14,7 +14,7 @@ class Subject {
       required this.grade,
       required this.subjectName});
   static List<Subject> getList(List<Map<String, dynamic>> data) {
-    return data
+    final list = data
         .map((e) => Subject(
             courseCode: e['COURSE CODE'],
             creditsEarned: e['Credits Earned'].toString(),
@@ -23,6 +23,8 @@ class Subject {
             grade: e['Grade'].toString(),
             subjectName: e['SUBJECT NAME'].toString()))
         .toList();
+    list.sort((a, b) => a.courseCode.compareTo(b.courseCode));
+    return list;
   }
   // TODO : add reference examples like below
   //  {COURSE CODE: CV14, Credits Earned: 3, Credits Reg.: 3, GPA: 7, Grade: C, SUBJECT NAME: BASICS OF CIVIL ENGINEERING AND MECHANICS}
@@ -43,8 +45,8 @@ class PreviousResult {
     return data
         .map((e) => PreviousResult(
             cgpa: e['CGPA'],
-            creditsEarned: e["Credits Earned"],
-            creditsRegistered: e['Credits Registered'],
+            creditsEarned: e["Credits Earned "],
+            creditsRegistered: e['Credits Registered '],
             sgpa: e['SGPA'],
             results:
                 Subject.getList(List<Map<String, dynamic>>.from(e['results'])),
