@@ -32,7 +32,7 @@ class CieDetails extends StatelessWidget {
       //   ),
       // ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: BoxDecoration(  
             gradient: LinearGradient(
                 begin: Alignment.bottomRight,
                 end: Alignment.topLeft,
@@ -43,7 +43,7 @@ class CieDetails extends StatelessWidget {
                         NeumorphicColors.background,
                         Colors.white,
                         Colors.white
-                      ])),
+                      ])),  
         padding: EdgeInsets.only(
             left: width * 0.05,
             right: width * 0.05,
