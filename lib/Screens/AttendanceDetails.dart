@@ -96,7 +96,7 @@ class AttendanceDetails extends StatelessWidget {
     // }
     Color getColor(int number) {
       if (number == 1) {
-        return Colors.blue;
+        return Colors.lightGreen;
       }
       if (number == 0) {
         return Colors.red;
@@ -104,21 +104,22 @@ class AttendanceDetails extends StatelessWidget {
       return Colors.grey;
     }
 
-    Widget buildNumber(int number) => Container(
-            child: Neumorphic(
+    Widget buildNumber(int number) => Neumorphic(
+          
           child: Center(
             child: Text(
               number.toString(),
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(  backgroundColor: getColor(number)), 
               textAlign: TextAlign.center,
             ),
           ),
-        ));
+        );
 
     // ignore: dead_code
     Widget buildGridView() => GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7, mainAxisSpacing: 20),
+              crossAxisCount: 7, mainAxisSpacing: 20 , crossAxisSpacing: 15 , mainAxisExtent: 12),
+        
           itemCount: allDateList.length,
           itemBuilder: (context, index) {
             final item = allDateList[index];
@@ -126,42 +127,37 @@ class AttendanceDetails extends StatelessWidget {
           },
         );
     return Scaffold(
-        appBar: AppBar(title: const Text("Attendance details")),
-        backgroundColor: NeumorphicColors.background,
-        body: Container(
-            alignment: Alignment.center,
-            // color: Colors.grey,
-            child:
-                // Column(
-                //   children: [
-                Expanded(
-              child: Column(
-                children: [
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: const [
-                      Text("Mon"),
-                      Text("Tue"),
-                      Text("Wed"),
-                      Text("Thur"),
-                      Text("Fri"),
-                      Text("Sat"),
-                      Text("Sun"),
-                    ],
-                  ),
-                  Expanded(
-                    child: buildGridView(),
-                  ),
+      appBar: AppBar(title: const Text("Attendance details")),
+      backgroundColor: NeumorphicColors.background,
+      body: Container(
+        margin: EdgeInsets.all(8),
+        alignment: Alignment.center,
+        // color: Colors.grey,
+        child:
+            // Column(
+            //   children: [
+            Expanded(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  Text("Mon"),
+                  Text("Tue"),
+                  Text("Wed"),
+                  Text("Thur"),
+                  Text("Fri"),
+                  Text("Sat"),
+                  Text("Sun"),
                 ],
               ),
-            )
-            //   ],
-            // ),
-            )
-        // Center(
-        //   child: Text(attendanceDetails.subjectName),
-        // ),
-        );
-
-    // ignore: dead_code
+              Expanded(
+                child: buildGridView(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
