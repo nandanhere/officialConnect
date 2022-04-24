@@ -86,31 +86,29 @@ class AttendanceDetails extends StatelessWidget {
     int k = 0;
     switch (startDay.toString()) {
       case 'Monday':
-        print("mon it is");
         break;
       case 'Tuesday':
         k = 1;
-        print("tue it is");
+
         break;
       case 'Wednesday':
         k = 2;
-        print("wed it is");
+
         break;
       case 'Thursday':
         k = 3;
-        print("thur it is");
+
         break;
       case 'Friday':
         k = 4;
-        print("fri it is");
+
         break;
       case 'Saturday':
         k = 5;
-        print("sat it is");
+
         break;
       case 'Sunday':
         k = 6;
-        print('sun it is');
     }
     for (int i = 0; i < k; i++) {
       allDateList.add(-1);
@@ -126,7 +124,7 @@ class AttendanceDetails extends StatelessWidget {
       }
       fromDate = fromDate.add(const Duration(days: 1));
     }
-    print(dateDiff);
+
     // DateTime i = fromDate;
     // for (; i != toDate; i.add(Duration(days: 1))) {
     //   // ignore: iterable_contains_unrelated_type
