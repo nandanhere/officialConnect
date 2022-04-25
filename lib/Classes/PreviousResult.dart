@@ -31,7 +31,7 @@ class Subject {
 }
 
 class PreviousResult {
-  final cgpa, creditsEarned, creditsRegistered, sgpa, term;
+  final cgpa, creditsEarned, creditsRegistered, sgpa, term, semesterNumber;
   final List<Subject> results;
 
   PreviousResult(
@@ -40,17 +40,21 @@ class PreviousResult {
       required this.creditsRegistered,
       required this.sgpa,
       required this.results,
-      required this.term});
+      required this.term,
+      required this.semesterNumber});
   static List<PreviousResult> getList(List<dynamic> data) {
     return data
-        .map((e) => PreviousResult(
-            cgpa: e['CGPA'],
-            creditsEarned: e["Credits Earned "],
-            creditsRegistered: e['Credits Registered '],
-            sgpa: e['SGPA'],
-            results:
-                Subject.getList(List<Map<String, dynamic>>.from(e['results'])),
-            term: e['term']))
+        .map(
+          (e) => PreviousResult(
+              cgpa: e['CGPA'],
+              creditsEarned: e["Credits Earned "],
+              creditsRegistered: e['Credits Registered '],
+              sgpa: e['SGPA'],
+              results: Subject.getList(
+                  List<Map<String, dynamic>>.from(e['results'])),
+              term: e['term'],
+              semesterNumber: (data.indexOf(e) + 1).toString()),
+        )
         .toList();
   }
 }

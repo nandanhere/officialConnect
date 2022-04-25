@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:official_connect/Classes/Marks.dart';
+import 'package:official_connect/Providers/sisdata.dart';
+import 'package:provider/provider.dart';
 
 class CieTable extends StatelessWidget {
   final Marks marks;
@@ -8,33 +10,72 @@ class CieTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-      columns: [
-        const DataColumn(
-          label: Text("Test/Assignment"),
-        ),
-        const DataColumn(
-          label: Text("Score"),
-        )
-      ],
-      rows: [
-        DataRow(cells: [
-          const DataCell(Text('Cie 1')),
-          DataCell(Text(marks.t1)),
-        ]),
-        DataRow(cells: [
-          const DataCell(Text('Cie 2')),
-          DataCell(Text(marks.t2)),
-        ]),
-        DataRow(cells: [
-          const DataCell(const Text('Assignment 1')),
-          DataCell(Text(marks.a1)),
-        ]),
-        DataRow(cells: [
-          const DataCell(Text('Assignment 2')),
-          DataCell(Text(marks.a2)),
-        ]),
-      ],
+    final sisData = Provider.of<SisData>(context);
+    const TextStyle headingStyle = const TextStyle(
+      fontWeight: FontWeight.bold,
+      fontFamily: 'Comfortaa',
+    );
+    const TextStyle bodyStyle = const TextStyle(
+      fontWeight: FontWeight.w400,
+      fontFamily: 'Comfortaa',
+    );
+    return Theme(
+      data: sisData.darkMode ? ThemeData.dark() : ThemeData.light(),
+      child: DataTable(
+        columns: [
+          const DataColumn(
+            label: Text(
+              "Test/Assignment",
+              style: headingStyle,
+            ),
+          ),
+          const DataColumn(
+            label: Text("Score", style: headingStyle),
+          )
+        ],
+        rows: [
+          DataRow(cells: [
+            const DataCell(Text(
+              'Cie 1',
+              style: bodyStyle,
+            )),
+            DataCell(Text(
+              marks.t1,
+              style: bodyStyle,
+            )),
+          ]),
+          DataRow(cells: [
+            const DataCell(Text(
+              'Cie 2',
+              style: bodyStyle,
+            )),
+            DataCell(Text(
+              marks.t2,
+              style: bodyStyle,
+            )),
+          ]),
+          DataRow(cells: [
+            const DataCell(Text(
+              'Assignment 1',
+              style: bodyStyle,
+            )),
+            DataCell(Text(
+              marks.a1,
+              style: bodyStyle,
+            )),
+          ]),
+          DataRow(cells: [
+            const DataCell(Text(
+              'Assignment 2',
+              style: bodyStyle,
+            )),
+            DataCell(Text(
+              marks.a2,
+              style: bodyStyle,
+            )),
+          ]),
+        ],
+      ),
     );
   }
 }

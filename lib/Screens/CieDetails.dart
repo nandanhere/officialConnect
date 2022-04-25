@@ -19,7 +19,7 @@ class CieDetails extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     return Scaffold(
-      backgroundColor: NeumorphicColors.background,
+      backgroundColor: (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
       // appBar: AppBar(
       //   centerTitle: true,
       //   foregroundColor: const Color(0xFF852528),

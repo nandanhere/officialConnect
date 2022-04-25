@@ -29,6 +29,9 @@ class SettingsInfo extends StatelessWidget {
           icon: Icons.info_outline_rounded,
           onPressed: () => showDialog(
                 builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     backgroundColor:
                         sisData.darkMode ? Colors.black87 : Colors.white,
                     title: FittedBox(
@@ -41,11 +44,11 @@ class SettingsInfo extends StatelessWidget {
                         Text(
                           "RIT Connect",
                           style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: width * 0.075,
-                              fontFamily: 'Comfortaa'),
+                            color:
+                                sisData.darkMode ? Colors.white : Colors.black,
+                            fontSize: width * 0.075,
+                            fontFamily: 'Comfortaa',
+                          ),
                         ),
                         SizedBox(
                           height: height * 0.02,

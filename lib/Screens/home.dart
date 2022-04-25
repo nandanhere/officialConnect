@@ -50,8 +50,12 @@ class Home extends StatelessWidget {
               begin: Alignment.bottomRight,
               end: Alignment.topLeft,
               colors: (sisData.darkMode)
-                  ? [Colors.black, Colors.black, Colors.blueGrey]
-                  // ? [Colors.black, Colors.black, Colors.black87] Equal people seem to like both.. idk what to do about it
+                  // ? [Colors.black, Colors.black, Colors.blueGrey]
+                  ? [
+                      Colors.black,
+                      Colors.black,
+                      Colors.black87
+                    ] // Equal people seem to like both.. idk what to do about it
                   : [
                       NeumorphicColors.background,
                       NeumorphicColors.background,
