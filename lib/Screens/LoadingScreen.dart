@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:official_connect/Screens/UnifiedScreen.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({Key? key}) : super(key: key);
@@ -10,8 +11,21 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   @override
+  void initState() {
+    super.initState();
+    _navigateToUnifiedScreen();
+  }
+
+  _navigateToUnifiedScreen() async {
+    await Future.delayed(Duration(milliseconds: 1500), () {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Unified()));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.red,
       body: Center(
         child: SpinKitSpinningLines(

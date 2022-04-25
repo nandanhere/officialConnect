@@ -3,6 +3,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/LoginScreen.dart';
 import 'package:official_connect/Screens/UnifiedScreen.dart';
 import 'package:provider/provider.dart';
+import './Screens/LoadingScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,8 +23,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Unified(),
-        //  home: LoadingScreen(),
+        // home: Unified(),
+         home: LoadingScreen(),
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           Unified.id: (context) => Unified(),
