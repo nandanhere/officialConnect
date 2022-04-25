@@ -17,7 +17,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   _navigateToUnifiedScreen() async {
-    await Future.delayed(Duration(milliseconds: 3000), () {
+    await Future.delayed(Duration(milliseconds: 1500), () {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Unified()));
     });
@@ -26,10 +26,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.white,
       body: Center(
         child: SpinKitSpinningLines(
-          color: Colors.white,
+          color: Colors.red,
           size: 100.0,
         ),
       ),
