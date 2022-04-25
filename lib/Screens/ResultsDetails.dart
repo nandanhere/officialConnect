@@ -5,6 +5,7 @@ import 'package:official_connect/Classes/PreviousResult.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/MarksCard.dart';
 import 'package:provider/provider.dart';
+import 'package:official_connect/Providers/Themes.dart';
 
 class ResultsDetails extends StatelessWidget {
   final PreviousResult previousResult;
@@ -17,6 +18,8 @@ class ResultsDetails extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+    final buttonTrailing = CustomTheme.buttonTrailing(context);
+    final title = CustomTheme.textStyle(context);
 
     return Scaffold(
       backgroundColor:
@@ -52,88 +55,43 @@ class ResultsDetails extends StatelessWidget {
                 ),
                 Text(
                   previousResult.term,
-                  style: TextStyle(
-                    color: sisData.darkMode ? Colors.white : Colors.black,
-                    fontSize: MediaQuery.of(context).size.width * 0.06,
-                    fontFamily: 'Comfortaa',
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: buttonTrailing.copyWith(fontSize: width * 0.06),
                 ),
-                Text(
-                  "Semester ${previousResult.semesterNumber}",
-                  style: TextStyle(
-                    color: sisData.darkMode ? Colors.white : Colors.black,
-                    fontSize: MediaQuery.of(context).size.width * 0.06,
-                    fontFamily: 'Comfortaa',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text("Semester ${previousResult.semesterNumber}",
+                    style: buttonTrailing.copyWith(fontSize: width * 0.06)),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(height * 0.01),
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 30.0),
+                      padding: EdgeInsets.only(left: width * 0.22),
                       child: Row(
                         children: [
                           AutoSizeText(
                             "SGPA : ${previousResult.sgpa}  ",
-                            style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.04,
-                              fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: title,
                           ),
                           AutoSizeText(
-                            "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
-                            style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.04,
-                              fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
+                              "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
+                              style: title)
                         ],
                       ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(height * 0.01),
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 30.0),
+                      padding: EdgeInsets.only(left: width * 0.16),
                       child: Row(
                         children: [
                           AutoSizeText(
                             "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
-                            style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.04,
-                              fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: title,
                           ),
                           AutoSizeText(
                             "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
-                            style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.04,
-                              fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: title,
                           )
                         ],
                       ),

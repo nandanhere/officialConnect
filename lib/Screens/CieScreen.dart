@@ -7,6 +7,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 import 'package:official_connect/Screens/CieDetails.dart';
+import 'package:official_connect/Providers/Themes.dart';
 
 class CieInfo extends StatelessWidget {
   CieInfo({Key? key}) : super(key: key);
@@ -17,19 +18,13 @@ class CieInfo extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
+    final buttonTitle = CustomTheme.buttonTitle(context);
+    final buttonTrailing = CustomTheme.buttonTrailing(context);
+    final titleStyle = CustomTheme.titleStyle(context);
+    final neumorphicStyle = CustomTheme.neumorphicStyle(context);
+    final linearGradient = CustomTheme.linearGradient(context);
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.bottomRight,
-              end: Alignment.topLeft,
-              colors: (sisData.darkMode)
-                  ? [Colors.black, Colors.black, Colors.blueGrey]
-                  : [
-                      NeumorphicColors.background,
-                      NeumorphicColors.background,
-                      Colors.white,
-                      Colors.white
-                    ])),
+      decoration: BoxDecoration(gradient: linearGradient),
       padding: EdgeInsets.only(
           left: width * 0.05,
           right: width * 0.05,
@@ -49,16 +44,8 @@ class CieInfo extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Results",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  color: sisData.darkMode
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontSize: 40,
-                                  fontFamily: 'Comfortaa'),
-                            ),
+                            Text("Results",
+                                textAlign: TextAlign.left, style: titleStyle),
                             Padding(
                               padding:
                                   EdgeInsets.symmetric(vertical: height * 0.02),
@@ -68,12 +55,7 @@ class CieInfo extends StatelessWidget {
                                   Text(
                                     "CIE",
                                     textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.04,
-                                        fontFamily: 'Comfortaa'),
+                                    style: buttonTitle,
                                   ),
                                   NeumorphicSwitch(
                                     style: const NeumorphicSwitchStyle(
@@ -92,12 +74,7 @@ class CieInfo extends StatelessWidget {
                                   Text(
                                     "SEE",
                                     textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.04,
-                                        fontFamily: 'Comfortaa'),
+                                    style: buttonTitle,
                                   ),
                                 ],
                               ),
@@ -115,18 +92,7 @@ class CieInfo extends StatelessWidget {
                                     bottom: height * 0.015,
                                     left: width * 0.025,
                                     right: width * 0.01),
-                                style: NeumorphicStyle(
-                                    shadowLightColor:
-                                        sisData.darkMode ? Colors.white : null,
-                                    shadowDarkColor: sisData.darkMode
-                                        ? NeumorphicColors.background
-                                        : null,
-                                    color: sisData.darkMode
-                                        ? Color.fromARGB(1, 77, 74, 74)
-                                        : NeumorphicColors.background,
-                                    depth: 3,
-                                    boxShape: NeumorphicBoxShape.roundRect(
-                                        BorderRadius.circular(20))),
+                                style: neumorphicStyle,
                                 child: ListTile(
                                   onTap: () {
                                     Navigator.of(context).push(
@@ -139,22 +105,11 @@ class CieInfo extends StatelessWidget {
                                   },
                                   title: Text(
                                     e.term,
-                                    style: TextStyle(
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.045,
-                                        fontFamily: 'Comfortaa'),
+                                    style: buttonTitle,
                                   ),
                                   trailing: Text(
                                     e.cgpa,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.055,
-                                        fontFamily: 'Comfortaa'),
+                                    style: buttonTrailing,
                                   ),
                                 ),
                               ),
@@ -174,12 +129,7 @@ class CieInfo extends StatelessWidget {
                             Text(
                               "Results",
                               textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  color: sisData.darkMode
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontSize: 40,
-                                  fontFamily: 'Comfortaa'),
+                              style: titleStyle,
                             ),
                             Padding(
                               padding:
@@ -190,12 +140,7 @@ class CieInfo extends StatelessWidget {
                                   Text(
                                     "CIE",
                                     textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.04,
-                                        fontFamily: 'Comfortaa'),
+                                    style: buttonTitle,
                                   ),
                                   NeumorphicSwitch(
                                     style: const NeumorphicSwitchStyle(
@@ -214,12 +159,7 @@ class CieInfo extends StatelessWidget {
                                   Text(
                                     "SEE",
                                     textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.04,
-                                        fontFamily: 'Comfortaa'),
+                                    style: buttonTitle,
                                   ),
                                 ],
                               ),
@@ -246,37 +186,15 @@ class CieInfo extends StatelessWidget {
                                     ),
                                   );
                                 },
-                                style: NeumorphicStyle(
-                                    shadowLightColor:
-                                        sisData.darkMode ? Colors.white : null,
-                                    shadowDarkColor: sisData.darkMode
-                                        ? NeumorphicColors.background
-                                        : null,
-                                    color: sisData.darkMode
-                                        ? Color.fromARGB(1, 77, 74, 74)
-                                        : NeumorphicColors.background,
-                                    depth: 3,
-                                    boxShape: NeumorphicBoxShape.roundRect(
-                                        BorderRadius.circular(20))),
+                                style: neumorphicStyle,
                                 child: ListTile(
                                   title: Text(
                                     e.subjectName,
-                                    style: TextStyle(
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.045,
-                                        fontFamily: 'Comfortaa'),
+                                    style: buttonTitle,
                                   ),
                                   trailing: Text(
                                     e.finalCie,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.055,
-                                        fontFamily: 'Comfortaa'),
+                                    style: buttonTrailing,
                                   ),
                                 ),
                               ),
@@ -289,104 +207,3 @@ class CieInfo extends StatelessWidget {
     );
   }
 }
-
-// Column(
-// children: [
-// Padding(
-// padding: EdgeInsets.only(bottom: height * 0.04),
-// child: Align(
-// alignment: Alignment.topLeft,
-// child: Text(
-// "Results",
-// textAlign: TextAlign.left,
-// style: TextStyle(
-// color: sisData.darkMode ? Colors.white : Colors.black,
-// fontSize: 40,
-// fontFamily: 'Comfortaa'),
-// ),
-// ),
-// ),
-// Row(
-// mainAxisAlignment: MainAxisAlignment.center,
-// children: [
-// Text(
-// "CIE",
-// textAlign: TextAlign.left,
-// style: TextStyle(
-// color: sisData.darkMode ? Colors.white : Colors.black,
-// fontSize: width * 0.04,
-// fontFamily: 'Comfortaa'),
-// ),
-// NeumorphicSwitch(
-// style: const NeumorphicSwitchStyle(
-// inactiveTrackColor: NeumorphicColors.accent,
-// trackDepth: 10,
-// thumbDepth: 2),
-// height: width * 0.055,
-// value: seeOpt.value,
-// onChanged: (value) {
-// seeOpt.value = value;
-// },
-// ),
-// Text(
-// "SEE",
-// textAlign: TextAlign.left,
-// style: TextStyle(
-// color: sisData.darkMode ? Colors.white : Colors.black,
-// fontSize: width * 0.04,
-// fontFamily: 'Comfortaa'),
-// ),
-// ],
-// ),
-// CieGraph(marks: sisData.marks),
-// ...sisData.marks
-//     .map((e) => Padding(
-// padding: const EdgeInsets.all(8.0),
-// child: NeumorphicButton(
-// padding: EdgeInsets.only(
-// top: height * 0.015,
-// bottom: height * 0.015,
-// left: width * 0.025,
-// right: width * 0.01),
-// onPressed: () {
-// Navigator.of(context).push(MaterialPageRoute(
-// builder: (ctx) => CieDetails(subjectDetails: e)));
-// },
-// style: NeumorphicStyle(
-// shadowLightColor:
-// sisData.darkMode ? Colors.white : null,
-// shadowDarkColor: sisData.darkMode
-// ? NeumorphicColors.background
-//     : null,
-// color: sisData.darkMode
-// ? Color.fromARGB(1, 77, 74, 74)
-// : NeumorphicColors.background,
-// depth: 3,
-// boxShape: NeumorphicBoxShape.roundRect(
-// BorderRadius.circular(20))),
-// child: ListTile(
-// title: Text(
-// e.subjectName,
-// style: TextStyle(
-// color: sisData.darkMode
-// ? Colors.white
-//     : Colors.black,
-// fontSize: width * 0.045,
-// fontFamily: 'Comfortaa'),
-// ),
-// trailing: Text(
-// e.finalCie,
-// style: TextStyle(
-// fontWeight: FontWeight.bold,
-// color: sisData.darkMode
-// ? Colors.white
-//     : Colors.black,
-// fontSize: width * 0.055,
-// fontFamily: 'Comfortaa'),
-// ),
-// ),
-// ),
-// ))
-// .toList()
-// ],
-// )

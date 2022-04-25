@@ -4,6 +4,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import "dart:math";
+import 'package:official_connect/Providers/Themes.dart';
 
 extension StringCasingExtension on String {
   String toCapitalized() =>
@@ -22,6 +23,12 @@ class Home extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+    final buttonTitle = CustomTheme.buttonTitle(context);
+    final buttonTrailing = CustomTheme.buttonTrailing(context);
+    final title = CustomTheme.textStyle(context);
+    final neumorphicStyle = CustomTheme.neumorphicStyle(context);
+    final linearGradient = CustomTheme.linearGradient2(context);
+    final subtitle = CustomTheme.buttonSubtitle(context);
     final emojis = [
       "😀",
       "😊",
@@ -45,23 +52,7 @@ class Home extends StatelessWidget {
 
     return Container(
       height: height,
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.bottomRight,
-              end: Alignment.topLeft,
-              colors: (sisData.darkMode)
-                  // ? [Colors.black, Colors.black, Colors.blueGrey]
-                  ? [
-                      Colors.black,
-                      Colors.black,
-                      Colors.black87
-                    ] // Equal people seem to like both.. idk what to do about it
-                  : [
-                      NeumorphicColors.background,
-                      NeumorphicColors.background,
-                      Colors.white,
-                      Colors.white
-                    ])),
+      decoration: BoxDecoration(gradient: linearGradient),
       padding: EdgeInsets.only(
           left: width * 0.08,
           right: width * 0.08,
@@ -80,17 +71,7 @@ class Home extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                   horizontal: width * 0.02, vertical: height * 0.02),
               child: Neumorphic(
-                style: NeumorphicStyle(
-                    shadowLightColor: sisData.darkMode ? Colors.white : null,
-                    shadowDarkColor:
-                        sisData.darkMode ? NeumorphicColors.background : null,
-                    color: sisData.darkMode
-                        ? Color.fromARGB(1, 77, 74, 74)
-                        : NeumorphicColors.background,
-                    depth: 2,
-                    intensity: 1,
-                    boxShape: NeumorphicBoxShape.roundRect(
-                        BorderRadius.circular(20))),
+                style: neumorphicStyle,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: width * 0.05, vertical: height * 0.025),
@@ -105,29 +86,12 @@ class Home extends StatelessWidget {
                             Expanded(
                               child: AutoSizeText(
                                 "Hi, ${sisData.studentName.toTitleCase()} ${emoji} ",
-                                style: TextStyle(
-                                  color: sisData.darkMode
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontSize: width * 0.07,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Comfortaa',
-                                ),
+                                style: buttonTrailing.copyWith(
+                                    fontSize: width * 0.07),
                               ),
                             ),
                             Neumorphic(
-                              style: NeumorphicStyle(
-                                  shadowLightColor:
-                                      sisData.darkMode ? Colors.white : null,
-                                  shadowDarkColor: sisData.darkMode
-                                      ? NeumorphicColors.background
-                                      : null,
-                                  color: sisData.darkMode
-                                      ? Color.fromARGB(1, 77, 74, 74)
-                                      : NeumorphicColors.background,
-                                  boxShape: NeumorphicBoxShape.circle(),
-                                  depth: 2,
-                                  intensity: 1),
+                              style: neumorphicStyle,
                               // TODO : show circular progress indicator while loading image
                               child: CircleAvatar(
                                 child: (sisData.studentImage ==
@@ -152,12 +116,8 @@ class Home extends StatelessWidget {
                         children: [
                           Text(
                             "Class ",
-                            style: TextStyle(
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: width * 0.05,
-                                fontFamily: 'Comfortaa'),
+                            style:
+                                buttonTitle.copyWith(fontSize: width * 0.045),
                           ),
                           Container(
                             padding: EdgeInsets.symmetric(
@@ -165,13 +125,7 @@ class Home extends StatelessWidget {
                                 horizontal: width * 0.02),
                             child: Text(
                               "${sisData.semester}-${sisData.section[4]}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: sisData.darkMode
-                                      ? Colors.white54
-                                      : Colors.black54,
-                                  fontSize: width * 0.04,
-                                  fontFamily: 'Comfortaa'),
+                              style: subtitle,
                             ),
                             // decoration: BoxDecoration(
                             // border: Border.all(width: 1.3),
@@ -184,27 +138,14 @@ class Home extends StatelessWidget {
                         children: [
                           Text(
                             "Course ",
-                            style: TextStyle(
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: width * 0.05,
-                                fontFamily: 'Comfortaa'),
+                            style:
+                                buttonTitle.copyWith(fontSize: width * 0.045),
                           ),
                           Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: height * 0.01,
                                 horizontal: width * 0.02),
-                            child: Text(
-                              sisData.course,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: sisData.darkMode
-                                      ? Colors.white54
-                                      : Colors.black54,
-                                  fontSize: width * 0.04,
-                                  fontFamily: 'Comfortaa'),
-                            ),
+                            child: Text(sisData.course, style: subtitle),
                             // decoration: BoxDecoration(
                             // border: Border.all(width: 1.3),
                             // borderRadius: BorderRadius.circular(width)),
@@ -235,11 +176,7 @@ class Home extends StatelessWidget {
                       horizontal: width * 0.2, vertical: height * 0.02),
                   child: Text(
                     "Your Fees Paid",
-                    style: TextStyle(
-                        color: sisData.darkMode ? Colors.white : Colors.black,
-                        fontSize: width * 0.05,
-                        fontFamily: 'Comfortaa',
-                        fontWeight: FontWeight.bold),
+                    style: buttonTrailing,
                   ),
                 ),
                 ...sisData.fees.map((e) => Padding(
@@ -251,28 +188,12 @@ class Home extends StatelessWidget {
                             left: width * 0.025,
                             right: width * 0.01),
                         onPressed: () {}, //TODO receipt download maybe?
-                        style: NeumorphicStyle(
-                            shadowLightColor:
-                                sisData.darkMode ? Colors.white : null,
-                            shadowDarkColor: sisData.darkMode
-                                ? NeumorphicColors.background
-                                : null,
-                            color: sisData.darkMode
-                                ? Color.fromARGB(1, 77, 74, 74)
-                                : NeumorphicColors.background,
-                            depth: 2,
-                            boxShape: NeumorphicBoxShape.roundRect(
-                                BorderRadius.circular(20))),
+                        style: neumorphicStyle,
                         child: ExpansionTile(
                           title: Text(
                             e.amountPaid,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: width * 0.06,
-                                fontFamily: 'Comfortaa'),
+                            style:
+                                buttonTrailing.copyWith(fontSize: width * 0.06),
                           ),
                           subtitle: Padding(
                             padding: EdgeInsets.symmetric(
@@ -280,12 +201,7 @@ class Home extends StatelessWidget {
                                 vertical: height * 0.01),
                             child: Text(
                               "For Year ${e.yearNumber} on ${e.date}",
-                              style: TextStyle(
-                                  color: sisData.darkMode
-                                      ? Colors.white54
-                                      : Colors.black54,
-                                  fontSize: width * 0.04,
-                                  fontFamily: 'Comfortaa'),
+                              style: subtitle,
                             ),
                           ),
                           children: [
@@ -299,21 +215,11 @@ class Home extends StatelessWidget {
                                 children: [
                                   Text(
                                     "Challan No:",
-                                    style: TextStyle(
-                                        color: sisData.darkMode
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: width * 0.04,
-                                        fontFamily: 'Comfortaa'),
+                                    style: title,
                                   ),
                                   Text(
                                     e.challanNumber,
-                                    style: TextStyle(
-                                        color: sisData.darkMode
-                                            ? Colors.white54
-                                            : Colors.black54,
-                                        fontSize: width * 0.04,
-                                        fontFamily: 'Comfortaa'),
+                                    style: subtitle,
                                     textAlign: TextAlign.end,
                                   ),
                                 ],
@@ -332,22 +238,12 @@ class Home extends StatelessWidget {
                                       children: [
                                         Text(
                                           "Cheque No:",
-                                          style: TextStyle(
-                                              color: sisData.darkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontSize: width * 0.04,
-                                              fontFamily: 'Comfortaa'),
+                                          style: title,
                                         ),
                                         Expanded(
                                           child: Text(
                                             e.chequeNumber,
-                                            style: TextStyle(
-                                                color: sisData.darkMode
-                                                    ? Colors.white54
-                                                    : Colors.black54,
-                                                fontSize: width * 0.04,
-                                                fontFamily: 'Comfortaa'),
+                                            style: subtitle,
                                             textAlign: TextAlign.end,
                                           ),
                                         ),

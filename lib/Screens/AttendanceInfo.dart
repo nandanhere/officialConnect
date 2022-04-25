@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:official_connect/Classes/Attendance.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/AttendanceGraph.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import './AttendanceDetails.dart';
+import 'package:official_connect/Providers/Themes.dart';
 
 class AttendanceInfo extends StatelessWidget {
   const AttendanceInfo({Key? key}) : super(key: key);
@@ -15,20 +15,16 @@ class AttendanceInfo extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
+    final buttonTitle = CustomTheme.buttonTitle(context);
+    final buttonTrailing = CustomTheme.buttonTrailing(context);
+    final titleStyle = CustomTheme.titleStyle(context);
+    final neumorphicStyle = CustomTheme.neumorphicStyle(context);
+    final linearGradient = CustomTheme.linearGradient(context);
 
     return Container(
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.bottomRight,
-              end: Alignment.topLeft,
-              colors: (sisData.darkMode)
-                  ? [Colors.black, Colors.black, Colors.blueGrey]
-                  : [
-                      NeumorphicColors.background,
-                      NeumorphicColors.background,
-                      Colors.white,
-                      Colors.white
-                    ])),
+        gradient: linearGradient,
+      ),
       padding: EdgeInsets.only(
           left: width * 0.05,
           right: width * 0.05,
@@ -41,10 +37,7 @@ class AttendanceInfo extends StatelessWidget {
             children: [
               Text(
                 "Attendance Info",
-                style: TextStyle(
-                    color: sisData.darkMode ? Colors.white : Colors.black,
-                    fontSize: 40,
-                    fontFamily: 'Comfortaa'),
+                style: titleStyle,
               ),
               AttendanceGraph(
                   height: height,
@@ -65,46 +58,13 @@ class AttendanceInfo extends StatelessWidget {
                                 builder: (ctx) =>
                                     AttendanceDetails(attendanceDetails: e)));
                           },
-                          style: NeumorphicStyle(
-                              shadowLightColor:
-                                  sisData.darkMode ? Colors.white : null,
-                              shadowDarkColor: sisData.darkMode
-                                  ? NeumorphicColors.background
-                                  : null,
-                              color: sisData.darkMode
-                                  ? Color.fromARGB(1, 77, 74, 74)
-                                  : NeumorphicColors.background,
-                              depth: 3,
-                              boxShape: NeumorphicBoxShape.roundRect(
-                                  BorderRadius.circular(20))),
+                          style: neumorphicStyle,
                           child: ListTile(
-                            title: Text(
-                              e.subjectName,
-                              style: TextStyle(
-                                  color: sisData.darkMode
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontSize: width * 0.055,
-                                  fontFamily: 'Comfortaa'),
-                            ),
-                            subtitle: Text(
-                              "(${e.code})",
-                              style: TextStyle(
-                                  color: sisData.darkMode
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontSize: width * 0.045,
-                                  fontFamily: 'Comfortaa'),
-                            ),
+                            title: Text(e.subjectName, style: buttonTitle),
+                            subtitle: Text("(${e.code})", style: buttonTitle),
                             trailing: Text(
                               e.percentage,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: sisData.darkMode
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontSize: width * 0.055,
-                                  fontFamily: 'Comfortaa'),
+                              style: buttonTrailing,
                               textAlign: TextAlign.end,
                             ),
                           ),

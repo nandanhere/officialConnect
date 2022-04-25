@@ -5,8 +5,7 @@ import 'package:official_connect/Widgets/CieTable.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:provider/provider.dart';
-import 'package:official_connect/Providers/sisdata.dart';
+import 'package:official_connect/Providers/Themes.dart';
 
 class CieDetails extends StatelessWidget {
   final Marks subjectDetails;
@@ -18,6 +17,10 @@ class CieDetails extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+    final buttonTitle = CustomTheme.buttonTitle(context);
+    final titleStyle = CustomTheme.titleStyle(context);
+    final linearGradient = CustomTheme.linearGradient(context);
+
     return Scaffold(
       backgroundColor:
           (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
@@ -36,18 +39,7 @@ class CieDetails extends StatelessWidget {
       // ),
       body: SingleChildScrollView(
         child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
-                  colors: (sisData.darkMode)
-                      ? [Colors.black, Colors.black, Colors.blueGrey]
-                      : [
-                          NeumorphicColors.background,
-                          NeumorphicColors.background,
-                          Colors.white,
-                          Colors.white
-                        ])),
+          decoration: BoxDecoration(gradient: linearGradient),
           padding: EdgeInsets.only(
               left: width * 0.05,
               right: width * 0.05,
@@ -71,26 +63,13 @@ class CieDetails extends StatelessWidget {
                                 ? Colors.black
                                 : NeumorphicColors.background,
                           )),
-                      Text(
-                        "CIE Details",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            color:
-                                sisData.darkMode ? Colors.white : Colors.black,
-                            fontSize: 40,
-                            fontFamily: 'Comfortaa'),
-                      ),
+                      Text("CIE Details",
+                          textAlign: TextAlign.left, style: titleStyle),
                     ],
                   ),
                 ),
               ),
-              Text(
-                subjectDetails.subjectName,
-                style: TextStyle(
-                    color: sisData.darkMode ? Colors.white : Colors.black,
-                    fontSize: MediaQuery.of(context).size.width * 0.05,
-                    fontFamily: 'Comfortaa'),
-              ),
+              Text(subjectDetails.subjectName, style: buttonTitle),
               Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: MediaQuery.of(context).size.height * 0.04,

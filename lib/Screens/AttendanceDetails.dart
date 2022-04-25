@@ -5,7 +5,7 @@ import 'package:official_connect/Classes/Attendance.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/attendanceGrid.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
+import 'package:official_connect/Providers/Themes.dart';
 
 class AttendanceDetails extends StatelessWidget {
   final Attendance attendanceDetails;
@@ -19,24 +19,15 @@ class AttendanceDetails extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+    final textStyle = CustomTheme.textStyle(context);
+    final linearGradient = CustomTheme.linearGradient(context);
 
     return Scaffold(
       backgroundColor:
           (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
       body: SingleChildScrollView(
         child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
-                  colors: (sisData.darkMode)
-                      ? [Colors.black, Colors.black, Colors.blueGrey]
-                      : [
-                          NeumorphicColors.background,
-                          NeumorphicColors.background,
-                          Colors.white,
-                          Colors.white
-                        ])),
+          decoration: BoxDecoration(gradient: linearGradient),
           margin: const EdgeInsets.all(8),
           // alignment: Alignment.center,
           // color: Colors.grey,
@@ -75,35 +66,18 @@ class AttendanceDetails extends StatelessWidget {
                 //             fontFamily: 'Comfortaa'),
                 //       ),
                 Text(
-                  "${attendanceDetails.subjectName} (${attendanceDetails.code})",
-                  style: TextStyle(
-                      color: sisData.darkMode ? Colors.white : Colors.black,
+                    "${attendanceDetails.subjectName} (${attendanceDetails.code})",
+                    style: textStyle.copyWith(
                       fontSize: MediaQuery.of(context).size.width * 0.055,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Comfortaa'),
-                ),
+                    )),
                 SizedBox(height: 30),
                 Center(
                   child: Row(
                     children: [
-                      AutoSizeText(
-                        "Attended : ${attendanceDetails.present}  ",
-                        style: TextStyle(
-                          color: sisData.darkMode ? Colors.white : Colors.black,
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
-                          fontFamily: 'Comfortaa',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      AutoSizeText(
-                        "Missed : ${attendanceDetails.absent}  ",
-                        style: TextStyle(
-                          color: sisData.darkMode ? Colors.white : Colors.black,
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
-                          fontFamily: 'Comfortaa',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                      AutoSizeText("Attended : ${attendanceDetails.present}  ",
+                          style: textStyle),
+                      AutoSizeText("Missed : ${attendanceDetails.absent}  ",
+                          style: textStyle)
                     ],
                   ),
                 ),
@@ -111,23 +85,11 @@ class AttendanceDetails extends StatelessWidget {
                   child: Row(
                     children: [
                       AutoSizeText(
-                        "Remaining : ${attendanceDetails.remaining}  ",
-                        style: TextStyle(
-                          color: sisData.darkMode ? Colors.white : Colors.black,
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
-                          fontFamily: 'Comfortaa',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                          "Remaining : ${attendanceDetails.remaining}  ",
+                          style: textStyle),
                       AutoSizeText(
-                        "Percentage : ${attendanceDetails.percentage}",
-                        style: TextStyle(
-                          color: sisData.darkMode ? Colors.white : Colors.black,
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
-                          fontFamily: 'Comfortaa',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                          "Percentage : ${attendanceDetails.percentage}",
+                          style: textStyle)
                     ],
                   ),
                 ),

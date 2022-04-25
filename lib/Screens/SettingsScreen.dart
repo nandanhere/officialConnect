@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:official_connect/Providers/Themes.dart';
 
 class SettingsInfo extends StatelessWidget {
   void _logOut(BuildContext context) {}
@@ -16,6 +17,11 @@ class SettingsInfo extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
+    final buttonTitle = CustomTheme.buttonTitle(context);
+    final buttonTrailing = CustomTheme.buttonTrailing(context);
+    final title = CustomTheme.titleStyle(context);
+    final neumorphicStyle = CustomTheme.neumorphicStyle(context);
+    final linearGradient = CustomTheme.linearGradient2(context);
 
     List<Element> tiles = [
       //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
@@ -41,35 +47,18 @@ class SettingsInfo extends StatelessWidget {
                     ),
                     content: Column(
                       children: [
-                        Text(
-                          "RIT Connect",
-                          style: TextStyle(
-                            color:
-                                sisData.darkMode ? Colors.white : Colors.black,
-                            fontSize: width * 0.075,
-                            fontFamily: 'Comfortaa',
-                          ),
-                        ),
+                        Text("RIT Connect",
+                            style: title.copyWith(fontSize: width * 0.075)),
                         SizedBox(
                           height: height * 0.02,
                         ),
                         Text(
                           "by",
-                          style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: width * 0.055,
-                              fontFamily: 'Comfortaa'),
+                          style: title.copyWith(fontSize: width * 0.055),
                         ),
                         Text(
                           "N,A and P 😴",
-                          style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: width * 0.055,
-                              fontFamily: 'Comfortaa'),
+                          style: title.copyWith(fontSize: width * 0.055),
                         )
                       ],
                     ),
@@ -91,18 +80,7 @@ class SettingsInfo extends StatelessWidget {
     ];
 
     return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.bottomRight,
-                end: Alignment.topLeft,
-                colors: (sisData.darkMode)
-                    ? [Colors.black, Colors.black, Colors.blueGrey]
-                    : [
-                        NeumorphicColors.background,
-                        NeumorphicColors.background,
-                        Colors.white,
-                        Colors.white
-                      ])),
+        decoration: BoxDecoration(gradient: linearGradient),
         padding: EdgeInsets.only(
             left: width * 0.05,
             right: width * 0.05,
@@ -118,10 +96,7 @@ class SettingsInfo extends StatelessWidget {
                 child: Text(
                   "Settings",
                   textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: sisData.darkMode ? Colors.white : Colors.black,
-                      fontSize: 40,
-                      fontFamily: 'Comfortaa'),
+                  style: title,
                 ),
               ),
             ),
@@ -134,18 +109,7 @@ class SettingsInfo extends StatelessWidget {
                             sisData.darkMode = !sisData.darkMode;
                           }
                         : e.onPressed,
-                    style: NeumorphicStyle(
-                        shadowLightColor:
-                            sisData.darkMode ? Colors.white : null,
-                        shadowDarkColor: sisData.darkMode
-                            ? NeumorphicColors.background
-                            : null,
-                        color: sisData.darkMode
-                            ? const Color.fromARGB(1, 77, 74, 74)
-                            : NeumorphicColors.background,
-                        depth: 3,
-                        boxShape: NeumorphicBoxShape.roundRect(
-                            BorderRadius.circular(20))),
+                    style: neumorphicStyle,
                     child: ListTile(
                       leading: Icon(
                         e.icon,
@@ -154,11 +118,7 @@ class SettingsInfo extends StatelessWidget {
                       ),
                       title: Text(
                         e.text,
-                        style: TextStyle(
-                            color:
-                                sisData.darkMode ? Colors.white : Colors.black,
-                            fontSize: width * 0.045,
-                            fontFamily: 'Comfortaa'),
+                        style: buttonTitle,
                       ),
                       trailing: e.toggle
                           ? NeumorphicSwitch(
@@ -192,98 +152,42 @@ class SettingsInfo extends StatelessWidget {
                               : NeumorphicColors.background,
                           title: Text(
                             'Do you want to Log out?',
-                            style: TextStyle(
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontFamily: 'Comfortaa'),
+                            style: buttonTrailing,
                           ),
                           content: Text(
                             'All stored data will be wiped out',
-                            style: TextStyle(
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontFamily: 'Comfortaa'),
+                            style: buttonTitle,
                           ),
                           actions: <Widget>[
                             NeumorphicButton(
-                              style: NeumorphicStyle(
-                                shadowLightColor:
-                                    sisData.darkMode ? Colors.white : null,
-                                shadowDarkColor: sisData.darkMode
-                                    ? NeumorphicColors.background
-                                    : null,
-                                color: sisData.darkMode
-                                    ? Color.fromARGB(1, 77, 74, 74)
-                                    : NeumorphicColors.background,
-                                depth: 2,
-                                boxShape: NeumorphicBoxShape.roundRect(
-                                  BorderRadius.circular(20),
-                                ),
-                              ),
+                              style: neumorphicStyle,
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                               },
                               child: Text(
                                 'No',
-                                style: TextStyle(
-                                    color: sisData.darkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontFamily: 'Comfortaa'),
+                                style: buttonTitle,
                               ),
                             ),
                             NeumorphicButton(
-                              style: NeumorphicStyle(
-                                shadowLightColor:
-                                    sisData.darkMode ? Colors.white : null,
-                                shadowDarkColor: sisData.darkMode
-                                    ? NeumorphicColors.background
-                                    : null,
-                                color: sisData.darkMode
-                                    ? Color.fromARGB(1, 77, 74, 74)
-                                    : NeumorphicColors.background,
-                                depth: 2,
-                                boxShape: NeumorphicBoxShape.roundRect(
-                                  BorderRadius.circular(20),
-                                ),
-                              ),
+                              style: neumorphicStyle,
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                                 sisData.cleanData();
                               },
                               child: Text(
                                 'Yes',
-                                style: TextStyle(
-                                    color: sisData.darkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontFamily: 'Comfortaa'),
+                                style: buttonTitle,
                               ),
                             ),
                           ],
                         );
                       });
                 },
-                style: NeumorphicStyle(
-                  shadowLightColor: sisData.darkMode ? Colors.white : null,
-                  shadowDarkColor:
-                      sisData.darkMode ? NeumorphicColors.background : null,
-                  color: sisData.darkMode
-                      ? Color.fromARGB(1, 77, 74, 74)
-                      : NeumorphicColors.background,
-                  depth: 2,
-                  boxShape: NeumorphicBoxShape.roundRect(
-                    BorderRadius.circular(20),
-                  ),
-                ),
+                style: neumorphicStyle,
                 child: Text(
                   "Sign out",
-                  style: TextStyle(
-                      color: sisData.darkMode ? Colors.white : Colors.black,
-                      fontSize: 15,
-                      fontFamily: 'Comfortaa'),
+                  style: buttonTitle,
                 ),
               ),
             ),
