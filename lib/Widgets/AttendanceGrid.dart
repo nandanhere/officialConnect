@@ -161,22 +161,46 @@ class AttendanceGrid extends StatelessWidget {
       return Colors.grey;
     }
 
-    Widget buildNumber(List day) => Neumorphic(
-          // day is a list in which each element is [colornumber, date, time]
-          style: NeumorphicStyle(color: getColor(day[0])),
-          child: Center(
-              child: InkWell(
-            onTap: () => print(day),
-          )),
+    String toolTipMessage(List<dynamic> day) {
+      var value = day[0];
+      if (value == -1) {
+        return "No class";
+      } else {
+        var formatter = DateFormat('dd-MM-yyyy');
+        var date = formatter.format(day[1]);
+        var time = day[2];
+        if (value == 1) {
+          return "${date}, ${time}";
+        } else if (value == 0) {
+          return "${date}, ${time}";
+        } else {
+          return "Not available";
+        }
+      }
+    }
+
+    Widget buildNumber(List day) => Tooltip(
+          message: "${toolTipMessage(day)}",
+          triggerMode: TooltipTriggerMode.tap,
+          child: Neumorphic(
+            // day is a list in which each element is [colornumber, date, time]
+            style: NeumorphicStyle(color: getColor(day[0])),
+            child: Center(child: Container()
+                //     InkWell(
+                //   onTap: () => print(
+                //     toolTipMessage(day),
+                //   ),
+                // ),
+                ),
+          ),
         );
 
     Widget buildGridView() => GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
-            mainAxisSpacing: 20,
-            crossAxisSpacing: 15,
+            mainAxisSpacing: 20 ,
+            crossAxisSpacing: 17,
             mainAxisExtent: 12,
-            
           ),
           itemCount: allDateList.length,
           physics: const ScrollPhysics(),
@@ -185,9 +209,10 @@ class AttendanceGrid extends StatelessWidget {
             return buildNumber(item);
           },
         );
+    // ignore: todo
     // TODO : make the scrolling corret here.
     return SingleChildScrollView(
-      scrollDirection: Axis. horizontal,
+      scrollDirection: Axis.horizontal,
       child: SizedBox(
         width: width,
         height: height,
@@ -200,7 +225,6 @@ class AttendanceGrid extends StatelessWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                
                 children: const [
                   Text(
                     "Mon",

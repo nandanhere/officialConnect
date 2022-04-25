@@ -60,6 +60,15 @@ class AttendanceDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                //  Text(
+                //         "Attendance Details",
+                //         textAlign: TextAlign.left,
+                //         style: TextStyle(
+                //             color:
+                //                 sisData.darkMode ? Colors.white : Colors.black,
+                //             fontSize: 40,
+                //             fontFamily: 'Comfortaa'),
+                //       ),
                 Text(
                   "${attendanceDetails.subjectName} (${attendanceDetails.code})",
                   style: TextStyle(
