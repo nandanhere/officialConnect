@@ -19,7 +19,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   _navigateToUnifiedScreen() async {
-    await Future.delayed(Duration(milliseconds: 1500), () {
+    await Future.delayed(const Duration(milliseconds: 1500), () {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Unified()));
     });
@@ -30,7 +30,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     final sisData = Provider.of<SisData>(context);
     return Scaffold(
       backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
-      body: Center(
+      body: const Center(
         child: SpinKitSpinningLines(
           color: Colors.red,
           size: 100.0,
