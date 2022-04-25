@@ -11,11 +11,11 @@ class CieTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
-    const TextStyle headingStyle = const TextStyle(
+    const TextStyle headingStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontFamily: 'Comfortaa',
     );
-    const TextStyle bodyStyle = const TextStyle(
+    const TextStyle bodyStyle = TextStyle(
       fontWeight: FontWeight.w400,
       fontFamily: 'Comfortaa',
     );
