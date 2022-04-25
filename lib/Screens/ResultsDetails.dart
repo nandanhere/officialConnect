@@ -41,7 +41,12 @@ class ResultsDetails extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          icon: const Icon(Icons.chevron_left)),
+                          icon: Icon(
+                            Icons.chevron_left,
+                            color: (!sisData.darkMode)
+                                ? Colors.black
+                                : NeumorphicColors.background,
+                          )),
                     ],
                   ),
                 ),

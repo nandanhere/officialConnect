@@ -58,6 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (BuildContext context) {
           final size = MediaQuery.of(context).size;
           return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
               title: Text('Pick a date'),
               content: SizedBox(
                 height: size.height * 0.5,

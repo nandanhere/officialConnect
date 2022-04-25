@@ -46,55 +46,64 @@ class CieInfo extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: height * 0.04),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Text(
-                          "Results",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: 40,
-                              fontFamily: 'Comfortaa'),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Results",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  color: sisData.darkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: 40,
+                                  fontFamily: 'Comfortaa'),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.symmetric(vertical: height * 0.02),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "CIE",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        color: sisData.darkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'Comfortaa'),
+                                  ),
+                                  NeumorphicSwitch(
+                                    style: const NeumorphicSwitchStyle(
+                                        activeTrackColor:
+                                            NeumorphicColors.disabled,
+                                        inactiveTrackColor:
+                                            NeumorphicColors.accent,
+                                        trackDepth: 10,
+                                        thumbDepth: 2),
+                                    height: width * 0.055,
+                                    value: isSEE,
+                                    onChanged: (value) {
+                                      seeOpt.value = value;
+                                    },
+                                  ),
+                                  Text(
+                                    "SEE",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        color: sisData.darkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'Comfortaa'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: height * 0.02),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "CIE",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: width * 0.04,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                          NeumorphicSwitch(
-                            style: const NeumorphicSwitchStyle(
-                                inactiveTrackColor: NeumorphicColors.accent,
-                                trackDepth: 10,
-                                thumbDepth: 2),
-                            height: width * 0.055,
-                            value: isSEE,
-                            onChanged: (value) {
-                              seeOpt.value = value;
-                            },
-                          ),
-                          Text(
-                            "SEE",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: width * 0.04,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                        ],
                       ),
                     ),
                     ...sisData.previousResults
@@ -159,55 +168,64 @@ class CieInfo extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: height * 0.04),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Text(
-                          "Results",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              color: sisData.darkMode
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: 40,
-                              fontFamily: 'Comfortaa'),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Results",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  color: sisData.darkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: 40,
+                                  fontFamily: 'Comfortaa'),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.symmetric(vertical: height * 0.02),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "CIE",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        color: sisData.darkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'Comfortaa'),
+                                  ),
+                                  NeumorphicSwitch(
+                                    style: const NeumorphicSwitchStyle(
+                                        activeTrackColor:
+                                            NeumorphicColors.disabled,
+                                        inactiveTrackColor:
+                                            NeumorphicColors.accent,
+                                        trackDepth: 10,
+                                        thumbDepth: 2),
+                                    height: width * 0.055,
+                                    value: isSEE,
+                                    onChanged: (value) {
+                                      seeOpt.value = value;
+                                    },
+                                  ),
+                                  Text(
+                                    "SEE",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        color: sisData.darkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'Comfortaa'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: height * 0.02),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "CIE",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: width * 0.04,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                          NeumorphicSwitch(
-                            style: const NeumorphicSwitchStyle(
-                                inactiveTrackColor: NeumorphicColors.accent,
-                                trackDepth: 10,
-                                thumbDepth: 2),
-                            height: width * 0.055,
-                            value: isSEE,
-                            onChanged: (value) {
-                              seeOpt.value = value;
-                            },
-                          ),
-                          Text(
-                            "SEE",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: sisData.darkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: width * 0.04,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                        ],
                       ),
                     ),
                     CieGraph(marks: sisData.marks),

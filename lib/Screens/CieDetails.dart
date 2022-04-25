@@ -65,7 +65,12 @@ class CieDetails extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          icon: Icon(Icons.chevron_left)),
+                          icon: Icon(
+                            Icons.chevron_left,
+                            color: (!sisData.darkMode)
+                                ? Colors.black
+                                : NeumorphicColors.background,
+                          )),
                       Text(
                         "CIE Details",
                         textAlign: TextAlign.left,

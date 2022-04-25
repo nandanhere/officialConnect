@@ -56,7 +56,12 @@ class AttendanceDetails extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          icon: Icon(Icons.chevron_left)),
+                          icon: Icon(
+                            Icons.chevron_left,
+                            color: (!sisData.darkMode)
+                                ? Colors.black
+                                : NeumorphicColors.background,
+                          )),
                     ],
                   ),
                 ),
@@ -73,8 +78,58 @@ class AttendanceDetails extends StatelessWidget {
                   "${attendanceDetails.subjectName} (${attendanceDetails.code})",
                   style: TextStyle(
                       color: sisData.darkMode ? Colors.white : Colors.black,
-                      fontSize: MediaQuery.of(context).size.width * 0.05,
+                      fontSize: MediaQuery.of(context).size.width * 0.055,
+                      fontWeight: FontWeight.bold,
                       fontFamily: 'Comfortaa'),
+                ),
+                SizedBox(height: 30),
+                Center(
+                  child: Row(
+                    children: [
+                      AutoSizeText(
+                        "Attended : ${attendanceDetails.present}  ",
+                        style: TextStyle(
+                          color: sisData.darkMode ? Colors.white : Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          fontFamily: 'Comfortaa',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      AutoSizeText(
+                        "Missed : ${attendanceDetails.absent}  ",
+                        style: TextStyle(
+                          color: sisData.darkMode ? Colors.white : Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          fontFamily: 'Comfortaa',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Center(
+                  child: Row(
+                    children: [
+                      AutoSizeText(
+                        "Remaining : ${attendanceDetails.remaining}  ",
+                        style: TextStyle(
+                          color: sisData.darkMode ? Colors.white : Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          fontFamily: 'Comfortaa',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      AutoSizeText(
+                        "Percentage : ${attendanceDetails.percentage}",
+                        style: TextStyle(
+                          color: sisData.darkMode ? Colors.white : Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          fontFamily: 'Comfortaa',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
                 AttendanceGrid(attendance: attendanceDetails)
               ],
