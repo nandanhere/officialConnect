@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
 import 'package:official_connect/Classes/Attendance.dart';
+import 'package:provider/provider.dart';
+
+import '../Providers/sisdata.dart';
 
 class AttendanceGrid extends StatelessWidget {
   final Attendance attendance;
@@ -180,25 +183,22 @@ class AttendanceGrid extends StatelessWidget {
     }
 
     Widget buildNumber(List day) => Tooltip(
-          message: "${toolTipMessage(day)}",
+          message: toolTipMessage(day),
           triggerMode: TooltipTriggerMode.tap,
           child: Neumorphic(
             // day is a list in which each element is [colornumber, date, time]
-            style: NeumorphicStyle(color: getColor(day[0])),
-            child: Center(child: Container()
-                //     InkWell(
-                //   onTap: () => print(
-                //     toolTipMessage(day),
-                //   ),
-                // ),
-                ),
+            style: NeumorphicStyle(
+              color: getColor(day[0]),
+              disableDepth: true,
+            ),
+            child: Center(child: Container()),
           ),
         );
 
     Widget buildGridView() => GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
-            mainAxisSpacing: 20 ,
+            mainAxisSpacing: 20,
             crossAxisSpacing: 17,
             mainAxisExtent: 12,
           ),
@@ -210,6 +210,8 @@ class AttendanceGrid extends StatelessWidget {
           },
         );
     // ignore: todo
+    final sisData = Provider.of<SisData>(context);
+
     // TODO : make the scrolling corret here.
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -225,10 +227,11 @@ class AttendanceGrid extends StatelessWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                     "Mon",
                     style: TextStyle(
+                      color: sisData.darkMode ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.left,
@@ -236,6 +239,7 @@ class AttendanceGrid extends StatelessWidget {
                   Text(
                     "Tue",
                     style: TextStyle(
+                      color: sisData.darkMode ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.left,
@@ -243,6 +247,7 @@ class AttendanceGrid extends StatelessWidget {
                   Text(
                     "Wed",
                     style: TextStyle(
+                      color: sisData.darkMode ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.left,
@@ -250,6 +255,7 @@ class AttendanceGrid extends StatelessWidget {
                   Text(
                     "Thur",
                     style: TextStyle(
+                      color: sisData.darkMode ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.left,
@@ -257,6 +263,7 @@ class AttendanceGrid extends StatelessWidget {
                   Text(
                     "Fri",
                     style: TextStyle(
+                      color: sisData.darkMode ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.left,
@@ -264,6 +271,7 @@ class AttendanceGrid extends StatelessWidget {
                   Text(
                     "Sat",
                     style: TextStyle(
+                      color: sisData.darkMode ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.left,
@@ -271,6 +279,7 @@ class AttendanceGrid extends StatelessWidget {
                   Text(
                     "Sun",
                     style: TextStyle(
+                      color: sisData.darkMode ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.left,

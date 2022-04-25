@@ -21,7 +21,8 @@ class AttendanceDetails extends StatelessWidget {
     final height = size.height;
 
     return Scaffold(
-      backgroundColor: NeumorphicColors.background,
+      backgroundColor:
+          (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
@@ -50,7 +51,6 @@ class AttendanceDetails extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Row(
-                    
                     children: [
                       IconButton(
                           onPressed: () {

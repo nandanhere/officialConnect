@@ -19,27 +19,15 @@ class ResultsDetails extends StatelessWidget {
     final height = size.height;
 
     return Scaffold(
-      backgroundColor: NeumorphicColors.background,
+      backgroundColor:
+          (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
       body: SingleChildScrollView(
         child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
-                  colors: (sisData.darkMode)
-                      ? [Colors.black, Colors.black, Colors.blueGrey]
-                      : [
-                          NeumorphicColors.background,
-                          NeumorphicColors.background,
-                          Colors.white,
-                          Colors.white
-                        ])),
           margin: const EdgeInsets.all(8),
           // alignment: Alignment.center,
           // color: Colors.grey,
           child: Padding(
             padding: EdgeInsets.only(
-              left: width * 0.05,
               right: width * 0.05,
               top: height * 0.06,
             ),
@@ -66,61 +54,84 @@ class ResultsDetails extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                Text(
+                  "Semester ${previousResult.semesterNumber}",
+                  style: TextStyle(
+                    color: sisData.darkMode ? Colors.white : Colors.black,
+                    fontSize: MediaQuery.of(context).size.width * 0.06,
+                    fontFamily: 'Comfortaa',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child: Row(
-                      children: [
-                        AutoSizeText(
-                          "SGPA : ${previousResult.sgpa}  ",
-                          style: TextStyle(
-                            color:
-                                sisData.darkMode ? Colors.white : Colors.black,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                            fontFamily: 'Comfortaa',
-                            fontWeight: FontWeight.bold,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 30.0),
+                      child: Row(
+                        children: [
+                          AutoSizeText(
+                            "SGPA : ${previousResult.sgpa}  ",
+                            style: TextStyle(
+                              color: sisData.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04,
+                              fontFamily: 'Comfortaa',
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        AutoSizeText(
-                          "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
-                          style: TextStyle(
-                            color:
-                                sisData.darkMode ? Colors.white : Colors.black,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                            fontFamily: 'Comfortaa',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
+                          AutoSizeText(
+                            "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
+                            style: TextStyle(
+                              color: sisData.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04,
+                              fontFamily: 'Comfortaa',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child: Row(
-                      children: [
-                        AutoSizeText(
-                          "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
-                          style: TextStyle(
-                            color:
-                                sisData.darkMode ? Colors.white : Colors.black,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                            fontFamily: 'Comfortaa',
-                            fontWeight: FontWeight.bold,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 30.0),
+                      child: Row(
+                        children: [
+                          AutoSizeText(
+                            "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
+                            style: TextStyle(
+                              color: sisData.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04,
+                              fontFamily: 'Comfortaa',
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        AutoSizeText(
-                          "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
-                          style: TextStyle(
-                            color:
-                                sisData.darkMode ? Colors.white : Colors.black,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                            fontFamily: 'Comfortaa',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
+                          AutoSizeText(
+                            "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
+                            style: TextStyle(
+                              color: sisData.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04,
+                              fontFamily: 'Comfortaa',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
