@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         // home: Unified(),
-         home: LoadingScreen(),
+        home: LoadingScreen(),
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           Unified.id: (context) => Unified(),
