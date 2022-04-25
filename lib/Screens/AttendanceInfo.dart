@@ -84,7 +84,7 @@ class AttendanceInfo extends StatelessWidget {
                                   color: sisData.darkMode
                                       ? Colors.white
                                       : Colors.black,
-                                  fontSize: width * 0.045,
+                                  fontSize: width * 0.055,
                                   fontFamily: 'Comfortaa'),
                             ),
                             subtitle: Text(

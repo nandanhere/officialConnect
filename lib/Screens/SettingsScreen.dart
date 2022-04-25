@@ -62,6 +62,15 @@ class SettingsInfo extends StatelessWidget {
                               fontSize: width * 0.055,
                               fontFamily: 'Comfortaa'),
                         ),
+                        Text(
+                          "N,A and P 😴",
+                          style: TextStyle(
+                              color: sisData.darkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: width * 0.055,
+                              fontFamily: 'Comfortaa'),
+                        )
                       ],
                     ),
                     actions: <Widget>[
