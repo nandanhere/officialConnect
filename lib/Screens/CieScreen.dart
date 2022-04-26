@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:official_connect/Classes/Marks.dart';
 import 'package:official_connect/Screens/ResultsDetails.dart';
 import 'package:official_connect/Widgets/CieGraph.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +61,7 @@ class CieInfo extends StatelessWidget {
                                   NeumorphicSwitch(
                                     style: const NeumorphicSwitchStyle(
                                         activeTrackColor:
-                                            NeumorphicColors.disabled,
+                                            NeumorphicColors.accent,
                                         inactiveTrackColor:
                                             NeumorphicColors.accent,
                                         trackDepth: 10,
@@ -83,6 +84,12 @@ class CieInfo extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Text("CGPA - ${sisData.previousResults.last.cgpa}",
+                        textAlign: TextAlign.left,
+                        style: buttonTitle.copyWith(fontSize: width * 0.08)),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
                     ...sisData.previousResults
                         .map((e) => Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -104,11 +111,11 @@ class CieInfo extends StatelessWidget {
                                     );
                                   },
                                   title: Text(
-                                    e.term,
-                                    style: buttonTitle,
+                                    "Sem - ${e.semesterNumber}",
+                                    style: buttonTrailing,
                                   ),
                                   trailing: Text(
-                                    e.cgpa,
+                                    e.sgpa,
                                     style: buttonTrailing,
                                   ),
                                 ),
