@@ -5,6 +5,7 @@ import 'package:official_connect/Classes/Attendance.dart';
 import 'package:official_connect/Classes/FeesData.dart';
 import 'package:official_connect/Classes/Marks.dart';
 import 'package:official_connect/Classes/PreviousResult.dart';
+import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,7 +74,7 @@ class SisData with ChangeNotifier {
     debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
-      const debug = false;
+      const debug = true;
       _previousResults = PreviousResult.getList(_data['prevResults']);
       if (debug) debugPrint("Previous Results");
       _attendances = Attendance.getList(_data['attendance']);
@@ -149,43 +150,49 @@ class SisData with ChangeNotifier {
     notifyListeners();
     // usn == "" means we are updating the values.
     debugPrint("getting data");
-    var url = Uri.parse(
-        "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}");
-    http.Response resp = await http.get(url);
-    if (resp.statusCode == 200) {
-      final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
-      _data = (temp.isEmpty && update) ? _data : temp;
-      if (_data.isNotEmpty) {
-        try {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
-          if (resp.body != "{}") prefs.setString('data', resp.body);
-          prefs.setBool('hasData', true);
-          if (!update) {
-            prefs.setString('dob', dob);
-            prefs.setString('usn', usn);
-            prefs.setBool('darkMode', false);
-          }
-        } finally {
-          if (usn != "" && dob != "") {
-            _usn = usn;
-            _dob = dob;
+    if (usn != "dummy") {
+      var url = Uri.parse(
+          "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}");
+      http.Response resp = await http.get(url);
+      if (resp.statusCode == 200) {
+        final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
+        _data = (temp.isEmpty && update) ? _data : temp;
+        if (_data.isNotEmpty) {
+          try {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
+            if (resp.body != "{}") prefs.setString('data', resp.body);
+            prefs.setBool('hasData', true);
+            if (!update) {
+              prefs.setString('dob', dob);
+              prefs.setString('usn', usn);
+              prefs.setBool('darkMode', false);
+            }
+          } finally {
+            if (usn != "" && dob != "") {
+              _usn = usn;
+              _dob = dob;
+            }
           }
         }
       }
-      if (_data.isEmpty) {
-        isValidData = false;
-        _errorMessage = "Error! please check the entered details";
-      } else {
-        isValidData = true;
-      }
-      _hasData = true;
-      needToUpdate = false;
-      if (_data.isNotEmpty) {
-        setVariables();
-      }
-      notifyListeners();
+    } else {
+      print("getting dummy data");
+      _data = await convert.jsonDecode(DummyData.data);
+      print(_data);
     }
+    if (_data.isEmpty) {
+      isValidData = false;
+      _errorMessage = "Error! please check the entered details";
+    } else {
+      isValidData = true;
+    }
+    _hasData = true;
+    needToUpdate = false;
+    if (_data.isNotEmpty) {
+      setVariables();
+    }
+    notifyListeners();
   }
 
   Map<String, dynamic> get data {
