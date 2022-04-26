@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:http/retry.dart';
 import 'package:official_connect/Classes/Attendance.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/attendanceGrid.dart';
@@ -21,6 +22,20 @@ class AttendanceDetails extends StatelessWidget {
     final height = size.height;
     final textStyle = CustomTheme.textStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
+    var totalClasses = attendanceDetails.present +
+        attendanceDetails.absent +
+        attendanceDetails.remaining;
+    String howManyYouCanMiss(int per) {
+      double p85 = (totalClasses * 0.85);
+      double p75 = (totalClasses * 0.75);
+      if (per == 85) {
+        return "${p85.toInt()}";
+      } else if (per == 75) {
+        return "${p75.toInt()}";
+      } else {
+        return "N/A";
+      }
+    }
 
     return Scaffold(
       backgroundColor:
@@ -93,6 +108,31 @@ class AttendanceDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                Center(
+                  child: Row(
+                    children: [
+                      AutoSizeText(
+                        "For 85% : ${howManyYouCanMiss(85)}/$totalClasses  ",
+                        style: textStyle,
+                       
+                      ),
+                      AutoSizeText(
+                        "For 75% : ${howManyYouCanMiss(75)}/$totalClasses",
+                        style: textStyle,
+                        
+                      ),
+                    ],
+                  ),
+                ),
+                 Align(
+                   alignment: Alignment.topLeft,
+                   child: AutoSizeText(
+                      "Total : $totalClasses ",
+                      style: textStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                 ),
+                
                 AttendanceGrid(attendance: attendanceDetails)
               ],
             ),

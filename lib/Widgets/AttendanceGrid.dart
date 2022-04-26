@@ -188,6 +188,7 @@ class AttendanceGrid extends StatelessWidget {
           child: Neumorphic(
             // day is a list in which each element is [colornumber, date, time]
             style: NeumorphicStyle(
+              
               color: getColor(day[0]),
               disableDepth: true,
             ),
@@ -198,7 +199,7 @@ class AttendanceGrid extends StatelessWidget {
     Widget buildGridView() => GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
-            mainAxisSpacing: 20,
+            mainAxisSpacing: 22.5,
             crossAxisSpacing: 17,
             mainAxisExtent: 12,
           ),
