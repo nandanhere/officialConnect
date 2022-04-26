@@ -122,6 +122,8 @@ class _LoginScreenState extends State<LoginScreen> {
     // nadnan
     // usnController.text = "1ms19is076";
     // dobController.text = "2000-12-08";
+
+    usnController.text = "dummy";
     TextFormField usnForm = TextFormField(
       // autofocus: true,
       controller: usnController,
@@ -131,7 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
         labelText: "USN",
       ),
       validator: (value) {
-        if (!RegExp(r"1MS\d\d[A-Z]+\d+").hasMatch(value!.toUpperCase())) {
+        if (!RegExp(r"1MS\d\d[A-Z]+\d+").hasMatch(value!.toUpperCase()) &&
+            value != "dummy") {
           setState(() {
             isPressed = false;
           });

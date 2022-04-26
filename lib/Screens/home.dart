@@ -42,7 +42,6 @@ class Home extends StatelessWidget {
       "🤗",
       "😎",
       "👽",
-      "💩",
       "👻",
       "😺",
       "🤟"
