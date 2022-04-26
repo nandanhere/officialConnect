@@ -5,7 +5,7 @@ import 'package:official_connect/Screens/LoadingScreen.dart';
 import 'package:official_connect/Screens/home.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Screens/AttendanceInfo.dart';
-import 'package:official_connect/Screens/CieScreen.dart';
+import 'package:official_connect/Screens/ResultsScreen.dart';
 import 'package:official_connect/Screens/SettingsScreen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'LoginScreen.dart';
@@ -37,7 +37,7 @@ class Unified extends StatelessWidget {
                           children: [
                             const Home(),
                             const AttendanceInfo(),
-                            CieInfo(),
+                            ResultsScreen(),
                             SettingsInfo()
                           ],
                           onPageChanged: (page) {
