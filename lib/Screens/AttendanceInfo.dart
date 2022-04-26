@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/AttendanceGraph.dart';
@@ -35,7 +36,7 @@ class AttendanceInfo extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              Text(
+              AutoSizeText(
                 "Attendance Info",
                 style: titleStyle,
               ),
