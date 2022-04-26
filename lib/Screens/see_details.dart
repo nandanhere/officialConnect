@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Classes/PreviousResult.dart';
+import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Widgets/MarksCard.dart';
+import 'package:official_connect/Widgets/marks_card.dart';
 import 'package:provider/provider.dart';
-import 'package:official_connect/Providers/Themes.dart';
+import 'package:official_connect/Providers/themes.dart';
 
 class ResultsDetails extends StatelessWidget {
   final PreviousResult previousResult;

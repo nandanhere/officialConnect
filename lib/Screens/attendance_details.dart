@@ -1,12 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:http/retry.dart';
-import 'package:official_connect/Classes/Attendance.dart';
+import 'package:official_connect/Classes/attendance.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Widgets/attendanceGrid.dart';
+import 'package:official_connect/Widgets/attendance_grid.dart';
 import 'package:provider/provider.dart';
-import 'package:official_connect/Providers/Themes.dart';
+import 'package:official_connect/Providers/themes.dart';
 
 class AttendanceDetails extends StatelessWidget {
   final Attendance attendanceDetails;
@@ -71,21 +69,12 @@ class AttendanceDetails extends StatelessWidget {
                     ],
                   ),
                 ),
-                //  Text(
-                //         "Attendance Details",
-                //         textAlign: TextAlign.left,
-                //         style: TextStyle(
-                //             color:
-                //                 sisData.darkMode ? Colors.white : Colors.black,
-                //             fontSize: 40,
-                //             fontFamily: 'Comfortaa'),
-                //       ),
                 Text(
                     "${attendanceDetails.subjectName} (${attendanceDetails.code})",
                     style: textStyle.copyWith(
                       fontSize: MediaQuery.of(context).size.width * 0.055,
                     )),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Center(
                   child: Row(
                     children: [
@@ -114,25 +103,22 @@ class AttendanceDetails extends StatelessWidget {
                       AutoSizeText(
                         "For 85% : ${howManyYouCanMiss(85)}/$totalClasses  ",
                         style: textStyle,
-                       
                       ),
                       AutoSizeText(
                         "For 75% : ${howManyYouCanMiss(75)}/$totalClasses",
                         style: textStyle,
-                        
                       ),
                     ],
                   ),
                 ),
-                 Align(
-                   alignment: Alignment.topLeft,
-                   child: AutoSizeText(
-                      "Total : $totalClasses ",
-                      style: textStyle,
-                      textAlign: TextAlign.left,
-                    ),
-                 ),
-                
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: AutoSizeText(
+                    "Total : $totalClasses ",
+                    style: textStyle,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
                 AttendanceGrid(attendance: attendanceDetails)
               ],
             ),

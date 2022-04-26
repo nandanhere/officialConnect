@@ -31,6 +31,7 @@ class Subject {
 }
 
 class PreviousResult {
+  // ignore: prefer_typing_uninitialized_variables
   final cgpa, creditsEarned, creditsRegistered, sgpa, term, semesterNumber;
   final List<Subject> results;
 

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:official_connect/Screens/CieScreen.dart';
-import 'package:official_connect/Screens/SEEScreen.dart';
+import 'package:official_connect/Screens/CIEScreen.dart';
+import 'package:official_connect/Screens/see_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Providers/Themes.dart';
+import 'package:official_connect/Providers/themes.dart';
 
 class ResultsScreen extends StatelessWidget {
   ResultsScreen({Key? key}) : super(key: key);

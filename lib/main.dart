@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Screens/LoginScreen.dart';
-import 'package:official_connect/Screens/UnifiedScreen.dart';
+import 'package:official_connect/Screens/login_screen.dart';
+import 'package:official_connect/Screens/unified_screen.dart';
 import 'package:provider/provider.dart';
-import './Screens/LoadingScreen.dart';
+import 'Screens/loading_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         // home: Unified(),
-        home: LoadingScreen(),
+        home: const LoadingScreen(),
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           Unified.id: (context) => Unified(),

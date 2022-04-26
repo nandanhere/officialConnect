@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:official_connect/Providers/Themes.dart';
+import 'package:official_connect/Providers/themes.dart';
 
 class SettingsInfo extends StatelessWidget {
   void _logOut(BuildContext context) {}

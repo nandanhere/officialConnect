@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:official_connect/Classes/Marks.dart';
-import 'package:official_connect/Widgets/CieDetailsGraph.dart';
-import 'package:official_connect/Widgets/CieTable.dart';
+import 'package:official_connect/Classes/marks.dart';
+import 'package:official_connect/Widgets/cie_details_graph.dart';
+import 'package:official_connect/Widgets/cie_table.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Providers/Themes.dart';
+import 'package:official_connect/Providers/themes.dart';
 
-class CieDetails extends StatelessWidget {
+class CIEDetails extends StatelessWidget {
   final Marks subjectDetails;
-  const CieDetails({Key? key, required this.subjectDetails}) : super(key: key);
+  const CIEDetails({Key? key, required this.subjectDetails}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Widgets/AttendanceGraph.dart';
+import 'package:official_connect/Widgets/attendance_graph.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import './AttendanceDetails.dart';
-import 'package:official_connect/Providers/Themes.dart';
+import 'attendance_details.dart';
+import 'package:official_connect/Providers/themes.dart';
 
 class AttendanceInfo extends StatelessWidget {
   const AttendanceInfo({Key? key}) : super(key: key);
