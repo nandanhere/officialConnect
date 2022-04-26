@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Screens/ResultsDetails.dart';
+import 'package:official_connect/Screens/see_details.dart';
 
 class SEEScreen extends StatelessWidget {
   final height,
