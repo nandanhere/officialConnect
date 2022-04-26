@@ -169,16 +169,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: Image.asset('images/logo.png'),
+                  ),
                   const Text(
                     "CONNECT",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 40,
                         fontFamily: 'Comfortaa'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                    child: Image.asset('images/logo.png'),
                   ),
                   if (!fillForm)
                     const Text(
