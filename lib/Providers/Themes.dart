@@ -78,7 +78,6 @@ class CustomTheme {
         begin: Alignment.bottomRight,
         end: Alignment.topLeft,
         colors: (sisData.darkMode)
-            // ? [Colors.black, Colors.black, Colors.blueGrey]
             ? [
                 Colors.black,
                 Colors.black,
