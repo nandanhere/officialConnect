@@ -23,6 +23,7 @@ class Unified extends StatelessWidget {
     } else {
       if (sisData.data.isEmpty) return const LoadingScreen();
       PageController _myCont = PageController(initialPage: 0);
+
       return Scaffold(
         backgroundColor: NeumorphicColors.background,
         body: Stack(
@@ -47,53 +48,53 @@ class Unified extends StatelessWidget {
               left: 0,
               right: 0,
               bottom: 0,
-              child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.12,
-                  child: ClipRRect(
-                      child: ValueListenableBuilder(
-                    valueListenable: screenNumber,
-                    builder: (context, int listeningValue, child) =>
-                        BottomNavigationBar(
-                      selectedItemColor: const Color(0xffba3237),
-                      unselectedItemColor: Colors.grey,
-                      items: [
-                        BottomNavigationBarItem(
-                          icon: const FaIcon(FontAwesomeIcons.house),
-                          label: "Home",
-                          backgroundColor: sisData.darkMode
-                              ? Colors.black54
-                              : NeumorphicColors.background,
-                        ),
-                        BottomNavigationBarItem(
-                          icon: const FaIcon(FontAwesomeIcons.calendarDay),
-                          label: "Attendance",
-                          backgroundColor: sisData.darkMode
-                              ? Colors.black54
-                              : NeumorphicColors.background,
-                        ),
-                        BottomNavigationBarItem(
-                          icon: const FaIcon(FontAwesomeIcons.graduationCap),
-                          label: "Results",
-                          backgroundColor: sisData.darkMode
-                              ? Colors.black54
-                              : NeumorphicColors.background,
-                        ),
-                        BottomNavigationBarItem(
-                          icon: const FaIcon(FontAwesomeIcons.gear),
-                          label: "Settings",
-                          backgroundColor: sisData.darkMode
-                              ? Colors.black54
-                              : NeumorphicColors.background,
-                        ),
-                      ],
-                      currentIndex: listeningValue,
-                      onTap: (index) {
-                        _myCont.animateToPage(index,
-                            curve: Curves.easeIn,
-                            duration: Duration(milliseconds: 250));
-                      },
+              child: ValueListenableBuilder(
+                valueListenable: screenNumber,
+                builder: (context, int listeningValue, child) =>
+                    BottomNavigationBar(
+                  elevation: 0,
+                  selectedLabelStyle: TextStyle(fontFamily: 'Comfortaa'),
+                  unselectedLabelStyle: TextStyle(fontFamily: 'Comfortaa'),
+                  selectedItemColor: const Color(0xffba3237),
+                  unselectedItemColor: Colors.grey,
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: const FaIcon(FontAwesomeIcons.house),
+                      label: "Home",
+                      backgroundColor: sisData.darkMode
+                          ? Colors.black54
+                          : NeumorphicColors.background,
                     ),
-                  ))),
+                    BottomNavigationBarItem(
+                      icon: const FaIcon(FontAwesomeIcons.calendarDay),
+                      label: "Attendance",
+                      backgroundColor: sisData.darkMode
+                          ? Colors.black54
+                          : NeumorphicColors.background,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: const FaIcon(FontAwesomeIcons.graduationCap),
+                      label: "Results",
+                      backgroundColor: sisData.darkMode
+                          ? Colors.black54
+                          : NeumorphicColors.background,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: const FaIcon(FontAwesomeIcons.gear),
+                      label: "Settings",
+                      backgroundColor: sisData.darkMode
+                          ? Colors.black54
+                          : NeumorphicColors.background,
+                    ),
+                  ],
+                  currentIndex: listeningValue,
+                  onTap: (index) {
+                    _myCont.animateToPage(index,
+                        curve: Curves.easeIn,
+                        duration: Duration(milliseconds: 250));
+                  },
+                ),
+              ),
             ),
           ],
         ),
