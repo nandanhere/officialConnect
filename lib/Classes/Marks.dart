@@ -1,4 +1,5 @@
-// ignore: file_names
+// ignore_for_file: file_names
+
 class Marks {
   final String a1,
       a2,

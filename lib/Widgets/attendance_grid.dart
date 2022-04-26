@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
-import 'package:official_connect/Classes/Attendance.dart';
+import 'package:official_connect/Classes/attendance.dart';
 import 'package:provider/provider.dart';
 
 import '../Providers/sisdata.dart';
@@ -188,7 +188,6 @@ class AttendanceGrid extends StatelessWidget {
           child: Neumorphic(
             // day is a list in which each element is [colornumber, date, time]
             style: NeumorphicStyle(
-              
               color: getColor(day[0]),
               disableDepth: true,
             ),

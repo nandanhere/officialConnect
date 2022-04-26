@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Widgets/CieGraph.dart';
+// ignore_for_file: prefer_typing_uninitialized_variables
 
-import 'CieDetails.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:official_connect/Screens/cie_details.dart';
+import 'package:official_connect/Widgets/cie_graph.dart';
 
 class CIEScreen extends StatelessWidget {
   final height,
@@ -90,7 +90,7 @@ class CIEScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (ctx) => CieDetails(subjectDetails: e),
+                          builder: (ctx) => CIEDetails(subjectDetails: e),
                         ),
                       );
                     },

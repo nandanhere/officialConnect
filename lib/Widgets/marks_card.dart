@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:official_connect/Classes/Marks.dart';
-import 'package:official_connect/Classes/PreviousResult.dart';
+import 'package:official_connect/Classes/marks.dart';
+import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Screens/ResultsDetails.dart';
+import 'package:official_connect/Screens/see_details.dart';
 import 'package:provider/provider.dart';
 
 class MarksCard extends StatelessWidget {
@@ -15,11 +15,11 @@ class MarksCard extends StatelessWidget {
     final sisData = Provider.of<SisData>(context);
 
     final heads = ["Subject", "Earned", "GPA"];
-    const TextStyle headingStyle = const TextStyle(
+    const TextStyle headingStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontFamily: 'Comfortaa',
     );
-    const TextStyle bodyStyle = const TextStyle(
+    const TextStyle bodyStyle = TextStyle(
       fontWeight: FontWeight.w400,
       fontFamily: 'Comfortaa',
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:official_connect/Classes/Marks.dart';
+import 'package:official_connect/Classes/marks.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';

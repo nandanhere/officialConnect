@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Screens/LoadingScreen.dart';
-import 'package:official_connect/Screens/home.dart';
+import 'package:official_connect/Screens/loading_screen.dart';
+import 'package:official_connect/Screens/home_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:official_connect/Screens/AttendanceInfo.dart';
-import 'package:official_connect/Screens/ResultsScreen.dart';
-import 'package:official_connect/Screens/SettingsScreen.dart';
+import 'package:official_connect/Screens/attendance_info.dart';
+import 'package:official_connect/Screens/results_screen.dart';
+import 'package:official_connect/Screens/settings_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'LoginScreen.dart';
+import 'login_screen.dart';
 
 class Unified extends StatelessWidget {
   static const String id = "unified";
@@ -35,7 +35,7 @@ class Unified extends StatelessWidget {
                         PageView(
                           controller: _myCont,
                           children: [
-                            const Home(),
+                            const HomeScreen(),
                             const AttendanceInfo(),
                             ResultsScreen(),
                             SettingsInfo()

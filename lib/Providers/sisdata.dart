@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import 'package:official_connect/Classes/Attendance.dart';
-import 'package:official_connect/Classes/FeesData.dart';
-import 'package:official_connect/Classes/Marks.dart';
-import 'package:official_connect/Classes/PreviousResult.dart';
+import 'package:official_connect/Classes/attendance.dart';
+import 'package:official_connect/Classes/fees_data.dart';
+import 'package:official_connect/Classes/marks.dart';
+import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
 
@@ -280,6 +279,10 @@ class SisData with ChangeNotifier {
 
   String get email {
     return _email;
+  }
+
+  String get phone {
+    return _phone;
   }
 
   String get studentName {
