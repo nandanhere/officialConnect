@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/attendance_graph.dart';
 import 'package:provider/provider.dart';
