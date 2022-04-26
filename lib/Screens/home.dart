@@ -87,7 +87,7 @@ class Home extends StatelessWidget {
                               child: AutoSizeText(
                                 "Hi, ${sisData.studentName.toTitleCase()} ${emoji} ",
                                 style: buttonTrailing.copyWith(
-                                    fontSize: width * 0.07),
+                                    fontSize: width * 0.06),
                               ),
                             ),
                             Neumorphic(
@@ -190,69 +190,73 @@ class Home extends StatelessWidget {
                             right: width * 0.01),
                         onPressed: () {}, //TODO receipt download maybe?
                         style: neumorphicStyle,
-                        child: ExpansionTile(
-                          title: Text(
-                            e.amountPaid,
-                            style:
-                                buttonTrailing.copyWith(fontSize: width * 0.06),
-                          ),
-                          subtitle: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: width * 0.02,
-                                vertical: height * 0.01),
-                            child: Text(
-                              "For Year ${e.yearNumber} on ${e.date}",
-                              style: subtitle,
+                        child: Theme(
+                          data: Theme.of(context)
+                              .copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            title: Text(
+                              e.amountPaid,
+                              style: buttonTrailing.copyWith(
+                                  fontSize: width * 0.06),
                             ),
-                          ),
-                          children: [
-                            Padding(
+                            subtitle: Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: width * 0.04,
-                                  vertical: height * 0.02),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Challan No:",
-                                    style: title,
-                                  ),
-                                  Text(
-                                    e.challanNumber,
-                                    style: subtitle,
-                                    textAlign: TextAlign.end,
-                                  ),
-                                ],
-                              ), //ChallanNo
+                                  horizontal: width * 0.02,
+                                  vertical: height * 0.01),
+                              child: Text(
+                                "For Year ${e.yearNumber} on ${e.date}",
+                                style: subtitle,
+                              ),
                             ),
-                            (e.mode != "CASH")
-                                ? Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: width * 0.04,
-                                        vertical: height * 0.02),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Cheque No:",
-                                          style: title,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            e.chequeNumber,
-                                            style: subtitle,
-                                            textAlign: TextAlign.end,
-                                          ),
-                                        ),
-                                      ],
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: width * 0.04,
+                                    vertical: height * 0.02),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Challan No:",
+                                      style: title,
                                     ),
-                                  )
-                                : Container(),
-                          ],
+                                    Text(
+                                      e.challanNumber,
+                                      style: subtitle,
+                                      textAlign: TextAlign.end,
+                                    ),
+                                  ],
+                                ), //ChallanNo
+                              ),
+                              (e.mode != "CASH")
+                                  ? Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: width * 0.04,
+                                          vertical: height * 0.02),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Cheque No:",
+                                            style: title,
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              e.chequeNumber,
+                                              style: subtitle,
+                                              textAlign: TextAlign.end,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
+                          ),
                         ),
                       ),
                     ))
