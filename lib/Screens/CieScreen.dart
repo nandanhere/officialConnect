@@ -30,7 +30,7 @@ class CieInfo extends StatelessWidget {
           left: width * 0.05,
           right: width * 0.05,
           top: height * 0.06,
-          bottom: height * 0.13),
+          bottom: height * 0.095),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: ValueListenableBuilder(
@@ -84,11 +84,23 @@ class CieInfo extends StatelessWidget {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: height * 0.015,
+                    ),
                     Text("CGPA - ${sisData.previousResults.last.cgpa}",
                         textAlign: TextAlign.left,
                         style: buttonTitle.copyWith(fontSize: width * 0.08)),
-                    SizedBox(
-                      height: height * 0.02,
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: width * 0.16,
+                          right: width * 0.16,
+                          top: height * 0.01,
+                          bottom: height * 0.015),
+                      child: Divider(
+                        color:
+                            sisData.darkMode ? Colors.white38 : Colors.black26,
+                        thickness: 1.6,
+                      ),
                     ),
                     ...sisData.previousResults
                         .map((e) => Padding(
