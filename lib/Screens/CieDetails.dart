@@ -24,27 +24,11 @@ class CieDetails extends StatelessWidget {
     return Scaffold(
       backgroundColor:
           (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   foregroundColor: const Color(0xFF852528),
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   title: Text(
-      //     "CIE details",
-      //     style: TextStyle(
-      //         color: const Color(0xFF852528),
-      //         fontSize: MediaQuery.of(context).size.width * 0.06,
-      //         fontFamily: 'Comfortaa'),
-      //   ),
-      // ),
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(gradient: linearGradient),
           padding: EdgeInsets.only(
-              left: width * 0.05,
-              right: width * 0.05,
-              top: height * 0.06,
-              bottom: height * 0.25),
+              right: width * 0.05, top: height * 0.06, bottom: height * 0.25),
           child: Column(
             children: [
               Padding(
