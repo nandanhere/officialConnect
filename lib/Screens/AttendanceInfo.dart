@@ -30,7 +30,7 @@ class AttendanceInfo extends StatelessWidget {
           left: width * 0.05,
           right: width * 0.05,
           top: height * 0.06,
-          bottom: height * 0.13),
+          bottom: height * 0.095),
       child: Center(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

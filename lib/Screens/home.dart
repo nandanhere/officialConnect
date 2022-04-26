@@ -56,7 +56,7 @@ class Home extends StatelessWidget {
           left: width * 0.08,
           right: width * 0.08,
           top: height * 0.06,
-          bottom: height * 0.13),
+          bottom: height * 0.095),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Center(
