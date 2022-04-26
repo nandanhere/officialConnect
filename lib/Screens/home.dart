@@ -91,7 +91,8 @@ class Home extends StatelessWidget {
                               ),
                             ),
                             Neumorphic(
-                              style: neumorphicStyle,
+                              style: neumorphicStyle.copyWith(
+                                  boxShape: NeumorphicBoxShape.circle()),
                               // TODO : show circular progress indicator while loading image
                               child: CircleAvatar(
                                 child: (sisData.studentImage ==

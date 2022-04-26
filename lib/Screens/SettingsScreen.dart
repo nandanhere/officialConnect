@@ -46,6 +46,7 @@ class SettingsInfo extends StatelessWidget {
                       ),
                     ),
                     content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text("RIT Connect",
                             style: title.copyWith(fontSize: width * 0.075)),
@@ -56,9 +57,72 @@ class SettingsInfo extends StatelessWidget {
                           "by",
                           style: title.copyWith(fontSize: width * 0.055),
                         ),
-                        Text(
-                          "N,A and P 😴",
-                          style: title.copyWith(fontSize: width * 0.055),
+                        SizedBox(
+                          height: height * 0.04,
+                        ),
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: width * 0.22),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                //mainAxisAlignment: MainAxisAlignment.center,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  Text(
+                                    "N",
+                                    style: title.copyWith(
+                                      fontSize: width * 0.075,
+                                    ),
+                                  ),
+                                  Text(
+                                    "andan",
+                                    style:
+                                        title.copyWith(fontSize: width * 0.035),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                //mainAxisAlignment: MainAxisAlignment.center,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  Text(
+                                    "A",
+                                    style: title.copyWith(
+                                      fontSize: width * 0.075,
+                                    ),
+                                  ),
+                                  Text(
+                                    "rnav",
+                                    style:
+                                        title.copyWith(fontSize: width * 0.035),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                //mainAxisAlignment: MainAxisAlignment.center,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  Text(
+                                    "P",
+                                    style: title.copyWith(
+                                      fontSize: width * 0.075,
+                                    ),
+                                  ),
+                                  Text(
+                                    "rateek ",
+                                    style:
+                                        title.copyWith(fontSize: width * 0.035),
+                                  )
+                                ],
+                              ),
+                              Text(
+                                "😴",
+                                style: title.copyWith(fontSize: width * 0.055),
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),
