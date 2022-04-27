@@ -5,6 +5,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Widgets/attendance_grid.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/themes.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class AttendanceDetails extends StatelessWidget {
   final Attendance attendanceDetails;
@@ -18,7 +19,8 @@ class AttendanceDetails extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-    final textStyle = CustomTheme.textStyle(context);
+    final textStyle =
+        CustomTheme.textStyle(context).copyWith(fontSize: width * 0.045);
     final linearGradient = CustomTheme.linearGradient(context);
     var totalClasses = attendanceDetails.present +
         attendanceDetails.absent +
@@ -34,7 +36,21 @@ class AttendanceDetails extends StatelessWidget {
         return "N/A";
       }
     }
+    // String howManyYouCanMiss(int per) {
+    //   double p85 = (totalClasses * 0.85);
+    //   double p75 = (totalClasses * 0.75);
+    //   double calc85 = totalClasses-p85;
+    //   double calc75 = totalClasses-p75;
+    //   if (per == 85 && calc85>=0) {
+    //     return "${calc85.toInt()}";
+    //   } else if (per == 75 && calc75>=0) {
+    //     return "${calc75.toInt()}";
+    //   } else {
+    //     return "N/A";
+    //   }
+    // }
 
+    ValueNotifier<bool> show = ValueNotifier(false);
     return Scaffold(
       backgroundColor:
           (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
@@ -66,59 +82,107 @@ class AttendanceDetails extends StatelessWidget {
                                 ? Colors.black
                                 : NeumorphicColors.background,
                           )),
+                      SizedBox(
+                        width: width * 0.03,
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onLongPress: () {
+                            show.value = true;
+                            Future.delayed(
+                                Duration(seconds: 4, milliseconds: 200), () {
+                              show.value = false;
+                            });
+                          },
+                          child: Text(
+                              "${attendanceDetails.subjectName} (${attendanceDetails.code})",
+                              style: textStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.055,
+                              )),
+                        ),
+                      )
                     ],
                   ),
                 ),
-                Text(
-                    "${attendanceDetails.subjectName} (${attendanceDetails.code})",
-                    style: textStyle.copyWith(
-                      fontSize: MediaQuery.of(context).size.width * 0.055,
-                    )),
-                const SizedBox(height: 30),
-                Center(
+                SizedBox(height: height * 0.04),
+                Align(
+                  alignment: Alignment.center,
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       AutoSizeText("Attended : ${attendanceDetails.present}  ",
                           style: textStyle),
+                      SizedBox(
+                        width: width * 0.03,
+                      ),
                       AutoSizeText("Missed : ${attendanceDetails.absent}  ",
                           style: textStyle)
                     ],
                   ),
                 ),
-                Center(
+                Align(
+                  alignment: Alignment.center,
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       AutoSizeText(
                           "Remaining : ${attendanceDetails.remaining}  ",
                           style: textStyle),
+                      SizedBox(
+                        width: width * 0.03,
+                      ),
                       AutoSizeText(
                           "Percentage : ${attendanceDetails.percentage}",
                           style: textStyle)
                     ],
                   ),
                 ),
-                Center(
-                  child: Row(
-                    children: [
-                      AutoSizeText(
-                        "For 85% : ${howManyYouCanMiss(85)}/$totalClasses  ",
-                        style: textStyle,
-                      ),
-                      AutoSizeText(
-                        "For 75% : ${howManyYouCanMiss(75)}/$totalClasses",
-                        style: textStyle,
-                      ),
-                    ],
-                  ),
-                ),
                 Align(
-                  alignment: Alignment.topLeft,
+                  alignment: Alignment.center,
                   child: AutoSizeText(
                     "Total : $totalClasses ",
                     style: textStyle,
                     textAlign: TextAlign.left,
                   ),
                 ),
+                SizedBox(height: height * 0.02),
+                ValueListenableBuilder(
+                    valueListenable: show,
+                    builder: (context, bool listening, child) => (listening)
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                AnimatedTextKit(
+                                    totalRepeatCount: 1,
+                                    animatedTexts: [
+                                      TypewriterAnimatedText(
+                                          "For 85% : ${howManyYouCanMiss(85)}/$totalClasses",
+                                          textStyle: textStyle,
+                                          speed: Duration(milliseconds: 50)),
+                                      TypewriterAnimatedText(
+                                          "For 75% : ${howManyYouCanMiss(75)}/$totalClasses",
+                                          textStyle: textStyle,
+                                          speed: Duration(milliseconds: 50))
+                                    ])
+                                // AutoSizeText(
+                                //   "For 85% : ${howManyYouCanMiss(85)}/$totalClasses  ",
+                                //   style: textStyle,
+                                // ),
+                                // SizedBox(
+                                //   width: width * 0.04,
+                                // ),
+                                // AutoSizeText(
+                                //   "For 75% : ${howManyYouCanMiss(75)}/$totalClasses",
+                                //   style: textStyle,
+                                // ),
+                              ],
+                            ),
+                          )
+                        : Container()),
                 AttendanceGrid(attendance: attendanceDetails)
               ],
             ),

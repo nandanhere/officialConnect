@@ -53,10 +53,10 @@ class HomeScreen extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(gradient: linearGradient),
       padding: EdgeInsets.only(
-          left: width * 0.08,
-          right: width * 0.08,
-          top: height * 0.06,
-          bottom: height * 0.095),
+        left: width * 0.08,
+        right: width * 0.08,
+        top: height * 0.06,
+      ),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Center(
@@ -260,6 +260,9 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ))
               ],
+            ),
+            SizedBox(
+              height: height * 0.095,
             )
           ]),
         ),
