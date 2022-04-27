@@ -73,7 +73,7 @@ class SisData with ChangeNotifier {
     debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
-      const debug = true;
+      const debug = false;
       _previousResults = PreviousResult.getList(_data['prevResults']);
       if (debug) debugPrint("Previous Results");
       _attendances = Attendance.getList(_data['attendance']);
@@ -176,9 +176,8 @@ class SisData with ChangeNotifier {
         }
       }
     } else {
-      print("getting dummy data");
+      debugPrint("getting dummy data");
       _data = await convert.jsonDecode(DummyData.data);
-      print(_data);
     }
     if (_data.isEmpty) {
       isValidData = false;

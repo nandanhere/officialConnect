@@ -23,6 +23,12 @@ class ClassDay {
             status: e['status']))
         .toList();
   }
+  //  {
+  //           "date": "02-02-2022",
+  //           "index": "2",
+  //           "status": "None",
+  //           "time": "09:00-10:50"
+  //         }
 }
 
 class Attendance {
