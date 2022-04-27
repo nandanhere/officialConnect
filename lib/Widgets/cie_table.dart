@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:official_connect/Classes/marks.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
@@ -22,14 +21,14 @@ class CieTable extends StatelessWidget {
     return Theme(
       data: sisData.darkMode ? ThemeData.dark() : ThemeData.light(),
       child: DataTable(
-        columns: [
-          const DataColumn(
+        columns: const [
+          DataColumn(
             label: Text(
               "Test/Assignment",
               style: headingStyle,
             ),
           ),
-          const DataColumn(
+          DataColumn(
             label: Text("Score", style: headingStyle),
           )
         ],

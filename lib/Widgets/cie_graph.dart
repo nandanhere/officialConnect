@@ -46,7 +46,7 @@ class _CieGraphState extends State<CieGraph> {
       primaryYAxis: NumericAxis(minimum: 0, maximum: 50),
       series: <ChartSeries<Marks, String>>[
         BarSeries<Marks, String>(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(7), topRight: Radius.circular(7)),
           gradient: const LinearGradient(
             begin: Alignment.topRight,

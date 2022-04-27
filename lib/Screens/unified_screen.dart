@@ -9,16 +9,18 @@ import 'package:official_connect/Screens/settings_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'login_screen.dart';
 
+// ignore: must_be_immutable
 class Unified extends StatelessWidget {
   static const String id = "unified";
   Unified({Key? key}) : super(key: key);
-  @override
   ValueNotifier<int> screenNumber = ValueNotifier(0);
+
+  @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
 
     if ((sisData.usn == "" && !sisData.hasData) || !sisData.isValidData) {
-      return LoginScreen();
+      return const LoginScreen();
     } else {
       if (sisData.data.isEmpty) return const LoadingScreen();
       PageController _myCont = PageController(initialPage: 0);
@@ -37,7 +39,7 @@ class Unified extends StatelessWidget {
                             const HomeScreen(),
                             const AttendanceInfo(),
                             ResultsScreen(),
-                            SettingsInfo()
+                            const SettingsInfo()
                           ],
                           onPageChanged: (page) {
                             screenNumber.value = page;
@@ -52,35 +54,36 @@ class Unified extends StatelessWidget {
                 builder: (context, int listeningValue, child) =>
                     BottomNavigationBar(
                   elevation: 0,
-                  selectedLabelStyle: TextStyle(fontFamily: 'Comfortaa'),
-                  unselectedLabelStyle: TextStyle(fontFamily: 'Comfortaa'),
+                  selectedLabelStyle: const TextStyle(fontFamily: 'Comfortaa'),
+                  unselectedLabelStyle:
+                      const TextStyle(fontFamily: 'Comfortaa'),
                   selectedItemColor: const Color(0xffba3237),
                   unselectedItemColor: Colors.grey,
                   items: [
                     BottomNavigationBarItem(
                       icon: const FaIcon(FontAwesomeIcons.house),
-                      label: "Home",
+                      label: "",
                       backgroundColor: sisData.darkMode
                           ? Colors.black54
                           : NeumorphicColors.background,
                     ),
                     BottomNavigationBarItem(
                       icon: const FaIcon(FontAwesomeIcons.calendarDay),
-                      label: "Attendance",
+                      label: "",
                       backgroundColor: sisData.darkMode
                           ? Colors.black54
                           : NeumorphicColors.background,
                     ),
                     BottomNavigationBarItem(
                       icon: const FaIcon(FontAwesomeIcons.graduationCap),
-                      label: "Results",
+                      label: "",
                       backgroundColor: sisData.darkMode
                           ? Colors.black54
                           : NeumorphicColors.background,
                     ),
                     BottomNavigationBarItem(
                       icon: const FaIcon(FontAwesomeIcons.gear),
-                      label: "Settings",
+                      label: "",
                       backgroundColor: sisData.darkMode
                           ? Colors.black54
                           : NeumorphicColors.background,
@@ -90,7 +93,7 @@ class Unified extends StatelessWidget {
                   onTap: (index) {
                     _myCont.animateToPage(index,
                         curve: Curves.easeIn,
-                        duration: Duration(milliseconds: 250));
+                        duration: const Duration(milliseconds: 250));
                   },
                 ),
               ),

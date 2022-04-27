@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Screens/see_details.dart';
 

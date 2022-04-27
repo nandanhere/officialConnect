@@ -37,6 +37,7 @@ class AttendanceInfo extends StatelessWidget {
             children: [
               AutoSizeText(
                 "Attendance Info",
+                maxFontSize: 45,
                 style: titleStyle,
               ),
               AttendanceGraph(

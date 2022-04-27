@@ -64,7 +64,7 @@ class _CieDetailsGraphState extends State<CieDetailsGraph> {
               1),
       series: <ChartSeries<List<String>, String>>[
         BarSeries<List<String>, String>(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(7), topRight: Radius.circular(7)),
           legendItemText: "My Score",
           gradient: const LinearGradient(
@@ -81,7 +81,7 @@ class _CieDetailsGraphState extends State<CieDetailsGraph> {
           yValueMapper: (e, _) => int.tryParse(e[0].split("/").first) ?? 0,
         ),
         BarSeries<List<String>, String>(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(7), topRight: Radius.circular(7)),
           legendItemText: "Class Average",
           gradient: const LinearGradient(
