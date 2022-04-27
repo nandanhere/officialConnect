@@ -237,7 +237,7 @@ class SettingsInfo extends StatelessWidget {
                             NeumorphicButton(
                               style: neumorphicStyle,
                               onPressed: () {
-                                // Unified.screenNumber.value = 0;
+                                Unified.screenNumber.value = 0;
                                 Navigator.of(context).pop(false);
                                 sisData.cleanData();
                               },
