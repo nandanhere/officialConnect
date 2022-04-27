@@ -1,3 +1,4 @@
+import 'package:official_connect/Screens/unified_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -236,6 +237,7 @@ class SettingsInfo extends StatelessWidget {
                             NeumorphicButton(
                               style: neumorphicStyle,
                               onPressed: () {
+                                // Unified.screenNumber.value = 0;
                                 Navigator.of(context).pop(false);
                                 sisData.cleanData();
                               },

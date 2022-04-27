@@ -12,8 +12,8 @@ import 'login_screen.dart';
 // ignore: must_be_immutable
 class Unified extends StatelessWidget {
   static const String id = "unified";
-  Unified({Key? key}) : super(key: key);
-  ValueNotifier<int> screenNumber = ValueNotifier(0);
+  const Unified({Key? key}) : super(key: key);
+  static ValueNotifier<int> screenNumber = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
