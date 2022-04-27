@@ -26,10 +26,10 @@ class AttendanceInfo extends StatelessWidget {
         gradient: linearGradient,
       ),
       padding: EdgeInsets.only(
-          left: width * 0.05,
-          right: width * 0.05,
-          top: height * 0.06,
-          bottom: height * 0.095),
+        left: width * 0.05,
+        right: width * 0.05,
+        top: height * 0.06,
+      ),
       child: Center(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -71,7 +71,10 @@ class AttendanceInfo extends StatelessWidget {
                           ),
                         ),
                       ))
-                  .toList()
+                  .toList(),
+              SizedBox(
+                height: height * 0.095,
+              )
             ],
           ),
         ),

@@ -121,7 +121,10 @@ class SEEScreen extends StatelessWidget {
                     ),
                   ),
                 ))
-            .toList()
+            .toList(),
+        SizedBox(
+          height: height * 0.095,
+        )
       ],
     );
   }

@@ -146,10 +146,10 @@ class SettingsInfo extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(gradient: linearGradient),
         padding: EdgeInsets.only(
-            left: width * 0.05,
-            right: width * 0.05,
-            top: height * 0.06,
-            bottom: height * 0.095),
+          left: width * 0.05,
+          right: width * 0.05,
+          top: height * 0.06,
+        ),
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: [
@@ -255,6 +255,9 @@ class SettingsInfo extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(
+              height: height * 0.095,
+            )
           ],
         ));
   }
