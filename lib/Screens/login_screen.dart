@@ -152,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: NeumorphicColors.background,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 160.0),
+          padding: const EdgeInsets.only(top: 60.0),
           child: SafeArea(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -161,6 +161,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40.0),
                     child: Image.asset('images/logo.png'),
+                  ),
+                  const SizedBox(
+                    height: 100,
                   ),
                   const Text(
                     "CONNECT",
