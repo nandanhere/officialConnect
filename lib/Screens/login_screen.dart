@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
@@ -10,7 +9,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 class LoginScreen extends StatefulWidget {
   static const String id = "login";
 
-  LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -57,40 +56,30 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         builder: (BuildContext context) {
           final size = MediaQuery.of(context).size;
-          return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              title: Text('Pick a date'),
-              content: SizedBox(
-                height: size.height * 0.5,
-                width: size.width * 0.8,
-                child: Column(
-                  children: <Widget>[
-                    getDateRangePicker(),
-                    MaterialButton(
-                      child: Text("OK"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )
-                  ],
+          return Theme(
+            data: ThemeData.dark(),
+            child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ));
+                title: const Text('Pick a date'),
+                content: SizedBox(
+                  height: size.height * 0.5,
+                  width: size.width * 0.8,
+                  child: Column(
+                    children: <Widget>[
+                      getDateRangePicker(),
+                      MaterialButton(
+                        child: const Text("OK"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                  ),
+                )),
+          );
         });
-
-    // final selected = await showDatePicker(
-    //   context: context,
-    //   initialDate: DateTime(2000, 12, 08),
-    //   firstDate: DateTime(1990),
-    //   lastDate: DateTime(2025),
-    // );
-    // if (selected != null && selected != selectedDate) {
-    //   setState(() {
-    //     selectedDate = selected;
-    //     dobController.text = formatter.format(selected);
-    //   });
-    // }
   }
 
   void _submit() {
@@ -123,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // usnController.text = "1ms19is076";
     // dobController.text = "2000-12-08";
 
-    usnController.text = "dummy";
+    // usnController.text = "dummy";
     TextFormField usnForm = TextFormField(
       // autofocus: true,
       controller: usnController,

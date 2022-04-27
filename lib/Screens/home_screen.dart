@@ -84,19 +84,19 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             Expanded(
                               child: AutoSizeText(
-                                "Hi, ${sisData.studentName.toTitleCase()} ${emoji} ",
+                                "Hi, ${sisData.studentName.toTitleCase()} $emoji",
                                 style: buttonTrailing.copyWith(
                                     fontSize: width * 0.06),
                               ),
                             ),
                             Neumorphic(
                               style: neumorphicStyle.copyWith(
-                                  boxShape: NeumorphicBoxShape.circle()),
+                                  boxShape: const NeumorphicBoxShape.circle()),
                               // TODO : show circular progress indicator while loading image
                               child: CircleAvatar(
                                 child: (sisData.studentImage ==
                                         "http://parents.msrit.edu/images/defaultimages.png")
-                                    ? Icon(Icons.person)
+                                    ? const Icon(Icons.person)
                                     : null,
                                 backgroundImage: (sisData.studentImage !=
                                         "http://parents.msrit.edu/images/defaultimages.png")

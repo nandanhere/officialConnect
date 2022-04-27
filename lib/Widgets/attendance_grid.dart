@@ -1,6 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
 import 'package:official_connect/Classes/attendance.dart';
@@ -173,9 +170,9 @@ class AttendanceGrid extends StatelessWidget {
         var date = formatter.format(day[1]);
         var time = day[2];
         if (value == 1) {
-          return "${date}, ${time}";
+          return "$date, $time";
         } else if (value == 0) {
-          return "${date}, ${time}";
+          return "$date, $time";
         } else {
           return "Not available";
         }
@@ -212,7 +209,6 @@ class AttendanceGrid extends StatelessWidget {
     // ignore: todo
     final sisData = Provider.of<SisData>(context);
 
-    // TODO : make the scrolling corret here.
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SizedBox(

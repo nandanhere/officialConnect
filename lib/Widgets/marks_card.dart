@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:official_connect/Classes/marks.dart';
 import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Screens/see_details.dart';
 import 'package:provider/provider.dart';
 
 class MarksCard extends StatelessWidget {

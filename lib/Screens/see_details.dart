@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/sisdata.dart';
