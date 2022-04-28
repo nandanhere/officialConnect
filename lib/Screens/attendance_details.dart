@@ -90,7 +90,8 @@ class AttendanceDetails extends StatelessWidget {
                           onLongPress: () {
                             show.value = true;
                             Future.delayed(
-                                Duration(seconds: 4, milliseconds: 200), () {
+                                const Duration(seconds: 4, milliseconds: 200),
+                                () {
                               show.value = false;
                             });
                           },
@@ -112,12 +113,12 @@ class AttendanceDetails extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AutoSizeText("Attended : ${attendanceDetails.present}  ",
+                      AutoSizeText("Attended : ${attendanceDetails.present}",
                           style: textStyle),
                       SizedBox(
                         width: width * 0.03,
                       ),
-                      AutoSizeText("Missed : ${attendanceDetails.absent}  ",
+                      AutoSizeText("Missed : ${attendanceDetails.absent}",
                           style: textStyle)
                     ],
                   ),
@@ -127,8 +128,7 @@ class AttendanceDetails extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AutoSizeText(
-                          "Remaining : ${attendanceDetails.remaining}  ",
+                      AutoSizeText("Remaining: ${attendanceDetails.remaining}",
                           style: textStyle),
                       SizedBox(
                         width: width * 0.03,

@@ -101,7 +101,7 @@ class CIEScreen extends StatelessWidget {
                         style: buttonTitle,
                       ),
                       trailing: Text(
-                        e.finalCie,
+                        (e.t1 == '-') ? e.t1 : e.finalCie,
                         style: buttonTrailing,
                       ),
                     ),

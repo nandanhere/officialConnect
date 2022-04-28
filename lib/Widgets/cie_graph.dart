@@ -63,7 +63,7 @@ class _CieGraphState extends State<CieGraph> {
           yValueMapper: (Marks b, _) =>
               // int.parse(b.finalCie.split('/').first))
               double.parse((b.finalCie.contains('%'))
-                      ? b.finalCie.replaceAll('%', "")
+                      ? ((b.a1 != "-") ? b.finalCie.replaceAll('%', "") : "0")
                       : b.finalCie.split('/').first)
                   .round(),
           enableTooltip: true,

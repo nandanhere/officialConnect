@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:official_connect/Classes/marks.dart';
 import 'package:official_connect/Widgets/cie_details_graph.dart';
@@ -47,7 +48,7 @@ class CIEDetails extends StatelessWidget {
                                 ? Colors.black
                                 : NeumorphicColors.background,
                           )),
-                      Text("CIE Details",
+                      AutoSizeText("Details",
                           textAlign: TextAlign.left, style: titleStyle),
                     ],
                   ),
