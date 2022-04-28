@@ -2085,7 +2085,7 @@ class DummyData {
 
       }
     ],
-    "name": "Mark Zuckerbarg",
+    "name": "Mark Zuckerberg",
     "prevResults": [
       {
         "CGPA": "",

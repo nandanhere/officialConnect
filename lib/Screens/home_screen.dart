@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:official_connect/Widgets/fees_card.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import "dart:math";
@@ -87,7 +88,7 @@ class HomeScreen extends StatelessWidget {
                               child: AutoSizeText(
                                 "Hi, ${sisData.studentName.toTitleCase()} $emoji",
                                 style: buttonTrailing.copyWith(
-                                    fontFamily: "Lobster",
+                                    // fontFamily: "Lobster",
                                     fontSize: width * 0.08,
                                     fontWeight: FontWeight.normal),
                               ),
@@ -182,85 +183,15 @@ class HomeScreen extends StatelessWidget {
                     style: buttonTrailing,
                   ),
                 ),
-                ...sisData.fees.map((e) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: NeumorphicButton(
-                        padding: EdgeInsets.only(
-                            top: height * 0.015,
-                            bottom: height * 0.015,
-                            left: width * 0.025,
-                            right: width * 0.01),
-                        onPressed: () {}, //TODO receipt download maybe?
-                        style: neumorphicStyle,
-                        child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(dividerColor: Colors.transparent),
-                          child: ExpansionTile(
-                            title: Text(
-                              e.amountPaid,
-                              style: buttonTrailing.copyWith(
-                                  fontSize: width * 0.06),
-                            ),
-                            subtitle: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: width * 0.02,
-                                  vertical: height * 0.01),
-                              child: Text(
-                                "For Year ${e.yearNumber} on ${e.date}",
-                                style: subtitle,
-                              ),
-                            ),
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.04,
-                                    vertical: height * 0.02),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Challan No:",
-                                      style: title,
-                                    ),
-                                    Text(
-                                      e.challanNumber,
-                                      style: subtitle,
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ],
-                                ), //ChallanNo
-                              ),
-                              (e.mode != "CASH")
-                                  ? Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: width * 0.04,
-                                          vertical: height * 0.02),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Cheque No:",
-                                            style: title,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              e.chequeNumber,
-                                              style: subtitle,
-                                              textAlign: TextAlign.end,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : Container(),
-                            ],
-                          ),
-                        ),
-                      ),
+                ...sisData.fees.map((e) => FeesCard(
+                      height: height,
+                      width: width,
+                      neumorphicStyle: neumorphicStyle,
+                      feeData: e,
+                      buttonTrailing: buttonTrailing,
+                      subtitle: subtitle,
+                      title: title,
+                      isDark: sisData.darkMode,
                     ))
               ],
             ),
