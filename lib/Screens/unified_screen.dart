@@ -12,8 +12,9 @@ import 'login_screen.dart';
 // ignore: must_be_immutable
 class Unified extends StatelessWidget {
   static const String id = "unified";
-  const Unified({Key? key}) : super(key: key);
+  Unified({Key? key}) : super(key: key);
   static ValueNotifier<int> screenNumber = ValueNotifier(0);
+  final ValueNotifier<bool> seeOpt = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class Unified extends StatelessWidget {
                           children: [
                             const HomeScreen(),
                             const AttendanceInfo(),
-                            ResultsScreen(),
+                            ResultsScreen(seeOpt),
                             const SettingsInfo()
                           ],
                           onPageChanged: (page) {

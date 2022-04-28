@@ -8,8 +8,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/themes.dart';
 
 class ResultsScreen extends StatelessWidget {
-  ResultsScreen({Key? key}) : super(key: key);
-  final ValueNotifier<bool> seeOpt = ValueNotifier(false);
+  final seeOpt;
+  ResultsScreen(this.seeOpt);
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

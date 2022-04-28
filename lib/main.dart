@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         home: const LoadingScreen(),
         routes: {
           LoginScreen.id: (context) => const LoginScreen(),
-          Unified.id: (context) => const Unified(),
+          Unified.id: (context) => Unified(),
         },
       ),
     );
