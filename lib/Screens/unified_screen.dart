@@ -64,28 +64,28 @@ class Unified extends StatelessWidget {
                       icon: const FaIcon(FontAwesomeIcons.house),
                       label: "",
                       backgroundColor: sisData.darkMode
-                          ? Colors.black54
+                          ? Colors.black
                           : NeumorphicColors.background,
                     ),
                     BottomNavigationBarItem(
                       icon: const FaIcon(FontAwesomeIcons.calendarDay),
                       label: "",
                       backgroundColor: sisData.darkMode
-                          ? Colors.black54
+                          ? Colors.black
                           : NeumorphicColors.background,
                     ),
                     BottomNavigationBarItem(
                       icon: const FaIcon(FontAwesomeIcons.graduationCap),
                       label: "",
                       backgroundColor: sisData.darkMode
-                          ? Colors.black54
+                          ? Colors.black
                           : NeumorphicColors.background,
                     ),
                     BottomNavigationBarItem(
                       icon: const FaIcon(FontAwesomeIcons.gear),
                       label: "",
                       backgroundColor: sisData.darkMode
-                          ? Colors.black54
+                          ? Colors.black
                           : NeumorphicColors.background,
                     ),
                   ],

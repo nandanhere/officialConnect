@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -27,7 +28,7 @@ class HomeScreen extends StatelessWidget {
     final buttonTrailing = CustomTheme.buttonTrailing(context);
     final title = CustomTheme.textStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
-    final linearGradient = CustomTheme.linearGradient2(context);
+    final linearGradient = CustomTheme.linearGradient(context);
     final subtitle = CustomTheme.buttonSubtitle(context);
     final emojis = [
       "😀",
@@ -86,7 +87,9 @@ class HomeScreen extends StatelessWidget {
                               child: AutoSizeText(
                                 "Hi, ${sisData.studentName.toTitleCase()} $emoji",
                                 style: buttonTrailing.copyWith(
-                                    fontSize: width * 0.06),
+                                    fontFamily: "Lobster",
+                                    fontSize: width * 0.08,
+                                    fontWeight: FontWeight.normal),
                               ),
                             ),
                             Neumorphic(

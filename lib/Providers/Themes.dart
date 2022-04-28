@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -62,7 +63,7 @@ class CustomTheme {
         begin: Alignment.bottomRight,
         end: Alignment.topLeft,
         colors: (sisData.darkMode)
-            ? [Colors.black, Colors.black, Colors.blueGrey]
+            ? [Colors.black, Colors.black, Colors.blueGrey.shade900]
             : [
                 NeumorphicColors.background,
                 NeumorphicColors.background,

@@ -19,7 +19,7 @@ class CIEDetails extends StatelessWidget {
     final height = size.height;
     final buttonTitle = CustomTheme.buttonTitle(context);
     final titleStyle = CustomTheme.titleStyle(context);
-    final linearGradient = CustomTheme.linearGradient(context);
+    final linearGradient = CustomTheme.linearGradient2(context);
 
     return Scaffold(
       backgroundColor:
