@@ -21,7 +21,7 @@ class AttendanceDetails extends StatelessWidget {
     final height = size.height;
     final textStyle =
         CustomTheme.textStyle(context).copyWith(fontSize: width * 0.045);
-    final linearGradient = CustomTheme.linearGradient(context);
+    final linearGradient = CustomTheme.linearGradient2(context);
     var totalClasses = attendanceDetails.present +
         attendanceDetails.absent +
         attendanceDetails.remaining;

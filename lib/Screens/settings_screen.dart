@@ -22,7 +22,7 @@ class SettingsInfo extends StatelessWidget {
     final buttonTrailing = CustomTheme.buttonTrailing(context);
     final title = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
-    final linearGradient = CustomTheme.linearGradient2(context);
+    final linearGradient = CustomTheme.linearGradient(context);
 
     List<Element> tiles = [
       //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
