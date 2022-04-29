@@ -50,52 +50,60 @@ class Unified extends StatelessWidget {
               left: 0,
               right: 0,
               bottom: 0,
-              child: ValueListenableBuilder(
-                valueListenable: screenNumber,
-                builder: (context, int listeningValue, child) =>
-                    BottomNavigationBar(
-                  elevation: 0,
-                  selectedLabelStyle: const TextStyle(fontFamily: 'Comfortaa'),
-                  unselectedLabelStyle:
-                      const TextStyle(fontFamily: 'Comfortaa'),
-                  selectedItemColor: const Color(0xffba3237),
-                  unselectedItemColor: Colors.grey,
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: const FaIcon(FontAwesomeIcons.house),
-                      label: "",
-                      backgroundColor: sisData.darkMode
-                          ? Colors.black
-                          : NeumorphicColors.background,
-                    ),
-                    BottomNavigationBarItem(
-                      icon: const FaIcon(FontAwesomeIcons.calendarDay),
-                      label: "",
-                      backgroundColor: sisData.darkMode
-                          ? Colors.black
-                          : NeumorphicColors.background,
-                    ),
-                    BottomNavigationBarItem(
-                      icon: const FaIcon(FontAwesomeIcons.graduationCap),
-                      label: "",
-                      backgroundColor: sisData.darkMode
-                          ? Colors.black
-                          : NeumorphicColors.background,
-                    ),
-                    BottomNavigationBarItem(
-                      icon: const FaIcon(FontAwesomeIcons.gear),
-                      label: "",
-                      backgroundColor: sisData.darkMode
-                          ? Colors.black
-                          : NeumorphicColors.background,
-                    ),
-                  ],
-                  currentIndex: listeningValue,
-                  onTap: (index) {
-                    _myCont.animateToPage(index,
-                        curve: Curves.easeIn,
-                        duration: const Duration(milliseconds: 250));
-                  },
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(
+                        MediaQuery.of(context).size.width * 0.05),
+                    topRight: Radius.circular(
+                        MediaQuery.of(context).size.width * 0.05)),
+                child: ValueListenableBuilder(
+                  valueListenable: screenNumber,
+                  builder: (context, int listeningValue, child) =>
+                      BottomNavigationBar(
+                    elevation: 0,
+                    selectedLabelStyle:
+                        const TextStyle(fontFamily: 'Comfortaa'),
+                    unselectedLabelStyle:
+                        const TextStyle(fontFamily: 'Comfortaa'),
+                    selectedItemColor: const Color(0xffba3237),
+                    unselectedItemColor: Colors.grey,
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: const FaIcon(FontAwesomeIcons.house),
+                        label: "",
+                        backgroundColor: sisData.darkMode
+                            ? Colors.black
+                            : NeumorphicColors.background,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const FaIcon(FontAwesomeIcons.calendarDay),
+                        label: "",
+                        backgroundColor: sisData.darkMode
+                            ? Colors.black
+                            : NeumorphicColors.background,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const FaIcon(FontAwesomeIcons.graduationCap),
+                        label: "",
+                        backgroundColor: sisData.darkMode
+                            ? Colors.black
+                            : NeumorphicColors.background,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const FaIcon(FontAwesomeIcons.gear),
+                        label: "",
+                        backgroundColor: sisData.darkMode
+                            ? Colors.black
+                            : NeumorphicColors.background,
+                      ),
+                    ],
+                    currentIndex: listeningValue,
+                    onTap: (index) {
+                      _myCont.animateToPage(index,
+                          curve: Curves.easeIn,
+                          duration: const Duration(milliseconds: 250));
+                    },
+                  ),
                 ),
               ),
             ),
