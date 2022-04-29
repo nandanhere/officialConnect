@@ -52,7 +52,7 @@ class SEEScreen extends StatelessWidget {
                       NeumorphicSwitch(
                         style: const NeumorphicSwitchStyle(
                             inactiveTrackColor: NeumorphicColors.accent,
-                            activeTrackColor: NeumorphicColors.disabled,
+                            activeTrackColor: NeumorphicColors.accent,
                             trackDepth: 10,
                             thumbDepth: 2),
                         height: width * 0.055,

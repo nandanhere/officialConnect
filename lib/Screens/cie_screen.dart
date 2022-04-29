@@ -55,7 +55,7 @@ class CIEScreen extends StatelessWidget {
                       ),
                       NeumorphicSwitch(
                         style: const NeumorphicSwitchStyle(
-                            activeTrackColor: NeumorphicColors.disabled,
+                            activeTrackColor: NeumorphicColors.accent,
                             inactiveTrackColor: NeumorphicColors.accent,
                             trackDepth: 10,
                             thumbDepth: 2),

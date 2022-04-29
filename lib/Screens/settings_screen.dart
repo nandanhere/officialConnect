@@ -26,6 +26,25 @@ class SettingsInfo extends StatelessWidget {
 
     List<Element> tiles = [
       //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
+      //TODO add links for fee payment and wifi complaint
+      Element(
+          icon: Icons.attach_money_outlined,
+          onPressed: () {
+            _launchURL("https://google.com");
+          },
+          text: "Fee Payment"),
+      Element(
+          icon: Icons.wifi_off_outlined,
+          onPressed: () {
+            _launchURL("https://google.com");
+          },
+          text: "Register WiFi complaint"),
+      Element(
+        icon: Icons.settings,
+        onPressed: () {},
+        text: "Dark Mode",
+        toggle: true,
+      ),
       Element(
           icon: Icons.lock,
           onPressed: () {
@@ -136,12 +155,6 @@ class SettingsInfo extends StatelessWidget {
                 context: context,
               ),
           text: "About"),
-      Element(
-        icon: Icons.settings,
-        onPressed: () {},
-        text: "Dark Mode",
-        toggle: true,
-      ),
     ];
 
     return Container(

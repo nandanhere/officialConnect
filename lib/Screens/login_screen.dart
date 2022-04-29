@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-
+import 'package:official_connect/Providers/themes.dart';
 import 'package:intl/intl.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
@@ -37,8 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
       child: SfDateRangePicker(
         view: DateRangePickerView.decade,
         selectionMode: DateRangePickerSelectionMode.single,
-        minDate: DateTime(1990, 01, 01),
-        maxDate: DateTime(2009, 01, 01),
+        // minDate: DateTime(1990, 01, 01),
+        // maxDate: DateTime(2009, 01, 01),
+        minDate: DateTime(DateTime.now().year - 32, 01, 01),
+        maxDate: DateTime(DateTime.now().year - 15, 01, 01),
         navigationDirection: DateRangePickerNavigationDirection.vertical,
         onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
           selectedDate = args.value;
@@ -68,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: size.width * 0.8,
                   child: Column(
                     children: <Widget>[
-                      getDateRangePicker(),
+                      Expanded(child: getDateRangePicker()),
                       MaterialButton(
                         child: const Text("OK"),
                         onPressed: () {
@@ -102,6 +105,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
+    final textStyle = CustomTheme.textStyle(context);
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     // some first year student's deets
     // usnController.text = "1MS21CS035-T";
     // dobController.text = "2003-06-11";
@@ -114,13 +121,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // usnController.text = "dummy";
     TextFormField usnForm = TextFormField(
-      // autofocus: true,
+      style: textStyle.copyWith(fontSize: width * 0.05),
+      cursorHeight: 30, // autofocus: true,
       controller: usnController,
       key: const ValueKey('usn'),
       onFieldSubmitted: _submitUSN,
-      decoration: const InputDecoration(
-        labelText: "USN",
-      ),
+      decoration: InputDecoration(labelText: "USN", labelStyle: textStyle),
       validator: (value) {
         if (!RegExp(r"1MS\d\d[A-Z]+\d+").hasMatch(value!.toUpperCase()) &&
             value != "dummy") {
@@ -133,15 +139,17 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
     TextFormField dobForm = TextFormField(
+      style: textStyle.copyWith(fontSize: width * 0.05),
       readOnly: true,
       key: const ValueKey('dob'),
       controller: dobController,
       focusNode: passwordFocus,
       decoration: InputDecoration(
           labelText: "Date of Birth",
-          suffix: IconButton(
-            icon: const Icon(Icons.calendar_month),
-            onPressed: () {
+          labelStyle: textStyle,
+          suffix: GestureDetector(
+            child: const Icon(Icons.calendar_month),
+            onTap: () {
               _selectDate(context);
               dobController.text = formatter.format(selectedDate);
             },
@@ -163,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Image.asset('images/logo.png'),
                   ),
                   const SizedBox(
-                    height: 100,
+                    height: 20,
                   ),
                   const Text(
                     "CONNECT",
