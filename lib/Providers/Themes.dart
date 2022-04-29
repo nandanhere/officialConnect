@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -48,12 +49,17 @@ class CustomTheme {
   static NeumorphicStyle neumorphicStyle(context) {
     final sisData = Provider.of<SisData>(context);
     return NeumorphicStyle(
-        shadowLightColor: sisData.darkMode ? Colors.white : null,
-        shadowDarkColor: sisData.darkMode ? NeumorphicColors.background : null,
+        shadowLightColor: sisData.darkMode ? Colors.blueGrey.shade800 : null,
+        shadowDarkColor: sisData.darkMode ? Colors.black : null,
+        border: sisData.darkMode
+            ? NeumorphicBorder(width: 0.14, color: Colors.grey.shade900)
+            : NeumorphicBorder(width: 0),
         color: sisData.darkMode
-            ? const Color.fromARGB(1, 77, 74, 74)
+            // ? const Color.fromARGB(1, 77, 74, 74)
+            ? Colors.black.withOpacity(0.4)
             : NeumorphicColors.background,
         depth: 3,
+        intensity: sisData.darkMode ? 0.5 : null,
         boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20)));
   }
 
@@ -67,7 +73,6 @@ class CustomTheme {
             : [
                 NeumorphicColors.background,
                 NeumorphicColors.background,
-                Colors.white,
                 Colors.white
               ]);
   }
