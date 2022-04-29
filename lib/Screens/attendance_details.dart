@@ -108,45 +108,59 @@ class AttendanceDetails extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: height * 0.04),
-                Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                //column start here
+                Card(
+                  color: (sisData.darkMode) ? NeumorphicColors.darkBackground : NeumorphicColors.background,
+                  elevation: 0.5,
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                  
+                  child: Column(
                     children: [
-                      AutoSizeText("Attended : ${attendanceDetails.present}",
-                          style: textStyle),
-                      SizedBox(
-                        width: width * 0.03,
+                      Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AutoSizeText(
+                                "Attended : ${attendanceDetails.present}",
+                                style: textStyle),
+                            SizedBox(
+                              width: width * 0.03,
+                            ),
+                            AutoSizeText("Missed : ${attendanceDetails.absent}",
+                                style: textStyle)
+                          ],
+                        ),
                       ),
-                      AutoSizeText("Missed : ${attendanceDetails.absent}",
-                          style: textStyle)
+                      Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AutoSizeText(
+                                "Remaining: ${attendanceDetails.remaining}",
+                                style: textStyle),
+                            SizedBox(
+                              width: width * 0.03,
+                            ),
+                            AutoSizeText(
+                                "Percentage : ${attendanceDetails.percentage}",
+                                style: textStyle)
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: AutoSizeText(
+                          "Total : $totalClasses ",
+                          style: textStyle,
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AutoSizeText("Remaining: ${attendanceDetails.remaining}",
-                          style: textStyle),
-                      SizedBox(
-                        width: width * 0.03,
-                      ),
-                      AutoSizeText(
-                          "Percentage : ${attendanceDetails.percentage}",
-                          style: textStyle)
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: AutoSizeText(
-                    "Total : $totalClasses ",
-                    style: textStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
+                //column end here
                 SizedBox(height: height * 0.02),
                 ValueListenableBuilder(
                     valueListenable: show,
