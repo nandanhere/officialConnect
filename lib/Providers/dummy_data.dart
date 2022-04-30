@@ -2456,13 +2456,13 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Second_Year_MArch_Syllabus.pdf"
       ]
     ],
-    "Department of Artificial Intelligence & Data Science": [
+    "Department of Artificial Intelligence  Data Science": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ]
     ],
-    "Department of Artificial Intelligence & Machine Learning": [
+    "Department of Artificial Intelligence and Machine Learning": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
@@ -2548,7 +2548,7 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Civil/Syllabus/Final+Syllabus+M+Tech+2020.pdf"
       ]
     ],
-    "Department of Computer Science & Engineering": [
+    "Department of Computer Science and Engineering": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
@@ -2582,20 +2582,20 @@ class DummyData {
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/CSE/Syllabus/PG-CNE-2021-23.pdf"
       ]
     ],
-    "Department of Computer Science & Engineering (Artificial Intelligence & Machine Learning)":
+    "Department of Computer Science and Engineering (Artificial Intelligence and Machine Learning)":
         [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ]
     ],
-    "Department of Computer Science & Engineering (Cyber Security)": [
+    "Department of Computer Science and Engineering (Cyber Security)": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ]
     ],
-    "Department of Electronics & Communication Engineering": [
+    "Department of Electronics and Communication Engineering": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
@@ -2625,7 +2625,7 @@ class DummyData {
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ECE/Syllabus/OPen+Elective+syllabus.pdf"
       ]
     ],
-    "Department of Electronics & Instrumentation Engineering": [
+    "Department of Electronics and Instrumentation Engineering": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
@@ -2643,15 +2643,15 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Syllabus+book+2021+sem+-+7+and+8.pdf"
       ],
       [
-        "Open Elective - 5th & 6th Sem",
+        "Open Elective - 5th and 6th Sem",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Open+electives+-+5th+and+6th+semester.pdf"
       ],
       [
-        "Open Elective - 7th & 8th Sem",
+        "Open Elective - 7th and 8th Sem",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Open+electives+-+7th+and+8th+semester.pdf"
       ]
     ],
-    "Department of Electrical & Electronics Engineering": [
+    "Department of Electrical and Electronics Engineering": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
@@ -2717,7 +2717,7 @@ class DummyData {
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Humanities/Syllabus/Competency+mapping+and+development+for+engineers+2.pdf"
       ]
     ],
-    "Department of Industrial Engineering & Management": [
+    "Department of Industrial Engineering and Management": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
@@ -2743,7 +2743,7 @@ class DummyData {
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/iEM/Syllabus/IMOE02-PROJECT+MANAGEMENT(Open+Elective-2).pdf"
       ]
     ],
-    "Department of Information Science & Engineering": [
+    "Department of Information Science and Engineering": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
@@ -2761,11 +2761,11 @@ class DummyData {
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ISE/Syllabus/BE-4th+YearSyllabusBook-7%268-2021-22-2.pdf"
       ],
       [
-        "PG First & Second Semester",
+        "PG First and Second Semester",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ISE/Syllabus/ISE-PG-Syllabus-1%262-20-21.pdf"
       ],
       [
-        "PG Third & Fourth Semester",
+        "PG Third and Fourth Semester",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ISE/Syllabus/ISE-PG-Syllabus-3%264-20-21.pdf"
       ],
       [
@@ -2795,17 +2795,17 @@ class DummyData {
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Maths/Syllabus/MATHS+Open+elective-2021-22.pdf"
       ],
       [
-        "AM31 & AM41",
+        "AM31 and AM41",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Maths/AM31+%26+AM41+Syllabus.pdf"
       ]
     ],
     "Department of Master of Computer Applications": [
       [
-        "Scheme & Syllabus - 2021-23 batch",
+        "Scheme and Syllabus - 2021-23 batch",
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/MCA/Syllabus/Scheme+and+Syllabus_MCA_2021-23+Batch_Final.pdf"
       ],
       [
-        "Scheme & Syllabus V and VI Semester  2021-22",
+        "Scheme and Syllabus V and VI Semester  2021-22",
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/MCA/Syllabus/Scheme+and+Syllabus+V+and+VI+Semester_MCA_2021-2022_Final.pdf"
       ],
       [
@@ -2863,15 +2863,15 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
-        "UG Third & Fourth Semester",
+        "UG Third and Fourth Semester",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/2nd+Year+-+2020.pdf"
       ],
       [
-        "UG Fifth & Sixth Semester",
+        "UG Fifth and Sixth Semester",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/3rd+year+-+2020.pdf"
       ],
       [
-        "UG Seventh & Eighth Semester",
+        "UG Seventh and Eighth Semester",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/4th+year+-+2020.pdf"
       ],
       [

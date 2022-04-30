@@ -1,4 +1,6 @@
-import 'package:official_connect/Screens/syllabus_screen.dart';
+import 'package:official_connect/Providers/dummy_data.dart';
+import 'package:official_connect/Screens/branch_syllabus.dart';
+
 import 'package:official_connect/Screens/unified_screen.dart';
 import 'package:official_connect/Widgets/about_dialog.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +29,7 @@ class SettingsInfo extends StatelessWidget {
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
-
+    var fullCourseName = sisData.courseFullName.split("-")[1];
     List<Element> tiles = [
       //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
       //TODO add links for fee payment and wifi complaint
@@ -46,8 +48,15 @@ class SettingsInfo extends StatelessWidget {
       Element(
           icon: Icons.book_rounded,
           onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (ctx) => SyllabusScreen()));
+            // Navigator.of(context)
+            //     .push(MaterialPageRoute(builder: (ctx) => SyllabusScreen()));
+            DummyData.syllabusLinks.keys.forEach((element) {
+              if (RegExp(r"[\w\s]*" + fullCourseName + r"$")
+                  .hasMatch(element)) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => BranchSyllabus(name: element)));
+              }
+            });
           },
           text: "View Syllabi"),
       Element(
