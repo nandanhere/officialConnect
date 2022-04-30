@@ -47,7 +47,9 @@ dependencies:
   url_launcher: ^6.0.20
   animated_text_kit: ^4.2.1
   advance_pdf_viewer: ^2.0.1
-
+  flutter_cached_pdfview: ^0.4.1
+  string_similarity: ^2.0.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
