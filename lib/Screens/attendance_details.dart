@@ -110,10 +110,12 @@ class AttendanceDetails extends StatelessWidget {
                 SizedBox(height: height * 0.04),
                 //column start here
                 Card(
-                  color: (sisData.darkMode) ? NeumorphicColors.darkBackground : NeumorphicColors.background,
+                  color: (sisData.darkMode)
+                      ? NeumorphicColors.darkBackground
+                      : NeumorphicColors.background,
                   elevation: 0.5,
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                  
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Column(
                     children: [
                       Align(

@@ -20,19 +20,21 @@ class AttendanceInfo extends StatelessWidget {
     final titleStyle = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
+    final linearGradientBG = CustomTheme.linearGradientBG(context);
 
     return Container(
-      decoration: BoxDecoration(
-        gradient: linearGradient,
-      ),
-      padding: EdgeInsets.only(
-        left: width * 0.05,
-        right: width * 0.05,
-        top: height * 0.06,
-      ),
-      child: Center(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+      decoration: BoxDecoration(gradient: linearGradientBG),
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: linearGradient,
+          ),
+          padding: EdgeInsets.only(
+            left: width * 0.05,
+            right: width * 0.05,
+            top: height * 0.06,
+          ),
           child: Column(
             children: [
               AutoSizeText(
