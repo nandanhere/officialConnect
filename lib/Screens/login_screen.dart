@@ -116,8 +116,8 @@ class _LoginScreenState extends State<LoginScreen> {
     // usnController.text = "1ms19cs030";
     // dobController.text = "2000-11-15";
     // nadnan
-    // usnController.text = "1ms19is076";
-    // dobController.text = "2000-12-08";
+    usnController.text = "1ms19is076";
+    dobController.text = "2000-12-08";
 
     // usnController.text = "dummy";
     TextFormField usnForm = TextFormField(

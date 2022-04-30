@@ -46,6 +46,7 @@ dependencies:
   auto_size_text: ^3.0.0
   url_launcher: ^6.0.20
   animated_text_kit: ^4.2.1
+  advance_pdf_viewer: ^2.0.1
 
 dev_dependencies:
   flutter_test:

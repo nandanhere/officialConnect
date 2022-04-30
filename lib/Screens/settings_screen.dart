@@ -1,4 +1,6 @@
+import 'package:official_connect/Screens/syllabus_screen.dart';
 import 'package:official_connect/Screens/unified_screen.dart';
+import 'package:official_connect/Widgets/about_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -9,7 +11,8 @@ class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
-    if (!await launch(url)) throw 'Could not launch $url';
+    if (!await launchUrl(Uri.dataFromString(url)))
+      throw 'Could not launch $url';
   }
 
   @override
@@ -36,9 +39,16 @@ class SettingsInfo extends StatelessWidget {
       Element(
           icon: Icons.wifi_off_outlined,
           onPressed: () {
-            _launchURL("https://google.com");
+            _launchURL("http://ithelpdesk.msrit.edu/");
           },
           text: "Register WiFi complaint"),
+      Element(
+          icon: Icons.book_rounded,
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (ctx) => SyllabusScreen()));
+          },
+          text: "View Syllabi"),
       Element(
         icon: Icons.settings,
         onPressed: () {},
@@ -54,104 +64,12 @@ class SettingsInfo extends StatelessWidget {
       Element(
           icon: Icons.info_outline_rounded,
           onPressed: () => showDialog(
-                builder: (context) => AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    backgroundColor:
-                        sisData.darkMode ? Colors.black87 : Colors.white,
-                    title: FittedBox(
-                      child: Image.asset(
-                        "images/logo.png",
-                      ),
-                    ),
-                    content: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("RIT Connect",
-                            style: title.copyWith(fontSize: width * 0.075)),
-                        SizedBox(
-                          height: height * 0.02,
-                        ),
-                        Text(
-                          "by",
-                          style: title.copyWith(fontSize: width * 0.055),
-                        ),
-                        SizedBox(
-                          height: height * 0.04,
-                        ),
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: width * 0.22),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                //mainAxisAlignment: MainAxisAlignment.center,
-                                textBaseline: TextBaseline.alphabetic,
-                                children: [
-                                  Text(
-                                    "N",
-                                    style: title.copyWith(
-                                      fontSize: width * 0.075,
-                                    ),
-                                  ),
-                                  Text(
-                                    "andan",
-                                    style:
-                                        title.copyWith(fontSize: width * 0.035),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                //mainAxisAlignment: MainAxisAlignment.center,
-                                textBaseline: TextBaseline.alphabetic,
-                                children: [
-                                  Text(
-                                    "A",
-                                    style: title.copyWith(
-                                      fontSize: width * 0.075,
-                                    ),
-                                  ),
-                                  Text(
-                                    "rnav",
-                                    style:
-                                        title.copyWith(fontSize: width * 0.035),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                //mainAxisAlignment: MainAxisAlignment.center,
-                                textBaseline: TextBaseline.alphabetic,
-                                children: [
-                                  Text(
-                                    "P",
-                                    style: title.copyWith(
-                                      fontSize: width * 0.075,
-                                    ),
-                                  ),
-                                  Text(
-                                    "rateek ",
-                                    style:
-                                        title.copyWith(fontSize: width * 0.035),
-                                  )
-                                ],
-                              ),
-                              Text(
-                                "😴",
-                                style: title.copyWith(fontSize: width * 0.055),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'Cancel'),
-                        child: const Text('Ok'),
-                      ),
-                    ]),
+                builder: (context) => AboutConnectDialog(
+                  sisData: sisData,
+                  width: width,
+                  title: title,
+                  height: height,
+                ),
                 context: context,
               ),
           text: "About"),
