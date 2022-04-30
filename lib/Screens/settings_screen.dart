@@ -157,15 +157,15 @@ class SettingsInfo extends StatelessWidget {
           text: "About"),
     ];
 
-    return Container(
+    return SingleChildScrollView(
+      child: Container(
         decoration: BoxDecoration(gradient: linearGradient),
         padding: EdgeInsets.only(
           left: width * 0.05,
           right: width * 0.05,
           top: height * 0.06,
         ),
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
+        child: Column(
           children: [
             Padding(
               padding: EdgeInsets.only(bottom: height * 0.04),
@@ -212,8 +212,8 @@ class SettingsInfo extends StatelessWidget {
                     ),
                   ),
                 )),
-            const SizedBox(
-              height: 50,
+            SizedBox(
+              height: height * 0.06,
             ),
             Center(
               child: NeumorphicButton(
@@ -271,10 +271,12 @@ class SettingsInfo extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: height * 0.095,
+              height: height * 0.13,
             )
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
 
