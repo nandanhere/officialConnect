@@ -26,6 +26,7 @@ class SettingsInfo extends StatelessWidget {
     final title = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
+    final linearGradientBG = CustomTheme.linearGradientBG(context);
 
     List<Element> tiles = [
       //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
@@ -76,123 +77,129 @@ class SettingsInfo extends StatelessWidget {
     ];
 
     return Container(
-        decoration: BoxDecoration(gradient: linearGradient),
-        padding: EdgeInsets.only(
-          left: width * 0.05,
-          right: width * 0.05,
-          top: height * 0.06,
-        ),
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: height * 0.04),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Settings",
-                  textAlign: TextAlign.left,
-                  style: title,
-                ),
-              ),
-            ),
-            // TODO : what is going on here? it is too convoluted.
-            ...tiles.map((e) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: NeumorphicButton(
-                    onPressed: e.toggle
-                        ? () {
-                            sisData.darkMode = !sisData.darkMode;
-                          }
-                        : e.onPressed,
-                    style: neumorphicStyle,
-                    child: ListTile(
-                      leading: Icon(
-                        e.icon,
-                        color: const Color(0xffd93b3f),
-                        size: 30,
-                      ),
-                      title: Text(
-                        e.text,
-                        style: buttonTitle,
-                      ),
-                      trailing: e.toggle
-                          ? NeumorphicSwitch(
-                              style: const NeumorphicSwitchStyle(
-                                  trackDepth: 10, thumbDepth: 2),
-                              height: width * 0.055,
-                              value: sisData.darkMode,
-                              onChanged: (value) {
-                                sisData.darkMode = value;
-                              },
-                            )
-                          : null,
-                    ),
+      decoration: BoxDecoration(gradient: linearGradientBG),
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Container(
+          decoration: BoxDecoration(gradient: linearGradient),
+          padding: EdgeInsets.only(
+            left: width * 0.05,
+            right: width * 0.05,
+            top: height * 0.06,
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.04),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Settings",
+                    textAlign: TextAlign.left,
+                    style: title,
                   ),
-                )),
-            const SizedBox(
-              height: 50,
-            ),
-            Center(
-              child: NeumorphicButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (ctx) {
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          backgroundColor: sisData.darkMode
-                              ? Colors.black
-                              : NeumorphicColors.background,
-                          title: Text(
-                            'Do you want to Log out?',
-                            style: buttonTrailing,
-                          ),
-                          content: Text(
-                            'All stored data will be wiped out',
-                            style: buttonTitle,
-                          ),
-                          actions: <Widget>[
-                            NeumorphicButton(
-                              style: neumorphicStyle,
-                              onPressed: () {
-                                Navigator.of(context).pop(false);
-                              },
-                              child: Text(
-                                'No',
-                                style: buttonTitle,
-                              ),
-                            ),
-                            NeumorphicButton(
-                              style: neumorphicStyle,
-                              onPressed: () {
-                                Unified.screenNumber.value = 0;
-                                Navigator.of(context).pop(false);
-                                sisData.cleanData();
-                              },
-                              child: Text(
-                                'Yes',
-                                style: buttonTitle,
-                              ),
-                            ),
-                          ],
-                        );
-                      });
-                },
-                style: neumorphicStyle,
-                child: Text(
-                  "Sign out",
-                  style: buttonTitle,
                 ),
               ),
-            ),
-            SizedBox(
-              height: height * 0.095,
-            )
-          ],
-        ));
+              // TODO : what is going on here? it is too convoluted.
+              ...tiles.map((e) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: NeumorphicButton(
+                      onPressed: e.toggle
+                          ? () {
+                              sisData.darkMode = !sisData.darkMode;
+                            }
+                          : e.onPressed,
+                      style: neumorphicStyle,
+                      child: ListTile(
+                        leading: Icon(
+                          e.icon,
+                          color: const Color(0xffd93b3f),
+                          size: 30,
+                        ),
+                        title: Text(
+                          e.text,
+                          style: buttonTitle,
+                        ),
+                        trailing: e.toggle
+                            ? NeumorphicSwitch(
+                                style: const NeumorphicSwitchStyle(
+                                    trackDepth: 10, thumbDepth: 2),
+                                height: width * 0.055,
+                                value: sisData.darkMode,
+                                onChanged: (value) {
+                                  sisData.darkMode = value;
+                                },
+                              )
+                            : null,
+                      ),
+                    ),
+                  )),
+              SizedBox(
+                height: height * 0.06,
+              ),
+              Center(
+                child: NeumorphicButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            backgroundColor: sisData.darkMode
+                                ? Colors.black
+                                : NeumorphicColors.background,
+                            title: Text(
+                              'Do you want to Log out?',
+                              style: buttonTrailing,
+                            ),
+                            content: Text(
+                              'All stored data will be wiped out',
+                              style: buttonTitle,
+                            ),
+                            actions: <Widget>[
+                              NeumorphicButton(
+                                style: neumorphicStyle,
+                                onPressed: () {
+                                  Navigator.of(context).pop(false);
+                                },
+                                child: Text(
+                                  'No',
+                                  style: buttonTitle,
+                                ),
+                              ),
+                              NeumorphicButton(
+                                style: neumorphicStyle,
+                                onPressed: () {
+                                  Unified.screenNumber.value = 0;
+                                  Navigator.of(context).pop(false);
+                                  sisData.cleanData();
+                                },
+                                child: Text(
+                                  'Yes',
+                                  style: buttonTitle,
+                                ),
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  style: neumorphicStyle,
+                  child: Text(
+                    "Sign out",
+                    style: buttonTitle,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.13,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

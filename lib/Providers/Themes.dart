@@ -49,8 +49,8 @@ class CustomTheme {
   static NeumorphicStyle neumorphicStyle(context) {
     final sisData = Provider.of<SisData>(context);
     return NeumorphicStyle(
-        shadowLightColor: sisData.darkMode ? Colors.blueGrey.shade800 : null,
-        shadowDarkColor: sisData.darkMode ? Colors.black : null,
+        shadowLightColor: sisData.darkMode ? Colors.blueGrey.shade600 : null,
+        shadowDarkColor: sisData.darkMode ? Colors.grey.shade900 : null,
         border: sisData.darkMode
             ? NeumorphicBorder(width: 0.14, color: Colors.grey.shade900)
             : NeumorphicBorder(width: 0),
@@ -59,7 +59,7 @@ class CustomTheme {
             ? Colors.black.withOpacity(0.4)
             : NeumorphicColors.background,
         depth: 3,
-        intensity: sisData.darkMode ? 0.5 : null,
+        //intensity: sisData.darkMode ? 0.7 : null,
         boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20)));
   }
 
@@ -69,7 +69,13 @@ class CustomTheme {
         begin: Alignment.bottomRight,
         end: Alignment.topLeft,
         colors: (sisData.darkMode)
-            ? [Colors.black, Colors.black, Colors.blueGrey.shade900]
+            ? [
+                Colors.black,
+                Colors.black,
+                Colors.black,
+                Colors.black,
+                Colors.blueGrey.shade900
+              ]
             : [
                 NeumorphicColors.background,
                 NeumorphicColors.background,
@@ -92,6 +98,20 @@ class CustomTheme {
                 NeumorphicColors.background,
                 NeumorphicColors.background,
                 Colors.white,
+                Colors.white
+              ]);
+  }
+
+  static LinearGradient linearGradientBG(context) {
+    final sisData = Provider.of<SisData>(context);
+    return LinearGradient(
+        begin: Alignment.bottomRight,
+        end: Alignment.topCenter,
+        colors: (sisData.darkMode)
+            ? [Colors.black, Colors.black, Colors.blueGrey.shade900]
+            : [
+                NeumorphicColors.background,
+                NeumorphicColors.background,
                 Colors.white
               ]);
   }
