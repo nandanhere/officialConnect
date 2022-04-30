@@ -21,9 +21,7 @@ class SyllabusScreen extends StatelessWidget {
     final titleStyle = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
-    var fullCourseName = sisData.courseFullName.split("-")[1];
-
-
+    //var fullCourseName = sisData.courseFullName.split("-")[1];
     // we show on top the closest matches to user's branch. so they can see other syllabi aswell if they wish
     final List<String> sorted = DummyData.syllabusLinks.keys.toList();
     sorted.sort((a, b) =>
@@ -51,31 +49,31 @@ class SyllabusScreen extends StatelessWidget {
                   maxFontSize: 45,
                   style: titleStyle,
                 ),
-                ...DummyData.syllabusLinks.keys
-                    .map((name) => ((RegExp(r"[\w\s]*" + fullCourseName + r"$")
-                            .hasMatch(name))
-                        ? Padding(
-                            //map
-                            padding: const EdgeInsets.all(8.0),
-                            child: NeumorphicButton(
-                              padding: EdgeInsets.only(
-                                  top: height * 0.015,
-                                  bottom: height * 0.015,
-                                  left: width * 0.025,
-                                  right: width * 0.01),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (ctx) => BranchSyllabus(
-                                          name: name,
-                                        )));
-                              },
-                              style: neumorphicStyle,
-                              child: ListTile(
-                                title: Text(name, style: buttonTitle),
-                              ),
-                            ),
-                          )
-                        : Container()))
+                // ...DummyData.syllabusLinks.keys
+                //     .map((name) => ((RegExp(r"[\w\s]*" + fullCourseName + r"$")
+                //             .hasMatch(name))
+                //         ? Padding(
+                //             //map
+                //             padding: const EdgeInsets.all(8.0),
+                //             child: NeumorphicButton(
+                //               padding: EdgeInsets.only(
+                //                   top: height * 0.015,
+                //                   bottom: height * 0.015,
+                //                   left: width * 0.025,
+                //                   right: width * 0.01),
+                //               onPressed: () {
+                //                 Navigator.of(context).push(MaterialPageRoute(
+                //                     builder: (ctx) => BranchSyllabus(
+                //                           name: name,
+                //                         )));
+                //               },
+                //               style: neumorphicStyle,
+                //               child: ListTile(
+                //                 title: Text(name, style: buttonTitle),
+                //               ),
+                //             ),
+                //           )
+                //         : Container())),
                 ...sorted
                     .map((name) => Padding(
                           //map
@@ -87,10 +85,13 @@ class SyllabusScreen extends StatelessWidget {
                                 left: width * 0.025,
                                 right: width * 0.01),
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
                                   builder: (ctx) => BranchSyllabus(
-                                        name: name,
-                                      ),),);
+                                    name: name,
+                                  ),
+                                ),
+                              );
                             },
                             style: neumorphicStyle,
                             child: ListTile(
