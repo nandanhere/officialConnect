@@ -26,7 +26,7 @@ class Subject {
     list.sort((a, b) => a.courseCode.compareTo(b.courseCode));
     return list;
   }
-  // TODO : add reference examples like below
+  // example code:
   //  {COURSE CODE: CV14, Credits Earned: 3, Credits Reg.: 3, GPA: 7, Grade: C, SUBJECT NAME: BASICS OF CIVIL ENGINEERING AND MECHANICS}
 }
 

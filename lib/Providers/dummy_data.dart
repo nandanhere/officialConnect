@@ -2424,4 +2424,474 @@ class DummyData {
     "to_earn": "85",
     "usn": "dummy"
   }""";
+
+  static const Map<String, List<List<String>>> syllabusLinks = {
+    "School of Architecture": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/First_Year_BArch_Syllabus.pdf"
+      ],
+      [
+        "UG Second Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Second_Year_BArch_Syllabus.pdf"
+      ],
+      [
+        "UG Third Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Third_Year_BArch_Syllabus.pdf"
+      ],
+      [
+        "UG Fourth Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Fourth_Year_BArch_Syllabus.pdf"
+      ],
+      [
+        "UG Fifth Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Final_Year_BArch_Syllabus.pdf"
+      ],
+      [
+        "PG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/First_Year_MArch_Syllabus.pdf"
+      ],
+      [
+        "PG Second Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Second_Year_MArch_Syllabus.pdf"
+      ]
+    ],
+    "Department of Artificial Intelligence & Data Science": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ]
+    ],
+    "Department of Artificial Intelligence & Machine Learning": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ]
+    ],
+    "Department of Chemical Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Second Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Chemical/Syllabus/III-IV+sem+Chemical+syllabus+2020-2021.pdf"
+      ],
+      [
+        "UG Third Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Chemical/Syllabus/V-VI+sem+Chemical+syllabus+2020-2021.pdf"
+      ],
+      [
+        "UG Fourth Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Chemical/Syllabus/VII-VIII+sem+Chemical+syllabus+2020-2021.pdf"
+      ]
+    ],
+    "Department of BioTechnology": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Third-Fourth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/BT/Syllabus/UG+Third-Fourth+Semester_2021-22.pdf"
+      ],
+      [
+        "UG Fifth-Sixth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/BT/Syllabus/UG+Fifth-Sixth+Semester_2021-22.pdf"
+      ],
+      [
+        "UG Seventh-Eighth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/BT/Syllabus/UG+Seventh-Eighth+Semester_2021-22.pdf"
+      ],
+      [
+        "PG Syllabus",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/BT/Syllabus/PG+Syllabus_Main_+2021-2022+Dt.25Nov2021.pdf"
+      ],
+      [
+        "PG Diploma Syllabus",
+        "https://s3-us-west-2.amazonaws.com/msrit-bucket/Departments/BT/Syllabus/PG+Diploma.pdf"
+      ],
+      [
+        "Open Electives' Syllabus",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/BT/Syllabus/Open+Electives+-+bt.pdf"
+      ]
+    ],
+    "Department of Chemistry": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "CHY I-II B.E. Syllabus 2016-17",
+        "http://d2e9h3gjmozu47.cloudfront.net/Departments/Chemistry/2+sem+syllabus+for+CHY+I-II+BE+syllabus+2016-17.pdf"
+      ]
+    ],
+    "Department of Civil Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Third-Fourth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Civil/Syllabus/3+%26+4+Sem+CIVIL2021+new.pdf"
+      ],
+      [
+        "UG Fifth-Sixth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Civil/Syllabus/5+%26+6+Sem+CIVIL2021.pdf"
+      ],
+      [
+        "UG Seventh-Eighth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Civil/Syllabus/7+%26+8+sem+Civil+.pdf"
+      ],
+      [
+        "PG First-Fourth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Civil/Syllabus/Final+Syllabus+M+Tech+2020.pdf"
+      ]
+    ],
+    "Department of Computer Science & Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Second Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/CSE/Syllabus/UG+2nd+Year+Syllabus.pdf"
+      ],
+      [
+        "UG Third Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/CSE/Syllabus/UG+3rd+Year+Syllabus.pdf"
+      ],
+      [
+        "UG Fourth Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/CSE/Syllabus/UG+4th+Year+Syllabus.pdf"
+      ],
+      [
+        "PG CSE (Batch 2020-2022)",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/CSE/Syllabus/PG+CSE.pdf"
+      ],
+      [
+        "PG CNE (Batch 2020-2022)",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/CSE/Syllabus/PG+CNE.pdf"
+      ],
+      [
+        "PG CSE (Batch 2021-2023)",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/CSE/Syllabus/PG-CSE-2021-23.pdf"
+      ],
+      [
+        "PG CNE (Batch 2021-2023)",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/CSE/Syllabus/PG-CNE-2021-23.pdf"
+      ]
+    ],
+    "Department of Computer Science & Engineering (Artificial Intelligence & Machine Learning)":
+        [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ]
+    ],
+    "Department of Computer Science & Engineering (Cyber Security)": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ]
+    ],
+    "Department of Electronics & Communication Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "Second Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ECE/Syllabus/Second+Year+(3+-+4)+Syllabus.pdf"
+      ],
+      [
+        "Third Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ECE/Syllabus/Third+Year+(5+-+6)+Syllabus.pdf"
+      ],
+      [
+        "Fourth Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ECE/Syllabus/Fourth+Year+(7+-+8)+Syllabus.pdf"
+      ],
+      [
+        "M.Tech-DEC",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ECE/Syllabus/PG-DEC-Syllabus.pdf"
+      ],
+      [
+        "M.Tech-VLSI",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ECE/Syllabus/PG-VLSI-Syllabus.pdf"
+      ],
+      [
+        "Open Electives' Syllabus",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ECE/Syllabus/OPen+Elective+syllabus.pdf"
+      ]
+    ],
+    "Department of Electronics & Instrumentation Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Second Year",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/EIE/Syllabus/Syllabus+book+2021+sem+-+3+and+4.pdf"
+      ],
+      [
+        "UG Third Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Syllabus+book+2021+sem+-+5+and+6.pdf"
+      ],
+      [
+        "UG Fourth Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Syllabus+book+2021+sem+-+7+and+8.pdf"
+      ],
+      [
+        "Open Elective - 5th & 6th Sem",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Open+electives+-+5th+and+6th+semester.pdf"
+      ],
+      [
+        "Open Elective - 7th & 8th Sem",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Open+electives+-+7th+and+8th+semester.pdf"
+      ]
+    ],
+    "Department of Electrical & Electronics Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Second Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EEE/Syllabus/EEE+3rd+4th+Sem+Syllabus_20_21.pdf"
+      ],
+      [
+        "UG Third Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EEE/Syllabus/EEE+5th+6th+Sem+Syllabus_20_21.pdf"
+      ],
+      [
+        "UG Fourth Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EEE/Syllabus/EEE+7th+8th+Sem+Syllabus_20_21.pdf"
+      ],
+      [
+        "PG Syllabus",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EEE/Syllabus/PG_CAID_EEE_syllabus_2020_22.pdf"
+      ],
+      [
+        "Open Elective Syllabus",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/EEE/Syllabus/Materials+and+Sensors+for+Electrical+Applications.pdf"
+      ]
+    ],
+    "Department of Electronics and Telecommunication Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Third-Fourth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/TeleCommunication/Syllabus/3+and+4+sem.pdf"
+      ],
+      [
+        "UG Fifth-Sixth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/TeleCommunication/Syllabus/5+and+6+sem.pdf"
+      ],
+      [
+        "UG Seventh-Eighth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/TeleCommunication/Syllabus/7+and+8+sem.pdf"
+      ],
+      [
+        "PG Syllabus",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/TeleCommunication/Syllabus/PG+syllabus+2019+12022020.pdf"
+      ],
+      [
+        "VI Semester Open Elective - Internet Security",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/TeleCommunication/Syllabus/Internet+Security.pdf"
+      ]
+    ],
+    "Department of Humanities": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "Open Elective - Public Speaking and  Speech Acts - Syllabus",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Humanities/Syllabus/PUBLIC+SPEAKING+AND+SPEECH+ACTS+-+OPEN+ELECTIVE_SYLLABUS.pdf"
+      ],
+      [
+        "Open Elective - Competency mapping and  Development for Engineers - Syllabus",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Humanities/Syllabus/Competency+mapping+and+development+for+engineers+2.pdf"
+      ]
+    ],
+    "Department of Industrial Engineering & Management": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Third-Fourth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/iEM/Syllabus/3rd+and+4th+syllabus_2019+to+2023+batch.pdf"
+      ],
+      [
+        "UG Fifth-Sixth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/iEM/Syllabus/5th+and+6th_syllabus_2018_2022_batch.pdf"
+      ],
+      [
+        "UG Seventh-Eighth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/iEM/Syllabus/7th+and+8th_syllabus_2017_2021_batch.pdf"
+      ],
+      [
+        "PG 2020-2021",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/iEM/Syllabus/2020-21_M-tech+syllabus.pdf"
+      ],
+      [
+        "6th Sem Open Elective 2021-22",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/iEM/Syllabus/IMOE02-PROJECT+MANAGEMENT(Open+Elective-2).pdf"
+      ]
+    ],
+    "Department of Information Science & Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Second Year",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ISE/Syllabus/BE-2nd+YearSyllabusBook-3%264-2021-22-1.pdf"
+      ],
+      [
+        "UG Third Year",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ISE/Syllabus/BE-3rd+YearSyllabusBook-5%266-2021-22.pdf"
+      ],
+      [
+        "UG Fourth Year",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ISE/Syllabus/BE-4th+YearSyllabusBook-7%268-2021-22-2.pdf"
+      ],
+      [
+        "PG First & Second Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ISE/Syllabus/ISE-PG-Syllabus-1%262-20-21.pdf"
+      ],
+      [
+        "PG Third & Fourth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ISE/Syllabus/ISE-PG-Syllabus-3%264-20-21.pdf"
+      ],
+      [
+        "ISOE01-Open Elective",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ISE/Syllabus/ISOE01-iOS+App+Development+Fundamentals.pdf"
+      ],
+      [
+        "ISOE02-Open Elective",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ISE/Syllabus/ISOE02-Mathematical+Elements+for+Computer+Graphics.pdf"
+      ]
+    ],
+    "Department of Mathematics": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "3rd Sem Syllabus",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Maths/3rd+sem+Syllabus+2020-21.pdf"
+      ],
+      [
+        "4th Sem Syllabus",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Maths/4th+Sem+Syllabus+-+2020-21.pdf"
+      ],
+      [
+        "Open Elective Syllabus for III Year students",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Maths/Syllabus/MATHS+Open+elective-2021-22.pdf"
+      ],
+      [
+        "AM31 & AM41",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Maths/AM31+%26+AM41+Syllabus.pdf"
+      ]
+    ],
+    "Department of Master of Computer Applications": [
+      [
+        "Scheme & Syllabus - 2021-23 batch",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/MCA/Syllabus/Scheme+and+Syllabus_MCA_2021-23+Batch_Final.pdf"
+      ],
+      [
+        "Scheme & Syllabus V and VI Semester  2021-22",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/MCA/Syllabus/Scheme+and+Syllabus+V+and+VI+Semester_MCA_2021-2022_Final.pdf"
+      ],
+      [
+        "Scheme and Syllabus - 2020-22",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/MCA/Syllabus/Scheme+and+Syllabus-2020-22+Batch.pdf"
+      ]
+    ],
+    "Department of Management Studies": [
+      [
+        "First Year",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/MBA/Syllabus/1st+year+%26+2nd+year+syllabus+(18-11-21)-+2021.pdf"
+      ],
+      [
+        "Second Year",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/MBA/Syllabus/III+%26+IV+Sem+Syllabus.pdf"
+      ]
+    ],
+    "Department of Mechanical Engineering": [
+      [
+        "Click Here",
+        "https://s3-us-west-2.amazonaws.com/msrit-bucket/Departments/ME/Syllabus/CIM+-+Placement.pdf"
+      ],
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Third-Fourth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ME/Syllabus/SYLLABUS+-+3r+to+4th+semester_mech_2021.pdf"
+      ],
+      [
+        "UG Fifth-Sixth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ME/Syllabus/SYLLABUS-5+TO+6+SEMESTER_mech_2021.pdf"
+      ],
+      [
+        "UG Seventh-Eighth Semester",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ME/Syllabus/SYLLABUS+-+7+%26+8+SEMESTER_mech_2021.pdf"
+      ],
+      [
+        "M.Tech MSE",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ME/Syllabus/M.Tech+MSE+2020-2021.pdf"
+      ],
+      [
+        "M.Tech CIM",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ME/Syllabus/M.Tech+CIM+2020-2021.pdf"
+      ],
+      [
+        "5th Sem Open Electives",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ME/Syllabus/UG+Fifth+sem+Open+Electives.pdf"
+      ]
+    ],
+    "Department of Medical Electronics Engineering": [
+      [
+        "UG First Year",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG Third & Fourth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/2nd+Year+-+2020.pdf"
+      ],
+      [
+        "UG Fifth & Sixth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/3rd+year+-+2020.pdf"
+      ],
+      [
+        "UG Seventh & Eighth Semester",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/4th+year+-+2020.pdf"
+      ],
+      [
+        "6th Sem Open Elective 2021-22",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ML/Syllabus/6th+sem+Open+Elective-MLE.pdf"
+      ]
+    ],
+    "Department of Physics": [
+      [
+        "UG First Year Syllabus",
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "Open Elective - Bio Physics Syllabus",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Physics/Syllabus/Open+elective+syllabus+-+BIO+Physics+(PHOE04).pdf"
+      ],
+      [
+        "Open Elective - Materials Charecterization Syllabus",
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Physics/Syllabus/Open+elective+syllabus+-+Materials+characterisation+(PHOE02).pdf"
+      ]
+    ]
+  };
 }

@@ -57,6 +57,10 @@ class _AttendanceGraphState extends State<AttendanceGraph> {
         tooltipBehavior: _tooltipBehavior,
         series: <CircularSeries>[
           RadialBarSeries(
+            // Todo : to customise the track opacity  and color, modify these attributes.
+            // trackColor: ,
+            // useSeriesColor: true,
+            trackOpacity: sisData.darkMode ? 0.1 : 0.1,
             maximumValue: 100,
             dataSource: widget.attendances.map(
               (e) {
