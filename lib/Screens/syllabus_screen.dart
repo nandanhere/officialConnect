@@ -16,7 +16,7 @@ class SyllabusScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-    final sisData = Provider.of<SisData>(context, listen: false);
+    final sisData = Provider.of<SisData>(context);
     final buttonTitle = CustomTheme.buttonTitle(context);
     final titleStyle = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
