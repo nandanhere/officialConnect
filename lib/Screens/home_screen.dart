@@ -51,16 +51,14 @@ class HomeScreen extends StatelessWidget {
     final emoji = emojis[Random().nextInt(emojis.length)];
     final sisData = Provider.of<SisData>(context);
 
-    return Container(
-      height: height,
-      decoration: BoxDecoration(gradient: linearGradient),
-      padding: EdgeInsets.only(
-        left: width * 0.08,
-        right: width * 0.08,
-        top: height * 0.06,
-      ),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(gradient: linearGradient),
+        padding: EdgeInsets.only(
+          left: width * 0.08,
+          right: width * 0.08,
+          top: height * 0.06,
+        ),
         child: Center(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

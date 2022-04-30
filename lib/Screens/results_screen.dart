@@ -21,15 +21,14 @@ class ResultsScreen extends StatelessWidget {
     final titleStyle = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
-    return Container(
-      decoration: BoxDecoration(gradient: linearGradient),
-      padding: EdgeInsets.only(
-        left: width * 0.05,
-        right: width * 0.05,
-        top: height * 0.06,
-      ),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(gradient: linearGradient),
+        padding: EdgeInsets.only(
+          left: width * 0.05,
+          right: width * 0.05,
+          top: height * 0.06,
+        ),
         child: ValueListenableBuilder(
             valueListenable: seeOpt,
             builder: (context, bool isSEE, child) => isSEE
