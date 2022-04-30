@@ -21,26 +21,31 @@ class BranchSyllabus extends StatelessWidget {
     final titleStyle = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
+    final linearGradientBG = CustomTheme.linearGradientBG(context);
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: linearGradient,
-        ),
-        padding: EdgeInsets.only(
-          left: width * 0.05,
-          right: width * 0.05,
-          top: height * 0.06,
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
+        decoration: BoxDecoration(gradient: linearGradientBG),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: linearGradient,
+            ),
+            padding: EdgeInsets.only(
+              left: width * 0.05,
+              right: width * 0.05,
+              top: height * 0.06,
+            ),
             child: Column(
               children: [
                 AutoSizeText(
                   name,
                   maxFontSize: 30,
                   style: titleStyle,
+                ),
+                SizedBox(
+                  height: height * 0.04,
                 ),
                 ...DummyData.syllabusLinks[name]!
                     .map((l) => Padding(
