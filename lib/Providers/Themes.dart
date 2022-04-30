@@ -101,4 +101,18 @@ class CustomTheme {
                 Colors.white
               ]);
   }
+
+  static LinearGradient linearGradientBG(context) {
+    final sisData = Provider.of<SisData>(context);
+    return LinearGradient(
+        begin: Alignment.bottomRight,
+        end: Alignment.topCenter,
+        colors: (sisData.darkMode)
+            ? [Colors.black, Colors.black, Colors.blueGrey.shade900]
+            : [
+                NeumorphicColors.background,
+                NeumorphicColors.background,
+                Colors.white
+              ]);
+  }
 }
