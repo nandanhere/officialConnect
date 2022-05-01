@@ -1,5 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/sisdata.dart';
+import 'package:official_connect/Screens/Events.dart';
 import 'package:official_connect/Screens/loading_screen.dart';
 import 'package:official_connect/Screens/home_screen.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ import 'login_screen.dart';
 class Unified extends StatelessWidget {
   static const String id = "unified";
   Unified({Key? key}) : super(key: key);
-  static ValueNotifier<int> screenNumber = ValueNotifier(0);
+  static ValueNotifier<int> screenNumber = ValueNotifier(2);
   final ValueNotifier<bool> seeOpt = ValueNotifier(false);
 
   @override
@@ -24,7 +25,7 @@ class Unified extends StatelessWidget {
       return const LoginScreen();
     } else {
       if (sisData.data.isEmpty) return const LoadingScreen();
-      PageController _myCont = PageController(initialPage: 0);
+      PageController _myCont = PageController(initialPage: 2);
 
       return Scaffold(
         backgroundColor: NeumorphicColors.background,
@@ -37,8 +38,9 @@ class Unified extends StatelessWidget {
                         PageView(
                           controller: _myCont,
                           children: [
-                            const HomeScreen(),
+                            const Events(),
                             const AttendanceInfo(),
+                            const HomeScreen(),
                             ResultsScreen(seeOpt),
                             const SettingsInfo()
                           ],
@@ -60,6 +62,7 @@ class Unified extends StatelessWidget {
                   valueListenable: screenNumber,
                   builder: (context, int listeningValue, child) =>
                       BottomNavigationBar(
+                    enableFeedback: true,
                     elevation: 0,
                     selectedLabelStyle:
                         const TextStyle(fontFamily: 'Comfortaa'),
@@ -69,7 +72,7 @@ class Unified extends StatelessWidget {
                     unselectedItemColor: Colors.grey,
                     items: [
                       BottomNavigationBarItem(
-                        icon: const FaIcon(FontAwesomeIcons.house),
+                        icon: const FaIcon(Icons.list_alt_rounded),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
@@ -77,6 +80,13 @@ class Unified extends StatelessWidget {
                       ),
                       BottomNavigationBarItem(
                         icon: const FaIcon(FontAwesomeIcons.calendarDay),
+                        label: "",
+                        backgroundColor: sisData.darkMode
+                            ? Colors.black
+                            : NeumorphicColors.background,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const FaIcon(FontAwesomeIcons.house),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
