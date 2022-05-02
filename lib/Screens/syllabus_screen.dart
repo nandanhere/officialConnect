@@ -49,6 +49,14 @@ class SyllabusScreen extends StatelessWidget {
                   maxFontSize: 45,
                   style: titleStyle,
                 ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.16, vertical: height * 0.02),
+                  child: Divider(
+                    color: sisData.darkMode ? Colors.white38 : Colors.black26,
+                    thickness: 1.1,
+                  ),
+                ),
                 // ...DummyData.syllabusLinks.keys
                 //     .map((name) => ((RegExp(r"[\w\s]*" + fullCourseName + r"$")
                 //             .hasMatch(name))
