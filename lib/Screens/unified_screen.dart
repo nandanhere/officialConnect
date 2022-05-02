@@ -1,6 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Screens/Events.dart';
+import 'package:official_connect/Screens/events_screen.dart';
 import 'package:official_connect/Screens/loading_screen.dart';
 import 'package:official_connect/Screens/home_screen.dart';
 import 'package:provider/provider.dart';
@@ -36,10 +36,10 @@ class Unified extends StatelessWidget {
                     valueListenable: screenNumber,
                     builder: (context, int listeningScreenValue, child) =>
                         PageView(
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           controller: _myCont,
                           children: [
-                            const Events(),
+                            const EventsScreen(),
                             const AttendanceInfo(),
                             const HomeScreen(),
                             ResultsScreen(seeOpt),

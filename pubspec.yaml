@@ -80,6 +80,8 @@ flutter:
   uses-material-design: true
   assets:
     - images/
+    - images/club_images/
+
   fonts:
     - family: Comfortaa
       fonts:

@@ -2894,4 +2894,21 @@ class DummyData {
       ]
     ]
   };
+  static const List<Map<String, String>> clubs = [
+    {
+      "name": "GDSC-RIT",
+      'image': 'gdsc.png',
+      'desc':
+          "GDSC RIT is the largest technical club in RIT whose main goal is to conduct events and workshops for the community that helps bring out the importance of development through the use of various technologies.",
+      "website": "http://gdscrit.tech/",
+      "linktree": "https://linktr.ee/gdscmsrit"
+    },
+    {
+      "name": "CodeRIT",
+      'image': 'coderit.png',
+      'desc':
+          "GDSC RIT is the largest technical club in RIT whose main goal is to conduct events and workshops for the community that helps bring out the importance of development through the use of various technologies.",
+      "linktree": "https://linktr.ee/Code_rit"
+    }
+  ];
 }
