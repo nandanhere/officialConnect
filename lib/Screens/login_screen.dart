@@ -59,29 +59,26 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         builder: (BuildContext context) {
           final size = MediaQuery.of(context).size;
-          return Theme(
-            data: ThemeData.dark(),
-            child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: const Text('Pick a date'),
+              content: SizedBox(
+                height: size.height * 0.5,
+                width: size.width * 0.8,
+                child: Column(
+                  children: <Widget>[
+                    Expanded(child: getDateRangePicker()),
+                    MaterialButton(
+                      child: const Text("OK"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
                 ),
-                title: const Text('Pick a date'),
-                content: SizedBox(
-                  height: size.height * 0.5,
-                  width: size.width * 0.8,
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(child: getDateRangePicker()),
-                      MaterialButton(
-                        child: const Text("OK"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      )
-                    ],
-                  ),
-                )),
-          );
+              ));
         });
   }
 
@@ -119,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // usnController.text = "1ms19is076";
     // dobController.text = "2000-12-08";
 
-    usnController.text = "dummy";
+    // usnController.text = "dummy";
     TextFormField usnForm = TextFormField(
       style: textStyle.copyWith(fontSize: width * 0.05),
       cursorHeight: 30, // autofocus: true,
@@ -139,6 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
     TextFormField dobForm = TextFormField(
+      onTap: () {
+        _selectDate(context);
+        dobController.text = formatter.format(selectedDate);
+      },
       style: textStyle.copyWith(fontSize: width * 0.05),
       readOnly: true,
       key: const ValueKey('dob'),
