@@ -1,5 +1,6 @@
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Screens/unified_screen.dart';
+import 'package:official_connect/Widgets/about_club_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -27,26 +28,6 @@ class EventsScreen extends StatelessWidget {
     final linearGradient = CustomTheme.linearGradient(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
     var fullCourseName = sisData.courseFullName.split("-")[1];
-    List<Element> tiles = [
-      //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
-
-      Element(
-          img: "https://www.easytourz.com/uploads/Businesslogo/1576651414.png",
-          onPressed: () {},
-          text: "Club1"),
-      Element(
-          img: "https://www.easytourz.com/uploads/Businesslogo/1576651414.png",
-          onPressed: () {},
-          text: "Club2"),
-      Element(
-          img: "https://www.easytourz.com/uploads/Businesslogo/1576651414.png",
-          onPressed: () {},
-          text: "Club3"),
-      Element(
-          img: "https://www.easytourz.com/uploads/Businesslogo/1576651414.png",
-          onPressed: () {},
-          text: "Club4"),
-    ];
 
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
@@ -79,7 +60,16 @@ class EventsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: NeumorphicButton(
                     style: neumorphicStyle,
-                    onPressed: () {},
+                    onPressed: () => showDialog(
+                      builder: (context) => AboutClubDialog(
+                        e: e,
+                        sisData: sisData,
+                        width: width,
+                        title: title,
+                        height: height,
+                      ),
+                      context: context,
+                    ),
                     child: ListTile(
                       leading: Image.asset('images/club_images/' + e['image']!),
                       trailing: Text(
