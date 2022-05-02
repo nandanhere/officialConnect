@@ -53,7 +53,7 @@ class EventsScreen extends StatelessWidget {
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Container(
-          decoration: BoxDecoration(gradient: linearGradient),
+          decoration: BoxDecoration(gradient: linearGradientBG),
           padding: EdgeInsets.only(
             left: width * 0.05,
             right: width * 0.05,
