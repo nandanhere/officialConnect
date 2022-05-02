@@ -21,7 +21,6 @@ class CIEDetails extends StatelessWidget {
     final buttonTitle = CustomTheme.buttonTitle(context);
     final titleStyle = CustomTheme.titleStyle(context);
     final linearGradient = CustomTheme.linearGradient2(context);
-    print(sisData.course + " " + sisData.courseFullName);
     return Scaffold(
       backgroundColor:
           (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
