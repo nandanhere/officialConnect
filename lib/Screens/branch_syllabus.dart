@@ -4,6 +4,8 @@ import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/themes.dart';
+import 'package:official_connect/Providers/sisdata.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BranchSyllabus extends StatelessWidget {
@@ -28,6 +30,7 @@ class BranchSyllabus extends StatelessWidget {
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
+    final sisData = Provider.of<SisData>(context);
 
     return Scaffold(
       body: Container(
@@ -50,8 +53,13 @@ class BranchSyllabus extends StatelessWidget {
                   maxFontSize: 30,
                   style: titleStyle,
                 ),
-                SizedBox(
-                  height: height * 0.04,
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.16, vertical: height * 0.02),
+                  child: Divider(
+                    color: sisData.darkMode ? Colors.white38 : Colors.black26,
+                    thickness: 1.1,
+                  ),
                 ),
                 ...DummyData.syllabusLinks[name]!
                     .map((l) => Padding(

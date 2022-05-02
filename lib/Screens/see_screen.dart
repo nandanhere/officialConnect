@@ -43,7 +43,12 @@ class SEEScreen extends StatelessWidget {
               children: [
                 Text("Results", textAlign: TextAlign.left, style: titleStyle),
                 NeumorphicButton(
-                  child: const Icon(FontAwesomeIcons.book),
+                  child: Icon(
+                    FontAwesomeIcons.book,
+                    color: sisData.darkMode ? Colors.white : Colors.black,
+                    size: width * 0.05,
+                  ),
+                  style: neumorphicStyle,
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (ctx) => const SyllabusScreen()));
@@ -64,50 +69,67 @@ class SEEScreen extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(
               vertical: height * 0.02, horizontal: width * 0.1),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: () {
-                  seeOpt.value = false;
-                },
-                child: Text(
-                  "CIE",
-                  textAlign: TextAlign.left,
-                  style: CustomTheme.titleStyle(context).copyWith(
-                    fontSize: width * (seeOpt.value ? 0.075 : 0.105),
-                    fontWeight:
-                        (seeOpt.value ? FontWeight.normal : FontWeight.bold),
+          child: Container(
+            height: height * 0.1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      seeOpt.value = false;
+                    },
+                    child: Text(
+                      "CIE",
+                      textAlign: TextAlign.left,
+                      style: CustomTheme.titleStyle(context).copyWith(
+                        fontSize: width * (seeOpt.value ? 0.075 : 0.105),
+                        fontWeight: (seeOpt.value
+                            ? FontWeight.normal
+                            : FontWeight.bold),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              // NeumorphicSwitch(
-              //   style: const NeumorphicSwitchStyle(
-              //       activeTrackColor: NeumorphicColors.accent,
-              //       inactiveTrackColor: NeumorphicColors.accent,
-              //       trackDepth: 10,
-              //       thumbDepth: 2),
-              //   height: width * 0.055,
-              //   value: isSEE,
-              //   onChanged: (value) {
-              //     seeOpt.value = value;
-              //   },
-              // ),
-              InkWell(
-                onTap: () {
-                  seeOpt.value = true;
-                },
-                child: Text(
-                  "SEE",
-                  textAlign: TextAlign.left,
-                  style: CustomTheme.titleStyle(context).copyWith(
-                    fontSize: width * (!seeOpt.value ? 0.075 : 0.105),
-                    fontWeight:
-                        (!seeOpt.value ? FontWeight.normal : FontWeight.bold),
+                // NeumorphicSwitch(
+                //   style: const NeumorphicSwitchStyle(
+                //       activeTrackColor: NeumorphicColors.accent,
+                //       inactiveTrackColor: NeumorphicColors.accent,
+                //       trackDepth: 10,
+                //       thumbDepth: 2),
+                //   height: width * 0.055,
+                //   value: isSEE,
+                //   onChanged: (value) {
+                //     seeOpt.value = value;
+                //   },
+                // ),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                  child: VerticalDivider(
+                    color: sisData.darkMode ? Colors.white38 : Colors.black26,
+                    thickness: 1.6,
+                    width: 10,
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      seeOpt.value = true;
+                    },
+                    child: Text(
+                      "SEE",
+                      textAlign: TextAlign.right,
+                      style: CustomTheme.titleStyle(context).copyWith(
+                        fontSize: width * (!seeOpt.value ? 0.030 : 0.1),
+                        fontWeight: (!seeOpt.value
+                            ? FontWeight.normal
+                            : FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         SizedBox(
