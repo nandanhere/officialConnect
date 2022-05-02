@@ -1,3 +1,4 @@
+import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Screens/unified_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -5,8 +6,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:official_connect/Providers/themes.dart';
 
-class Events extends StatelessWidget {
-  const Events({Key? key}) : super(key: key);
+class EventsScreen extends StatelessWidget {
+  const EventsScreen({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
     if (!await launchUrl(Uri.dataFromString(url)))
@@ -28,7 +29,7 @@ class Events extends StatelessWidget {
     var fullCourseName = sisData.courseFullName.split("-")[1];
     List<Element> tiles = [
       //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
-      //TODO add links for fee payment and wifi complaint
+
       Element(
           img: "https://www.easytourz.com/uploads/Businesslogo/1576651414.png",
           onPressed: () {},
@@ -50,7 +51,7 @@ class Events extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Container(
           decoration: BoxDecoration(gradient: linearGradient),
           padding: EdgeInsets.only(
@@ -65,27 +66,30 @@ class Events extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Activites",
+                    "Clubs",
                     textAlign: TextAlign.left,
                     style: title,
                   ),
                 ),
               ),
               // TODO : what is going on here? it is too convoluted.
-              ...tiles.map((e) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: NeumorphicButton(
-                      style: neumorphicStyle,
-                      onPressed: () {},
-                      child: ListTile(
-                        leading: Image.network(e.img),
-                        trailing: Text(
-                          e.text,
-                          style: buttonTitle,
-                        ),
+
+              ...DummyData.clubs.map(
+                (e) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: NeumorphicButton(
+                    style: neumorphicStyle,
+                    onPressed: () {},
+                    child: ListTile(
+                      leading: Image.asset('images/club_images/' + e['image']!),
+                      trailing: Text(
+                        e['name']!,
+                        style: buttonTitle,
                       ),
                     ),
-                  )),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
