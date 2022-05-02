@@ -45,21 +45,7 @@ class SettingsInfo extends StatelessWidget {
             _launchURL("http://ithelpdesk.msrit.edu/");
           },
           text: "Register WiFi complaint"),
-      Element(
-          icon: Icons.book_rounded,
-          onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (ctx) => SyllabusScreen()));
 
-            // DummyData.syllabusLinks.keys.forEach((element) {
-            //   if (RegExp(r"[\w\s]*" + fullCourseName + r"$")
-            //       .hasMatch(element)) {
-            //     Navigator.of(context).push(MaterialPageRoute(
-            //         builder: (ctx) => BranchSyllabus(name: element)));
-            //   }
-            // });
-          },
-          text: "View Syllabi"),
       Element(
         icon: Icons.settings,
         onPressed: () {},

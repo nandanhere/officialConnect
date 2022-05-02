@@ -35,6 +35,7 @@ class Unified extends StatelessWidget {
                     valueListenable: screenNumber,
                     builder: (context, int listeningScreenValue, child) =>
                         PageView(
+                          physics: BouncingScrollPhysics(),
                           controller: _myCont,
                           children: [
                             const HomeScreen(),

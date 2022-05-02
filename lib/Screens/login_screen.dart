@@ -113,13 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
     // usnController.text = "1MS21CS035-T";
     // dobController.text = "2003-06-11";
     // prateek
-    usnController.text = "1ms19cs030";
-    dobController.text = "2000-11-15";
+    // usnController.text = "1ms19cs030";
+    // dobController.text = "2000-11-15";
     // nadnan
     // usnController.text = "1ms19is076";
     // dobController.text = "2000-12-08";
 
-    // usnController.text = "dummy";
+    usnController.text = "dummy";
     TextFormField usnForm = TextFormField(
       style: textStyle.copyWith(fontSize: width * 0.05),
       cursorHeight: 30, // autofocus: true,

@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/see_details.dart';
+import 'package:official_connect/Screens/syllabus_screen.dart';
 
 class SEEScreen extends StatelessWidget {
   final height,
@@ -39,38 +42,72 @@ class SEEScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Results", textAlign: TextAlign.left, style: titleStyle),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: height * 0.02),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "CIE",
-                        textAlign: TextAlign.left,
-                        style: buttonTitle,
-                      ),
-                      NeumorphicSwitch(
-                        style: const NeumorphicSwitchStyle(
-                            inactiveTrackColor: NeumorphicColors.accent,
-                            activeTrackColor: NeumorphicColors.accent,
-                            trackDepth: 10,
-                            thumbDepth: 2),
-                        height: width * 0.055,
-                        value: isSEE,
-                        onChanged: (value) {
-                          seeOpt.value = value;
-                        },
-                      ),
-                      Text(
-                        "SEE",
-                        textAlign: TextAlign.left,
-                        style: buttonTitle,
-                      ),
-                    ],
-                  ),
+                NeumorphicButton(
+                  child: const Icon(FontAwesomeIcons.book),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => const SyllabusScreen()));
+
+                    // DummyData.syllabusLinks.keys.forEach((element) {
+                    //   if (RegExp(r"[\w\s]*" + fullCourseName + r"$")
+                    //       .hasMatch(element)) {
+                    //     Navigator.of(context).push(MaterialPageRoute(
+                    //         builder: (ctx) => BranchSyllabus(name: element)));
+                    //   }
+                    // });
+                  },
                 ),
               ],
             ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: height * 0.02, horizontal: width * 0.1),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () {
+                  seeOpt.value = false;
+                },
+                child: Text(
+                  "CIE",
+                  textAlign: TextAlign.left,
+                  style: CustomTheme.titleStyle(context).copyWith(
+                    fontSize: width * (seeOpt.value ? 0.075 : 0.105),
+                    fontWeight:
+                        (seeOpt.value ? FontWeight.normal : FontWeight.bold),
+                  ),
+                ),
+              ),
+              // NeumorphicSwitch(
+              //   style: const NeumorphicSwitchStyle(
+              //       activeTrackColor: NeumorphicColors.accent,
+              //       inactiveTrackColor: NeumorphicColors.accent,
+              //       trackDepth: 10,
+              //       thumbDepth: 2),
+              //   height: width * 0.055,
+              //   value: isSEE,
+              //   onChanged: (value) {
+              //     seeOpt.value = value;
+              //   },
+              // ),
+              InkWell(
+                onTap: () {
+                  seeOpt.value = true;
+                },
+                child: Text(
+                  "SEE",
+                  textAlign: TextAlign.left,
+                  style: CustomTheme.titleStyle(context).copyWith(
+                    fontSize: width * (!seeOpt.value ? 0.075 : 0.105),
+                    fontWeight:
+                        (!seeOpt.value ? FontWeight.normal : FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         SizedBox(
