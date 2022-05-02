@@ -27,36 +27,40 @@ class ResultsScreen extends StatelessWidget {
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Container(
-          decoration: BoxDecoration(gradient: linearGradient),
-          padding: EdgeInsets.only(
-            left: width * 0.05,
-            right: width * 0.05,
-            top: height * 0.06,
+        child: ValueListenableBuilder(
+          valueListenable: seeOpt,
+          builder: (context, isSEE, child) => Container(
+            decoration: BoxDecoration(
+                gradient: seeOpt.value ? linearGradientBG : linearGradient),
+            padding: EdgeInsets.only(
+              left: width * 0.05,
+              right: width * 0.05,
+              top: height * 0.06,
+            ),
+            child: ValueListenableBuilder(
+                valueListenable: seeOpt,
+                builder: (context, bool isSEE, child) => isSEE
+                    ? SEEScreen(
+                        height: height,
+                        titleStyle: titleStyle,
+                        buttonTitle: buttonTitle,
+                        isSEE: isSEE,
+                        width: width,
+                        seeOpt: seeOpt,
+                        neumorphicStyle: neumorphicStyle,
+                        sisData: sisData,
+                        buttonTrailing: buttonTrailing)
+                    : CIEScreen(
+                        height: height,
+                        titleStyle: titleStyle,
+                        buttonTitle: buttonTitle,
+                        isSEE: isSEE,
+                        width: width,
+                        seeOpt: seeOpt,
+                        neumorphicStyle: neumorphicStyle,
+                        sisData: sisData,
+                        buttonTrailing: buttonTrailing)),
           ),
-          child: ValueListenableBuilder(
-              valueListenable: seeOpt,
-              builder: (context, bool isSEE, child) => isSEE
-                  ? SEEScreen(
-                      height: height,
-                      titleStyle: titleStyle,
-                      buttonTitle: buttonTitle,
-                      isSEE: isSEE,
-                      width: width,
-                      seeOpt: seeOpt,
-                      neumorphicStyle: neumorphicStyle,
-                      sisData: sisData,
-                      buttonTrailing: buttonTrailing)
-                  : CIEScreen(
-                      height: height,
-                      titleStyle: titleStyle,
-                      buttonTitle: buttonTitle,
-                      isSEE: isSEE,
-                      width: width,
-                      seeOpt: seeOpt,
-                      neumorphicStyle: neumorphicStyle,
-                      sisData: sisData,
-                      buttonTrailing: buttonTrailing)),
         ),
       ),
     );
