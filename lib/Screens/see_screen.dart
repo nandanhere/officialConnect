@@ -83,7 +83,7 @@ class SEEScreen extends StatelessWidget {
                       "CIE",
                       textAlign: TextAlign.left,
                       style: CustomTheme.titleStyle(context).copyWith(
-                        fontSize: width * (seeOpt.value ? 0.075 : 0.105),
+                        fontSize: width * (seeOpt.value ? 0.06 : 0.1),
                         fontWeight: (seeOpt.value
                             ? FontWeight.normal
                             : FontWeight.bold),
@@ -120,7 +120,7 @@ class SEEScreen extends StatelessWidget {
                       "SEE",
                       textAlign: TextAlign.right,
                       style: CustomTheme.titleStyle(context).copyWith(
-                        fontSize: width * (!seeOpt.value ? 0.030 : 0.1),
+                        fontSize: width * (!seeOpt.value ? 0.06 : 0.1),
                         fontWeight: (!seeOpt.value
                             ? FontWeight.normal
                             : FontWeight.bold),

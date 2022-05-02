@@ -1,6 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Screens/Events.dart';
+import 'package:official_connect/Screens/events.dart';
 import 'package:official_connect/Screens/loading_screen.dart';
 import 'package:official_connect/Screens/home_screen.dart';
 import 'package:provider/provider.dart';
