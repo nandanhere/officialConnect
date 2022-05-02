@@ -116,3 +116,28 @@ class CustomTheme {
               ]);
   }
 }
+
+// ThemeData t = ThemeData(textTheme: TextTheme(
+//   bodyMedium: TextStyle(
+//       color: sisData.darkMode ? Colors.white : Colors.black,
+//       fontSize: MediaQuery.of(context).size.width * 0.055,
+//       fontWeight: FontWeight.bold,
+//       fontFamily: 'Comfortaa'),
+//   bodyLarge: TextStyle(
+//       color: sisData.darkMode ? Colors.white : Colors.black,
+//       fontSize: MediaQuery.of(context).size.width * 0.045,
+//       fontFamily: 'Comfortaa'),
+//   subtitle1: TextStyle(
+//       color: sisData.darkMode ? Colors.white54 : Colors.black54,
+//       fontSize: MediaQuery.of(context).size.width * 0.04,
+//       fontFamily: 'Comfortaa'),
+//   titleLarge: TextStyle(
+//       color: sisData.darkMode ? Colors.white : Colors.black,
+//       fontSize: MediaQuery.of(context).size.width * 0.115,
+//       fontFamily: 'Comfortaa'),
+//
+//   bodySmall: TextStyle(
+//       color: sisData.darkMode ? Colors.white : Colors.black,
+//       fontSize: MediaQuery.of(context).size.width * 0.04,
+//       fontFamily: 'Comfortaa')
+// ));
