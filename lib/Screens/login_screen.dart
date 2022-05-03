@@ -189,8 +189,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontSize: 20,
                           fontFamily: 'Comfortaa'),
                     ),
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: (!fillForm) ? 90 : 10,
                   ),
                   if (!fillForm)
                     const Text(
