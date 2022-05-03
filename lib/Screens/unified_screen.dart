@@ -73,35 +73,63 @@ class Unified extends StatelessWidget {
                     unselectedItemColor: Colors.grey,
                     items: [
                       BottomNavigationBarItem(
-                        icon: const FaIcon(Icons.list_alt_rounded),
+                        icon: listeningValue == 0
+                            ? FaIcon(FontAwesomeIcons.solidRectangleList)
+                            : FaIcon(FontAwesomeIcons.rectangleList),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
                             : NeumorphicColors.background,
                       ),
                       BottomNavigationBarItem(
-                        icon: const FaIcon(FontAwesomeIcons.calendarDay),
+                        icon: listeningValue == 1
+                            ? FaIcon(FontAwesomeIcons.solidCalendar)
+                            : FaIcon(FontAwesomeIcons.calendar),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
                             : NeumorphicColors.background,
                       ),
                       BottomNavigationBarItem(
-                        icon: const FaIcon(FontAwesomeIcons.house),
+                        icon: listeningValue == 2
+                            ? FaIcon(
+                                Icons.home,
+                                size: 35,
+                              )
+                            : FaIcon(
+                                Icons.home_outlined,
+                                size: 35,
+                              ),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
                             : NeumorphicColors.background,
                       ),
                       BottomNavigationBarItem(
-                        icon: const FaIcon(FontAwesomeIcons.graduationCap),
+                        icon: listeningValue == 3
+                            ? FaIcon(
+                                Icons.assessment,
+                                size: 30,
+                              )
+                            : FaIcon(
+                                Icons.assessment_outlined,
+                                size: 30,
+                              ),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
                             : NeumorphicColors.background,
                       ),
                       BottomNavigationBarItem(
-                        icon: const FaIcon(FontAwesomeIcons.gear),
+                        icon: listeningValue == 4
+                            ? FaIcon(
+                                Icons.settings,
+                                size: 30,
+                              )
+                            : FaIcon(
+                                Icons.settings_outlined,
+                                size: 30,
+                              ),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
