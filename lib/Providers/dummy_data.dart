@@ -2907,8 +2907,11 @@ class DummyData {
       "name": "CodeRIT",
       'image': 'coderit.png',
       'desc':
-          "GDSC RIT is the largest technical club in RIT whose main goal is to conduct events and workshops for the community that helps bring out the importance of development through the use of various technologies.",
-      "linktree": "https://linktr.ee/Code_rit"
+          "CodeRIT is a technical club of Ramaiah Institute of Technology. We conduct workshops, coding contests, hackathons and much more fun coding events. We are a student run community, and we aim to establish a coding culture on campus, reaching every student passionate about coding.",
+      "linktree": "https://linktr.ee/Code_rit",
+      "discord": "https://discord.com/invite/pmfYHf6cER",
+      "telegram": "https://t.me/joinchat/yQdcQ-1a4xBkZmE1",
+      "linkedin": " https://www.linkedin.com/company/coderitclub/",
     }
   ];
 }

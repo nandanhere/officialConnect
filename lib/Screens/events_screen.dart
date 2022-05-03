@@ -71,7 +71,11 @@ class EventsScreen extends StatelessWidget {
                       context: context,
                     ),
                     child: ListTile(
-                      leading: Image.asset('images/club_images/' + e['image']!),
+                      leading: Image.asset(
+                        'images/club_images/' +
+                            (sisData.darkMode ? "dark_" : "light_") +
+                            e['image']!,
+                      ),
                       trailing: Text(
                         e['name']!,
                         style: buttonTitle,
