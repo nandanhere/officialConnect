@@ -18,7 +18,7 @@ class SisData with ChangeNotifier {
   List<PreviousResult> _previousResults = [];
   bool _hasData = false;
   bool isValidData = true;
-  bool needToUpdate = true;
+  bool needToUpdate = false;
   String _usn = "";
   String _dob = "";
   int _creditsEarned = 0;
@@ -83,7 +83,7 @@ class SisData with ChangeNotifier {
     debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
-      const debug = false;
+      const debug = true;
       _previousResults = PreviousResult.getList(_data['prevResults']);
       if (debug) debugPrint("Previous Results");
       _attendances = Attendance.getList(_data['attendance']);

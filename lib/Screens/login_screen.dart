@@ -160,7 +160,15 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     return sisData.updating
-        ? LoadingScreen(navigate: false)
+        ? Scaffold(
+            backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
+            body: const Center(
+              child: SpinKitSpinningLines(
+                color: Colors.red,
+                size: 100.0,
+              ),
+            ),
+          )
         : Scaffold(
             backgroundColor: NeumorphicColors.background,
             body: SingleChildScrollView(
