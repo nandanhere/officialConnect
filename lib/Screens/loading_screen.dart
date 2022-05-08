@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -5,7 +7,8 @@ import 'package:official_connect/Screens/unified_screen.dart';
 import 'package:provider/provider.dart';
 
 class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({Key? key}) : super(key: key);
+  final navigate = true;
+  const LoadingScreen({Key? key, bool navigate = true}) : super(key: key);
 
   @override
   State<LoadingScreen> createState() => _LoadingScreenState();
@@ -19,10 +22,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   _navigateToUnifiedScreen() async {
-    await Future.delayed(const Duration(milliseconds: 1500), () {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Unified()));
-    });
+    if (widget.navigate)
+      await Future.delayed(const Duration(milliseconds: 1500), () {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Unified()));
+      });
   }
 
   @override

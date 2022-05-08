@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:official_connect/Screens/loading_screen.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:intl/intl.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = "login";
@@ -157,124 +159,128 @@ class _LoginScreenState extends State<LoginScreen> {
           )),
     );
 
-    return Scaffold(
-      backgroundColor: NeumorphicColors.background,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 60.0),
-          child: SafeArea(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                    child: Image.asset('images/logo.png'),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    "CONNECT",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 40,
-                        fontFamily: 'Comfortaa'),
-                  ),
-                  if (!fillForm)
-                    const Text(
-                      "By students of",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontFamily: 'Comfortaa'),
-                    ),
-                  SizedBox(
-                    height: (!fillForm) ? 90 : 10,
-                  ),
-                  if (!fillForm)
-                    const Text(
-                      "MSRIT",
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 20,
-                          fontFamily: 'Comfortaa'),
-                    ),
-                  if (fillForm)
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 50.0, right: 50.0),
-                            child: usnForm,
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 50.0, right: 50.0),
-                            child: dobForm,
-                          ),
-                        ],
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  (isPressed &&
-                          !sisData.hasData &&
-                          _formKey.currentState!.validate())
-                      ? const CircularProgressIndicator()
-                      : GestureDetector(
-                          onTap: () {
-                            if (!fillForm) {
-                              setState(() {
-                                fillForm = true;
-                                depthVal = -1 * depthVal;
-                              });
-                            } else {
-                              setState(() {
-                                isPressed = true;
-                              });
-                              _submit();
-                            }
-                          },
-                          child: Hero(
-                            tag: "bar",
-                            child: Neumorphic(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
-                                style: NeumorphicStyle(
-                                    depth: depthVal,
-                                    intensity: 0.5,
-                                    color: const Color(0x00c00000),
-                                    boxShape: NeumorphicBoxShape.roundRect(
-                                        BorderRadius.circular(30))),
-                                child: fillForm
-                                    ? const Text(
-                                        "Login",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Comfortaa'),
-                                      )
-                                    : const Icon(Icons.chevron_right_rounded)),
-                          ),
+    return sisData.updating
+        ? LoadingScreen(navigate: false)
+        : Scaffold(
+            backgroundColor: NeumorphicColors.background,
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 60.0),
+                child: SafeArea(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: Image.asset('images/logo.png'),
                         ),
-                  if (!sisData.isValidData)
-                    Text(
-                      sisData.errorMessage,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 10,
-                          fontFamily: 'Comfortaa'),
-                    )
-                ]),
-          ),
-        ),
-      ),
-    );
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          "CONNECT",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 40,
+                              fontFamily: 'Comfortaa'),
+                        ),
+                        if (!fillForm)
+                          const Text(
+                            "By students of",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontFamily: 'Comfortaa'),
+                          ),
+                        SizedBox(
+                          height: (!fillForm) ? 90 : 10,
+                        ),
+                        if (!fillForm)
+                          const Text(
+                            "MSRIT",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 20,
+                                fontFamily: 'Comfortaa'),
+                          ),
+                        if (fillForm)
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 50.0, right: 50.0),
+                                  child: usnForm,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 50.0, right: 50.0),
+                                  child: dobForm,
+                                ),
+                              ],
+                            ),
+                          ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        (isPressed &&
+                                !sisData.hasData &&
+                                _formKey.currentState!.validate())
+                            ? const CircularProgressIndicator()
+                            : GestureDetector(
+                                onTap: () {
+                                  if (!fillForm) {
+                                    setState(() {
+                                      fillForm = true;
+                                      depthVal = -1 * depthVal;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      isPressed = true;
+                                    });
+                                    _submit();
+                                  }
+                                },
+                                child: Hero(
+                                  tag: "bar",
+                                  child: Neumorphic(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 10),
+                                      style: NeumorphicStyle(
+                                          depth: depthVal,
+                                          intensity: 0.5,
+                                          color: const Color(0x00c00000),
+                                          boxShape:
+                                              NeumorphicBoxShape.roundRect(
+                                                  BorderRadius.circular(30))),
+                                      child: fillForm
+                                          ? const Text(
+                                              "Login",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                  fontSize: 20,
+                                                  fontFamily: 'Comfortaa'),
+                                            )
+                                          : const Icon(
+                                              Icons.chevron_right_rounded)),
+                                ),
+                              ),
+                        if (!sisData.isValidData)
+                          Text(
+                            sisData.errorMessage,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 10,
+                                fontFamily: 'Comfortaa'),
+                          )
+                      ]),
+                ),
+              ),
+            ),
+          );
   }
 }
