@@ -9,6 +9,7 @@ import 'package:official_connect/Screens/results_screen.dart';
 import 'package:official_connect/Screens/settings_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'login_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 // ignore: must_be_immutable
 class Unified extends StatelessWidget {
@@ -20,12 +21,19 @@ class Unified extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
-
     if ((sisData.usn == "" && !sisData.hasData) || !sisData.isValidData) {
       return const LoginScreen();
     } else {
       if (sisData.data.isEmpty || sisData.updating) {
-        return const LoadingScreen();
+        return Scaffold(
+          backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
+          body: const Center(
+            child: SpinKitSpinningLines(
+              color: Colors.red,
+              size: 100.0,
+            ),
+          ),
+        );
       }
       PageController _myCont = PageController(initialPage: 2);
 

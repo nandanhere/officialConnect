@@ -5,7 +5,6 @@ import 'package:official_connect/Screens/branch_syllabus.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:string_similarity/string_similarity.dart';
-import 'attendance_details.dart';
 import 'package:official_connect/Providers/themes.dart';
 
 class SyllabusScreen extends StatelessWidget {
