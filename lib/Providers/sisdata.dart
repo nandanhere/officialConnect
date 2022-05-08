@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:official_connect/Classes/attendance.dart';
 import 'package:official_connect/Classes/fees_data.dart';
@@ -48,20 +49,29 @@ class SisData with ChangeNotifier {
       prefs.setString('usn', "");
       _dob = prefs.getString('dob') ?? "";
       _darkMode = prefs.getBool('darkMode') ?? false;
-      notifyListeners();
 
-      // debugPrint("data was there before");
+      debugPrint("data was there before");
       needToUpdate = DateTime.fromMillisecondsSinceEpoch(time!)
               .difference(DateTime.now())
               .inDays
               .abs() >
           1;
+      notifyListeners();
+
       _data = await convert.jsonDecode(prefs.getString('data')!);
       if (needToUpdate) {
         debugPrint("updating");
+        Fluttertoast.showToast(
+            msg: "Updating data ",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: const Color(0xffba3237),
+            textColor: Colors.white,
+            fontSize: 16.0);
         await prefs.setBool('hasData', false);
         await getData("", "", true);
-        // debugPrint(_data['prevResults'][0]);
+        debugPrint(_data['prevResults'][0]);
       }
       await setVariables();
 

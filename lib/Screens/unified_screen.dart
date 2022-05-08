@@ -24,7 +24,9 @@ class Unified extends StatelessWidget {
     if ((sisData.usn == "" && !sisData.hasData) || !sisData.isValidData) {
       return const LoginScreen();
     } else {
-      if (sisData.data.isEmpty) return const LoadingScreen();
+      if (sisData.data.isEmpty || sisData.updating) {
+        return const LoadingScreen();
+      }
       PageController _myCont = PageController(initialPage: 2);
 
       return Scaffold(
