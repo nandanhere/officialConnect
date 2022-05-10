@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Screens/loading_screen.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:intl/intl.dart';

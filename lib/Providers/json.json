@@ -1,0 +1,73 @@
+{
+    "cgpa": "8.74",
+    "credits_earned": "24",
+    "credits_registered": "24",
+    "error": false,
+    "results": [
+        [
+            "IS53",
+            "SOFTWARE ENGINEERING",
+            "3.00",
+            "3.00",
+            "B"
+        ],
+        [
+            "IS52",
+            "DATABASE MANAGEMENT SYSTEMS",
+            "4.00",
+            "4.00",
+            "B"
+        ],
+        [
+            "IS51",
+            "COMPUTER NETWORKS",
+            "4.00",
+            "4.00",
+            "C"
+        ],
+        [
+            "IS54",
+            "INTELLECTUAL PROPERTY RIGHTS",
+            "3.00",
+            "3.00",
+            "A"
+        ],
+        [
+            "MAOE04",
+            "APPLIED GRAPH THEORY",
+            "3.00",
+            "3.00",
+            "A"
+        ],
+        [
+            "ISE551",
+            "DIGITAL IMAGE PROCESSING",
+            "3.00",
+            "3.00",
+            "A"
+        ],
+        [
+            "ISL58",
+            "SCRIPTING LANGUAGES LABORATORY",
+            "2.00",
+            "2.00",
+            "S"
+        ],
+        [
+            "ISL57",
+            "DATABASE MANAGEMENT SYSTEMS LABORATORY",
+            "1.00",
+            "1.00",
+            "S"
+        ],
+        [
+            "ISL56",
+            "COMPUTER NETWORKS LABORATORY",
+            "1.00",
+            "1.00",
+            "S"
+        ]
+    ],
+    "sem": "5",
+    "sgpa": "8.54"
+}

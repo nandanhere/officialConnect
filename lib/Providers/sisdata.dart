@@ -84,6 +84,7 @@ class SisData with ChangeNotifier {
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
       const debug = true;
+      _usn = _data['usn'];
       _previousResults = PreviousResult.getList(_data['prevResults']);
       if (debug) debugPrint("Previous Results");
       _attendances = Attendance.getList(_data['attendance']);

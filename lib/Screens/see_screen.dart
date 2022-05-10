@@ -3,6 +3,7 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/themes.dart';
+import 'package:official_connect/Screens/latest_results.dart';
 import 'package:official_connect/Screens/see_details.dart';
 import 'package:official_connect/Screens/syllabus_screen.dart';
 
@@ -91,18 +92,6 @@ class SEEScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // NeumorphicSwitch(
-                //   style: const NeumorphicSwitchStyle(
-                //       activeTrackColor: NeumorphicColors.accent,
-                //       inactiveTrackColor: NeumorphicColors.accent,
-                //       trackDepth: 10,
-                //       thumbDepth: 2),
-                //   height: width * 0.055,
-                //   value: isSEE,
-                //   onChanged: (value) {
-                //     seeOpt.value = value;
-                //   },
-                // ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: height * 0.02),
                   child: VerticalDivider(
@@ -181,9 +170,31 @@ class SEEScreen extends StatelessWidget {
                   ),
                 ))
             .toList(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Neumorphic(
+            padding: EdgeInsets.only(
+                top: height * 0.015,
+                bottom: height * 0.015,
+                left: width * 0.025,
+                right: width * 0.01),
+            style: neumorphicStyle,
+            child: ListTile(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => LatestResultsDetails()),
+                );
+              },
+              title: Text(
+                "Latest Semester results",
+                style: buttonTrailing,
+              ),
+            ),
+          ),
+        ),
         SizedBox(
           height: height * 0.095,
-        )
+        ),
       ],
     );
   }
