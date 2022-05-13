@@ -19,7 +19,8 @@ class ResultsDetails extends StatelessWidget {
     final height = size.height;
     final buttonTrailing = CustomTheme.buttonTrailing(context);
     final title = CustomTheme.textStyle(context);
-
+    final bool isBackLog =
+        previousResult.term.toString().toLowerCase().contains('back');
     return Scaffold(
       backgroundColor:
           (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
@@ -52,52 +53,63 @@ class ResultsDetails extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text(
-                  previousResult.term,
-                  style: buttonTrailing.copyWith(fontSize: width * 0.06),
+                Center(
+                  child: AutoSizeText(
+                    previousResult.term,
+                    maxLines: 1,
+                    style: buttonTrailing.copyWith(fontSize: width * 0.06),
+                  ),
                 ),
-                Text("Semester ${previousResult.semesterNumber}",
-                    style: buttonTrailing.copyWith(fontSize: width * 0.06)),
-                Padding(
-                  padding: EdgeInsets.all(height * 0.01),
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: width * 0.22),
-                      child: Row(
-                        children: [
-                          AutoSizeText(
-                            "SGPA : ${previousResult.sgpa}  ",
-                            style: title,
-                          ),
-                          AutoSizeText(
-                              "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
-                              style: title)
-                        ],
+                if (!isBackLog) ...[
+                  if (previousResult.term.toString().contains('supplementary'))
+                    Text("Semester ${previousResult.semesterNumber}",
+                        style: buttonTrailing.copyWith(fontSize: width * 0.06)),
+                  Padding(
+                    padding: EdgeInsets.all(height * 0.01),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: width * 0.1),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AutoSizeText(
+                              "SGPA : ${previousResult.sgpa}  ",
+                              style: title,
+                            ),
+                            AutoSizeText(
+                                "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
+                                style: title)
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(height * 0.01),
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: width * 0.16),
-                      child: Row(
-                        children: [
-                          AutoSizeText(
-                            "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
-                            style: title,
-                          ),
-                          AutoSizeText(
-                            "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
-                            style: title,
-                          )
-                        ],
+                  Padding(
+                    padding: EdgeInsets.all(height * 0.01),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: width * 0.1),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AutoSizeText(
+                              "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
+                              style: title,
+                            ),
+                            AutoSizeText(
+                              "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
+                              style: title,
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                MarksCard(subjects: previousResult.results)
+                ],
+                MarksCard(
+                  subjects: previousResult.results,
+                  isBackLog: isBackLog,
+                )
               ],
             ),
           ),
