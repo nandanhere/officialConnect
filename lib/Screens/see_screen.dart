@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/latest_results.dart';
 import 'package:official_connect/Screens/see_details.dart';
@@ -139,7 +141,7 @@ class SEEScreen extends StatelessWidget {
           ),
         ),
         ...sisData.previousResults
-            .map((e) => Padding(
+            .map((PreviousResult e) => Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Neumorphic(
                     padding: EdgeInsets.only(
@@ -158,14 +160,21 @@ class SEEScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      title: Text(
-                        "Sem - ${e.semesterNumber}",
+                      title: AutoSizeText(
+                        (e.term.toLowerCase().contains('supplementary') ||
+                                e.term.toLowerCase().contains("back"))
+                            ? e.term
+                            : "Sem - ${e.semesterNumber}",
+                        // maxFontSize: ((width * 0.08) as double).round(),
+                        maxLines: 2,
                         style: buttonTrailing,
                       ),
-                      trailing: Text(
-                        e.sgpa,
-                        style: buttonTrailing,
-                      ),
+                      trailing: (e.term.toLowerCase().contains("back"))
+                          ? null
+                          : Text(
+                              e.sgpa,
+                              style: buttonTrailing,
+                            ),
                     ),
                   ),
                 ))
@@ -182,11 +191,13 @@ class SEEScreen extends StatelessWidget {
             child: ListTile(
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => LatestResultsDetails()),
+                  MaterialPageRoute(
+                      builder: (ctx) => const LatestResultsDetails()),
                 );
               },
-              title: Text(
+              title: AutoSizeText(
                 "Latest Semester results",
+                maxLines: 1,
                 style: buttonTrailing,
               ),
             ),

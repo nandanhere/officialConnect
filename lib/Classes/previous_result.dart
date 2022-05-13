@@ -1,10 +1,5 @@
 class Subject {
-  final String courseCode,
-      creditsEarned,
-      creditsRegistered,
-      gpa,
-      grade,
-      subjectName;
+  final courseCode, creditsEarned, creditsRegistered, gpa, grade, subjectName;
 
   Subject(
       {required this.courseCode,
@@ -15,14 +10,19 @@ class Subject {
       required this.subjectName});
   static List<Subject> getList(List<Map<String, dynamic>> data) {
     final list = data
-        .map((e) => Subject(
-            courseCode: e['COURSE CODE'],
-            creditsEarned: e['Credits Earned'].toString(),
-            creditsRegistered: e['Credits Reg.'].toString(),
-            gpa: e['GPA'].toString(),
-            grade: e['Grade'].toString(),
-            subjectName: e['SUBJECT NAME'].toString()))
-        .toList();
+        .where((element) => element['COURSE CODE'].toString().trim() != "")
+        .map((e) {
+      // print(e.keys);
+      bool isBack = e.containsKey("COURSE NAME");
+      return Subject(
+        courseCode: e['COURSE CODE'],
+        creditsEarned: e['Credits Earned'].toString(),
+        creditsRegistered: isBack ? e['Credits'] : e['Credits Reg.'].toString(),
+        gpa: isBack ? e["Attempts"] : e['GPA'].toString(),
+        grade: e['Grade'].toString(),
+        subjectName: isBack ? e['COURSE NAME'] : e['SUBJECT NAME'].toString(),
+      );
+    }).toList();
     list.sort((a, b) => a.courseCode.compareTo(b.courseCode));
     return list;
   }
@@ -44,18 +44,23 @@ class PreviousResult {
       required this.term,
       required this.semesterNumber});
   static List<PreviousResult> getList(List<dynamic> data) {
-    return data
-        .map(
-          (e) => PreviousResult(
-              cgpa: e['CGPA'],
-              creditsEarned: e["Credits Earned "],
-              creditsRegistered: e['Credits Registered '],
-              sgpa: e['SGPA'],
-              results: Subject.getList(
-                  List<Map<String, dynamic>>.from(e['results'])),
-              term: e['term'],
-              semesterNumber: (data.indexOf(e) + 1).toString()),
-        )
-        .toList();
+    var semstart = 0;
+    var cgpa = "";
+    return data.map((e) {
+      String term = e['term'].toString().toLowerCase();
+      cgpa = term.contains('back') ? cgpa : e['CGPA'];
+      return PreviousResult(
+          cgpa: cgpa,
+          creditsEarned: e["Credits Earned "],
+          creditsRegistered: e['Credits Registered '],
+          sgpa: e['SGPA'],
+          results:
+              Subject.getList(List<Map<String, dynamic>>.from(e['results'])),
+          term: e['term'],
+          semesterNumber:
+              (term.contains('supplementary')) ? semstart : ++semstart
+          // semesterNumber: (data.indexOf(e) + 1).toString(),
+          );
+    }).toList();
   }
 }

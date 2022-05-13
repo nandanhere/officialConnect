@@ -41,7 +41,6 @@ class LatestResultsDetails extends StatelessWidget {
           results: Subject.getList(results),
           term: "",
           semesterNumber: "");
-      print("done");
       return s;
     }
     return Future.error('error');
@@ -103,8 +102,9 @@ class LatestResultsDetails extends StatelessWidget {
                         padding: EdgeInsets.all(height * 0.01),
                         child: Center(
                           child: Padding(
-                            padding: EdgeInsets.only(left: width * 0.22),
+                            padding: EdgeInsets.only(left: width * 0.1),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 AutoSizeText(
                                   "SGPA : ${previousResult.sgpa}  ",
@@ -122,8 +122,9 @@ class LatestResultsDetails extends StatelessWidget {
                         padding: EdgeInsets.all(height * 0.01),
                         child: Center(
                           child: Padding(
-                            padding: EdgeInsets.only(left: width * 0.16),
+                            padding: EdgeInsets.only(left: width * 0.1),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 AutoSizeText(
                                   "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
@@ -138,7 +139,10 @@ class LatestResultsDetails extends StatelessWidget {
                           ),
                         ),
                       ),
-                      MarksCard(subjects: previousResult.results)
+                      MarksCard(
+                        subjects: previousResult.results,
+                        isBackLog: false,
+                      )
                     ],
                   ),
                 ),

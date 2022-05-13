@@ -1,73 +1,417 @@
 {
-    "cgpa": "8.74",
-    "credits_earned": "24",
-    "credits_registered": "24",
-    "error": false,
-    "results": [
-        [
-            "IS53",
-            "SOFTWARE ENGINEERING",
-            "3.00",
-            "3.00",
-            "B"
-        ],
-        [
-            "IS52",
-            "DATABASE MANAGEMENT SYSTEMS",
-            "4.00",
-            "4.00",
-            "B"
-        ],
-        [
-            "IS51",
-            "COMPUTER NETWORKS",
-            "4.00",
-            "4.00",
-            "C"
-        ],
-        [
-            "IS54",
-            "INTELLECTUAL PROPERTY RIGHTS",
-            "3.00",
-            "3.00",
-            "A"
-        ],
-        [
-            "MAOE04",
-            "APPLIED GRAPH THEORY",
-            "3.00",
-            "3.00",
-            "A"
-        ],
-        [
-            "ISE551",
-            "DIGITAL IMAGE PROCESSING",
-            "3.00",
-            "3.00",
-            "A"
-        ],
-        [
-            "ISL58",
-            "SCRIPTING LANGUAGES LABORATORY",
-            "2.00",
-            "2.00",
-            "S"
-        ],
-        [
-            "ISL57",
-            "DATABASE MANAGEMENT SYSTEMS LABORATORY",
-            "1.00",
-            "1.00",
-            "S"
-        ],
-        [
-            "ISL56",
-            "COMPUTER NETWORKS LABORATORY",
-            "1.00",
-            "1.00",
-            "S"
-        ]
+    "name": "NAVNEETH PRASANTH",
+    "prevResults": [
+        {
+            "CGPA": "",
+            "Credits Earned ": "  10",
+            "Credits Registered ": "  20",
+            "SGPA": "  3.47",
+            "results": [
+                {
+                    "COURSE CODE": "HS17K",
+                    "Credits Earned": "Audit",
+                    "Credits Reg.": "Audit",
+                    "GPA": "0",
+                    "Grade": "Pass",
+                    "SUBJECT NAME": "KANNADA KALI"
+                },
+                {
+                    "COURSE CODE": "HS16",
+                    "Credits Earned": "Audit",
+                    "Credits Reg.": "Audit",
+                    "GPA": "0",
+                    "Grade": "Pass",
+                    "SUBJECT NAME": "ENVIRONMENTAL STUDIES"
+                },
+                {
+                    "COURSE CODE": "MA11",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "4",
+                    "Grade": "E",
+                    "SUBJECT NAME": "ENGINEERING MATHEMATICS-I"
+                },
+                {
+                    "COURSE CODE": "ME13",
+                    "Credits Earned": "3",
+                    "Credits Reg.": "3",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "ELEMENTS OF MECHANICAL ENGINEERING"
+                },
+                {
+                    "COURSE CODE": "PY12",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "4",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "ENGINEERING PHYSICS"
+                },
+                {
+                    "COURSE CODE": "CV14",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "3",
+                    "GPA": "0",
+                    "Grade": "W",
+                    "SUBJECT NAME": "BASICS OF CIVIL ENGINEERING AND MECHANICS"
+                },
+                {
+                    "COURSE CODE": "EC15",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "3",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "BASIC ELECTRONICS"
+                },
+                {
+                    "COURSE CODE": "MEL19",
+                    "Credits Earned": "2",
+                    "Credits Reg.": "2",
+                    "GPA": "9",
+                    "Grade": "A",
+                    "SUBJECT NAME": "WORKSHOP PRACTICE"
+                },
+                {
+                    "COURSE CODE": "PYL18",
+                    "Credits Earned": "1",
+                    "Credits Reg.": "1",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "ENGINEERING PHYSICS LAB"
+                }
+            ],
+            "term": "Jan 2020"
+        },
+        {
+            "CGPA": " 6.3",
+            "Credits Earned ": "  20",
+            "Credits Registered ": "  20",
+            "SGPA": "  6.5",
+            "results": [
+                {
+                    "COURSE CODE": "HS23",
+                    "Credits Earned": "Audit",
+                    "Credits Reg.": "Audit",
+                    "GPA": "0",
+                    "Grade": "Pass",
+                    "SUBJECT NAME": "CONSTITUTION OF INDIA"
+                },
+                {
+                    "COURSE CODE": "MA21",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "ENGINEERING MATHEMATICS-II"
+                },
+                {
+                    "COURSE CODE": "HS24",
+                    "Credits Earned": "2",
+                    "Credits Reg.": "2",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "PROFESSIONAL COMMUNICATION AND LIFE SKILLS"
+                },
+                {
+                    "COURSE CODE": "CY22",
+                    "Credits Earned": "3",
+                    "Credits Reg.": "3",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "ENGINEERING CHEMISTRY"
+                },
+                {
+                    "COURSE CODE": "CS26",
+                    "Credits Earned": "2",
+                    "Credits Reg.": "2",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "FUNDAMENTALS OF COMPUTING"
+                },
+                {
+                    "COURSE CODE": "EE25",
+                    "Credits Earned": "3",
+                    "Credits Reg.": "3",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "BASIC ELECTRICAL ENGINEERING"
+                },
+                {
+                    "COURSE CODE": "CSL28",
+                    "Credits Earned": "2",
+                    "Credits Reg.": "2",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "FUNDAMENTALS OF COMPUTING & C PROGRAMMING LABORATORY"
+                },
+                {
+                    "COURSE CODE": "AL21",
+                    "Credits Earned": "1",
+                    "Credits Reg.": "1",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "ENGINEERING DESIGN"
+                },
+                {
+                    "COURSE CODE": "ME29",
+                    "Credits Earned": "2",
+                    "Credits Reg.": "2",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "COMPUTER AIDED ENGINEERING DRAWING"
+                },
+                {
+                    "COURSE CODE": "CYL27",
+                    "Credits Earned": "1",
+                    "Credits Reg.": "1",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "ENGINEERING CHEMISTRY LAB"
+                }
+            ],
+            "term": "July - October 2020"
+        },
+        {
+            "CGPA": " 6.3",
+            "Credits Earned ": "  0",
+            "Credits Registered ": "  25",
+            "SGPA": "  0",
+            "results": [
+                {
+                    "COURSE CODE": "IS32",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "4",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "COMPUTER ORGANIZATION AND ARCHITECTURE"
+                },
+                {
+                    "COURSE CODE": "IS31",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "4",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "ENGINEERING MATHEMATICS-III"
+                },
+                {
+                    "COURSE CODE": "IS33",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "4",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "DISCRETE MATHEMATICAL STRUCTURES"
+                },
+                {
+                    "COURSE CODE": "IS36",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "4",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "OBJECT ORIENTED PROGRAMMING WITH JAVA"
+                },
+                {
+                    "COURSE CODE": "IS35",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "4",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "DATA STRUCTURES"
+                },
+                {
+                    "COURSE CODE": "IS34",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "3",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "DATA COMMUNICATION"
+                },
+                {
+                    "COURSE CODE": "ISL37",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "1",
+                    "GPA": "0",
+                    "Grade": "W",
+                    "SUBJECT NAME": "DATA STRUCTURES LAB"
+                },
+                {
+                    "COURSE CODE": "ISL38",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "1",
+                    "GPA": "0",
+                    "Grade": "W",
+                    "SUBJECT NAME": "OBJECT ORIENTED PROGRAMMING WITH JAVA LAB"
+                }
+            ],
+            "term": "Jan 2021"
+        },
+        {
+            "CGPA": " 6.01",
+            "Credits Earned ": "  25",
+            "Credits Registered ": "  25",
+            "SGPA": "  5.68",
+            "results": [
+                {
+                    "COURSE CODE": "IS46",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "MICROCONTROLLERS"
+                },
+                {
+                    "COURSE CODE": "IS42",
+                    "Credits Earned": "3",
+                    "Credits Reg.": "3",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "OPERATING SYSTEMS"
+                },
+                {
+                    "COURSE CODE": "IS45",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "DESIGN AND ANALYSIS OF ALGORITHMS"
+                },
+                {
+                    "COURSE CODE": "IS41",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "ENGINEERING MATHEMATICS-IV"
+                },
+                {
+                    "COURSE CODE": "IS44",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "FINITE AUTOMATA AND FORMAL LANGUAGES"
+                },
+                {
+                    "COURSE CODE": "IS43",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "4",
+                    "Grade": "E",
+                    "SUBJECT NAME": "OPERATIONS RESEARCH"
+                },
+                {
+                    "COURSE CODE": "ISL47",
+                    "Credits Earned": "1",
+                    "Credits Reg.": "1",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "DESIGN AND ANALYSIS OF ALGORITHMS LAB"
+                },
+                {
+                    "COURSE CODE": "ISL48",
+                    "Credits Earned": "1",
+                    "Credits Reg.": "1",
+                    "GPA": "6",
+                    "Grade": "D",
+                    "SUBJECT NAME": "MICROCONTROLLERS LAB"
+                }
+            ],
+            "term": "July 2021"
+        },
+        {
+            "CGPA": " 6.18",
+            "Credits Earned ": "  11",
+            "Credits Registered ": "  15",
+            "SGPA": "  5.13",
+            "results": [
+                {
+                    "COURSE CODE": "IS35",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "DATA STRUCTURES"
+                },
+                {
+                    "COURSE CODE": "IS34",
+                    "Credits Earned": "3",
+                    "Credits Reg.": "3",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "DATA COMMUNICATION"
+                },
+                {
+                    "COURSE CODE": "IS36",
+                    "Credits Earned": "0",
+                    "Credits Reg.": "4",
+                    "GPA": "0",
+                    "Grade": "F",
+                    "SUBJECT NAME": "OBJECT ORIENTED PROGRAMMING WITH JAVA"
+                },
+                {
+                    "COURSE CODE": "IS32",
+                    "Credits Earned": "4",
+                    "Credits Reg.": "4",
+                    "GPA": "7",
+                    "Grade": "C",
+                    "SUBJECT NAME": "COMPUTER ORGANIZATION AND ARCHITECTURE"
+                }
+            ],
+            "term": "Supplementary Semester Sep 2021"
+        },
+        {
+            "results": [
+                {
+                    "Attempts": "2",
+                    "COURSE CODE": "IS36 (T)",
+                    "COURSE NAME": "Object Oriented Programming with Java",
+                    "Credits": "4"
+                },
+                {
+                    "Attempts": "1",
+                    "COURSE CODE": "EC15 (T)",
+                    "COURSE NAME": "Basic Electronics",
+                    "Credits": "3"
+                },
+                {
+                    "Attempts": "1",
+                    "COURSE CODE": "IS31 (T)",
+                    "COURSE NAME": "Engineering Mathematics-III",
+                    "Credits": "4"
+                },
+                {
+                    "Attempts": "1",
+                    "COURSE CODE": "IS33 (T)",
+                    "COURSE NAME": "Discrete Mathematical Structures",
+                    "Credits": "4"
+                },
+                {
+                    "Attempts": "1",
+                    "COURSE CODE": "PY12 (T)",
+                    "COURSE NAME": "Engineering Physics",
+                    "Credits": "4"
+                },
+                {
+                    "COURSE CODE": ""
+                }
+            ],
+            "term": "Back-Log Courses"
+        }
     ],
-    "sem": "5",
-    "sgpa": "8.54"
+    "refunds": [],
+    "sec": "SEC A",
+    "sem": "SEM 06",
+    "studentImage": "http://parents.msrit.edu/images/comprofiler/Thumbnail_User_Original_19230_20190711144039.jpg",
+    "subject_list": [
+        "Competency Mapping and Development for Engineers",
+        "Cloud Computing",
+        "Java and J2EE Lab",
+        "Blockchain Essentials and DAAPS",
+        "Object Oriented Analysis and Design Patterns",
+        "Object Oriented Analysis and Design Patterns Lab",
+        "Machine Learning",
+        "Machine Learning Lab"
+    ],
+    "time": "2022-05-12 14:08:52.117470",
+    "to_earn": "109",
+    "usn": "1ms19is078"
 }

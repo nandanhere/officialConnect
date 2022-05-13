@@ -4,14 +4,18 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
 
 class MarksCard extends StatelessWidget {
+  final bool isBackLog;
   final List<Subject> subjects;
-  const MarksCard({Key? key, required this.subjects}) : super(key: key);
+  const MarksCard({Key? key, required this.subjects, required this.isBackLog})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
 
-    final heads = ["Subject", "Earned", "GPA"];
+    final heads = isBackLog
+        ? ["Subject", "Credits", "Attempts"]
+        : ["Subject", "Earned", "GPA"];
     const TextStyle headingStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontFamily: 'Comfortaa',
@@ -44,11 +48,18 @@ class MarksCard extends StatelessWidget {
                 ),
               ),
               DataCell(
-                Text("${e.creditsEarned} / ${e.creditsRegistered}",
-                    style: bodyStyle),
+                Text(
+                  isBackLog
+                      ? e.creditsRegistered
+                      : "${e.creditsEarned} / ${e.creditsRegistered}",
+                  style: bodyStyle,
+                ),
               ),
               DataCell(
-                Text("${e.gpa} (${e.grade})", style: bodyStyle),
+                Text(
+                  isBackLog ? e.gpa : "${e.gpa} (${e.grade})",
+                  style: bodyStyle,
+                ),
               ),
             ]);
           }).toList(),

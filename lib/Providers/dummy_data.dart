@@ -2912,6 +2912,14 @@ class DummyData {
       "discord": "https://discord.com/invite/pmfYHf6cER",
       "telegram": "https://t.me/joinchat/yQdcQ-1a4xBkZmE1",
       "linkedin": " https://www.linkedin.com/company/coderitclub/",
+    },
+    {
+      "name": "Nakama",
+      'image': 'nakama.png',
+      'desc': "Nakama is College Anime club. it is also known as JCOC",
+      "linktree": "https://linktr.ee/nakama.rit",
+      "discord": "https://discord.com/invite/pmfYHf6cER",
+      "telegram": "https://t.me/joinchat/yQdcQ-1a4xBkZmE1",
     }
   ];
 }
