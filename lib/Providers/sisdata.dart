@@ -161,9 +161,14 @@ class SisData with ChangeNotifier {
     // usn == "" means we are updating the values.
     debugPrint("getting data");
     if (usn != "dummy") {
+      print('parsing url');
       var url = Uri.parse(
-          "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}");
-      http.Response resp = await http.get(url);
+        "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
+      );
+      http.Response resp = await http.get(url, headers: {
+        "Origin": "http://localhost:8080",
+      });
+
       if (resp.statusCode == 200) {
         final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
         _data = (temp.isEmpty && update) ? _data : temp;
