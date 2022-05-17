@@ -47,10 +47,28 @@ class SyllabusScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                AutoSizeText(
-                  "Syllabi",
-                  maxFontSize: 45,
-                  style: titleStyle,
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(
+                        Icons.chevron_left,
+                        color: (!sisData.darkMode)
+                            ? Colors.black
+                            : NeumorphicColors.background,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 40,
+                    ),
+                    AutoSizeText(
+                      "Syllabi",
+                      maxFontSize: 45,
+                      style: titleStyle,
+                    ),
+                  ],
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(

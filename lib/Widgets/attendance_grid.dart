@@ -188,16 +188,21 @@ class AttendanceGrid extends StatelessWidget {
               color: getColor(day[0]),
               disableDepth: true,
             ),
-            child: Center(child: Container()),
+            child: Center(
+                child: Container(
+              width: 50,
+              height: 50,
+            )),
           ),
         );
 
     Widget buildGridView() => GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: 2.5,
             crossAxisCount: 7,
             mainAxisSpacing: 22.5,
             crossAxisSpacing: 17,
-            mainAxisExtent: 12,
+            // mainAxisExtent: 12,
           ),
           itemCount: allDateList.length,
           physics: const ScrollPhysics(),
@@ -209,19 +214,19 @@ class AttendanceGrid extends StatelessWidget {
     // ignore: todo
     final sisData = Provider.of<SisData>(context);
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: MediaQuery.of(context).size.height * 0.04,
-            horizontal: MediaQuery.of(context).size.width * 0.04,
-          ),
-          child: Column(
-            children: [
-              Row(
+    return SizedBox(
+      width: width,
+      height: height,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.04,
+          horizontal: MediaQuery.of(context).size.width * 0.04,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
@@ -282,11 +287,11 @@ class AttendanceGrid extends StatelessWidget {
                   ),
                 ],
               ),
-              Expanded(
-                child: buildGridView(),
-              ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: buildGridView(),
+            ),
+          ],
         ),
       ),
     );

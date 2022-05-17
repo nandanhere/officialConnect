@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import "dart:math";
 import 'package:official_connect/Providers/themes.dart';
+import 'package:flutter/foundation.dart';
 
 extension StringCasingExtension on String {
   String toCapitalized() =>
@@ -110,8 +111,18 @@ class HomeScreen extends StatelessWidget {
                                       backgroundImage: (sisData.studentImage !=
                                               "http://parents.msrit.edu/images/defaultimages.png")
                                           ? CachedNetworkImageProvider(
-                                              sisData.studentImage,
-                                            )
+                                              kIsWeb
+                                                  ? "https://sis-scraper-rit.herokuapp.com/getimage/" +
+                                                      sisData.studentImage
+                                                          .split('/')
+                                                          .last
+                                                          .split('.')
+                                                          .first
+                                                  : sisData.studentImage,
+                                              headers: {
+                                                  "Origin":
+                                                      "http://localhost:8080",
+                                                })
                                           : null,
                                       backgroundColor: Colors.grey,
                                       radius: width * 0.1,

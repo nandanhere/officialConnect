@@ -5,6 +5,12 @@ import 'package:official_connect/Screens/unified_screen.dart';
 import 'package:provider/provider.dart';
 import 'Screens/loading_screen.dart';
 
+// to build web app
+// flutter build web --web-renderer canvaskit --no-sound-null-safety --release
+
+// to build flutter apk:
+// flutter build apk --split-per-abi
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
