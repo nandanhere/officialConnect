@@ -5,9 +5,11 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/themes.dart';
+import 'package:official_connect/Screens/branch_syllabus.dart';
 import 'package:official_connect/Screens/latest_results.dart';
 import 'package:official_connect/Screens/see_details.dart';
 import 'package:official_connect/Screens/syllabus_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SEEScreen extends StatelessWidget {
   final height,
@@ -32,6 +34,14 @@ class SEEScreen extends StatelessWidget {
       this.sisData,
       this.buttonTrailing})
       : super(key: key);
+  void _launchURL(BuildContext context, String url) async {
+    if (!await launch(url)) throw 'Could not launch $url';
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (ctx) => PDF().fromUrl(url),
+    //   ),
+    // );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +52,21 @@ class SEEScreen extends StatelessWidget {
           child: Align(
             alignment: Alignment.topLeft,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Results", textAlign: TextAlign.left, style: titleStyle),
+                SizedBox(width: 40),
+                NeumorphicButton(
+                  child: Icon(
+                    FontAwesomeIcons.bookAtlas,
+                    color: sisData.darkMode ? Colors.white : Colors.black,
+                    size: width * 0.05,
+                  ),
+                  style: neumorphicStyle,
+                  onPressed: () {
+                    _launchURL(context,
+                        "https://drive.google.com/drive/folders/1xPhB1sYr3TdHmgURiogcqBfJpj7YKyEc?usp=sharing");
+                  },
+                ),
                 NeumorphicButton(
                   child: Icon(
                     FontAwesomeIcons.book,

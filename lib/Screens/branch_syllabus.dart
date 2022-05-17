@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 class BranchSyllabus extends StatelessWidget {
   final name;
   const BranchSyllabus({Key? key, this.name}) : super(key: key);
-  void _launchURL(BuildContext context, String url) async {
+  static void launchURL(BuildContext context, String url) async {
     if (!await launch(url)) throw 'Could not launch $url';
     // Navigator.of(context).push(
     //   MaterialPageRoute(
@@ -72,7 +72,7 @@ class BranchSyllabus extends StatelessWidget {
                                 left: width * 0.025,
                                 right: width * 0.01),
                             onPressed: () async {
-                              _launchURL(context, l[1]);
+                              launchURL(context, l[1]);
                             },
                             style: neumorphicStyle,
                             child: ListTile(
