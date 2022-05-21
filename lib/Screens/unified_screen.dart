@@ -1,7 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/events_screen.dart';
-import 'package:official_connect/Screens/loading_screen.dart';
 import 'package:official_connect/Screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Screens/attendance_info.dart';
@@ -84,8 +83,8 @@ class Unified extends StatelessWidget {
                     items: [
                       BottomNavigationBarItem(
                         icon: listeningValue == 0
-                            ? FaIcon(FontAwesomeIcons.solidRectangleList)
-                            : FaIcon(FontAwesomeIcons.rectangleList),
+                            ? const FaIcon(FontAwesomeIcons.solidRectangleList)
+                            : const FaIcon(FontAwesomeIcons.rectangleList),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
@@ -93,8 +92,8 @@ class Unified extends StatelessWidget {
                       ),
                       BottomNavigationBarItem(
                         icon: listeningValue == 1
-                            ? FaIcon(FontAwesomeIcons.solidCalendar)
-                            : FaIcon(FontAwesomeIcons.calendar),
+                            ? const FaIcon(FontAwesomeIcons.solidCalendar)
+                            : const FaIcon(FontAwesomeIcons.calendar),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
@@ -102,11 +101,11 @@ class Unified extends StatelessWidget {
                       ),
                       BottomNavigationBarItem(
                         icon: listeningValue == 2
-                            ? FaIcon(
+                            ? const FaIcon(
                                 Icons.home,
                                 size: 35,
                               )
-                            : FaIcon(
+                            : const FaIcon(
                                 Icons.home_outlined,
                                 size: 35,
                               ),
@@ -117,11 +116,11 @@ class Unified extends StatelessWidget {
                       ),
                       BottomNavigationBarItem(
                         icon: listeningValue == 3
-                            ? FaIcon(
+                            ? const FaIcon(
                                 Icons.assessment,
                                 size: 30,
                               )
-                            : FaIcon(
+                            : const FaIcon(
                                 Icons.assessment_outlined,
                                 size: 30,
                               ),
@@ -132,11 +131,11 @@ class Unified extends StatelessWidget {
                       ),
                       BottomNavigationBarItem(
                         icon: listeningValue == 4
-                            ? FaIcon(
+                            ? const FaIcon(
                                 Icons.settings,
                                 size: 30,
                               )
-                            : FaIcon(
+                            : const FaIcon(
                                 Icons.settings_outlined,
                                 size: 30,
                               ),

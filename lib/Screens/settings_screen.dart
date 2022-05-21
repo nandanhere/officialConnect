@@ -1,7 +1,4 @@
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:official_connect/Providers/dummy_data.dart';
-import 'package:official_connect/Screens/branch_syllabus.dart';
-import 'syllabus_screen.dart';
 import 'package:official_connect/Screens/unified_screen.dart';
 import 'package:official_connect/Widgets/about_dialog.dart';
 import 'package:provider/provider.dart';
@@ -96,7 +93,7 @@ class SettingsInfo extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Container(
           decoration: BoxDecoration(gradient: linearGradientBG),
           padding: EdgeInsets.only(

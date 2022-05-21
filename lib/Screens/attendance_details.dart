@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/attendance.dart';
 import 'package:official_connect/Providers/sisdata.dart';
+import 'package:official_connect/Widgets/attendance_details_calender_version.dart';
 import 'package:official_connect/Widgets/attendance_grid.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/themes.dart';
@@ -19,36 +20,37 @@ class AttendanceDetails extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+    final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final textStyle =
         CustomTheme.textStyle(context).copyWith(fontSize: width * 0.045);
     final linearGradient = CustomTheme.linearGradient2(context);
     var totalClasses = attendanceDetails.present +
         attendanceDetails.absent +
         attendanceDetails.remaining;
-    String howManyYouCanMiss(int per) {
-      double p85 = (totalClasses * 0.85);
-      double p75 = (totalClasses * 0.75);
-      if (per == 85) {
-        return "${p85.toInt()}";
-      } else if (per == 75) {
-        return "${p75.toInt()}";
-      } else {
-        return "N/A";
-      }
-    }
     // String howManyYouCanMiss(int per) {
     //   double p85 = (totalClasses * 0.85);
     //   double p75 = (totalClasses * 0.75);
-    //   double calc85 = totalClasses-p85;
-    //   double calc75 = totalClasses-p75;
-    //   if (per == 85 && calc85>=0) {
-    //     return "${calc85.toInt()}";
-    //   } else if (per == 75 && calc75>=0) {
-    //     return "${calc75.toInt()}";
+    //   if (per == 85) {
+    //     return "${p85.toInt()}";
+    //   } else if (per == 75) {
+    //     return "${p75.toInt()}";
     //   } else {
     //     return "N/A";
     //   }
     // }
+    String howManyYouCanMiss(int per) {
+      double p85 = (totalClasses * 0.85);
+      double p75 = (totalClasses * 0.75);
+      double calc85 = totalClasses - p85;
+      double calc75 = totalClasses - p75;
+      if (per == 85 && calc85 >= 0) {
+        return "${calc85.toInt()}";
+      } else if (per == 75 && calc75 >= 0) {
+        return "${calc75.toInt()}";
+      } else {
+        return "N/A";
+      }
+    }
 
     ValueNotifier<bool> show = ValueNotifier(false);
     return Scaffold(
@@ -89,9 +91,7 @@ class AttendanceDetails extends StatelessWidget {
                         child: GestureDetector(
                           onLongPress: () {
                             show.value = true;
-                            Future.delayed(
-                                const Duration(seconds: 4, milliseconds: 200),
-                                () {
+                            Future.delayed(const Duration(seconds: 7), () {
                               show.value = false;
                             });
                           },
@@ -107,63 +107,120 @@ class AttendanceDetails extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: height * 0.04),
+                SizedBox(height: height * 0.02),
                 //column start here
-                Card(
-                  color: (sisData.darkMode)
-                      ? NeumorphicColors.darkBackground
-                      : NeumorphicColors.background,
-                  elevation: 0.5,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AutoSizeText(
-                                "Attended : ${attendanceDetails.present}",
-                                style: textStyle),
-                            SizedBox(
-                              width: width * 0.03,
-                            ),
-                            AutoSizeText("Missed : ${attendanceDetails.absent}",
-                                style: textStyle)
-                          ],
+                // Card(
+                //   color: (sisData.darkMode)
+                //       ? NeumorphicColors.darkBackground
+                //       : NeumorphicColors.background,
+                //   elevation: 0.5,
+                //   shape: const RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.all(Radius.circular(10))),
+                //   child: Column(
+                //     children: [
+                //       Align(
+                //         alignment: Alignment.center,
+                //         child: Row(
+                //           mainAxisSize: MainAxisSize.min,
+                //           children: [
+                //             AutoSizeText(
+                //                 "Attended : ${attendanceDetails.present}",
+                //                 style: textStyle),
+                //             SizedBox(
+                //               width: width * 0.03,
+                //             ),
+                //             AutoSizeText("Missed : ${attendanceDetails.absent}",
+                //                 style: textStyle)
+                //           ],
+                //         ),
+                //       ),
+                //       Align(
+                //         alignment: Alignment.center,
+                //         child: Row(
+                //           mainAxisSize: MainAxisSize.min,
+                //           children: [
+                //             AutoSizeText(
+                //                 "Remaining: ${attendanceDetails.remaining}",
+                //                 style: textStyle),
+                //             SizedBox(
+                //               width: width * 0.03,
+                //             ),
+                //             AutoSizeText(
+                //                 "Percentage : ${attendanceDetails.percentage}",
+                //                 style: textStyle)
+                //           ],
+                //         ),
+                //       ),
+                //       Align(
+                //         alignment: Alignment.center,
+                //         child: AutoSizeText(
+                //           "Total : $totalClasses ",
+                //           style: textStyle,
+                //           textAlign: TextAlign.left,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                Neumorphic(
+                  style: neumorphicStyle.copyWith(
+                    color: sisData.darkMode
+                        // ? const Color.fromARGB(1, 77, 74, 74)
+                        ? Colors.black.withOpacity(0.4)
+                        : NeumorphicColors.background.withAlpha(150),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AutoSizeText(
+                                  "Attended : ${attendanceDetails.present}",
+                                  style: textStyle),
+                              SizedBox(
+                                width: width * 0.03,
+                              ),
+                              AutoSizeText(
+                                  "Missed : ${attendanceDetails.absent}",
+                                  style: textStyle)
+                            ],
+                          ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AutoSizeText(
-                                "Remaining: ${attendanceDetails.remaining}",
-                                style: textStyle),
-                            SizedBox(
-                              width: width * 0.03,
-                            ),
-                            AutoSizeText(
-                                "Percentage : ${attendanceDetails.percentage}",
-                                style: textStyle)
-                          ],
+                        Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AutoSizeText(
+                                  "Remaining: ${attendanceDetails.remaining}",
+                                  style: textStyle),
+                              SizedBox(
+                                width: width * 0.03,
+                              ),
+                              AutoSizeText(
+                                  "Percentage : ${attendanceDetails.percentage}",
+                                  style: textStyle)
+                            ],
+                          ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: AutoSizeText(
-                          "Total : $totalClasses ",
-                          style: textStyle,
-                          textAlign: TextAlign.left,
+                        Align(
+                          alignment: Alignment.center,
+                          child: AutoSizeText(
+                            "Total : $totalClasses ",
+                            style: textStyle,
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 //column end here
-                SizedBox(height: height * 0.02),
+                SizedBox(height: height * 0.004),
                 ValueListenableBuilder(
                     valueListenable: show,
                     builder: (context, bool listening, child) => (listening)
@@ -176,30 +233,22 @@ class AttendanceDetails extends StatelessWidget {
                                     totalRepeatCount: 1,
                                     animatedTexts: [
                                       TypewriterAnimatedText(
-                                          "For 85% : ${howManyYouCanMiss(85)}/$totalClasses",
+                                          //"For 85% : ${howManyYouCanMiss(85)}/$totalClasses",
+                                          "You can miss ${howManyYouCanMiss(85)} classes for 85%",
                                           textStyle: textStyle,
-                                          speed: Duration(milliseconds: 50)),
+                                          speed:
+                                              const Duration(milliseconds: 60)),
                                       TypewriterAnimatedText(
-                                          "For 75% : ${howManyYouCanMiss(75)}/$totalClasses",
+                                          "You can miss ${howManyYouCanMiss(75)} classes for 75%",
                                           textStyle: textStyle,
-                                          speed: Duration(milliseconds: 50))
+                                          speed:
+                                              const Duration(milliseconds: 60))
                                     ])
-                                // AutoSizeText(
-                                //   "For 85% : ${howManyYouCanMiss(85)}/$totalClasses  ",
-                                //   style: textStyle,
-                                // ),
-                                // SizedBox(
-                                //   width: width * 0.04,
-                                // ),
-                                // AutoSizeText(
-                                //   "For 75% : ${howManyYouCanMiss(75)}/$totalClasses",
-                                //   style: textStyle,
-                                // ),
                               ],
                             ),
                           )
                         : Container()),
-                AttendanceGrid(attendance: attendanceDetails)
+                AttendanceCalenderVersion(attendance: attendanceDetails)
               ],
             ),
           ),

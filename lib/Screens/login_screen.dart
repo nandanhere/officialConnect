@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:official_connect/Providers/themes.dart';
@@ -150,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
           labelText: "Date of Birth",
           labelStyle: textStyle,
           suffix: GestureDetector(
-            child: const Icon(Icons.calendar_month),
+            child: const Icon(Icons.calendar_view_month),
             onTap: () {
               _selectDate(context);
               dobController.text = formatter.format(selectedDate);

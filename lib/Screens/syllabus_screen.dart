@@ -60,7 +60,7 @@ class SyllabusScreen extends StatelessWidget {
                             : NeumorphicColors.background,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 40,
                     ),
                     AutoSizeText(

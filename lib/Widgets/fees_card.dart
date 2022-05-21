@@ -41,7 +41,7 @@ class FeesCard extends StatelessWidget {
           ),
           child: ExpansionTile(
             iconColor: const Color(0xffba3237),
-            collapsedIconColor: this.isDark ? Colors.white : Colors.black,
+            collapsedIconColor: isDark ? Colors.white : Colors.black,
             title: Text(
               feeData.amountPaid,
               style: buttonTrailing.copyWith(fontSize: width * 0.06),
