@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -39,39 +41,51 @@ class SisData with ChangeNotifier {
   SisData() {
     setup();
   }
+  void update() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    debugPrint("updating");
+    Fluttertoast.showToast(
+        msg: "Updating data ",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: const Color(0xffba3237),
+        textColor: Colors.white,
+        fontSize: 16.0);
+    await prefs.setBool('hasData', false);
+    await getData("", "", true);
+    await setVariables();
+    notifyListeners();
+    Fluttertoast.showToast(
+        msg: "Updated data 🎉 ",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: const Color(0xffba3237),
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
   void setup() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('hasData')) {
       _hasData = prefs.getBool('hasData')!;
       var time = prefs.getInt('timeStamp');
-
       _usn = prefs.getString('usn') ?? "";
-      prefs.setString('usn', "");
       _dob = prefs.getString('dob') ?? "";
       _darkMode = prefs.getBool('darkMode') ?? false;
-
       debugPrint("data was there before");
       needToUpdate = DateTime.fromMillisecondsSinceEpoch(time!)
               .difference(DateTime.now())
-              .inDays
+              .inHours
               .abs() >
-          1;
+          12;
       notifyListeners();
 
       _data = await convert.jsonDecode(prefs.getString('data')!);
       if (needToUpdate) {
-        debugPrint("updating");
-        Fluttertoast.showToast(
-            msg: "Updating data ",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: const Color(0xffba3237),
-            textColor: Colors.white,
-            fontSize: 16.0);
-        await prefs.setBool('hasData', false);
-        await getData("", "", true);
-        debugPrint(_data['prevResults'][0]);
+        update();
       }
       await setVariables();
 
@@ -83,7 +97,7 @@ class SisData with ChangeNotifier {
     debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
-      const debug = true;
+      const debug = false;
       _usn = _data['usn'];
       _previousResults = PreviousResult.getList(_data['prevResults']);
       if (debug) debugPrint("Previous Results");
@@ -91,7 +105,6 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint("Attendances");
       _fees = FeesData.getList(_data['fees']);
       if (debug) debugPrint("Fees");
-
       _marks = Marks.getList(_data['marks']);
       if (debug) debugPrint("Marks");
       _creditsEarned = int.parse(_data['earned']);
@@ -100,41 +113,31 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint("To earn");
       _name = _data['name'];
       if (debug) debugPrint("name");
-
       _section = _data["sec"];
-
       if (debug) debugPrint("sec");
-
       _course = _data["courseSmall"];
       if (debug) debugPrint("courseSmall");
-
       _semester = _data["sem"];
       if (debug) debugPrint("sem");
-
       _batch = _data["BATCH:"];
       if (debug) debugPrint("batch");
-
       _categoryAlloted = _data["Category Alloted:"];
       if (debug) debugPrint("category alotted");
-
       _categoryClaimed = _data["Category Claimed:"];
       if (debug) debugPrint("category claimed ");
-
       _courseFullName = _data["Course:"];
       if (debug) debugPrint("Course");
-
       _email = _data["Email Id:"];
       if (debug) debugPrint("Email Id");
-
       _phone = _data["MOBILE:"];
       if (debug) debugPrint("Mobile");
-
       _studentImage = _data["studentImage"];
       if (debug) debugPrint("Student Image");
     } catch (e) {
       debugPrint(e.toString());
       _hasData = true;
       isValidData = false;
+
       _errorMessage =
           "Error in processing data! Contact Your IT department to resolve this issue";
       _data = {};
@@ -144,7 +147,7 @@ class SisData with ChangeNotifier {
 
   void cleanData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    await prefs.clear();
     _usn = "";
     _data = {};
     isValidData = true;
@@ -156,18 +159,25 @@ class SisData with ChangeNotifier {
   }
 
   Future<void> getData(String usn, String dob, bool update) async {
+    const debug = true;
     _hasData = false;
     notifyListeners();
     // usn == "" means we are updating the values.
-    debugPrint("getting data");
+    if (debug) debugPrint("getting data");
     if (usn != "dummy") {
-      print('parsing url');
+      if (debug) debugPrint('parsing url');
       var url = Uri.parse(
+        // in case you want to test out the api
+        // "http://127.0.0.1:5000/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
         "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
       );
-      http.Response resp = await http.get(url, headers: {
-        "Origin": "http://localhost:8080",
-      });
+      if (debug) debugPrint(url.toString());
+      http.Response resp = await http.get(url);
+
+      // TODO : work on this if the parents.msrit site ever crashes. we need to tell that the server is down. it should give destination unreachable
+      // final url2 = "www.newgrounds.com";
+      // http.Response resp2 = await http.get(Uri.parse(url2));
+      // print(resp2.statusCode);
 
       if (resp.statusCode == 200) {
         final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
@@ -175,8 +185,11 @@ class SisData with ChangeNotifier {
         if (_data.isNotEmpty) {
           try {
             SharedPreferences prefs = await SharedPreferences.getInstance();
-            prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
+            if (debug) debugPrint("");
             if (resp.body != "{}") prefs.setString('data', resp.body);
+            if (debug) debugPrint("Saved data to sharedprefs");
+            prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
+            if (debug) debugPrint("Saved timestamp to sharedprefs");
             prefs.setBool('hasData', true);
             if (!update) {
               prefs.setString('dob', dob);

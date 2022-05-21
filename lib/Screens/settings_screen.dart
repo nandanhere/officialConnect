@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Screens/branch_syllabus.dart';
 import 'syllabus_screen.dart';
@@ -13,7 +14,7 @@ class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
-    if (!await launch(url)) throw 'Could not launch $url';
+    if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
   }
 
   @override
@@ -26,9 +27,8 @@ class SettingsInfo extends StatelessWidget {
     final buttonTrailing = CustomTheme.buttonTrailing(context);
     final title = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
-    final linearGradient = CustomTheme.linearGradient(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
-    var fullCourseName = sisData.courseFullName.split("-")[1];
+    // var fullCourseName = sisData.courseFullName.split("-")[1];
     List<Element> tiles = [
       //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
       //TODO add links for fee payment and wifi complaint
@@ -69,6 +69,28 @@ class SettingsInfo extends StatelessWidget {
                 context: context,
               ),
           text: "About"),
+      Element(
+          icon: Icons.update,
+          onPressed: () async {
+            Fluttertoast.showToast(
+                msg: "Updating data ",
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: const Color(0xffba3237),
+                textColor: Colors.white,
+                fontSize: 16.0);
+            await sisData.getData("", "", true);
+            Fluttertoast.showToast(
+                msg: "Updated data 🎉 ",
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: const Color(0xffba3237),
+                textColor: Colors.white,
+                fontSize: 16.0);
+          },
+          text: "Update data"),
     ];
 
     return Container(

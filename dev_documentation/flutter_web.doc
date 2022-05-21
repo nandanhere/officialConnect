@@ -2,3 +2,8 @@
 
 For faster page load times in the flutter web app (doesnt work)
 https://github.com/flutter/flutter/issues/76009#issuecomment-1042073205
+
+for cors used in the api:
+https://flask-cors.readthedocs.io/en/latest/
+
+

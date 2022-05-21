@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Widgets/fees_card.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -33,30 +34,13 @@ class HomeScreen extends StatelessWidget {
     final linearGradient = CustomTheme.linearGradient(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
     final subtitle = CustomTheme.buttonSubtitle(context);
-    final emojis = [
-      "😀",
-      "😊",
-      "🤠",
-      "😸",
-      "😋",
-      "🎉",
-      "👋",
-      "😛",
-      "😇",
-      "🤗",
-      "😎",
-      "👽",
-      "👻",
-      "😺",
-      "🤟"
-    ];
-    final emoji = emojis[Random().nextInt(emojis.length)];
+    final emoji = DummyData.emojis[Random().nextInt(DummyData.emojis.length)];
     final sisData = Provider.of<SisData>(context);
 
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Container(
           decoration: BoxDecoration(gradient: linearGradient),
           padding: EdgeInsets.only(
