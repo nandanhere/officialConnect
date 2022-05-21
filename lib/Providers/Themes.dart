@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -53,7 +51,7 @@ class CustomTheme {
         shadowDarkColor: sisData.darkMode ? Colors.grey.shade900 : null,
         border: sisData.darkMode
             ? NeumorphicBorder(width: 0.14, color: Colors.grey.shade900)
-            : NeumorphicBorder(width: 0),
+            : const NeumorphicBorder(width: 0),
         color: sisData.darkMode
             // ? const Color.fromARGB(1, 77, 74, 74)
             ? Colors.black.withOpacity(0.4)

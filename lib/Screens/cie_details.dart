@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
 import 'package:official_connect/Classes/marks.dart';
 import 'package:official_connect/Widgets/cie_details_graph.dart';
 import 'package:official_connect/Widgets/cie_table.dart';

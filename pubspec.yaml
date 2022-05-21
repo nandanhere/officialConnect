@@ -50,6 +50,7 @@ dependencies:
   flutter_cached_pdfview: ^0.4.1
   string_similarity: ^2.0.0
   fluttertoast: ^8.0.9
+  syncfusion_flutter_calendar: ^20.1.56
   
 dev_dependencies:
   flutter_test:

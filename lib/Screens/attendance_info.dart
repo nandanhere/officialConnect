@@ -25,7 +25,7 @@ class AttendanceInfo extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Container(
           decoration: BoxDecoration(
             gradient: linearGradient,

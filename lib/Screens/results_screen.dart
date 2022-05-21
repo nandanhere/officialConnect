@@ -9,7 +9,7 @@ import 'package:official_connect/Providers/themes.dart';
 
 class ResultsScreen extends StatelessWidget {
   final seeOpt;
-  ResultsScreen(this.seeOpt);
+  const ResultsScreen(this.seeOpt);
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

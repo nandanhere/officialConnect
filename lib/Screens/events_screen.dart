@@ -1,5 +1,4 @@
 import 'package:official_connect/Providers/dummy_data.dart';
-import 'package:official_connect/Screens/unified_screen.dart';
 import 'package:official_connect/Widgets/about_club_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -11,8 +10,9 @@ class EventsScreen extends StatelessWidget {
   const EventsScreen({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
-    if (!await launchUrl(Uri.dataFromString(url)))
+    if (!await launchUrl(Uri.dataFromString(url))) {
       throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -22,12 +22,9 @@ class EventsScreen extends StatelessWidget {
     final height = size.height;
     final sisData = Provider.of<SisData>(context);
     final buttonTitle = CustomTheme.buttonTitle(context);
-    final buttonTrailing = CustomTheme.buttonTrailing(context);
     final title = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
-    final linearGradient = CustomTheme.linearGradient(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
-    var fullCourseName = sisData.courseFullName.split("-")[1];
 
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),

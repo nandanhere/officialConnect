@@ -1,10 +1,8 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/themes.dart';
-import 'package:official_connect/Screens/branch_syllabus.dart';
 import 'package:official_connect/Screens/cie_details.dart';
 import 'package:official_connect/Screens/syllabus_screen.dart';
 import 'package:official_connect/Widgets/cie_graph.dart';
@@ -53,7 +51,7 @@ class CIEScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Results", textAlign: TextAlign.left, style: titleStyle),
-                SizedBox(width: 40),
+                const SizedBox(width: 40),
                 NeumorphicButton(
                   child: Icon(
                     FontAwesomeIcons.bookAtlas,
@@ -95,7 +93,7 @@ class CIEScreen extends StatelessWidget {
             vertical: height * 0.02,
             horizontal: width * 0.1,
           ),
-          child: Container(
+          child: SizedBox(
             height: height * 0.1,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -88,7 +88,7 @@ class SEEScreen extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(
               vertical: height * 0.02, horizontal: width * 0.1),
-          child: Container(
+          child: SizedBox(
             height: height * 0.1,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -188,8 +188,8 @@ class AttendanceGrid extends StatelessWidget {
               color: getColor(day[0]),
               disableDepth: true,
             ),
-            child: Center(
-                child: Container(
+            child: const Center(
+                child: SizedBox(
               width: 50,
               height: 50,
             )),
