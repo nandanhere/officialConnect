@@ -2922,4 +2922,21 @@ class DummyData {
       "telegram": "https://t.me/joinchat/yQdcQ-1a4xBkZmE1",
     }
   ];
+  static const emojis = [
+    "😀",
+    "😊",
+    "🤠",
+    "😸",
+    "😋",
+    "🎉",
+    "👋",
+    "😛",
+    "😇",
+    "🤗",
+    "😎",
+    "👽",
+    "👻",
+    "😺",
+    "🤟"
+  ];
 }

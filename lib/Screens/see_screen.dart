@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/themes.dart';
-import 'package:official_connect/Screens/branch_syllabus.dart';
 import 'package:official_connect/Screens/latest_results.dart';
 import 'package:official_connect/Screens/see_details.dart';
 import 'package:official_connect/Screens/syllabus_screen.dart';
@@ -35,12 +33,7 @@ class SEEScreen extends StatelessWidget {
       this.buttonTrailing})
       : super(key: key);
   void _launchURL(BuildContext context, String url) async {
-    if (!await launch(url)) throw 'Could not launch $url';
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (ctx) => PDF().fromUrl(url),
-    //   ),
-    // );
+    if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
   }
 
   @override
@@ -52,9 +45,10 @@ class SEEScreen extends StatelessWidget {
           child: Align(
             alignment: Alignment.topLeft,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Results", textAlign: TextAlign.left, style: titleStyle),
-                SizedBox(width: 40),
+                const SizedBox(width: 40),
                 NeumorphicButton(
                   child: Icon(
                     FontAwesomeIcons.bookAtlas,
