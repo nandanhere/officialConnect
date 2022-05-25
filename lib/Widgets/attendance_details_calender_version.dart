@@ -7,6 +7,12 @@ import 'package:provider/provider.dart';
 import '../Providers/Themes.dart';
 import '../Providers/sisdata.dart';
 
+extension DateOnlyCompare on DateTime {
+  bool isSameDate(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
+  }
+}
+
 class AttendanceCalenderVersion extends StatelessWidget {
   final Attendance attendance;
   const AttendanceCalenderVersion({Key? key, required this.attendance})
@@ -69,6 +75,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final height = size.height;
+    final width = size.width;
     final sisData = Provider.of<SisData>(context);
     final textStyle = CustomTheme.textStyle(context);
 
@@ -95,7 +102,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
       if (isPresntInDates(attendance.presentDates, fromDate)) {
         allDateList.add([
           1,
-          DateTime(fromDate.year, fromDate.month, fromDate.day, 9, 0, 0),
+          DateTime(fromDate.year, fromDate.month, fromDate.day),
           fromDate.add(Duration(hours: 7)),
           attendance.presentDates
               .where((element) => element.date == fromDate)
@@ -105,7 +112,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
       } else if (isPresntInDates(attendance.absentDates, fromDate)) {
         allDateList.add([
           0,
-          DateTime(fromDate.year, fromDate.month, fromDate.day, 9, 0, 0),
+          DateTime(fromDate.year, fromDate.month, fromDate.day),
           fromDate.add(Duration(hours: 7)),
           attendance.absentDates
               .where((element) => element.date == fromDate)
@@ -113,10 +120,8 @@ class AttendanceCalenderVersion extends StatelessWidget {
               .time
         ]);
       } else {
-        allDateList.add([
-          -1,
-          DateTime(fromDate.year, fromDate.month, fromDate.day, 9, 0, 0)
-        ]);
+        allDateList
+            .add([-1, DateTime(fromDate.year, fromDate.month, fromDate.day)]);
       }
       fromDate = fromDate.add(const Duration(days: 1));
     }
@@ -133,7 +138,9 @@ class AttendanceCalenderVersion extends StatelessWidget {
 
     List<DataSource> _getSource() {
       List<DataSource> _dataSource = <DataSource>[];
+
       for (List data in allDateList) {
+        if (data.length > 2) print(data);
         if (data.length > 2) {
           DataSource newData =
               DataSource(data[3], data[1], data[2], getColor(data[0]), true);
@@ -148,12 +155,11 @@ class AttendanceCalenderVersion extends StatelessWidget {
 
     Color _getMonthCellBackgroundColor(DateTime date) {
       for (List givenDate in allDateList) {
-        print("$givenDate     $date");
-        if (date.difference(givenDate[1]) < Duration(hours: 12) &&
-            date.difference(givenDate[1]) > Duration(hours: -12)) {
+        if (date.isAtSameMomentAs(givenDate[1])) {
           return getColor(givenDate[0]);
         }
       }
+      if (date.isSameDate(DateTime.now())) return Colors.blue;
       return Colors.transparent;
     }
 
@@ -163,40 +169,50 @@ class AttendanceCalenderVersion extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.04,
         ),
-        child: Expanded(
-          child: SfCalendar(
-            viewHeaderStyle: ViewHeaderStyle(
-                dateTextStyle: textStyle, dayTextStyle: textStyle),
-            headerStyle: CalendarHeaderStyle(textStyle: textStyle),
-            cellBorderColor: sisData.darkMode ? Colors.white : Colors.black,
-            view: CalendarView.month,
-            dataSource: MeetingDataSource(_getSource()),
-            monthViewSettings: MonthViewSettings(
-                appointmentDisplayMode: MonthAppointmentDisplayMode.none,
-                showAgenda: true,
-                agendaItemHeight: height * 0.07),
-            monthCellBuilder:
-                (BuildContext buildContext, MonthCellDetails details) {
-              final Color backgroundColor =
-                  _getMonthCellBackgroundColor(details.date);
-              final Color defaultColor =
-                  Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black54
-                      : Colors.white;
-              return Container(
-                decoration: BoxDecoration(
+        child: SfCalendar(
+          minDate: allDateList[0][1],
+          maxDate: DateTime.now(),
+          viewHeaderStyle: ViewHeaderStyle(
+              dateTextStyle: textStyle, dayTextStyle: textStyle),
+          headerStyle: CalendarHeaderStyle(textStyle: textStyle),
+          cellBorderColor: sisData.darkMode ? Colors.white : Colors.black,
+          view: CalendarView.month,
+          dataSource: MeetingDataSource(_getSource()),
+          monthViewSettings: MonthViewSettings(
+              appointmentDisplayMode: MonthAppointmentDisplayMode.none,
+              showAgenda: true,
+              agendaItemHeight: height * 0.07),
+          monthCellBuilder:
+              (BuildContext buildContext, MonthCellDetails details) {
+            final Color backgroundColor =
+                _getMonthCellBackgroundColor(details.date);
+            final Color defaultColor =
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black54
+                    : Colors.white;
+            return Container(
+              decoration: BoxDecoration(
+                  color: backgroundColor == Colors.blue
+                      ? Colors.transparent
+                      : backgroundColor,
+                  border:
+                      Border.all(color: defaultColor, width: 0.002 * width)),
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
                     color: backgroundColor,
-                    border: Border.all(color: defaultColor, width: 0.5)),
-                child: Center(
+                  ),
                   child: Text(
                     details.date.day.toString(),
                     style: textStyle,
                   ),
                 ),
-              );
-            },
-            showNavigationArrow: true,
-          ),
+              ),
+            );
+          },
+          showNavigationArrow: true,
         ),
       ),
     );
