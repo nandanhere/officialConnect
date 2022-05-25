@@ -7,6 +7,7 @@ import 'package:official_connect/Classes/attendance.dart';
 import 'package:official_connect/Classes/fees_data.dart';
 import 'package:official_connect/Classes/marks.dart';
 import 'package:official_connect/Classes/previous_result.dart';
+import 'package:official_connect/Classes/proctor_data.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
 
@@ -38,6 +39,8 @@ class SisData with ChangeNotifier {
   String _studentImage = "";
   String _errorMessage = "";
   bool _darkMode = false;
+  double _ver = 0.0;
+  ProctorData _proctorData = ProctorData([], "", "", "", "");
   SisData() {
     setup();
   }
@@ -99,6 +102,8 @@ class SisData with ChangeNotifier {
     try {
       const debug = false;
       _usn = _data['usn'];
+      _proctorData = ProctorData.proctorData(_data['proctorship']);
+      if (debug) debugPrint("Proctor data");
       _previousResults = PreviousResult.getList(_data['prevResults']);
       if (debug) debugPrint("Previous Results");
       _attendances = Attendance.getList(_data['attendance']);
@@ -133,6 +138,8 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint("Mobile");
       _studentImage = _data["studentImage"];
       if (debug) debugPrint("Student Image");
+      _ver = double.parse(_data["ver"]);
+      if (debug) debugPrint("version");
     } catch (e) {
       debugPrint(e.toString());
       _hasData = true;
@@ -159,7 +166,7 @@ class SisData with ChangeNotifier {
   }
 
   Future<void> getData(String usn, String dob, bool update) async {
-    const debug = true;
+    const debug = false;
     _hasData = false;
     notifyListeners();
     // usn == "" means we are updating the values.
@@ -317,8 +324,16 @@ class SisData with ChangeNotifier {
     return _name;
   }
 
+  ProctorData get proctordata {
+    return _proctorData;
+  }
+
   bool get updating {
     return needToUpdate;
+  }
+
+  double get ver {
+    return _ver;
   }
 
   String get studentImage {

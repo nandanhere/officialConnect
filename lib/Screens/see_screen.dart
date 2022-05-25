@@ -127,6 +127,7 @@ class SEEScreen extends StatelessWidget {
                       "SEE",
                       textAlign: TextAlign.right,
                       style: CustomTheme.titleStyle(context).copyWith(
+                        color: Colors.lightBlue,
                         fontSize: width * (!seeOpt.value ? 0.06 : 0.1),
                         fontWeight: (!seeOpt.value
                             ? FontWeight.normal
