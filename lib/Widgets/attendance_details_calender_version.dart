@@ -179,6 +179,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
           view: CalendarView.month,
           dataSource: MeetingDataSource(_getSource()),
           monthViewSettings: MonthViewSettings(
+              showTrailingAndLeadingDates: false,
               appointmentDisplayMode: MonthAppointmentDisplayMode.none,
               showAgenda: true,
               agendaItemHeight: height * 0.07),
