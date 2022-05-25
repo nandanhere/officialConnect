@@ -42,10 +42,17 @@ class AttendanceInfo extends StatelessWidget {
                 maxFontSize: 45,
                 style: titleStyle,
               ),
-              AttendanceGraph(
-                  height: height,
-                  width: width,
-                  attendances: sisData.attendances),
+              sisData.attendances.isEmpty
+                  ? Center(
+                      child: Text(
+                        "Data Not Uploaded",
+                        style: titleStyle.copyWith(fontSize: width * 0.08),
+                      ),
+                    )
+                  : AttendanceGraph(
+                      height: height,
+                      width: width,
+                      attendances: sisData.attendances),
               ...sisData.attendances
                   .map((e) => Padding(
                         //map

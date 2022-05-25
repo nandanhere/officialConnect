@@ -107,6 +107,7 @@ class CIEScreen extends StatelessWidget {
                       "CIE",
                       textAlign: TextAlign.left,
                       style: CustomTheme.titleStyle(context).copyWith(
+                          color: Colors.lightBlue,
                           fontSize: width * (seeOpt.value ? 0.06 : 0.1),
                           fontWeight: (seeOpt.value
                               ? FontWeight.normal
@@ -130,6 +131,7 @@ class CIEScreen extends StatelessWidget {
                     child: Text("SEE",
                         textAlign: TextAlign.right,
                         style: CustomTheme.titleStyle(context).copyWith(
+                          color: Colors.grey,
                           fontSize: width * (!seeOpt.value ? 0.06 : 0.1),
                           fontWeight: (!seeOpt.value
                               ? FontWeight.normal
@@ -141,7 +143,14 @@ class CIEScreen extends StatelessWidget {
             ),
           ),
         ),
-        CieGraph(marks: sisData.marks),
+        sisData.attendances.isEmpty
+            ? Center(
+                child: Text(
+                  "Data Not Uploaded",
+                  style: titleStyle.copyWith(fontSize: width * 0.08),
+                ),
+              )
+            : CieGraph(marks: sisData.marks),
         ...sisData.marks
             .map((e) => Padding(
                   padding: const EdgeInsets.all(8.0),
