@@ -7,6 +7,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:official_connect/Providers/themes.dart';
 
+const double version = 0.1;
+
 class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);
 
@@ -152,63 +154,87 @@ class SettingsInfo extends StatelessWidget {
                 height: height * 0.06,
               ),
               Center(
-                child: NeumorphicButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            backgroundColor: sisData.darkMode
-                                ? Colors.black
-                                : NeumorphicColors.background,
-                            title: Text(
-                              'Do you want to Log out?',
-                              style: buttonTrailing,
-                            ),
-                            content: Text(
-                              'All stored data will be wiped out',
-                              style: buttonTitle,
-                            ),
-                            actions: <Widget>[
-                              NeumorphicButton(
-                                style: neumorphicStyle,
-                                onPressed: () {
-                                  Navigator.of(context).pop(false);
-                                },
-                                child: Text(
-                                  'No',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    NeumorphicButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                backgroundColor: sisData.darkMode
+                                    ? Colors.black
+                                    : NeumorphicColors.background,
+                                title: Text(
+                                  'Do you want to Log out?',
+                                  style: buttonTrailing,
+                                ),
+                                content: Text(
+                                  'All stored data will be wiped out',
                                   style: buttonTitle,
                                 ),
-                              ),
-                              NeumorphicButton(
-                                style: neumorphicStyle,
-                                onPressed: () {
-                                  Unified.screenNumber.value = 2;
-                                  Navigator.of(context).pop(false);
-                                  sisData.cleanData();
-                                },
-                                child: Text(
-                                  'Yes',
-                                  style: buttonTitle,
-                                ),
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                  style: neumorphicStyle,
-                  child: Text(
-                    "Sign out",
-                    style: buttonTitle,
-                  ),
+                                actions: <Widget>[
+                                  NeumorphicButton(
+                                    style: neumorphicStyle,
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                    child: Text(
+                                      'No',
+                                      style: buttonTitle,
+                                    ),
+                                  ),
+                                  NeumorphicButton(
+                                    style: neumorphicStyle,
+                                    onPressed: () {
+                                      Unified.screenNumber.value = 2;
+                                      Navigator.of(context).pop(false);
+                                      sisData.cleanData();
+                                    },
+                                    child: Text(
+                                      'Yes',
+                                      style: buttonTitle,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      style: neumorphicStyle,
+                      child: Text(
+                        "Sign out",
+                        style: buttonTitle,
+                      ),
+                    ),
+                    if (sisData.ver != version)
+                      NeumorphicButton(
+                        onPressed: () {
+                          _launchURL(
+                              "https://drive.google.com/drive/folders/16rRMfepxMabz7rNBMhybCLbizBtvdpAw?usp=sharing");
+                        },
+                        style: neumorphicStyle,
+                        child: Text(
+                          "Update",
+                          style: buttonTitle,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               SizedBox(
-                height: height * 0.13,
-              )
+                height: height * 0.05,
+              ),
+
+              if (sisData.ver == version)
+                Text(
+                  "Currently using version " + version.toString(),
+                ),
+              if (sisData.ver != version) const Text("Using Outdated Verison")
             ],
           ),
         ),

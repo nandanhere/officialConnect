@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
 import 'package:official_connect/Providers/Themes.dart';
@@ -78,7 +79,12 @@ class AttendanceCalenderVersion extends StatelessWidget {
     final width = size.width;
     final sisData = Provider.of<SisData>(context);
     final textStyle = CustomTheme.textStyle(context);
-
+    if (attendance.absentDates.isEmpty && attendance.presentDates.isEmpty) {
+      return AutoSizeText(
+        "No data has been uploaded as of now",
+        style: CustomTheme.textStyle(context),
+      );
+    }
     List<List> allDateList = [];
     var minAbsentDate = (attendance.absentDates.isNotEmpty)
         ? calcMinDate(attendance.absentDates)
@@ -140,7 +146,6 @@ class AttendanceCalenderVersion extends StatelessWidget {
       List<DataSource> _dataSource = <DataSource>[];
 
       for (List data in allDateList) {
-        if (data.length > 2) print(data);
         if (data.length > 2) {
           DataSource newData =
               DataSource(data[3], data[1], data[2], getColor(data[0]), true);
@@ -164,7 +169,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
     }
 
     return Container(
-      height: height * 0.9,
+      height: height * 0.7,
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.04,
@@ -200,7 +205,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
                       Border.all(color: defaultColor, width: 0.002 * width)),
               child: Center(
                 child: Container(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: backgroundColor,
