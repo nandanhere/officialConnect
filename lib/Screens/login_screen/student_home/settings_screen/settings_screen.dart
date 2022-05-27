@@ -13,7 +13,7 @@ class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
-    if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
+    if (!await launchUrl(Uri.parse(url),mode:LaunchMode.externalNonBrowserApplication)) throw 'Could not launch $url';
   }
 
   @override

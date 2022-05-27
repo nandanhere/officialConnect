@@ -277,29 +277,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        if (!fillForm)
-                          NeumorphicButton(
-                            style: NeumorphicStyle(
-                                depth: depthVal,
-                                intensity: 0.5,
-                                color: const Color(0x00c00000),
-                                boxShape: NeumorphicBoxShape.roundRect(
-                                    BorderRadius.circular(30))),
-                            child: const Text(
-                              "Proctor Login",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontFamily: 'Comfortaa'),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProctorLogin()));
-                            },
-                          ),
+                        // if (!fillForm)
+                        //   NeumorphicButton(
+                        //     style: NeumorphicStyle(
+                        //         depth: depthVal,
+                        //         intensity: 0.5,
+                        //         color: const Color(0x00c00000),
+                        //         boxShape: NeumorphicBoxShape.roundRect(
+                        //             BorderRadius.circular(30))),
+                        //     child: const Text(
+                        //       "Proctor Login",
+                        //       style: TextStyle(
+                        //           fontWeight: FontWeight.bold,
+                        //           color: Colors.black,
+                        //           fontSize: 15,
+                        //           fontFamily: 'Comfortaa'),
+                        //     ),
+                        //     onPressed: () {
+                        //       Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //               builder: (context) => ProctorLogin()));
+                        //     },
+                        //   ),
                         if (!sisData.isValidData)
                           Text(
                             sisData.errorMessage,
