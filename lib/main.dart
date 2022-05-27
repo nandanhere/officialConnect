@@ -10,7 +10,7 @@ import 'Screens/loading_screen.dart';
 
 // to build flutter apk:
 // flutter build apk --split-per-abi
-
+// 1ms21scn05-t 1996-07-14
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
