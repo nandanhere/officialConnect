@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/previous_result.dart';
+import 'package:official_connect/Providers/Themes.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Widgets/marks_card.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/widgets/marks_card.dart';
 import 'package:provider/provider.dart';
-import 'package:official_connect/Providers/themes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -20,6 +20,16 @@ class LatestResultsDetails extends StatelessWidget {
     if (resp.statusCode == 200) {
       final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
       List<Map<String, dynamic>> results = [];
+      if (temp['error']) {
+        return PreviousResult(
+            cgpa: null,
+            creditsEarned: null,
+            creditsRegistered: null,
+            sgpa: null,
+            results: [],
+            term: null,
+            semesterNumber: null);
+      }
       for (List<dynamic> l in temp['results']) {
         // ["MAOE04","APPLIED GRAPH THEORY","3.00","3.00","A"]
         Map<String, dynamic> m = {};
@@ -33,6 +43,7 @@ class LatestResultsDetails extends StatelessWidget {
         };
         results.add(m);
       }
+
       PreviousResult s = PreviousResult(
           cgpa: temp['cgpa'],
           creditsEarned: temp['credits_earned'],
@@ -91,58 +102,70 @@ class LatestResultsDetails extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Text(
-                        previousResult.term,
-                        style: buttonTrailing.copyWith(fontSize: width * 0.06),
-                      ),
+                      if (previousResult.term != null)
+                        Text(
+                          previousResult.term,
+                          style:
+                              buttonTrailing.copyWith(fontSize: width * 0.06),
+                        ),
                       Text("Latest Semester",
                           style:
                               buttonTrailing.copyWith(fontSize: width * 0.06)),
-                      Padding(
-                        padding: EdgeInsets.all(height * 0.01),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: width * 0.1),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                AutoSizeText(
-                                  "SGPA : ${previousResult.sgpa}  ",
-                                  style: title,
-                                ),
-                                AutoSizeText(
-                                    "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
-                                    style: title)
-                              ],
+                      if (previousResult.cgpa == null)
+                        Text(
+                          "No results as of yet",
+                          style: CustomTheme.titleStyle(context)
+                              .copyWith(fontSize: width * 0.08),
+                        ),
+                      if (previousResult.cgpa != null) ...[
+                        Padding(
+                          padding: EdgeInsets.all(height * 0.01),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: width * 0.1),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AutoSizeText(
+                                    "SGPA : ${previousResult.sgpa}  ",
+                                    style: title,
+                                  ),
+                                  AutoSizeText(
+                                      "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
+                                      style: title)
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(height * 0.01),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: width * 0.1),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                AutoSizeText(
-                                  "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
-                                  style: title,
-                                ),
-                                AutoSizeText(
-                                  "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
-                                  style: title,
-                                )
-                              ],
+                        Padding(
+                          padding: EdgeInsets.all(height * 0.01),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: width * 0.1),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AutoSizeText(
+                                    "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
+                                    style: title,
+                                  ),
+                                  AutoSizeText(
+                                    "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
+                                    style: title,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      MarksCard(
-                        subjects: previousResult.results,
-                        isBackLog: false,
-                      )
+                        MarksCard(
+                          subjects: previousResult.results,
+                          isBackLog: false,
+                        )
+                      ]
                     ],
                   ),
                 ),

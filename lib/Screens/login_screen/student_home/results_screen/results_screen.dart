@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:official_connect/Screens/cie_screen.dart';
-import 'package:official_connect/Screens/see_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/cie_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/see_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';

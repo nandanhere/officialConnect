@@ -1,13 +1,13 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Screens/events_screen.dart';
-import 'package:official_connect/Screens/home_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/events_screen/events_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/home_screen/home_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:official_connect/Screens/attendance_info.dart';
-import 'package:official_connect/Screens/results_screen.dart';
-import 'package:official_connect/Screens/settings_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/attendance_screen/attendance_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/results_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/settings_screen/settings_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'login_screen.dart';
+import '../login_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 // ignore: must_be_immutable

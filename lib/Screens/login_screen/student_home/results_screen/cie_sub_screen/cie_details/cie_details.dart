@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:official_connect/Classes/marks.dart';
-import 'package:official_connect/Widgets/cie_details_graph.dart';
-import 'package:official_connect/Widgets/cie_table.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/cie_details/cie_details_graph.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/cie_details/cie_table.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';

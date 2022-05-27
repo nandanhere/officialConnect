@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:official_connect/Screens/branch_syllabus.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/syllabus_sub_screen/branch_syllabus.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:string_similarity/string_similarity.dart';
