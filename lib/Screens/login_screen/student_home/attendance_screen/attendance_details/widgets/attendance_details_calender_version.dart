@@ -5,8 +5,8 @@ import 'package:official_connect/Providers/Themes.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:official_connect/Classes/attendance.dart';
 import 'package:provider/provider.dart';
-import '../Providers/Themes.dart';
-import '../Providers/sisdata.dart';
+import '../../../../../../Providers/Themes.dart';
+import '../../../../../../Providers/sisdata.dart';
 
 extension DateOnlyCompare on DateTime {
   bool isSameDate(DateTime other) {

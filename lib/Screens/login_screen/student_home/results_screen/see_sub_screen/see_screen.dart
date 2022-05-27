@@ -4,9 +4,9 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/themes.dart';
-import 'package:official_connect/Screens/latest_results.dart';
-import 'package:official_connect/Screens/see_details.dart';
-import 'package:official_connect/Screens/syllabus_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/latest_results.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/see_details/see_details.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/syllabus_sub_screen/syllabus_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SEEScreen extends StatelessWidget {
@@ -140,62 +140,64 @@ class SEEScreen extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
-          height: height * 0.015,
-        ),
-        Text("CGPA - ${sisData.previousResults.last.cgpa}",
-            textAlign: TextAlign.left,
-            style: buttonTitle.copyWith(fontSize: width * 0.08)),
-        Container(
-          padding: EdgeInsets.only(
-              left: width * 0.16,
-              right: width * 0.16,
-              top: height * 0.01,
-              bottom: height * 0.015),
-          child: Divider(
-            color: sisData.darkMode ? Colors.white38 : Colors.black26,
-            thickness: 1.6,
+        if (sisData.previousResults.isNotEmpty) ...[
+          SizedBox(
+            height: height * 0.015,
           ),
-        ),
-        ...sisData.previousResults
-            .map((PreviousResult e) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Neumorphic(
-                    padding: EdgeInsets.only(
-                        top: height * 0.015,
-                        bottom: height * 0.015,
-                        left: width * 0.025,
-                        right: width * 0.01),
-                    style: neumorphicStyle,
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (ctx) => ResultsDetails(
-                              previousResult: e,
+          Text("CGPA - ${sisData.previousResults.last.cgpa}",
+              textAlign: TextAlign.left,
+              style: buttonTitle.copyWith(fontSize: width * 0.08)),
+          Container(
+            padding: EdgeInsets.only(
+                left: width * 0.16,
+                right: width * 0.16,
+                top: height * 0.01,
+                bottom: height * 0.015),
+            child: Divider(
+              color: sisData.darkMode ? Colors.white38 : Colors.black26,
+              thickness: 1.6,
+            ),
+          ),
+          ...sisData.previousResults
+              .map((PreviousResult e) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Neumorphic(
+                      padding: EdgeInsets.only(
+                          top: height * 0.015,
+                          bottom: height * 0.015,
+                          left: width * 0.025,
+                          right: width * 0.01),
+                      style: neumorphicStyle,
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) => ResultsDetails(
+                                previousResult: e,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      title: AutoSizeText(
-                        (e.term.toLowerCase().contains('supplementary') ||
-                                e.term.toLowerCase().contains("back"))
-                            ? e.term
-                            : "Sem - ${e.semesterNumber}",
-                        // maxFontSize: ((width * 0.08) as double).round(),
-                        maxLines: 2,
-                        style: buttonTrailing,
+                          );
+                        },
+                        title: AutoSizeText(
+                          (e.term.toLowerCase().contains('supplementary') ||
+                                  e.term.toLowerCase().contains("back"))
+                              ? e.term
+                              : "Sem - ${e.semesterNumber}",
+                          // maxFontSize: ((width * 0.08) as double).round(),
+                          maxLines: 2,
+                          style: buttonTrailing,
+                        ),
+                        trailing: (e.term.toLowerCase().contains("back"))
+                            ? null
+                            : Text(
+                                e.sgpa,
+                                style: buttonTrailing,
+                              ),
                       ),
-                      trailing: (e.term.toLowerCase().contains("back"))
-                          ? null
-                          : Text(
-                              e.sgpa,
-                              style: buttonTrailing,
-                            ),
                     ),
-                  ),
-                ))
-            .toList(),
+                  ))
+              .toList(),
+        ],
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Neumorphic(

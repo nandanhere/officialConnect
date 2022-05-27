@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:official_connect/Classes/attendance.dart';
 import 'package:provider/provider.dart';
 
-import '../Providers/sisdata.dart';
+import '../../../../../../Providers/sisdata.dart';
 
 class AttendanceGrid extends StatelessWidget {
   final Attendance attendance;

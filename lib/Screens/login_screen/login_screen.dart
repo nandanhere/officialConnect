@@ -1,5 +1,5 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Screens/proctor_login.dart';
+import 'package:official_connect/Screens/login_screen/proctor_login.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:intl/intl.dart';

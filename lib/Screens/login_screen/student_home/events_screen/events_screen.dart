@@ -1,5 +1,5 @@
 import 'package:official_connect/Providers/dummy_data.dart';
-import 'package:official_connect/Widgets/about_club_dialog.dart';
+import 'package:official_connect/Screens/login_screen/student_home/events_screen/widgets/about_club_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
