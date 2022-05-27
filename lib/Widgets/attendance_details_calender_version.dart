@@ -38,6 +38,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
         maxDate = dates[i].date;
       }
     }
+    print("Max Date $maxDate");
     return maxDate;
   }
 
@@ -63,7 +64,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
     }
   }
 
-  bool isPresntInDates(List<ClassDay> dates, DateTime date) {
+  bool isPresentInDates(List<ClassDay> dates, DateTime date) {
     for (int i = 0; i < dates.length; i++) {
       if (dates[i].date.isAtSameMomentAs(date)) {
         return true;
@@ -103,9 +104,9 @@ class AttendanceCalenderVersion extends StatelessWidget {
     var toDate = calcToDate(maxPresentDate, maxAbsentDate);
     var dateDiff = toDate.difference(fromDate).inDays;
 
-    for (int i = 0; i < dateDiff.toInt(); i++) {
+    for (int i = 0; i <= dateDiff.toInt(); i++) {
       //adding colors to the allDateList
-      if (isPresntInDates(attendance.presentDates, fromDate)) {
+      if (isPresentInDates(attendance.presentDates, fromDate)) {
         allDateList.add([
           1,
           DateTime(fromDate.year, fromDate.month, fromDate.day),
@@ -115,7 +116,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
               .first
               .time
         ]);
-      } else if (isPresntInDates(attendance.absentDates, fromDate)) {
+      } else if (isPresentInDates(attendance.absentDates, fromDate)) {
         allDateList.add([
           0,
           DateTime(fromDate.year, fromDate.month, fromDate.day),

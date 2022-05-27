@@ -27,6 +27,7 @@ class AttendanceDetails extends StatelessWidget {
     var totalClasses = attendanceDetails.present +
         attendanceDetails.absent +
         attendanceDetails.remaining;
+    var alreadyMissed = attendanceDetails.absent;
     // String howManyYouCanMiss(int per) {
     //   double p85 = (totalClasses * 0.85);
     //   double p75 = (totalClasses * 0.75);
@@ -41,14 +42,15 @@ class AttendanceDetails extends StatelessWidget {
     String howManyYouCanMiss(int per) {
       double p85 = (totalClasses * 0.85);
       double p75 = (totalClasses * 0.75);
-      double calc85 = totalClasses - p85;
-      double calc75 = totalClasses - p75;
+      double calc85 = totalClasses - p85 - alreadyMissed;
+      double calc75 = totalClasses - p75 - alreadyMissed;
+
       if (per == 85 && calc85 >= 0) {
         return "${calc85.toInt()}";
       } else if (per == 75 && calc75 >= 0) {
         return "${calc75.toInt()}";
       } else {
-        return "N/A";
+        return "0";
       }
     }
 

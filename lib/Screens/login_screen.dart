@@ -1,4 +1,5 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:official_connect/Screens/proctor_login.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:intl/intl.dart';
@@ -235,8 +236,31 @@ class _LoginScreenState extends State<LoginScreen> {
                                 !sisData.hasData &&
                                 _formKey.currentState!.validate())
                             ? const CircularProgressIndicator()
-                            : GestureDetector(
-                                onTap: () {
+                            : NeumorphicButton(
+                                style: NeumorphicStyle(
+                                    depth: depthVal,
+                                    intensity: 0.5,
+                                    color: const Color(0x00c00000),
+                                    boxShape: NeumorphicBoxShape.roundRect(
+                                        BorderRadius.circular(30))),
+                                child: fillForm
+                                    ? const Text(
+                                        "Login",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontFamily: 'Comfortaa'),
+                                      )
+                                    : const Text(
+                                        "Student Login",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontFamily: 'Comfortaa'),
+                                      ),
+                                onPressed: () {
                                   if (!fillForm) {
                                     setState(() {
                                       fillForm = true;
@@ -249,31 +273,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                     _submit();
                                   }
                                 },
-                                child: Hero(
-                                  tag: "bar",
-                                  child: Neumorphic(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 10),
-                                      style: NeumorphicStyle(
-                                          depth: depthVal,
-                                          intensity: 0.5,
-                                          color: const Color(0x00c00000),
-                                          boxShape:
-                                              NeumorphicBoxShape.roundRect(
-                                                  BorderRadius.circular(30))),
-                                      child: fillForm
-                                          ? const Text(
-                                              "Login",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                  fontSize: 20,
-                                                  fontFamily: 'Comfortaa'),
-                                            )
-                                          : const Icon(
-                                              Icons.chevron_right_rounded)),
-                                ),
                               ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        if (!fillForm)
+                          NeumorphicButton(
+                            style: NeumorphicStyle(
+                                depth: depthVal,
+                                intensity: 0.5,
+                                color: const Color(0x00c00000),
+                                boxShape: NeumorphicBoxShape.roundRect(
+                                    BorderRadius.circular(30))),
+                            child: const Text(
+                              "Proctor Login",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontFamily: 'Comfortaa'),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProctorLogin()));
+                            },
+                          ),
                         if (!sisData.isValidData)
                           Text(
                             sisData.errorMessage,

@@ -32,6 +32,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
       body: const Center(
         child: SpinKitSpinningLines(
+          itemCount: 4,
           color: Colors.red,
           size: 100.0,
         ),
