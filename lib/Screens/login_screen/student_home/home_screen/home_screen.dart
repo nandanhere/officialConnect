@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
+import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/Proctor_messages_card.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/fees_card.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -161,6 +162,43 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    //line between student card and fees card
+                    padding: EdgeInsets.only(
+                        left: width * 0.1,
+                        right: width * 0.1,
+                        top: height * 0.03,
+                        bottom: height * 0.015),
+                    child: Divider(
+                      color: sisData.darkMode ? Colors.white38 : Colors.black26,
+                      thickness: 1.6,
+                    ),
+                  ),
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: width * 0.2, vertical: height * 0.02),
+                          child: Text(
+                            "Proctor Announcement",
+                            style: buttonTrailing,
+                          ),
+                        ),
+                        ProctorMessagesCard(
+                          height: height,
+                          width: width,
+                          title: "Open Elective Selection",
+                          subtitle: subtitle,
+                          body: "5th students, Collect your temp email id and pwd from your proctor for open elective registration. The details are sent to your proctors mail. Open elective choices can be done from 16.03.2022 (9.00 AM) to 20.03.2022 (4.00 PM). The students can enter their choices by visiting the url: msrit.edu/oe2022 from 16.03.2022 (9.00 AM) onwards.",
+                          neumorphicStyle: neumorphicStyle,
+                          buttonTrailing: buttonTrailing,
+                          isDark: sisData.darkMode,
+                          messageData: e,
+
+                        ),
+                      ]),
+                  Container(
+                    //line between student card and fees card
                     padding: EdgeInsets.only(
                         left: width * 0.1,
                         right: width * 0.1,
