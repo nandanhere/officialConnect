@@ -184,21 +184,23 @@ class HomeScreen extends StatelessWidget {
                             style: buttonTrailing,
                           ),
                         ),
-                        ProctorMessagesCard(
+                       ...sisData.proctordata.messages.map((e) => 
+                       ProctorMessagesCard(
                           height: height,
                           width: width,
-                          title: "Open Elective Selection",
+                          title: title,
                           subtitle: subtitle,
-                          body: "5th students, Collect your temp email id and pwd from your proctor for open elective registration. The details are sent to your proctors mail. Open elective choices can be done from 16.03.2022 (9.00 AM) to 20.03.2022 (4.00 PM). The students can enter their choices by visiting the url: msrit.edu/oe2022 from 16.03.2022 (9.00 AM) onwards.",
+                          // body: "5th students, Collect your temp email id and pwd from your proctor for open elective registration. The details are sent to your proctors mail. Open elective choices can be done from 16.03.2022 (9.00 AM) to 20.03.2022 (4.00 PM). The students can enter their choices by visiting the url: msrit.edu/oe2022 from 16.03.2022 (9.00 AM) onwards.",
                           neumorphicStyle: neumorphicStyle,
                           buttonTrailing: buttonTrailing,
                           isDark: sisData.darkMode,
                           messageData: e,
 
                         ),
+                        )
                       ]),
                   Container(
-                    //line between student card and fees card
+                    //line between ProctorMessages card and fees card
                     padding: EdgeInsets.only(
                         left: width * 0.1,
                         right: width * 0.1,
