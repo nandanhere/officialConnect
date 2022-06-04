@@ -4,7 +4,18 @@
    <application
         android:label="Connect"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+                android:networkSecurityConfig="@xml/network_security_config"
+>
+<!-- for ota update -->
+        <!--  -->
+
+        <meta-data
+          android:name="com.google.firebase.messaging.default_notification_icon"
+          android:resource="@drawable/ic_stat_icon" />
+          <meta-data
+          android:name="com.google.firebase.messaging.default_notification_color"
+          android:resource="@color/red" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -17,13 +28,21 @@
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
+             
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+             <!-- For the online messages -->
+            <intent-filter>
+                 <action android:name="FLUTTER_NOTIFICATION_CLICK"/>
+                  <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         
@@ -32,6 +51,19 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        
+        <!-- for ota update -->
+        
+        <provider
+    android:name="sk.fourq.otaupdate.OtaUpdateFileProvider"
+    android:authorities="${applicationId}.ota_update_provider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/filepaths" />
+        <!--  -->
+</provider>
     </application>
     <queries>
   <!-- If your app opens https URLs -->
@@ -54,5 +86,6 @@
     <action android:name="android.intent.action.SEND" />
     <data android:mimeType="*/*" />
   </intent>
+ 
 </queries>
 </manifest>

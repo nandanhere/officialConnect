@@ -7,3 +7,8 @@ for cors used in the api:
 https://flask-cors.readthedocs.io/en/latest/
 
 
+for the notifications
+https://medium.com/iiitians-network/flutter-push-notifications-using-aws-sns-dac464c1edf0
+
+https://stackoverflow.com/questions/37427709/firebase-messaging-where-to-get-server-key
+https://medium.com/@ThatJenPerson/authenticating-firebase-cloud-messaging-http-v1-api-requests-e9af3e0827b8
