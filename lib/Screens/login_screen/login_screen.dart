@@ -107,15 +107,15 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-    // some first year student's deets
-    // usnController.text = "1MS21CS035-T";
-    // dobController.text = "2003-06-11";
     // prateek
     // usnController.text = "1ms19cs030";
     // dobController.text = "2000-11-15";
     // nadnan
     // usnController.text = "1ms19is076";
     // dobController.text = "2000-12-08";
+
+    // usnController.text = "1ms19is130";
+    // dobController.text = "2002-05-02";
 
     // usnController.text = "dummy";
     TextFormField usnForm = TextFormField(

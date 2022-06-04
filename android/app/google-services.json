@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "325443015605",
+    "firebase_url": "https://officialconnect-58897-default-rtdb.firebaseio.com",
+    "project_id": "officialconnect-58897",
+    "storage_bucket": "officialconnect-58897.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325443015605:android:5ca6102c2b741ad7813ffc",
+        "android_client_info": {
+          "package_name": "com.example.official_connect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325443015605-jip5fcmbts8r1pkfhk1pen5v5qibuh85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDkY1GlGXOjLPcGsVgk8Zrdt8PvUfQd3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "325443015605-jip5fcmbts8r1pkfhk1pen5v5qibuh85.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

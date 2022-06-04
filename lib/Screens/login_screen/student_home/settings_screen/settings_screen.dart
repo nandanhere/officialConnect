@@ -6,14 +6,17 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:official_connect/Providers/themes.dart';
+import 'package:ota_update/ota_update.dart';
 
-const double version = 0.2;
+const double version = 0.3;
 
 class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
-    if (!await launchUrl(Uri.parse(url),mode:LaunchMode.externalNonBrowserApplication)) throw 'Could not launch $url';
+    if (!await launchUrl(Uri.parse(url),
+        mode: LaunchMode.externalNonBrowserApplication))
+      throw 'Could not launch $url';
   }
 
   @override
@@ -102,6 +105,7 @@ class SettingsInfo extends StatelessWidget {
             left: width * 0.05,
             right: width * 0.05,
             top: height * 0.06,
+            bottom: height * 0.06,
           ),
           child: Column(
             children: [
@@ -214,8 +218,23 @@ class SettingsInfo extends StatelessWidget {
                     if (sisData.ver != version)
                       NeumorphicButton(
                         onPressed: () {
-                          _launchURL(
-                              "https://drive.google.com/drive/folders/16rRMfepxMabz7rNBMhybCLbizBtvdpAw?usp=sharing");
+                          try {
+                            //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
+                            OtaUpdate()
+                                .execute(
+                              sisData.downloadLink,
+                              // OPTIONAL
+                              destinationFilename: 'connect.apk',
+                            )
+                                .listen(
+                              (OtaEvent event) {
+                                debugPrint(event.toString());
+                              },
+                            );
+                          } catch (e) {
+                            debugPrint(
+                                'Failed to make OTA update. Details: $e');
+                          }
                         },
                         style: neumorphicStyle,
                         child: Text(
@@ -226,15 +245,15 @@ class SettingsInfo extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                height: height * 0.05,
-              ),
 
               if (sisData.ver == version)
                 Text(
                   "Currently using version " + version.toString(),
                 ),
-              if (sisData.ver != version) const Text("Using Outdated Verison")
+              if (sisData.ver != version) const Text("Using Outdated Verison"),
+              SizedBox(
+                height: 20,
+              )
             ],
           ),
         ),

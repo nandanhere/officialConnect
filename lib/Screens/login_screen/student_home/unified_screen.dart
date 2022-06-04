@@ -37,7 +37,7 @@ class Unified extends StatelessWidget {
       PageController _myCont = PageController(initialPage: 2);
 
       return Scaffold(
-        backgroundColor: NeumorphicColors.background,
+        backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
         body: Stack(
           children: [
             Positioned(

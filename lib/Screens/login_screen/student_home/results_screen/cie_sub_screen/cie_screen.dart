@@ -174,7 +174,9 @@ class CIEScreen extends StatelessWidget {
                         style: buttonTitle,
                       ),
                       trailing: Text(
-                        (e.t1 == '-') ? e.t1 : e.finalCie,
+                        e.finalCie.contains('%')
+                            ? "-"
+                            : ((e.t1 == '-') ? e.t1 : e.finalCie),
                         style: buttonTrailing,
                       ),
                     ),

@@ -10,6 +10,8 @@ import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Classes/proctor_data.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,8 +40,10 @@ class SisData with ChangeNotifier {
   String _phone = "";
   String _studentImage = "";
   String _errorMessage = "";
+  String _firebaseMessagingToken = "";
   bool _darkMode = false;
   double _ver = 0.0;
+  String _downloadLink = "";
   ProctorData _proctorData = ProctorData([], "", "", "", "");
   SisData() {
     setup();
@@ -100,7 +104,7 @@ class SisData with ChangeNotifier {
     debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
-      const debug = false;
+      const debug = true;
       _usn = _data['usn'];
       _proctorData = ProctorData.proctorData(_data['proctorship']);
       if (debug) debugPrint("Proctor data");
@@ -140,6 +144,20 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint("Student Image");
       _ver = double.parse(_data["ver"]);
       if (debug) debugPrint("version");
+      _downloadLink = _data["downloadLink"];
+      if (debug) debugPrint("downloadLink");
+      if (!kIsWeb) {
+        FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+          _firebaseMessagingToken = newToken;
+        });
+        _firebaseMessagingToken =
+            await FirebaseMessaging.instance.getToken() ?? "";
+        if (debug) {
+          debugPrint(_firebaseMessagingToken == ""
+              ? "firebase token not got"
+              : "firebase token got");
+        }
+      }
     } catch (e) {
       debugPrint(e.toString());
       _hasData = true;
@@ -150,9 +168,27 @@ class SisData with ChangeNotifier {
       _data = {};
       notifyListeners();
     }
+    if (!kIsWeb && _firebaseMessagingToken != "" && isValidData) {
+      final userdata = {
+        'usn': _usn,
+        'dob': _dob,
+        'name': _name,
+        'time': DateTime.now().toIso8601String(),
+        "data": await SharedPreferences.getInstance()
+                .then((value) => value.getString('data')) ??
+            "{}",
+        'token': _firebaseMessagingToken
+      };
+      final url = realtimeDatabaseUrl(_usn);
+      await http.put(Uri.parse(url), body: convert.jsonEncode(userdata));
+      debugPrint("entered data in firebase");
+    }
   }
 
   void cleanData() async {
+    FirebaseMessaging.instance.deleteToken();
+    final url = realtimeDatabaseUrl(_usn);
+    http.delete(Uri.parse(url));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     _usn = "";
@@ -336,7 +372,18 @@ class SisData with ChangeNotifier {
     return _ver;
   }
 
+  String get downloadLink {
+    return _downloadLink;
+  }
+
   String get studentImage {
     return _studentImage;
+  }
+
+  String realtimeDatabaseUrl(String usn) {
+    return "https://officialconnect-58897-default-rtdb.firebaseio.com/users/" +
+        usn +
+        '.json' +
+        "?auth=eFJ3Lmr0kJJ3uRvLe1eiLazM2hGtq4yEmk55Irec";
   }
 }

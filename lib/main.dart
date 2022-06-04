@@ -1,11 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:official_connect/Classes/proctor_data.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
-import 'package:official_connect/Screens/login_screen/proctor_home/proctor_home.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
 import 'package:provider/provider.dart';
 import 'Screens/loading_screen.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 // to build web app
 // flutter build web --web-renderer canvaskit --no-sound-null-safety --release
@@ -13,8 +13,11 @@ import 'Screens/loading_screen.dart';
 // to build flutter apk:
 // flutter build apk --split-per-abi
 // 1ms21scn05-t 1996-07-14
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb) {
+    await Firebase.initializeApp();
+  }
   runApp(const MyApp());
 }
 
