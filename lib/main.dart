@@ -6,6 +6,7 @@ import 'package:official_connect/Screens/login_screen/student_home/unified_scree
 import 'package:provider/provider.dart';
 import 'Screens/loading_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart';
 
 // to build web app
 // flutter build web --web-renderer canvaskit --no-sound-null-safety --release
@@ -18,6 +19,10 @@ void main() async {
   if (!kIsWeb) {
     await Firebase.initializeApp();
   }
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(new MyApp());
+  });
   runApp(const MyApp());
 }
 

@@ -38,6 +38,7 @@ class Marks {
             t1: e['t1'],
             t2: e['t2']))
         .toList();
+
     final reg = RegExp(r".*\((.*)\)");
     list.sort((a, b) {
       if (reg.hasMatch(a.subjectName) && reg.hasMatch(b.subjectName)) {

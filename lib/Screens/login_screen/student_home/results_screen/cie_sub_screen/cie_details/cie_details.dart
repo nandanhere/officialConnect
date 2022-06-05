@@ -52,7 +52,11 @@ class CIEDetails extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(subjectDetails.subjectName, style: buttonTitle),
+              Text(
+                subjectDetails.subjectName,
+                style: buttonTitle,
+                textAlign: TextAlign.center,
+              ),
               Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: MediaQuery.of(context).size.height * 0.04,

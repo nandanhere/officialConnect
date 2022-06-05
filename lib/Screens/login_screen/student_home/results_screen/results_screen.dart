@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/themes.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ResultsScreen extends StatelessWidget {
   final seeOpt;
@@ -25,41 +26,67 @@ class ResultsScreen extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: ValueListenableBuilder(
-          valueListenable: seeOpt,
-          builder: (context, isSEE, child) => Container(
-            decoration: BoxDecoration(
-                gradient: seeOpt.value ? linearGradientBG : linearGradient),
-            padding: EdgeInsets.only(
-              left: width * 0.05,
-              right: width * 0.05,
-              top: height * 0.06,
+      child: RefreshIndicator(
+        displacement: height * 0.1,
+        backgroundColor: sisData.darkMode ? Colors.black : Colors.white,
+        color: sisData.darkMode
+            ? const Color(0xffba3237)
+            : const Color(0xffba3227),
+        onRefresh: () async {
+          Fluttertoast.showToast(
+              msg: "Updating data ",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: const Color(0xffba3237),
+              textColor: Colors.white,
+              fontSize: 16.0);
+          await sisData.getData("", "", true);
+          Fluttertoast.showToast(
+              msg: "Updated data 🎉 ",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: const Color(0xffba3237),
+              textColor: Colors.white,
+              fontSize: 16.0);
+        },
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: ValueListenableBuilder(
+            valueListenable: seeOpt,
+            builder: (context, isSEE, child) => Container(
+              decoration: BoxDecoration(
+                  gradient: seeOpt.value ? linearGradientBG : linearGradient),
+              padding: EdgeInsets.only(
+                left: width * 0.05,
+                right: width * 0.05,
+                top: height * 0.06,
+              ),
+              child: ValueListenableBuilder(
+                  valueListenable: seeOpt,
+                  builder: (context, bool isSEE, child) => isSEE
+                      ? SEEScreen(
+                          height: height,
+                          titleStyle: titleStyle,
+                          buttonTitle: buttonTitle,
+                          isSEE: isSEE,
+                          width: width,
+                          seeOpt: seeOpt,
+                          neumorphicStyle: neumorphicStyle,
+                          sisData: sisData,
+                          buttonTrailing: buttonTrailing)
+                      : CIEScreen(
+                          height: height,
+                          titleStyle: titleStyle,
+                          buttonTitle: buttonTitle,
+                          isSEE: isSEE,
+                          width: width,
+                          seeOpt: seeOpt,
+                          neumorphicStyle: neumorphicStyle,
+                          sisData: sisData,
+                          buttonTrailing: buttonTrailing)),
             ),
-            child: ValueListenableBuilder(
-                valueListenable: seeOpt,
-                builder: (context, bool isSEE, child) => isSEE
-                    ? SEEScreen(
-                        height: height,
-                        titleStyle: titleStyle,
-                        buttonTitle: buttonTitle,
-                        isSEE: isSEE,
-                        width: width,
-                        seeOpt: seeOpt,
-                        neumorphicStyle: neumorphicStyle,
-                        sisData: sisData,
-                        buttonTrailing: buttonTrailing)
-                    : CIEScreen(
-                        height: height,
-                        titleStyle: titleStyle,
-                        buttonTitle: buttonTitle,
-                        isSEE: isSEE,
-                        width: width,
-                        seeOpt: seeOpt,
-                        neumorphicStyle: neumorphicStyle,
-                        sisData: sisData,
-                        buttonTrailing: buttonTrailing)),
           ),
         ),
       ),
