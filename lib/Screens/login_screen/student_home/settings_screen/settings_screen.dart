@@ -97,164 +97,196 @@ class SettingsInfo extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Container(
-          decoration: BoxDecoration(gradient: linearGradientBG),
-          padding: EdgeInsets.only(
-            left: width * 0.05,
-            right: width * 0.05,
-            top: height * 0.06,
-            bottom: height * 0.06,
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: height * 0.04),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Settings",
-                    textAlign: TextAlign.left,
-                    style: title,
+      child: RefreshIndicator(
+        displacement: height * 0.1,
+        backgroundColor: sisData.darkMode ? Colors.black : Colors.white,
+        color: sisData.darkMode
+            ? const Color(0xffba3237)
+            : const Color(0xffba3227),
+        onRefresh: () async {
+          Fluttertoast.showToast(
+              msg: "Updating data ",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: const Color(0xffba3237),
+              textColor: Colors.white,
+              fontSize: 16.0);
+          await sisData.getData("", "", true);
+          Fluttertoast.showToast(
+              msg: "Updated data 🎉 ",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: const Color(0xffba3237),
+              textColor: Colors.white,
+              fontSize: 16.0);
+        },
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Container(
+            decoration: BoxDecoration(gradient: linearGradientBG),
+            padding: EdgeInsets.only(
+              left: width * 0.05,
+              right: width * 0.05,
+              top: height * 0.06,
+              bottom: height * 0.06,
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: height * 0.04),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Settings",
+                      textAlign: TextAlign.left,
+                      style: title,
+                    ),
                   ),
                 ),
-              ),
-              // TODO : what is going on here? it is too convoluted.
-              ...tiles.map((e) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: NeumorphicButton(
-                      onPressed: e.toggle
-                          ? () {
-                              sisData.darkMode = !sisData.darkMode;
-                            }
-                          : e.onPressed,
-                      style: neumorphicStyle,
-                      child: ListTile(
-                        leading: Icon(
-                          e.icon,
-                          color: const Color(0xffd93b3f),
-                          size: 30,
+                // TODO : what is going on here? it is too convoluted.
+                ...tiles.map((e) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: NeumorphicButton(
+                        onPressed: e.toggle
+                            ? () {
+                                sisData.darkMode = !sisData.darkMode;
+                              }
+                            : e.onPressed,
+                        style: neumorphicStyle,
+                        child: ListTile(
+                          leading: Icon(
+                            e.icon,
+                            color: const Color(0xffd93b3f),
+                            size: 30,
+                          ),
+                          title: Text(
+                            e.text,
+                            style: buttonTitle,
+                          ),
+                          trailing: e.toggle
+                              ? NeumorphicSwitch(
+                                  style: const NeumorphicSwitchStyle(
+                                      trackDepth: 10, thumbDepth: 2),
+                                  height: width * 0.055,
+                                  value: sisData.darkMode,
+                                  onChanged: (value) {
+                                    sisData.darkMode = value;
+                                  },
+                                )
+                              : null,
                         ),
-                        title: Text(
-                          e.text,
-                          style: buttonTitle,
-                        ),
-                        trailing: e.toggle
-                            ? NeumorphicSwitch(
-                                style: const NeumorphicSwitchStyle(
-                                    trackDepth: 10, thumbDepth: 2),
-                                height: width * 0.055,
-                                value: sisData.darkMode,
-                                onChanged: (value) {
-                                  sisData.darkMode = value;
-                                },
-                              )
-                            : null,
                       ),
-                    ),
-                  )),
-              SizedBox(
-                height: height * 0.06,
-              ),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    NeumorphicButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (ctx) {
-                              return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                backgroundColor: sisData.darkMode
-                                    ? Colors.black
-                                    : NeumorphicColors.background,
-                                title: Text(
-                                  'Do you want to Log out?',
-                                  style: buttonTrailing,
-                                ),
-                                content: Text(
-                                  'All stored data will be wiped out',
-                                  style: buttonTitle,
-                                ),
-                                actions: <Widget>[
-                                  NeumorphicButton(
-                                    style: neumorphicStyle,
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    },
-                                    child: Text(
-                                      'No',
-                                      style: buttonTitle,
-                                    ),
-                                  ),
-                                  NeumorphicButton(
-                                    style: neumorphicStyle,
-                                    onPressed: () {
-                                      Unified.screenNumber.value = 2;
-                                      Navigator.of(context).pop(false);
-                                      sisData.cleanData();
-                                    },
-                                    child: Text(
-                                      'Yes',
-                                      style: buttonTitle,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      style: neumorphicStyle,
-                      child: Text(
-                        "Sign out",
-                        style: buttonTitle,
-                      ),
-                    ),
-                    if (sisData.ver != version)
+                    )),
+                SizedBox(
+                  height: height * 0.06,
+                ),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       NeumorphicButton(
                         onPressed: () {
-                          try {
-                            //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
-                            OtaUpdate()
-                                .execute(
-                              sisData.downloadLink,
-                              // OPTIONAL
-                              destinationFilename: 'connect.apk',
-                            )
-                                .listen(
-                              (OtaEvent event) {
-                                debugPrint(event.toString());
-                              },
-                            );
-                          } catch (e) {
-                            debugPrint(
-                                'Failed to make OTA update. Details: $e');
-                          }
+                          showDialog(
+                              context: context,
+                              builder: (ctx) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  backgroundColor: sisData.darkMode
+                                      ? Colors.black
+                                      : NeumorphicColors.background,
+                                  title: Text(
+                                    'Do you want to Log out?',
+                                    style: buttonTrailing,
+                                  ),
+                                  content: Text(
+                                    'All stored data will be wiped out',
+                                    style: buttonTitle,
+                                  ),
+                                  actions: <Widget>[
+                                    NeumorphicButton(
+                                      style: neumorphicStyle,
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                      child: Text(
+                                        'No',
+                                        style: buttonTitle,
+                                      ),
+                                    ),
+                                    NeumorphicButton(
+                                      style: neumorphicStyle,
+                                      onPressed: () {
+                                        Unified.screenNumber.value = 2;
+                                        Navigator.of(context).pop(false);
+                                        sisData.cleanData();
+                                      },
+                                      child: Text(
+                                        'Yes',
+                                        style: buttonTitle,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              });
                         },
                         style: neumorphicStyle,
                         child: Text(
-                          "Update",
+                          "Sign out",
                           style: buttonTitle,
                         ),
                       ),
-                  ],
+                      SizedBox(
+                        width: width * 0.07,
+                      ),
+                      if (sisData.ver != version)
+                        NeumorphicButton(
+                          onPressed: () {
+                            try {
+                              //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
+                              OtaUpdate()
+                                  .execute(
+                                sisData.downloadLink,
+                                // OPTIONAL
+                                destinationFilename: 'connect.apk',
+                              )
+                                  .listen(
+                                (OtaEvent event) {
+                                  debugPrint(event.toString());
+                                },
+                              );
+                            } catch (e) {
+                              debugPrint(
+                                  'Failed to make OTA update. Details: $e');
+                            }
+                          },
+                          style: neumorphicStyle,
+                          child: Text(
+                            "Update",
+                            style: buttonTitle,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-
-              if (sisData.ver == version)
-                Text(
-                  "Currently using version " + version.toString(),
+                SizedBox(
+                  height: height * 0.015,
                 ),
-              if (sisData.ver != version) const Text("Using Outdated Verison"),
-              SizedBox(
-                height: 20,
-              )
-            ],
+                if (sisData.ver == version)
+                  Text(
+                    "Currently using version " + version.toString(),
+                  ),
+                if (sisData.ver != version)
+                  const Text("Using Outdated Verison"),
+                SizedBox(
+                  height: height * 0.07,
+                )
+              ],
+            ),
           ),
         ),
       ),

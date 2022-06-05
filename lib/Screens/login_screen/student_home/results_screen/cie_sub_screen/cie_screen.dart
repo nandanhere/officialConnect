@@ -176,7 +176,7 @@ class CIEScreen extends StatelessWidget {
                       trailing: Text(
                         e.finalCie.contains('%')
                             ? "-"
-                            : ((e.t1 == '-') ? e.t1 : e.finalCie),
+                            : ((e.t1 == '-') ? e.t1 : e.finalCie.toString()),
                         style: buttonTrailing,
                       ),
                     ),
@@ -184,7 +184,7 @@ class CIEScreen extends StatelessWidget {
                 ))
             .toList(),
         SizedBox(
-          height: height * 0.095,
+          height: height * 0.15,
         )
       ],
     );

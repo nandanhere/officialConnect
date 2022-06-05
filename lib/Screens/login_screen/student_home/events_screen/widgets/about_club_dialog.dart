@@ -42,6 +42,9 @@ class AboutClubDialog extends StatelessWidget {
             e['desc']!,
             style: (title as TextStyle).copyWith(fontSize: 15),
           ),
+          SizedBox(
+            height: height * 0.04,
+          ),
           NeumorphicButton(
             onPressed: () async {
               if (!await launch(e['linktree']!)) throw 'Could not launch  ';
