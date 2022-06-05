@@ -47,7 +47,7 @@ class ProctorMessagesCard extends StatelessWidget {
                 messageData.from,
                 style: buttonTrailing.copyWith(fontSize: width * 0.06),
               ),
-              subtitle: Text(messageData.date),
+              subtitle: Text(messageData.date , style: subtitle,),
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(

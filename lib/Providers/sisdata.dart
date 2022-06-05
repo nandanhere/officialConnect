@@ -170,7 +170,7 @@ class SisData with ChangeNotifier {
     }
     if (!kIsWeb && _firebaseMessagingToken != "" && isValidData) {
       final userdata = {
-        'usn': _usn,
+        'usn': _usn.toLowerCase(),
         'dob': _dob,
         'name': _name,
         'time': DateTime.now().toIso8601String(),
@@ -179,7 +179,7 @@ class SisData with ChangeNotifier {
             "{}",
         'token': _firebaseMessagingToken
       };
-      final url = realtimeDatabaseUrl(_usn);
+      final url = realtimeDatabaseUrl(_usn.toLowerCase());
       await http.put(Uri.parse(url), body: convert.jsonEncode(userdata));
       debugPrint("entered data in firebase");
     }
