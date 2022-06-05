@@ -176,11 +176,15 @@ class HomeScreen extends StatelessWidget {
                   Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Center(
-                          child: AutoSizeText(
-                            "Proctor Announcements",
-                            maxLines: 1,
-                            style: buttonTrailing,
+                        Padding(
+                           padding: EdgeInsets.symmetric(
+                             vertical: height * 0.02),
+                          child: Center(
+                            child: AutoSizeText(
+                              "Proctor Announcements",
+                              maxLines: 1,
+                              style: buttonTrailing,
+                            ),
                           ),
                         ),
                         ...sisData.proctordata.messages.map(
@@ -189,13 +193,12 @@ class HomeScreen extends StatelessWidget {
                             width: width,
                             title: title,
                             subtitle: subtitle,
-                            // body: "5th students, Collect your temp email id and pwd from your proctor for open elective registration. The details are sent to your proctors mail. Open elective choices can be done from 16.03.2022 (9.00 AM) to 20.03.2022 (4.00 PM). The students can enter their choices by visiting the url: msrit.edu/oe2022 from 16.03.2022 (9.00 AM) onwards.",
                             neumorphicStyle: neumorphicStyle,
                             buttonTrailing: buttonTrailing,
                             isDark: sisData.darkMode,
                             messageData: e,
                           ),
-                        )
+                        ).toList().reversed
                       ]),
                   Container(
                     //line between ProctorMessages card and fees card
