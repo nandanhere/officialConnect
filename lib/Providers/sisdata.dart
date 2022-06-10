@@ -104,7 +104,7 @@ class SisData with ChangeNotifier {
     debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
-      const debug = true;
+      const debug = false;
       _usn = _data['usn'];
       _proctorData = ProctorData.proctorData(_data['proctorship']);
       if (debug) debugPrint("Proctor data");
@@ -186,9 +186,11 @@ class SisData with ChangeNotifier {
   }
 
   void cleanData() async {
-    FirebaseMessaging.instance.deleteToken();
-    final url = realtimeDatabaseUrl(_usn);
-    http.delete(Uri.parse(url));
+    if (!kIsWeb) {
+      FirebaseMessaging.instance.deleteToken();
+      final url = realtimeDatabaseUrl(_usn);
+      http.delete(Uri.parse(url));
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     _usn = "";

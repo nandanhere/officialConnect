@@ -3,8 +3,10 @@ import 'package:official_connect/Screens/login_screen/proctor_home/proctor_home.
 import 'package:official_connect/Providers/themes.dart';
 import 'package:intl/intl.dart';
 import 'package:official_connect/Providers/sisdata.dart';
+import 'package:official_connect/Utils/authentication.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'dart:math';
 
 class ProctorLogin extends StatefulWidget {
   static const String id = "login";
@@ -28,7 +30,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
 
   void _submit() {}
 
-  void _submitUSN(value) {
+  void _submitEmail(value) {
     emailController.text = value;
     passwordFocus.requestFocus();
     if (pwdController.text == "") {}
@@ -47,11 +49,10 @@ class _ProctorLoginState extends State<ProctorLogin> {
       cursorHeight: 30, // autofocus: true,
       controller: emailController,
       key: const ValueKey('email'),
-      onFieldSubmitted: _submitUSN,
+      onFieldSubmitted: _submitEmail,
       decoration: InputDecoration(labelText: "Email", labelStyle: textStyle),
       validator: (value) {
-        if (!RegExp(r"[A-Z0-9_.]+[@](msrit.edu)")
-                .hasMatch(value!.toUpperCase()) &&
+        if (!RegExp(r"[a-zA-Z0-9]+@msrit\.edu").hasMatch(value!) &&
             value != "dummy") {
           setState(() {
             isPressed = false;
@@ -63,16 +64,35 @@ class _ProctorLoginState extends State<ProctorLogin> {
     );
     TextFormField pwdForm = TextFormField(
       style: textStyle.copyWith(fontSize: width * 0.05),
-      readOnly: true,
       key: const ValueKey('pwd'),
       controller: pwdController,
       focusNode: passwordFocus,
+      obscureText: true,
       decoration: InputDecoration(
         labelText: "Password",
         labelStyle: textStyle,
       ),
+      validator: (value) {
+        if (value!.length < 8) {
+          setState(() {
+            isPressed = false;
+          });
+          return "Enter a password of length greater than 8";
+        }
+        return null;
+      },
     );
 
+    String generateRandomString(int len) {
+      var r = Random();
+      const _chars =
+          'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+      return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
+          .join();
+    }
+
+    emailController.text = generateRandomString(10) + "@msrit.edu";
+    pwdController.text = "password123";
     return sisData.updating
         ? Scaffold(
             backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
@@ -147,7 +167,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
                                 fontSize: 15,
                                 fontFamily: 'Comfortaa'),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (!fillForm) {
                               setState(() {
                                 fillForm = true;
@@ -159,21 +179,49 @@ class _ProctorLoginState extends State<ProctorLogin> {
                               });
                               //_submit();
                             }
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProctorHome()));
+                            if (_formKey.currentState!.validate()) {
+                              print(emailController.text +
+                                  " " +
+                                  pwdController.text);
+                              await registerWithEmailPassword(
+                                      emailController.text, pwdController.text)
+                                  .then((result) {
+                                if (result != null) {
+                                  setState(() {
+                                    // loginStatus =
+                                    //     'You have registered successfully';
+                                    // loginStringColor = Colors.green;
+                                  });
+                                  print(result);
+                                }
+                              }).catchError((error) {
+                                print('Registration Error: $error');
+                                setState(() {
+                                  // loginStatus =
+                                  //     'Error occured while registering';
+                                  // loginStringColor = Colors.red;
+                                });
+                              });
+                            }
+
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => ProctorHome(),
+                            //   ),
+                            // );
                           },
                         ),
-                        if (!sisData.isValidData)
-                          Text(
-                            sisData.errorMessage,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.red,
-                                fontSize: 10,
-                                fontFamily: 'Comfortaa'),
-                          )
+
+                        // if (!sisData.isValidData)
+                        //   Text(
+                        //     sisData.errorMessage,
+                        //     textAlign: TextAlign.center,
+                        //     style: const TextStyle(
+                        //         color: Colors.red,
+                        //         fontSize: 10,
+                        //         fontFamily: 'Comfortaa'),
+                        //   )
                       ]),
                 ),
               ),

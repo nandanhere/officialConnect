@@ -11,4 +11,13 @@ for the notifications
 https://medium.com/iiitians-network/flutter-push-notifications-using-aws-sns-dac464c1edf0
 
 https://stackoverflow.com/questions/37427709/firebase-messaging-where-to-get-server-key
+
+This has to be done later on if we wont migrate to the offline check
 https://medium.com/@ThatJenPerson/authenticating-firebase-cloud-messaging-http-v1-api-requests-e9af3e0827b8
+
+
+
+
+for icons and notifications icons
+https://stackoverflow.com/questions/43928702/how-to-change-the-application-launcher-icon-on-flutter
+https://romannurik.github.io/AndroidAssetStudio/index.html

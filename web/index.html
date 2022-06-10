@@ -3,7 +3,11 @@
 <head>
   <script src="https://unpkg.com/canvaskit-wasm@0.33.0/bin/canvaskit.js"></script>
   <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.33.0/bin/canvaskit.wasm" as="fetch" crossOrigin="anonymous">
-  <!-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
+  <!-- Firebase part -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+
   <script>
     var firebaseConfig = {
       apiKey: "***REMOVED***",
@@ -18,7 +22,11 @@
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-  </script> -->
+  </script>
+      <script src="main.dart.js" type="application/javascript"></script>
+
+  <!-- firebase part -->
+
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
