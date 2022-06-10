@@ -1,11 +1,11 @@
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:official_connect/Providers/Themes.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/settings_screen/widgets/about_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:official_connect/Providers/themes.dart';
 import 'package:ota_update/ota_update.dart';
 
 const double version = 0.3;
@@ -277,11 +277,11 @@ class SettingsInfo extends StatelessWidget {
                   height: height * 0.015,
                 ),
                 if (sisData.ver == version)
-                  Text(
-                    "Currently using version " + version.toString(),
-                  ),
+                  Text("Currently using version " + version.toString(),
+                      style: CustomTheme.textStyle(context)),
                 if (sisData.ver != version)
-                  const Text("Using Outdated Verison"),
+                  Text("Using Outdated Verison",
+                      style: CustomTheme.textStyle(context)),
                 SizedBox(
                   height: height * 0.07,
                 )

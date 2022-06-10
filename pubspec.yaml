@@ -54,6 +54,8 @@ dependencies:
   firebase_messaging: ^11.4.1
   firebase_core: ^1.17.1
   ota_update: ^4.0.1
+  google_sign_in: ^5.3.3
+  firebase_auth: ^3.3.19
   
 dev_dependencies:
   flutter_test:

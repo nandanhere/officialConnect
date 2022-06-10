@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
       Provider.of<SisData>(context, listen: false)
-          .getData(usnController.text, dobController.text, false);
+          .getData(usnController.text.toUpperCase(), dobController.text, false);
       // print(usnController.text + " " + dobController.text);
     }
   }
@@ -277,6 +277,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(
                           height: 20,
                         ),
+
+                        // // TODO : Comment this for now while releasing
                         // if (!fillForm)
                         //   NeumorphicButton(
                         //     style: NeumorphicStyle(
@@ -297,9 +299,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         //       Navigator.push(
                         //           context,
                         //           MaterialPageRoute(
-                        //               builder: (context) => ProctorLogin()));
+                        //               builder: (context) =>
+                        //                   const ProctorLogin()));
                         //     },
                         //   ),
+                        //   // TODO :
                         if (!sisData.isValidData)
                           Text(
                             sisData.errorMessage,
