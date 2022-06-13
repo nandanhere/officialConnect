@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
+import 'package:official_connect/Utils/authentication.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import "dart:math";
@@ -95,7 +96,7 @@ class ProctorHome extends StatelessWidget {
                               child: Row(
                                 children: [],
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -114,7 +115,31 @@ class ProctorHome extends StatelessWidget {
                   ),
                   SizedBox(
                     height: height * 0.095,
-                  )
+                  ),
+                  Column(
+                    children: [
+                      NeumorphicButton(
+                        style: NeumorphicStyle(
+                            intensity: 0.5,
+                            color: const Color(0x00c00000),
+                            boxShape: NeumorphicBoxShape.roundRect(
+                                BorderRadius.circular(30))),
+                        child: const Text(
+                          "Sign Out",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontFamily: 'Comfortaa'),
+                        ),
+                        onPressed: () {
+                          signOut();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
                 ]),
           ),
         ),

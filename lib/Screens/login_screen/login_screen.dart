@@ -171,150 +171,175 @@ class _LoginScreenState extends State<LoginScreen> {
         : Scaffold(
             backgroundColor: NeumorphicColors.background,
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 60.0),
-                child: SafeArea(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                          child: Image.asset('images/logo.png'),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "CONNECT",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 40,
-                              fontFamily: 'Comfortaa'),
-                        ),
-                        if (!fillForm)
-                          const Text(
-                            "By students of",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                        SizedBox(
-                          height: (!fillForm) ? 90 : 10,
-                        ),
-                        if (!fillForm)
-                          const Text(
-                            "MSRIT",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 20,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                        if (fillForm)
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 50.0, right: 50.0),
-                                  child: usnForm,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 50.0, right: 50.0),
-                                  child: dobForm,
-                                ),
-                              ],
-                            ),
-                          ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        (isPressed &&
-                                !sisData.hasData &&
-                                _formKey.currentState!.validate())
-                            ? const CircularProgressIndicator()
-                            : NeumorphicButton(
-                                style: NeumorphicStyle(
-                                    depth: depthVal,
-                                    intensity: 0.5,
-                                    color: const Color(0x00c00000),
-                                    boxShape: NeumorphicBoxShape.roundRect(
-                                        BorderRadius.circular(30))),
-                                child: fillForm
-                                    ? const Text(
-                                        "Login",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontFamily: 'Comfortaa'),
-                                      )
-                                    : const Text(
-                                        "Student Login",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontFamily: 'Comfortaa'),
-                                      ),
-                                onPressed: () {
-                                  if (!fillForm) {
-                                    setState(() {
-                                      fillForm = true;
-                                      depthVal = -1 * depthVal;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      isPressed = true;
-                                    });
-                                    _submit();
-                                  }
-                                },
+              child: Stack(
+                children: [
+                  if (fillForm)
+                    Positioned(
+                      top: height * 0.07,
+                      left: width * 0.04,
+                      child: NeumorphicButton(
+                        padding: EdgeInsets.all(width * 0.02),
+                        style: NeumorphicStyle(
+                            intensity: 0.5,
+                            color: const Color(0x00c00000),
+                            boxShape: NeumorphicBoxShape.roundRect(
+                                BorderRadius.circular(30))),
+                        child: const Icon(Icons.chevron_left),
+                        onPressed: () {
+                          setState(() {
+                            fillForm = false;
+                          });
+                        },
+                      ),
+                    ),
+                  Positioned(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 60.0),
+                      child: SafeArea(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 40.0),
+                                child: Image.asset('images/logo.png'),
                               ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "CONNECT",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 40,
+                                    fontFamily: 'Comfortaa'),
+                              ),
+                              if (!fillForm)
+                                const Text(
+                                  "By students of",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                      fontFamily: 'Comfortaa'),
+                                ),
+                              SizedBox(
+                                height: (!fillForm) ? 50 : 10,
+                              ),
+                              if (!fillForm)
+                                const Text(
+                                  "MSRIT",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 20,
+                                      fontFamily: 'Comfortaa'),
+                                ),
+                              if (fillForm)
+                                Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 50.0, right: 50.0),
+                                        child: usnForm,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 50.0, right: 50.0),
+                                        child: dobForm,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              (isPressed &&
+                                      !sisData.hasData &&
+                                      _formKey.currentState!.validate())
+                                  ? const CircularProgressIndicator()
+                                  : NeumorphicButton(
+                                      style: NeumorphicStyle(
+                                          intensity: 0.5,
+                                          color: const Color(0x00c00000),
+                                          boxShape:
+                                              NeumorphicBoxShape.roundRect(
+                                                  BorderRadius.circular(30))),
+                                      child: fillForm
+                                          ? const Text(
+                                              "Login",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                  fontSize: 20,
+                                                  fontFamily: 'Comfortaa'),
+                                            )
+                                          : const Text(
+                                              "Student Login",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                  fontFamily: 'Comfortaa'),
+                                            ),
+                                      onPressed: () {
+                                        if (!fillForm) {
+                                          setState(() {
+                                            fillForm = true;
+                                            depthVal = -1 * depthVal;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            isPressed = true;
+                                          });
+                                          _submit();
+                                        }
+                                      },
+                                    ),
+                              const SizedBox(
+                                height: 20,
+                              ),
 
-                        // // TODO : Comment this for now while releasing
-                        // if (!fillForm)
-                        //   NeumorphicButton(
-                        //     style: NeumorphicStyle(
-                        //         depth: depthVal,
-                        //         intensity: 0.5,
-                        //         color: const Color(0x00c00000),
-                        //         boxShape: NeumorphicBoxShape.roundRect(
-                        //             BorderRadius.circular(30))),
-                        //     child: const Text(
-                        //       "Proctor Login",
-                        //       style: TextStyle(
-                        //           fontWeight: FontWeight.bold,
-                        //           color: Colors.black,
-                        //           fontSize: 15,
-                        //           fontFamily: 'Comfortaa'),
-                        //     ),
-                        //     onPressed: () {
-                        //       Navigator.push(
-                        //           context,
-                        //           MaterialPageRoute(
-                        //               builder: (context) =>
-                        //                   const ProctorLogin()));
-                        //     },
-                        //   ),
-                        //   // TODO :
-                        if (!sisData.isValidData)
-                          Text(
-                            sisData.errorMessage,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.red,
-                                fontSize: 10,
-                                fontFamily: 'Comfortaa'),
-                          )
-                      ]),
-                ),
+                              // // TODO : Comment this for now while releasing
+                              if (!fillForm)
+                                NeumorphicButton(
+                                  style: NeumorphicStyle(
+                                      intensity: 0.5,
+                                      color: const Color(0x00c00000),
+                                      boxShape: NeumorphicBoxShape.roundRect(
+                                          BorderRadius.circular(30))),
+                                  child: const Text(
+                                    "Proctor Login",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                        fontFamily: 'Comfortaa'),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ProctorLogin()));
+                                  },
+                                ),
+                              //   // TODO :
+                              if (!sisData.isValidData)
+                                Text(
+                                  sisData.errorMessage,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 10,
+                                      fontFamily: 'Comfortaa'),
+                                )
+                            ]),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
