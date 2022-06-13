@@ -45,6 +45,7 @@ class SisData with ChangeNotifier {
   double _ver = 0.0;
   String _downloadLink = "";
   ProctorData _proctorData = ProctorData([], "", "", "", "");
+  bool _proctorAlreadyLoggedIn = false;
   SisData() {
     setup();
   }
@@ -387,5 +388,13 @@ class SisData with ChangeNotifier {
         usn +
         '.json' +
         "?auth=eFJ3Lmr0kJJ3uRvLe1eiLazM2hGtq4yEmk55Irec";
+  }
+
+  bool get proctorLoggedIn {
+    return _proctorAlreadyLoggedIn;
+  }
+
+  set proctorLoggedIn(value) {
+    _proctorAlreadyLoggedIn = value;
   }
 }

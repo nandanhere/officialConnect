@@ -8,6 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:math';
 
+//e09zOTux2U@msrit.edu
+//password123
+
+//TODO add loading animation
+
 class ProctorLogin extends StatefulWidget {
   static const String id = "login";
 
@@ -27,6 +32,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
   FocusNode passwordFocus = FocusNode();
   DateFormat formatter = DateFormat('yyyy-MM-dd');
   var selectedDate = DateTime.now();
+  bool register = true;
 
   void _submit() {}
 
@@ -91,7 +97,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
           .join();
     }
 
-    emailController.text = generateRandomString(10) + "@msrit.edu";
+    //emailController.text = generateRandomString(10) + "@msrit.edu";
     pwdController.text = "password123";
     return sisData.updating
         ? Scaffold(
@@ -106,124 +112,250 @@ class _ProctorLoginState extends State<ProctorLogin> {
         : Scaffold(
             backgroundColor: NeumorphicColors.background,
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 60.0),
-                child: SafeArea(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                          child: Image.asset('images/logo.png'),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "CONNECT",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 40,
-                              fontFamily: 'Comfortaa'),
-                        ),
-                        Form(
-                          key: _formKey,
-                          child: Column(
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: height * 0.07,
+                    left: width * 0.04,
+                    child: NeumorphicButton(
+                      padding: EdgeInsets.all(width * 0.02),
+                      style: NeumorphicStyle(
+                          intensity: 0.5,
+                          color: const Color(0x00c00000),
+                          boxShape: NeumorphicBoxShape.roundRect(
+                              BorderRadius.circular(30))),
+                      child: const Icon(Icons.chevron_left),
+                      onPressed: () {
+                        if (!register) {
+                          setState(() {
+                            register = true;
+                          });
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 60.0),
+                      child: SafeArea(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 50.0, right: 50.0),
-                                child: emailForm,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 40.0),
+                                child: Image.asset('images/logo.png'),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 50.0, right: 50.0),
-                                child: pwdForm,
+                              const SizedBox(
+                                height: 20,
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        // (isPressed &&
-                        //         !sisData.hasData &&
-                        //         _formKey.currentState!.validate())
-                        //     ? const CircularProgressIndicator()
-                        //     :
-                        NeumorphicButton(
-                          style: NeumorphicStyle(
-                              depth: depthVal,
-                              intensity: 0.5,
-                              color: const Color(0x00c00000),
-                              boxShape: NeumorphicBoxShape.roundRect(
-                                  BorderRadius.circular(30))),
-                          child: const Text(
-                            "Proctor Login",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontFamily: 'Comfortaa'),
-                          ),
-                          onPressed: () async {
-                            if (!fillForm) {
-                              setState(() {
-                                fillForm = true;
-                                depthVal = -1 * depthVal;
-                              });
-                            } else {
-                              setState(() {
-                                isPressed = true;
-                              });
-                              //_submit();
-                            }
-                            if (_formKey.currentState!.validate()) {
-                              print(emailController.text +
-                                  " " +
-                                  pwdController.text);
-                              await registerWithEmailPassword(
-                                      emailController.text, pwdController.text)
-                                  .then((result) {
-                                if (result != null) {
-                                  setState(() {
-                                    // loginStatus =
-                                    //     'You have registered successfully';
-                                    // loginStringColor = Colors.green;
-                                  });
-                                  print(result);
-                                }
-                              }).catchError((error) {
-                                print('Registration Error: $error');
-                                setState(() {
-                                  // loginStatus =
-                                  //     'Error occured while registering';
-                                  // loginStringColor = Colors.red;
-                                });
-                              });
-                            }
+                              const Text(
+                                "CONNECT",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 40,
+                                    fontFamily: 'Comfortaa'),
+                              ),
+                              Form(
+                                key: _formKey,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 50.0, right: 50.0),
+                                      child: emailForm,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 50.0, right: 50.0),
+                                      child: pwdForm,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              // (isPressed &&
+                              //         !sisData.hasData &&
+                              //         _formKey.currentState!.validate())
+                              //     ? const CircularProgressIndicator()
+                              //     :
+                              register
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        NeumorphicButton(
+                                          style: NeumorphicStyle(
+                                              intensity: 0.5,
+                                              color: const Color(0x00c00000),
+                                              boxShape:
+                                                  NeumorphicBoxShape.roundRect(
+                                                      BorderRadius.circular(
+                                                          30))),
+                                          child: const Text(
+                                            "Register",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontFamily: 'Comfortaa'),
+                                          ),
+                                          onPressed: () async {
+                                            setState(() {
+                                              isPressed = true;
+                                            });
+                                            //_submit();
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              print(emailController.text +
+                                                  " " +
+                                                  pwdController.text);
+                                              await registerWithEmailPassword(
+                                                      emailController.text,
+                                                      pwdController.text)
+                                                  .then((result) {
+                                                if (result != null) {
+                                                  setState(() {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProctorHome(),
+                                                      ),
+                                                    );
+                                                  });
+                                                  print(result);
+                                                }
+                                              }).catchError((error) {
+                                                print(
+                                                    'Registration Error: $error');
+                                                setState(() {
+                                                  // loginStatus =
+                                                  //     'Error occured while registering';
+                                                  // loginStringColor = Colors.red;
+                                                });
+                                              });
+                                            }
 
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => ProctorHome(),
-                            //   ),
-                            // );
-                          },
-                        ),
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //     builder: (context) => ProctorHome(),
+                                            //   ),
+                                            // );
+                                          },
+                                        ), //Register
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          "Already a user ?",
+                                          style: textStyle,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        NeumorphicButton(
+                                          style: NeumorphicStyle(
+                                              // depth: depthVal,
+                                              intensity: 0.5,
+                                              color: const Color(0x00c00000),
+                                              boxShape:
+                                                  NeumorphicBoxShape.roundRect(
+                                                      BorderRadius.circular(
+                                                          30))),
+                                          child: const Text(
+                                            "Sign-in",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontFamily: 'Comfortaa'),
+                                          ),
+                                          onPressed: () async {
+                                            setState(() {
+                                              register = false;
+                                            });
+                                          },
+                                        ) // Login
+                                      ],
+                                    )
+                                  : NeumorphicButton(
+                                      style: NeumorphicStyle(
+                                          intensity: 0.5,
+                                          color: const Color(0x00c00000),
+                                          boxShape:
+                                              NeumorphicBoxShape.roundRect(
+                                                  BorderRadius.circular(30))),
+                                      child: const Text(
+                                        "Login",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontFamily: 'Comfortaa'),
+                                      ),
+                                      onPressed: () async {
+                                        if (!fillForm) {
+                                          setState(() {
+                                            fillForm = true;
+                                            depthVal = -1 * depthVal;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            isPressed = true;
+                                          });
+                                          //_submit();
+                                        }
+                                        if (_formKey.currentState!.validate()) {
+                                          print(emailController.text +
+                                              " " +
+                                              pwdController.text);
+                                          await signInWithEmailPassword(
+                                                  emailController.text,
+                                                  pwdController.text)
+                                              .then((result) {
+                                            if (result != null) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProctorHome(),
+                                                ),
+                                              );
+                                              print(result);
+                                            }
+                                          }).catchError((error) {
+                                            print('Login Error: $error');
+                                            setState(() {
+                                              // loginStatus =
+                                              //     'Error occured while registering';
+                                              // loginStringColor = Colors.red;
+                                            });
+                                          });
+                                        }
+                                      },
+                                    ),
 
-                        // if (!sisData.isValidData)
-                        //   Text(
-                        //     sisData.errorMessage,
-                        //     textAlign: TextAlign.center,
-                        //     style: const TextStyle(
-                        //         color: Colors.red,
-                        //         fontSize: 10,
-                        //         fontFamily: 'Comfortaa'),
-                        //   )
-                      ]),
-                ),
+                              // if (!sisData.isValidData)
+                              //   Text(
+                              //     sisData.errorMessage,
+                              //     textAlign: TextAlign.center,
+                              //     style: const TextStyle(
+                              //         color: Colors.red,
+                              //         fontSize: 10,
+                              //         fontFamily: 'Comfortaa'),
+                              //   )
+                            ]),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
