@@ -7,7 +7,8 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 
 String? uid;
 String? userEmail;
-Future<User?> registerWithEmailPassword(String email, String password) async {
+Future<User?> registerWithEmailPassword(
+    String email, String password, String name) async {
   // Initialize Firebase
   await Firebase.initializeApp();
   User? user;
@@ -21,8 +22,13 @@ Future<User?> registerWithEmailPassword(String email, String password) async {
     user = userCredential.user;
 
     if (user != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('auth', true);
+      print("set the vals");
       uid = user.uid;
       userEmail = user.email;
+      print('updating user info');
+      await user.updateDisplayName(name);
     }
   } catch (e) {
     print(e);

@@ -58,13 +58,13 @@ class _ProctorLoginState extends State<ProctorLogin> {
       onFieldSubmitted: _submitEmail,
       decoration: InputDecoration(labelText: "Email", labelStyle: textStyle),
       validator: (value) {
-        if (!RegExp(r"[a-zA-Z0-9]+@msrit\.edu").hasMatch(value!) &&
-            value != "dummy") {
-          setState(() {
-            isPressed = false;
-          });
-          return "Please Enter a valid Email like teacher@msrit.edu";
-        }
+        // if (!RegExp(r"[a-zA-Z0-9]+@msrit\.edu").hasMatch(value!) &&
+        //     value != "dummy") {
+        //   setState(() {
+        //     isPressed = false;
+        //   });
+        //   return "Please Enter a valid Email like teacher@msrit.edu";
+        // }
         return null;
       },
     );
@@ -216,9 +216,11 @@ class _ProctorLoginState extends State<ProctorLogin> {
                                                   " " +
                                                   pwdController.text);
                                               await registerWithEmailPassword(
-                                                      emailController.text,
-                                                      pwdController.text)
-                                                  .then((result) {
+                                                emailController.text,
+                                                pwdController.text,
+                                                // TODO : add a name controller for the display name
+                                                "Nandan",
+                                              ).then((result) {
                                                 if (result != null) {
                                                   setState(() {
                                                     Navigator.push(
@@ -321,6 +323,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
                                                   pwdController.text)
                                               .then((result) {
                                             if (result != null) {
+                                              sisData.proctorAuth(true);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

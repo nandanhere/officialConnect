@@ -47,6 +47,7 @@ class SisData with ChangeNotifier {
   ProctorData _proctorData = ProctorData([], "", "", "", "");
   bool _proctorAlreadyLoggedIn = false;
   SisData() {
+    // cleanData();
     setup();
   }
   void update() async {
@@ -77,6 +78,7 @@ class SisData with ChangeNotifier {
 
   void setup() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    _proctorAlreadyLoggedIn = prefs.getBool('auth') ?? false;
     if (prefs.containsKey('hasData')) {
       _hasData = prefs.getBool('hasData')!;
       var time = prefs.getInt('timeStamp');
@@ -279,6 +281,12 @@ class SisData with ChangeNotifier {
   Future<void> setDark(bool val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('darkMode', val);
+  }
+
+  void proctorAuth(bool val) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('auth', val);
+    _proctorAlreadyLoggedIn = val;
   }
 
   set darkMode(bool val) {
