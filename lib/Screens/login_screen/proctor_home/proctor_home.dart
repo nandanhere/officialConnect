@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Utils/authentication.dart';
@@ -23,6 +24,8 @@ class ProctorHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
+    print(auth.currentUser);
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
@@ -74,7 +77,8 @@ class ProctorHome extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: AutoSizeText(
-                                      "Hi, <Dr. or something><Teacher's Name>",
+                                      "Hi, " +
+                                          (auth.currentUser!.displayName ?? ""),
                                       style: buttonTrailing.copyWith(
                                           // fontFamily: "Lobster",
                                           fontSize: width * 0.08,
@@ -135,6 +139,7 @@ class ProctorHome extends StatelessWidget {
                         ),
                         onPressed: () {
                           signOut();
+                          sisData.cleanData();
                           Navigator.pop(context);
                         },
                       ),
