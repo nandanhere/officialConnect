@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -26,9 +29,23 @@ Future<User?> registerWithEmailPassword(
       await prefs.setBool('auth', true);
       print("set the vals");
       uid = user.uid;
-      userEmail = user.email;
+      String userEmail = user.email!;
       print('updating user info');
       await user.updateDisplayName(name);
+      final bod = {"proctor_email": userEmail, "proctor_name": name};
+      final headers = {'Content-Type': 'application/json'};
+      final encoding = Encoding.getByName("utf-8");
+
+      final resp = await http.post(
+        Uri.parse(
+            "https://msrit-student-proctor-api.herokuapp.com/add_proctor"),
+        headers: headers,
+        encoding: encoding,
+        body: jsonEncode(bod),
+      );
+      if (jsonDecode(resp.body)['message'] != "SUCCESS") {
+        throw Exception("Error in proctor api");
+      }
     }
   } catch (e) {
     print(e);
