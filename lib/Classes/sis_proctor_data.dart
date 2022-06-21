@@ -9,13 +9,17 @@ class ProctorMessage {
   }
 }
 
-class ProctorData {
+class SisProctorData {
   final List<ProctorMessage> messages;
   final String name, phone, email, branch;
 
-  ProctorData(this.messages, this.name, this.phone, this.email, this.branch);
-  static ProctorData proctorData(Map<String, dynamic> data) {
-    return ProctorData(ProctorMessage.getMessageList(data['proctorial_notes']),
-        data['proctor_name'], data['phone'], data['email'], data['branch']);
+  SisProctorData(this.messages, this.name, this.phone, this.email, this.branch);
+  static SisProctorData proctorData(Map<String, dynamic> data) {
+    return SisProctorData(
+        ProctorMessage.getMessageList(data['proctorial_notes']),
+        data['proctor_name'],
+        data['phone'],
+        data['email'],
+        data['branch']);
   }
 }

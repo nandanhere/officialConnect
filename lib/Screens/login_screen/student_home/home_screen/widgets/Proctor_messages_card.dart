@@ -1,6 +1,6 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
-import '../../../../../Classes/proctor_data.dart';
+import '../../../../../Classes/sis_proctor_data.dart';
 
 class ProctorMessagesCard extends StatelessWidget {
   final height,
@@ -47,7 +47,10 @@ class ProctorMessagesCard extends StatelessWidget {
                 messageData.from,
                 style: buttonTrailing.copyWith(fontSize: width * 0.06),
               ),
-              subtitle: Text(messageData.date , style: subtitle,),
+              subtitle: Text(
+                messageData.date,
+                style: subtitle,
+              ),
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(

@@ -29,17 +29,21 @@ class _ProctorLoginState extends State<ProctorLogin> {
   bool fillForm = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController pwdController = TextEditingController();
+  TextEditingController pwdConfirmController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
   FocusNode passwordFocus = FocusNode();
+  FocusNode nameFocus = FocusNode();
+  FocusNode passwordConfirmFocus = FocusNode();
   DateFormat formatter = DateFormat('yyyy-MM-dd');
   var selectedDate = DateTime.now();
-  bool register = true;
+  bool register = false;
 
   void _submit() {}
 
   void _submitEmail(value) {
     emailController.text = value;
     passwordFocus.requestFocus();
-    if (pwdController.text == "") {}
   }
 
   @override
@@ -57,6 +61,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
       key: const ValueKey('email'),
       onFieldSubmitted: _submitEmail,
       decoration: InputDecoration(labelText: "Email", labelStyle: textStyle),
+      // TODO : enable this when production
       validator: (value) {
         // if (!RegExp(r"[a-zA-Z0-9]+@msrit\.edu").hasMatch(value!) &&
         //     value != "dummy") {
@@ -79,11 +84,47 @@ class _ProctorLoginState extends State<ProctorLogin> {
         labelStyle: textStyle,
       ),
       validator: (value) {
+        if (register && value! != pwdConfirmController.text) {
+          setState(() {
+            isPressed = false;
+          });
+          return "passwords must be equal";
+        }
         if (value!.length < 8) {
           setState(() {
             isPressed = false;
           });
           return "Enter a password of length greater than 8";
+        }
+        return null;
+      },
+    );
+    TextFormField pwdConfirmForm = TextFormField(
+      style: textStyle.copyWith(fontSize: width * 0.05),
+      key: const ValueKey('pwd'),
+      controller: pwdConfirmController,
+      focusNode: passwordConfirmFocus,
+      obscureText: true,
+      decoration: InputDecoration(
+        labelText: "Confirm your password",
+        labelStyle: textStyle,
+      ),
+    );
+    TextFormField nameForm = TextFormField(
+      style: textStyle.copyWith(fontSize: width * 0.05),
+      key: const ValueKey('pwd'),
+      controller: nameController,
+      focusNode: nameFocus,
+      decoration: InputDecoration(
+        labelText: "Name",
+        labelStyle: textStyle,
+      ),
+      validator: (value) {
+        if (value!.isEmpty) {
+          setState(() {
+            isPressed = false;
+          });
+          return "Enter name ";
         }
         return null;
       },
@@ -97,7 +138,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
           .join();
     }
 
-    //emailController.text = generateRandomString(10) + "@msrit.edu";
+    emailController.text = "nandan" + "@msrit.edu";
     pwdController.text = "password123";
     return sisData.updating
         ? Scaffold(
@@ -168,192 +209,157 @@ class _ProctorLoginState extends State<ProctorLogin> {
                                           left: 50.0, right: 50.0),
                                       child: emailForm,
                                     ),
+                                    if (register)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 50.0, right: 50.0),
+                                        child: nameForm,
+                                      ),
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           left: 50.0, right: 50.0),
                                       child: pwdForm,
                                     ),
+                                    if (register)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 50.0, right: 50.0),
+                                        child: pwdConfirmForm,
+                                      ),
                                   ],
                                 ),
                               ),
                               const SizedBox(
                                 height: 10,
                               ),
-                              // (isPressed &&
-                              //         !sisData.hasData &&
-                              //         _formKey.currentState!.validate())
-                              //     ? const CircularProgressIndicator()
-                              //     :
-                              register
-                                  ? Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        NeumorphicButton(
-                                          style: NeumorphicStyle(
-                                              intensity: 0.5,
-                                              color: const Color(0x00c00000),
-                                              boxShape:
-                                                  NeumorphicBoxShape.roundRect(
-                                                      BorderRadius.circular(
-                                                          30))),
-                                          child: const Text(
-                                            "Register",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                                fontSize: 15,
-                                                fontFamily: 'Comfortaa'),
-                                          ),
-                                          onPressed: () async {
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  NeumorphicButton(
+                                    style: NeumorphicStyle(
+                                        intensity: 0.5,
+                                        color: const Color(0x00c00000),
+                                        boxShape: NeumorphicBoxShape.roundRect(
+                                            BorderRadius.circular(30))),
+                                    child: Text(
+                                      register ? "Register" : "Log in",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontFamily: 'Comfortaa'),
+                                    ),
+                                    onPressed: () async {
+                                      setState(() {
+                                        isPressed = true;
+                                      });
+                                      //_submit();
+                                      if (_formKey.currentState!.validate()) {
+                                        print(emailController.text +
+                                            " " +
+                                            pwdController.text);
+                                        if (register) {
+                                          await registerWithEmailPassword(
+                                            emailController.text,
+                                            pwdController.text,
+                                            nameController.text,
+                                          ).then((result) {
+                                            if (result != null) {
+                                              setState(() {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProctorHome(),
+                                                  ),
+                                                );
+                                              });
+                                              print(result);
+                                            }
+                                          }).catchError((error) {
+                                            print('Registration Error: $error');
+                                            setState(() {});
+                                          });
+                                        } else {
+                                          if (!fillForm) {
+                                            setState(() {
+                                              fillForm = true;
+                                              depthVal = -1 * depthVal;
+                                            });
+                                          } else {
                                             setState(() {
                                               isPressed = true;
                                             });
                                             //_submit();
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              print(emailController.text +
-                                                  " " +
-                                                  pwdController.text);
-                                              await registerWithEmailPassword(
-                                                emailController.text,
-                                                pwdController.text,
-                                                // TODO : add a name controller for the display name
-                                                "Nandan",
-                                              ).then((result) {
-                                                if (result != null) {
-                                                  setState(() {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProctorHome(),
-                                                      ),
-                                                    );
-                                                  });
-                                                  print(result);
-                                                }
-                                              }).catchError((error) {
-                                                print(
-                                                    'Registration Error: $error');
-                                                setState(() {
-                                                  // loginStatus =
-                                                  //     'Error occured while registering';
-                                                  // loginStringColor = Colors.red;
-                                                });
+                                          }
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            print(emailController.text +
+                                                " " +
+                                                pwdController.text);
+                                            await signInWithEmailPassword(
+                                                    emailController.text,
+                                                    pwdController.text)
+                                                .then((result) {
+                                              if (result != null) {
+                                                sisData.proctorAuth(true);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProctorHome(),
+                                                  ),
+                                                );
+                                                print(result);
+                                              }
+                                            }).catchError((error) {
+                                              print('Login Error: $error');
+                                              setState(() {
+                                                // loginStatus =
+                                                //     'Error occured while registering';
+                                                // loginStringColor = Colors.red;
                                               });
-                                            }
-
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //     builder: (context) => ProctorHome(),
-                                            //   ),
-                                            // );
-                                          },
-                                        ), //Register
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          "Already a user ?",
-                                          style: textStyle,
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        NeumorphicButton(
-                                          style: NeumorphicStyle(
-                                              // depth: depthVal,
-                                              intensity: 0.5,
-                                              color: const Color(0x00c00000),
-                                              boxShape:
-                                                  NeumorphicBoxShape.roundRect(
-                                                      BorderRadius.circular(
-                                                          30))),
-                                          child: const Text(
-                                            "Sign-in",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                                fontSize: 15,
-                                                fontFamily: 'Comfortaa'),
-                                          ),
-                                          onPressed: () async {
-                                            setState(() {
-                                              register = false;
                                             });
-                                          },
-                                        ) // Login
-                                      ],
-                                    )
-                                  : NeumorphicButton(
-                                      style: NeumorphicStyle(
-                                          intensity: 0.5,
-                                          color: const Color(0x00c00000),
-                                          boxShape:
-                                              NeumorphicBoxShape.roundRect(
-                                                  BorderRadius.circular(30))),
-                                      child: const Text(
-                                        "Login",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontFamily: 'Comfortaa'),
-                                      ),
-                                      onPressed: () async {
-                                        if (!fillForm) {
-                                          setState(() {
-                                            fillForm = true;
-                                            depthVal = -1 * depthVal;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            isPressed = true;
-                                          });
-                                          //_submit();
+                                          }
                                         }
-                                        if (_formKey.currentState!.validate()) {
-                                          print(emailController.text +
-                                              " " +
-                                              pwdController.text);
-                                          await signInWithEmailPassword(
-                                                  emailController.text,
-                                                  pwdController.text)
-                                              .then((result) {
-                                            if (result != null) {
-                                              sisData.proctorAuth(true);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProctorHome(),
-                                                ),
-                                              );
-                                              print(result);
-                                            }
-                                          }).catchError((error) {
-                                            print('Login Error: $error');
-                                            setState(() {
-                                              // loginStatus =
-                                              //     'Error occured while registering';
-                                              // loginStringColor = Colors.red;
-                                            });
-                                          });
-                                        }
-                                      },
+                                      }
+                                    },
+                                  ), //Register
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    register
+                                        ? "Already a user ?"
+                                        : "Dont have an account?",
+                                    style: textStyle,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  NeumorphicButton(
+                                    style: NeumorphicStyle(
+                                        // depth: depthVal,
+                                        intensity: 0.5,
+                                        color: const Color(0x00c00000),
+                                        boxShape: NeumorphicBoxShape.roundRect(
+                                            BorderRadius.circular(30))),
+                                    child: Text(
+                                      register ? "Sign-in" : "Register",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontFamily: 'Comfortaa'),
                                     ),
-
-                              // if (!sisData.isValidData)
-                              //   Text(
-                              //     sisData.errorMessage,
-                              //     textAlign: TextAlign.center,
-                              //     style: const TextStyle(
-                              //         color: Colors.red,
-                              //         fontSize: 10,
-                              //         fontFamily: 'Comfortaa'),
-                              //   )
+                                    onPressed: () async {
+                                      setState(() {
+                                        register = !register;
+                                      });
+                                    },
+                                  ) // Login
+                                ],
+                              )
                             ]),
                       ),
                     ),
