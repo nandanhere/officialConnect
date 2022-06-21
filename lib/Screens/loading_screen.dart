@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/proctor_home.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
+import 'package:official_connect/Widgets/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +24,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
   _navigateToUnifiedScreen() async {
     await Future.delayed(const Duration(milliseconds: 700), () async {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Unified()));
+        context,
+        MaterialPageRoute(
+          builder: (context) => Unified(),
+        ),
+      );
     });
   }
 
@@ -31,14 +36,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
     return Scaffold(
-      backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
-      body: const Center(
-        child: SpinKitSpinningLines(
-          itemCount: 4,
-          color: Colors.red,
-          size: 100.0,
-        ),
-      ),
-    );
+        backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
+        body: const LoadingIndicator());
   }
 }

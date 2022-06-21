@@ -7,7 +7,7 @@ import 'package:official_connect/Classes/attendance.dart';
 import 'package:official_connect/Classes/fees_data.dart';
 import 'package:official_connect/Classes/marks.dart';
 import 'package:official_connect/Classes/previous_result.dart';
-import 'package:official_connect/Classes/proctor_data.dart';
+import 'package:official_connect/Classes/sis_proctor_data.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -44,7 +44,7 @@ class SisData with ChangeNotifier {
   bool _darkMode = false;
   double _ver = 0.0;
   String _downloadLink = "";
-  ProctorData _proctorData = ProctorData([], "", "", "", "");
+  SisProctorData _proctorData = SisProctorData([], "", "", "", "");
   bool _proctorAlreadyLoggedIn = false;
   SisData() {
     // cleanData();
@@ -109,7 +109,7 @@ class SisData with ChangeNotifier {
     try {
       const debug = false;
       _usn = _data['usn'];
-      _proctorData = ProctorData.proctorData(_data['proctorship']);
+      _proctorData = SisProctorData.proctorData(_data['proctorship']);
       if (debug) debugPrint("Proctor data");
       _previousResults = PreviousResult.getList(_data['prevResults']);
       if (debug) debugPrint("Previous Results");
@@ -371,7 +371,7 @@ class SisData with ChangeNotifier {
     return _name;
   }
 
-  ProctorData get proctordata {
+  SisProctorData get proctordata {
     return _proctorData;
   }
 
