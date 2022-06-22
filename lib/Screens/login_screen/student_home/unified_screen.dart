@@ -1,7 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:official_connect/Providers/proctor_data.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/proctor_home.dart';
-import 'package:official_connect/Screens/login_screen/proctor_home/proctor_unified.dart';
 import 'package:official_connect/Screens/login_screen/student_home/events_screen/events_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/home_screen.dart';
 import 'package:provider/provider.dart';
@@ -23,12 +23,13 @@ class Unified extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
+    final proctorData = Provider.of<ProctorData>(context);
     if (((sisData.usn == "" && !sisData.hasData) || !sisData.isValidData) &&
-        !sisData.proctorLoggedIn) {
+        !proctorData.isLoggedIn) {
       return const LoginScreen();
     } else {
-      if (sisData.proctorLoggedIn) {
-        return ProctorUnified();
+      if (proctorData.isLoggedIn) {
+        return const ProctorHome();
       } else if (sisData.data.isEmpty || sisData.updating) {
         return Scaffold(
           backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,

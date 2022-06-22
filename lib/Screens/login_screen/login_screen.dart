@@ -319,10 +319,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   onPressed: () {
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ProctorLogin()));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ProctorLogin(),
+                                      ),
+                                    );
                                   },
                                 ),
                               //   // TODO :

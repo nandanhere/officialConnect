@@ -37,7 +37,9 @@ class ProctorHome extends StatelessWidget {
     final linearGradientBG = CustomTheme.linearGradientBG(context);
     final sisData = Provider.of<SisData>(context);
     final proctorData = Provider.of<ProctorData>(context);
+
     if (!proctorData.dataPresent) {
+      proctorData.getData();
       return const LoadingIndicator();
     }
     return Scaffold(
@@ -68,10 +70,9 @@ class ProctorHome extends StatelessWidget {
                             size: width * 0.05,
                           ),
                           style: neumorphicStyle,
-                          onPressed: () {
-                            signOut();
-                            sisData.cleanData();
-                            Navigator.pop(context);
+                          onPressed: () async {
+                            await signOut();
+                            proctorData.toggleLogin();
                           },
                         ),
                       ],

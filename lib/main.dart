@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:official_connect/Providers/proctor_data.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
@@ -33,8 +34,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (ctx) => SisData(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (ctx) => SisData()),
+        ChangeNotifierProvider(create: (ctx) => ProctorData())
+      ],
       child: MaterialApp(
         title: 'Connect',
         theme: ThemeData(
