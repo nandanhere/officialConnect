@@ -45,7 +45,6 @@ class SisData with ChangeNotifier {
   double _ver = 0.0;
   String _downloadLink = "";
   SisProctorData _proctorData = SisProctorData([], "", "", "", "");
-  bool _proctorAlreadyLoggedIn = false;
   SisData() {
     // cleanData();
     setup();
@@ -78,7 +77,6 @@ class SisData with ChangeNotifier {
 
   void setup() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _proctorAlreadyLoggedIn = prefs.getBool('auth') ?? false;
     if (prefs.containsKey('hasData')) {
       _hasData = prefs.getBool('hasData')!;
       var time = prefs.getInt('timeStamp');
@@ -286,7 +284,6 @@ class SisData with ChangeNotifier {
   void proctorAuth(bool val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('auth', val);
-    _proctorAlreadyLoggedIn = val;
   }
 
   set darkMode(bool val) {
@@ -396,13 +393,5 @@ class SisData with ChangeNotifier {
         usn +
         '.json' +
         "***REMOVED***";
-  }
-
-  bool get proctorLoggedIn {
-    return _proctorAlreadyLoggedIn;
-  }
-
-  set proctorLoggedIn(value) {
-    _proctorAlreadyLoggedIn = value;
   }
 }

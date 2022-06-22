@@ -6,16 +6,22 @@ import 'package:http/http.dart' as http;
 
 class ProctorData with ChangeNotifier {
   bool _dataPresent = false;
+  bool _isLoggedIn = false;
   List _requests = [];
   List _messages = [];
   List _enrolled = [];
   String _name = "";
   String _email = "";
+
   ProctorData() {
     getData();
   }
+
   void getData() async {
     final auth = FirebaseAuth.instance.currentUser;
+    if (auth != null) {
+      _isLoggedIn = true;
+    }
     final url = Uri.parse(
         "https://msrit-student-proctor-api.herokuapp.com/get_proctor_details");
     final bod = {"proctor_email": auth!.email};
@@ -104,6 +110,10 @@ class ProctorData with ChangeNotifier {
     return _dataPresent;
   }
 
+  bool get isLoggedIn {
+    return _isLoggedIn;
+  }
+
   List get messages {
     return _messages;
   }
@@ -114,5 +124,15 @@ class ProctorData with ChangeNotifier {
 
   List get requests {
     return _requests;
+  }
+
+  void toggleLogin() {
+    final auth = FirebaseAuth.instance.currentUser;
+    if (auth != null) {
+      _isLoggedIn = true;
+    } else {
+      _isLoggedIn = false;
+    }
+    notifyListeners();
   }
 }
