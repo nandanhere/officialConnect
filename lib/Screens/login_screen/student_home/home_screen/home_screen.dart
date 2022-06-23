@@ -4,6 +4,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/Proctor_messages_card.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/fees_card.dart';
+import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/new_proctor_messages_card%20copy.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import "dart:math";
@@ -37,7 +38,7 @@ class HomeScreen extends StatelessWidget {
     final subtitle = CustomTheme.buttonSubtitle(context);
     final emoji = DummyData.emojis[Random().nextInt(DummyData.emojis.length)];
     final sisData = Provider.of<SisData>(context);
-
+    sisData.getProctorMessages();
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: RefreshIndicator(
@@ -212,13 +213,41 @@ class HomeScreen extends StatelessWidget {
                             padding:
                                 EdgeInsets.symmetric(vertical: height * 0.02),
                             child: Center(
-                              child: AutoSizeText(
-                                "Proctor Announcements",
-                                maxLines: 1,
-                                style: buttonTrailing,
+                              child: Row(
+                                children: [
+                                  AutoSizeText(
+                                    "Proctor Announcements",
+                                    maxLines: 1,
+                                    style: buttonTrailing,
+                                  ),
+                                  IconButton(
+                                    icon: Icon(sisData.proctorEmail == ""
+                                        ? Icons.app_registration
+                                        : Icons.refresh),
+                                    onPressed: () {
+                                      if (sisData.proctorEmail == "") {
+                                        // show card for registration
+                                      } else {
+                                        sisData.getProctorMessages();
+                                      }
+                                    },
+                                  )
+                                ],
                               ),
                             ),
                           ),
+                          if (sisData.proctorEmail != "")
+                            ...sisData.proctorMessages
+                                .map((e) => NewProctorMessagesCard(
+                                      height: height,
+                                      width: width,
+                                      title: title,
+                                      subtitle: subtitle,
+                                      neumorphicStyle: neumorphicStyle,
+                                      buttonTrailing: buttonTrailing,
+                                      isDark: sisData.darkMode,
+                                      messageData: e,
+                                    )),
                           ...sisData.proctordata.messages
                               .map(
                                 (e) => ProctorMessagesCard(

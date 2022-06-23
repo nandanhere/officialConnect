@@ -1,15 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/Themes.dart';
 import 'package:official_connect/Providers/proctor_data.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/proctees_card.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/requests_screen.dart';
+import 'package:official_connect/Screens/login_screen/proctor_home/sent_messages_screen.dart';
 import 'package:official_connect/Utils/authentication.dart';
 import 'package:official_connect/Widgets/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:flutter/foundation.dart';
 
 // To take care of :
 // When you are already logged in , and log out , it should show login screen properly
@@ -27,7 +26,6 @@ class ProctorHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = FirebaseAuth.instance;
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
@@ -131,18 +129,33 @@ class ProctorHome extends StatelessWidget {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  ChangeNotifierProvider(
-                                create: (context) => proctorData,
-                                builder: (context, child) => RequestsScreen(),
-                              ),
-                            ),
+                                builder: (BuildContext context) =>
+                                    RequestsScreen()),
                           );
                           // Navigator.of(context).push(MaterialPageRoute(
                           //     builder: (context) => RequestsScreen()));
                         },
                         child: Text(
                           "Tap here to see requests",
+                          style: CustomTheme.textStyle(context),
+                        ),
+                      ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    if (proctorData.messages.isNotEmpty)
+                      NeumorphicButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SentMessagesScreen()),
+                          );
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (context) => RequestsScreen()));
+                        },
+                        child: Text(
+                          "Tap here to see your sent messages",
                           style: CustomTheme.textStyle(context),
                         ),
                       ),
