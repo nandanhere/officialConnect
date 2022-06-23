@@ -1,8 +1,11 @@
 // ignore_for_file: dead_code
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:official_connect/Classes/attendance.dart';
 import 'package:official_connect/Classes/fees_data.dart';
 import 'package:official_connect/Classes/marks.dart';
@@ -21,6 +24,7 @@ class SisData with ChangeNotifier {
   List<FeesData> _fees = [];
   List<Marks> _marks = [];
   List<PreviousResult> _previousResults = [];
+  List<Map> _proctorMessages = [];
   bool _hasData = false;
   bool isValidData = true;
   bool needToUpdate = false;
@@ -43,6 +47,7 @@ class SisData with ChangeNotifier {
   String _firebaseMessagingToken = "";
   bool _darkMode = false;
   double _ver = 0.0;
+  String _proctorEmail = "";
   String _downloadLink = "";
   SisProctorData _proctorData = SisProctorData([], "", "", "", "");
   SisData() {
@@ -82,6 +87,8 @@ class SisData with ChangeNotifier {
       var time = prefs.getInt('timeStamp');
       _usn = prefs.getString('usn') ?? "";
       _dob = prefs.getString('dob') ?? "";
+      _proctorEmail = prefs.getString('proctorEmail') ?? "";
+
       _darkMode = prefs.getBool('darkMode') ?? false;
       debugPrint("data was there before");
       needToUpdate = DateTime.fromMillisecondsSinceEpoch(time!)
@@ -186,24 +193,6 @@ class SisData with ChangeNotifier {
     }
   }
 
-  void cleanData() async {
-    if (!kIsWeb) {
-      FirebaseMessaging.instance.deleteToken();
-      final url = realtimeDatabaseUrl(_usn);
-      http.delete(Uri.parse(url));
-    }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    _usn = "";
-    _data = {};
-    isValidData = true;
-    _hasData = false;
-    _usn = "";
-    _darkMode = false;
-    _dob = "";
-    notifyListeners();
-  }
-
   Future<void> getData(String usn, String dob, bool update) async {
     const debug = false;
     _hasData = false;
@@ -266,6 +255,51 @@ class SisData with ChangeNotifier {
       setVariables();
     }
     notifyListeners();
+  }
+
+  void cleanData() async {
+    if (!kIsWeb) {
+      FirebaseMessaging.instance.deleteToken();
+      final url = realtimeDatabaseUrl(_usn);
+      http.delete(Uri.parse(url));
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    _usn = "";
+    _data = {};
+    isValidData = true;
+    _hasData = false;
+    _usn = "";
+    _darkMode = false;
+    _dob = "";
+    notifyListeners();
+  }
+
+  void getProctorMessages() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (!result) return;
+    final url = Uri.parse(
+        "https://msrit-student-proctor-api.herokuapp.com/get_messages");
+    final bod = {"usn": _usn};
+    final headers = {'Content-Type': 'application/json'};
+    final encoding = Encoding.getByName("utf-8");
+
+    http.Response resp = await http.post(
+      url,
+      headers: headers,
+      encoding: encoding,
+      body: jsonEncode(bod),
+    );
+    print(resp.body);
+    if (resp.body.isNotEmpty) {
+      final data = jsonDecode(resp.body);
+      if (data['message'] == "SUCCESS") {
+        _proctorEmail = data["proctor_email"];
+        _proctorMessages = data['messages'];
+      }
+
+      notifyListeners();
+    }
   }
 
   Map<String, dynamic> get data {
@@ -386,6 +420,14 @@ class SisData with ChangeNotifier {
 
   String get studentImage {
     return _studentImage;
+  }
+
+  String get proctorEmail {
+    return _proctorEmail;
+  }
+
+  List<Map> get proctorMessages {
+    return _proctorMessages;
   }
 
   String realtimeDatabaseUrl(String usn) {

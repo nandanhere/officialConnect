@@ -1,32 +1,34 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/Themes.dart';
 import 'package:official_connect/Providers/proctor_data.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
 
-class SendMessageScreen extends StatefulWidget {
-  final List<String> usns;
-  const SendMessageScreen({Key? key, required this.usns}) : super(key: key);
+class ViewSentMessageScreen extends StatefulWidget {
+  final Map messageData;
+  const ViewSentMessageScreen({
+    Key? key,
+    required this.messageData,
+  }) : super(key: key);
 
   @override
-  State<SendMessageScreen> createState() => _SendMessageScreenState();
+  State<ViewSentMessageScreen> createState() => _ViewSentMessageScreenState();
 }
 
-class _SendMessageScreenState extends State<SendMessageScreen> {
+class _ViewSentMessageScreenState extends State<ViewSentMessageScreen> {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-
     final proctorData = Provider.of<ProctorData>(context);
 
+    final linearGradient = CustomTheme.linearGradient(context);
+    final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
 
-    final neumorphicStyle = CustomTheme.neumorphicStyle(context);
-    final linearGradient = CustomTheme.linearGradient(context);
-    final sisData = Provider.of<SisData>(context);
     TextEditingController messageController = TextEditingController();
     TextEditingController titleController = TextEditingController();
 
@@ -34,43 +36,26 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
       style: CustomTheme.textStyle(context).copyWith(fontSize: width * 0.05),
       key: const ValueKey('title'),
       controller: titleController,
+      enabled: false,
       minLines: 5,
       maxLines: 10,
-      decoration: InputDecoration(
-        labelText: "Enter title",
-        labelStyle: CustomTheme.textStyle(context).copyWith(),
-      ),
-      validator: (value) {
-        if (value!.isEmpty) {
-          return "title cannot be empty";
-        }
-        return null;
-      },
     );
+    titleController.text = widget.messageData['message_title'];
+    messageController.text = widget.messageData['message_body'];
     TextFormField messageForm = TextFormField(
       style: CustomTheme.textStyle(context).copyWith(fontSize: width * 0.05),
       key: const ValueKey('message'),
       controller: messageController,
+      enabled: false,
       minLines: 5,
       maxLines: 10,
-      decoration: InputDecoration(
-        labelText: "Enter message",
-        labelStyle: CustomTheme.textStyle(context).copyWith(),
-      ),
-      validator: (value) {
-        if (value!.isEmpty) {
-          return "Message cannot be empty";
-        }
-        return null;
-      },
     );
     return Scaffold(
       floatingActionButton: NeumorphicFloatingActionButton(
-        child: Icon(Icons.send),
+        child: const Icon(Icons.delete_forever),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            proctorData.sendMessage(widget.usns, messageController.text,
-                titleController.text, context);
+            proctorData.deleteMessage(widget.messageData, context);
           }
         },
       ),
@@ -91,7 +76,6 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
                   NeumorphicButton(
                     child: Icon(
                       Icons.navigate_before,
-                      color: sisData.darkMode ? Colors.white : Colors.black,
                       size: width * 0.05,
                     ),
                     style: neumorphicStyle,
@@ -117,11 +101,11 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
                   scrollDirection: Axis.horizontal,
                   children: [
                     AutoSizeText(
-                      "Sending to:",
+                      "Sent:",
                       maxLines: 1,
                       style: CustomTheme.textStyle(context),
                     ),
-                    ...(widget.usns)
+                    ...(widget.messageData['usn_list'])
                         .map((e) => Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Neumorphic(
