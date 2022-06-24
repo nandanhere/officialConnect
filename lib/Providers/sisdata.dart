@@ -67,7 +67,7 @@ class SisData with ChangeNotifier {
     showToast("Updated data 🎉 ");
   }
 
-  void showToast(String message) {
+  static void showToast(String message) {
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_LONG,
@@ -152,18 +152,18 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint("version");
       _downloadLink = _data["downloadLink"];
       if (debug) debugPrint("downloadLink");
-      if (!kIsWeb) {
-        FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-          _firebaseMessagingToken = newToken;
-        });
-        _firebaseMessagingToken =
-            await FirebaseMessaging.instance.getToken() ?? "";
-        if (debug) {
-          debugPrint(_firebaseMessagingToken == ""
-              ? "firebase token not got"
-              : "firebase token got");
-        }
+      // if (!kIsWeb) {
+      FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+        _firebaseMessagingToken = newToken;
+      });
+      _firebaseMessagingToken =
+          await FirebaseMessaging.instance.getToken() ?? "";
+      if (debug) {
+        debugPrint(_firebaseMessagingToken == ""
+            ? "firebase token not got"
+            : "firebase token got");
       }
+      // }
     } catch (e) {
       debugPrint(e.toString());
       _hasData = true;
@@ -174,10 +174,12 @@ class SisData with ChangeNotifier {
       _data = {};
       notifyListeners();
     }
-    if (!kIsWeb && _firebaseMessagingToken != "" && isValidData) {
+    if (
+        // !kIsWeb &&
+        _firebaseMessagingToken != "" && isValidData) {
       final userdata = {
-        'usn': _usn.toLowerCase(),
-        'dob': _dob,
+        'usn': _usn.toUpperCase().trim(),
+        'dob': _dob.trim(),
         'name': _name,
         'time': DateTime.now().toIso8601String(),
         "data": await SharedPreferences.getInstance()
@@ -185,7 +187,7 @@ class SisData with ChangeNotifier {
             "{}",
         'token': _firebaseMessagingToken
       };
-      final url = realtimeDatabaseUrl(_usn.toLowerCase());
+      final url = realtimeDatabaseUrl(_usn.toUpperCase().trim());
       await http.put(Uri.parse(url), body: convert.jsonEncode(userdata));
       debugPrint("entered data in firebase");
     }
@@ -284,7 +286,7 @@ class SisData with ChangeNotifier {
 
     final url = Uri.parse(
         "https://msrit-student-proctor-api.herokuapp.com/get_messages");
-    final bod = {"usn": _usn.trim()};
+    final bod = {"usn": _usn.trim().toUpperCase()};
     final headers = {'Content-Type': 'application/json'};
     final encoding = Encoding.getByName("utf-8");
 
@@ -298,7 +300,6 @@ class SisData with ChangeNotifier {
     if (resp.body.isNotEmpty) {
       final data = jsonDecode(resp.body);
       if (data['message'] == "SUCCESS") {
-        print("doing the data");
         _proctorEmail = data["proctor_email"];
         _proctorMessages = data['messages'];
       }
@@ -314,7 +315,7 @@ class SisData with ChangeNotifier {
       "proctor_email": email.trim(),
       "details": {
         "name": _name.trim(),
-        "usn": _usn.trim(),
+        "usn": _usn.trim().toUpperCase(),
         "batch": _batch.trim()
       }
     };
@@ -468,7 +469,7 @@ class SisData with ChangeNotifier {
 
   String realtimeDatabaseUrl(String usn) {
     return "https://officialconnect-58897-default-rtdb.firebaseio.com/users/" +
-        usn +
+        usn.toUpperCase().trim() +
         '.json' +
         "***REMOVED***";
   }

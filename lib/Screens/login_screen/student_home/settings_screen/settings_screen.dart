@@ -8,7 +8,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ota_update/ota_update.dart';
 
-const double version = 0.3;
+const double version = 0.4;
 
 class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);

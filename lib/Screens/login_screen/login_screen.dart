@@ -83,10 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
         });
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
-      Provider.of<SisData>(context, listen: false)
+      await Provider.of<SisData>(context, listen: false)
           .getData(usnController.text.toUpperCase(), dobController.text, false);
       // print(usnController.text + " " + dobController.text);
     }
@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
             body: SingleChildScrollView(
               child: Stack(
                 children: [
-                  if (fillForm)
+                  if (fillForm && !isPressed)
                     Positioned(
                       top: height * 0.07,
                       left: width * 0.04,
@@ -186,7 +186,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 BorderRadius.circular(30))),
                         child: const Icon(Icons.chevron_left),
                         onPressed: () {
-                          print("pressed");
                           setState(() {
                             fillForm = false;
                           });
@@ -284,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   fontSize: 15,
                                                   fontFamily: 'Comfortaa'),
                                             ),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         if (!fillForm) {
                                           setState(() {
                                             fillForm = true;
@@ -294,7 +293,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                           setState(() {
                                             isPressed = true;
                                           });
-                                          _submit();
+                                          await _submit();
+                                          setState(() {
+                                            isPressed = false;
+                                          });
                                         }
                                       },
                                     ),

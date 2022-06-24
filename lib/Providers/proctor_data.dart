@@ -36,7 +36,7 @@ class ProctorData with ChangeNotifier {
     if (_email == "") return;
     final url = Uri.parse(
         "https://msrit-student-proctor-api.herokuapp.com/get_proctor_details");
-    final bod = {"proctor_email": _email};
+    final bod = {"proctor_email": _email.toLowerCase().trim()};
     final headers = {'Content-Type': 'application/json'};
     final encoding = Encoding.getByName("utf-8");
 
@@ -76,7 +76,10 @@ class ProctorData with ChangeNotifier {
   void acceptProctee(Map studDetails) async {
     final url = Uri.parse(
         "https://msrit-student-proctor-api.herokuapp.com/accept_proctee");
-    final bod = {"proctor_email": _email, "usn": studDetails["usn"]};
+    final bod = {
+      "proctor_email": _email.trim().toLowerCase(),
+      "usn": studDetails["usn"].toString().toUpperCase().trim()
+    };
     final headers = {'Content-Type': 'application/json'};
     final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
@@ -102,7 +105,10 @@ class ProctorData with ChangeNotifier {
   void rejectProctee(Map studDetails) async {
     final url = Uri.parse(
         "https://msrit-student-proctor-api.herokuapp.com/reject_proctee");
-    final bod = {"proctor_email": _email, "usn": studDetails["usn"]};
+    final bod = {
+      "proctor_email": _email.toLowerCase().trim(),
+      "usn": studDetails["usn"].toString().toUpperCase().trim()
+    };
     final headers = {'Content-Type': 'application/json'};
     final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
@@ -128,7 +134,7 @@ class ProctorData with ChangeNotifier {
     final url = Uri.parse(
         "https://msrit-student-proctor-api.herokuapp.com/send_message");
     final bod = {
-      "proctor_email": _email,
+      "proctor_email": _email.toLowerCase().trim(),
       "message_title": title,
       "proctor_name": _name,
       "message_body": message,
