@@ -64,13 +64,13 @@ class _ProctorLoginState extends State<ProctorLogin> {
       decoration: InputDecoration(labelText: "Email", labelStyle: textStyle),
       // TODO : enable this when production
       validator: (value) {
-        // if (!RegExp(r"[a-zA-Z0-9]+@msrit\.edu").hasMatch(value!) &&
-        //     value != "dummy") {
-        //   setState(() {
-        //     isPressed = false;
-        //   });
-        //   return "Please Enter a valid Email like teacher@msrit.edu";
-        // }
+        if (!RegExp(r"[a-zA-Z0-9]+@msrit\.edu").hasMatch(value!) &&
+            value != "dummy") {
+          setState(() {
+            isPressed = false;
+          });
+          return "Please Enter a valid Email like teacher@msrit.edu";
+        }
         return null;
       },
     );
@@ -139,8 +139,8 @@ class _ProctorLoginState extends State<ProctorLogin> {
           .join();
     }
 
-    emailController.text = "nandan" + "@msrit.edu";
-    pwdController.text = "password123";
+    // emailController.text = "nandan" + "@msrit.edu";
+    // pwdController.text = "password123";
     return Scaffold(
       backgroundColor: NeumorphicColors.background,
       body: SingleChildScrollView(
