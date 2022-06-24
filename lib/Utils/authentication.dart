@@ -32,7 +32,10 @@ Future<User?> registerWithEmailPassword(
       String userEmail = user.email!;
       print('updating user info');
       await user.updateDisplayName(name);
-      final bod = {"proctor_email": userEmail, "proctor_name": name};
+      final bod = {
+        "proctor_email": userEmail.trim(),
+        "proctor_name": name.trim()
+      };
       final headers = {'Content-Type': 'application/json'};
       final encoding = Encoding.getByName("utf-8");
 
