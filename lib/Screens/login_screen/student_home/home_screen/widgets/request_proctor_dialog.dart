@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-class RequestProctorDialog extends StatelessWidget {
+class RequestProctorDialog extends StatefulWidget {
   final height, width;
   const RequestProctorDialog({
     Key? key,
@@ -16,13 +16,20 @@ class RequestProctorDialog extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<RequestProctorDialog> createState() => _RequestProctorDialogState();
+}
+
+class _RequestProctorDialogState extends State<RequestProctorDialog> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
-    final _formKey = GlobalKey<FormState>();
 
     TextEditingController messageController = TextEditingController();
     TextFormField messageForm = TextFormField(
-      style: CustomTheme.textStyle(context).copyWith(fontSize: width * 0.05),
+      style: CustomTheme.textStyle(context)
+          .copyWith(fontSize: widget.width * 0.05),
       key: const ValueKey('message'),
       controller: messageController,
       maxLines: 2,

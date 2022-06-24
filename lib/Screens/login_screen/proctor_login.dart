@@ -146,22 +146,23 @@ class _ProctorLoginState extends State<ProctorLogin> {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            Positioned(
-              top: height * 0.07,
-              left: width * 0.04,
-              child: NeumorphicButton(
-                padding: EdgeInsets.all(width * 0.02),
-                style: NeumorphicStyle(
-                    intensity: 0.5,
-                    color: const Color(0x00c00000),
-                    boxShape: NeumorphicBoxShape.roundRect(
-                        BorderRadius.circular(30))),
-                child: const Icon(Icons.chevron_left),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+            if (!isPressed)
+              Positioned(
+                top: height * 0.07,
+                left: width * 0.04,
+                child: NeumorphicButton(
+                  padding: EdgeInsets.all(width * 0.02),
+                  style: NeumorphicStyle(
+                      intensity: 0.5,
+                      color: const Color(0x00c00000),
+                      boxShape: NeumorphicBoxShape.roundRect(
+                          BorderRadius.circular(30))),
+                  child: const Icon(Icons.chevron_left),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-            ),
             Positioned(
               child: Padding(
                 padding: const EdgeInsets.only(top: 60.0),
@@ -216,117 +217,126 @@ class _ProctorLoginState extends State<ProctorLogin> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            NeumorphicButton(
-                              style: NeumorphicStyle(
-                                  intensity: 0.5,
-                                  color: const Color(0x00c00000),
-                                  boxShape: NeumorphicBoxShape.roundRect(
-                                      BorderRadius.circular(30))),
-                              child: Text(
-                                register ? "Register" : "Log in",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontFamily: 'Comfortaa'),
-                              ),
-                              onPressed: () async {
-                                setState(() {
-                                  isPressed = true;
-                                });
-                                //_submit();
-                                if (_formKey.currentState!.validate()) {
-                                  print(emailController.text +
-                                      " " +
-                                      pwdController.text);
-                                  if (register) {
-                                    await registerWithEmailPassword(
-                                      emailController.text,
-                                      pwdController.text,
-                                      nameController.text,
-                                    ).then((result) {
-                                      if (result != null) {
-                                        proctorData.toggleLogin();
-                                        Navigator.of(context).pop();
-                                      }
-                                    }).catchError((error) {
-                                      print('Registration Error: $error');
-                                    });
-                                  } else {
-                                    if (!fillForm) {
-                                      setState(() {
-                                        fillForm = true;
-                                        depthVal = -1 * depthVal;
-                                      });
-                                    } else {
+                        isPressed
+                            ? const CircularProgressIndicator()
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  NeumorphicButton(
+                                    style: NeumorphicStyle(
+                                        intensity: 0.5,
+                                        color: const Color(0x00c00000),
+                                        boxShape: NeumorphicBoxShape.roundRect(
+                                            BorderRadius.circular(30))),
+                                    child: Text(
+                                      register ? "Register" : "Log in",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontFamily: 'Comfortaa'),
+                                    ),
+                                    onPressed: () async {
                                       setState(() {
                                         isPressed = true;
                                       });
                                       //_submit();
-                                    }
-                                    if (_formKey.currentState!.validate()) {
-                                      print(emailController.text +
-                                          " " +
-                                          pwdController.text);
-                                      await signInWithEmailPassword(
-                                              emailController.text,
-                                              pwdController.text)
-                                          .then((result) {
-                                        if (result != null) {
-                                          proctorData.toggleLogin();
-                                          Navigator.pop(context);
+                                      if (_formKey.currentState!.validate()) {
+                                        debugPrint(emailController.text +
+                                            " " +
+                                            pwdController.text);
+                                        if (register) {
+                                          await registerWithEmailPassword(
+                                            emailController.text,
+                                            pwdController.text,
+                                            nameController.text,
+                                          ).then((result) {
+                                            if (result != null) {
+                                              proctorData.toggleLogin();
+                                              Navigator.of(context).pop();
+                                            }
+                                          }).catchError((error) {
+                                            debugPrint(
+                                                'Registration Error: $error');
+                                          });
+                                        } else {
+                                          if (!fillForm) {
+                                            setState(() {
+                                              fillForm = true;
+                                              depthVal = -1 * depthVal;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              isPressed = true;
+                                            });
+                                            //_submit();
+                                          }
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            debugPrint(emailController.text +
+                                                " " +
+                                                pwdController.text);
+                                            await signInWithEmailPassword(
+                                                    emailController.text,
+                                                    pwdController.text)
+                                                .then((result) {
+                                              if (result != null) {
+                                                proctorData.toggleLogin();
+                                                Navigator.pop(context);
+                                              }
+                                            }).catchError((error) {
+                                              SisData.showToast(
+                                                  'Login Error: $error');
+                                              setState(() {
+                                                isPressed = false;
+                                                // loginStatus =
+                                                //     'Error occured while registering';
+                                                // loginStringColor = Colors.red;
+                                              });
+                                            });
+                                          }
                                         }
-                                      }).catchError((error) {
-                                        print('Login Error: $error');
-                                        setState(() {
-                                          // loginStatus =
-                                          //     'Error occured while registering';
-                                          // loginStringColor = Colors.red;
-                                        });
+                                      }
+                                      setState(() {
+                                        isPressed = false;
                                       });
-                                    }
-                                  }
-                                }
-                              },
-                            ), //Register
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              register
-                                  ? "Already a user ?"
-                                  : "Dont have an account?",
-                              style: textStyle,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            NeumorphicButton(
-                              style: NeumorphicStyle(
-                                  // depth: depthVal,
-                                  intensity: 0.5,
-                                  color: const Color(0x00c00000),
-                                  boxShape: NeumorphicBoxShape.roundRect(
-                                      BorderRadius.circular(30))),
-                              child: Text(
-                                register ? "Sign-in" : "Register",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontFamily: 'Comfortaa'),
-                              ),
-                              onPressed: () async {
-                                setState(() {
-                                  register = !register;
-                                });
-                              },
-                            ) // Login
-                          ],
-                        )
+                                    },
+                                  ), //Register
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    register
+                                        ? "Already a user ?"
+                                        : "Dont have an account?",
+                                    style: textStyle,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  NeumorphicButton(
+                                    style: NeumorphicStyle(
+                                        // depth: depthVal,
+                                        intensity: 0.5,
+                                        color: const Color(0x00c00000),
+                                        boxShape: NeumorphicBoxShape.roundRect(
+                                            BorderRadius.circular(30))),
+                                    child: Text(
+                                      register ? "Sign-in" : "Register",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontFamily: 'Comfortaa'),
+                                    ),
+                                    onPressed: () async {
+                                      setState(() {
+                                        register = !register;
+                                      });
+                                    },
+                                  ) // Login
+                                ],
+                              )
                       ]),
                 ),
               ),

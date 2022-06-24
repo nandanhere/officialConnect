@@ -56,9 +56,9 @@ class Unified extends StatelessWidget {
                           controller: _myCont,
                           children: [
                             const EventsScreen(),
-                            const AttendanceInfo(),
-                            const HomeScreen(),
                             ResultsScreen(seeOpt),
+                            const HomeScreen(),
+                            const AttendanceInfo(),
                             const SettingsInfo()
                           ],
                           onPageChanged: (page) {
@@ -98,7 +98,7 @@ class Unified extends StatelessWidget {
                             : NeumorphicColors.background,
                       ),
                       BottomNavigationBarItem(
-                        icon: listeningValue == 1
+                        icon: listeningValue == 3
                             ? const FaIcon(FontAwesomeIcons.solidCalendar)
                             : const FaIcon(FontAwesomeIcons.calendar),
                         label: "",
@@ -122,7 +122,7 @@ class Unified extends StatelessWidget {
                             : NeumorphicColors.background,
                       ),
                       BottomNavigationBarItem(
-                        icon: listeningValue == 3
+                        icon: listeningValue == 1
                             ? const FaIcon(
                                 Icons.assessment,
                                 size: 30,

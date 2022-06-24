@@ -22,9 +22,15 @@ extension StringCasingExtension on String {
       .join('\n');
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isLoadingMessages = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -48,23 +54,9 @@ class HomeScreen extends StatelessWidget {
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
         onRefresh: () async {
-          Fluttertoast.showToast(
-              msg: "Updating data ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
+          SisData.showToast("Updating data ");
           await sisData.getData("", "", true);
-          Fluttertoast.showToast(
-              msg: "Updated data 🎉 ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
+          SisData.showToast("Updated data 🎉 ");
         },
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -213,33 +205,41 @@ class HomeScreen extends StatelessWidget {
                             padding:
                                 EdgeInsets.symmetric(vertical: height * 0.02),
                             child: Center(
-                              child: Row(
-                                children: [
-                                  AutoSizeText(
-                                    "Proctor Announcements",
-                                    maxLines: 1,
-                                    style: buttonTrailing,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(sisData.proctorEmail == ""
-                                        ? Icons.app_registration
-                                        : Icons.refresh),
-                                    onPressed: () {
-                                      if (sisData.proctorEmail == "") {
-                                        showDialog(
-                                            context: context,
-                                            builder: (ctx) {
-                                              return RequestProctorDialog(
-                                                height: height,
-                                                width: width,
-                                              );
+                              child: ListTile(
+                                trailing: isLoadingMessages
+                                    ? const CircularProgressIndicator()
+                                    : IconButton(
+                                        icon: Icon(sisData.proctorEmail == ""
+                                            ? Icons.app_registration
+                                            : Icons.refresh),
+                                        onPressed: () async {
+                                          if (sisData.proctorEmail == "") {
+                                            showDialog(
+                                                context: context,
+                                                builder: (ctx) {
+                                                  return RequestProctorDialog(
+                                                    height: height,
+                                                    width: width,
+                                                  );
+                                                });
+                                          } else {
+                                            setState(() {
+                                              isLoadingMessages = true;
                                             });
-                                      } else {
-                                        sisData.getProctorMessages();
-                                      }
-                                    },
-                                  )
-                                ],
+                                            await sisData.getProctorMessages();
+                                            setState(() {
+                                              isLoadingMessages = false;
+                                            });
+                                            SisData.showToast(
+                                                "Proctor messages recieved!");
+                                          }
+                                        },
+                                      ),
+                                title: AutoSizeText(
+                                  "Proctor Announcements",
+                                  maxLines: 1,
+                                  style: buttonTrailing,
+                                ),
                               ),
                             ),
                           ),

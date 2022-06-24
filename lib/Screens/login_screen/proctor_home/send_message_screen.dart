@@ -14,10 +14,10 @@ class SendMessageScreen extends StatefulWidget {
 }
 
 class _SendMessageScreenState extends State<SendMessageScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-
     final proctorData = Provider.of<ProctorData>(context);
 
     final size = MediaQuery.of(context).size;

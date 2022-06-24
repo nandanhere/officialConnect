@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:official_connect/Providers/sisdata.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +20,7 @@ Future<User?> registerWithEmailPassword(
 
   try {
     UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: email,
+      email: email.toLowerCase().trim(),
       password: password,
     );
 
@@ -77,9 +79,9 @@ Future<User?> signInWithEmailPassword(String email, String password) async {
     }
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
-      print('No user found for that email.');
+      SisData.showToast('No user found for that email.');
     } else if (e.code == 'wrong-password') {
-      print('Wrong password provided.');
+      SisData.showToast('Wrong password provided.');
     }
   }
 
@@ -116,7 +118,7 @@ Future<String> signInWithGoogle() async {
 
     user = userCredential.user;
   } catch (e) {
-    print(e);
+    debugPrint(e.toString());
   }
 
   if (user != null) {
