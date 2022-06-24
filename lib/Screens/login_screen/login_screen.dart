@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       top: height * 0.07,
                       left: width * 0.04,
                       child: NeumorphicButton(
-                        padding: EdgeInsets.all(width * 0.02),
+                        padding: EdgeInsets.all(width * 0.03),
                         style: NeumorphicStyle(
                             intensity: 0.5,
                             color: const Color(0x00c00000),
@@ -186,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 BorderRadius.circular(30))),
                         child: const Icon(Icons.chevron_left),
                         onPressed: () {
+                          print("pressed");
                           setState(() {
                             fillForm = false;
                           });
