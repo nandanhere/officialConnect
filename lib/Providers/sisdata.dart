@@ -24,7 +24,7 @@ class SisData with ChangeNotifier {
   List<FeesData> _fees = [];
   List<Marks> _marks = [];
   List<PreviousResult> _previousResults = [];
-  List<Map> _proctorMessages = [];
+  List<dynamic> _proctorMessages = [];
   bool _hasData = false;
   bool isValidData = true;
   bool needToUpdate = false;
@@ -58,20 +58,18 @@ class SisData with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     debugPrint("updating");
-    Fluttertoast.showToast(
-        msg: "Updating data ",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: const Color(0xffba3237),
-        textColor: Colors.white,
-        fontSize: 16.0);
+    showToast("Updating Data");
+
     await prefs.setBool('hasData', false);
     await getData("", "", true);
     await setVariables();
     notifyListeners();
+    showToast("Updated data 🎉 ");
+  }
+
+  void showToast(String message) {
     Fluttertoast.showToast(
-        msg: "Updated data 🎉 ",
+        msg: message,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -103,7 +101,7 @@ class SisData with ChangeNotifier {
         update();
       }
       await setVariables();
-
+      await getProctorMessages();
       notifyListeners();
     }
   }
@@ -235,6 +233,7 @@ class SisData with ChangeNotifier {
             if (usn != "" && dob != "") {
               _usn = usn;
               _dob = dob;
+              await getProctorMessages();
             }
           }
         }
@@ -275,12 +274,17 @@ class SisData with ChangeNotifier {
     notifyListeners();
   }
 
-  void getProctorMessages() async {
-    bool result = await InternetConnectionChecker().hasConnection;
-    if (!result) return;
+  Future<void> getProctorMessages() async {
+    // print("usn is " + _usn);
+    await Future.delayed(Duration(seconds: 4));
+    if (!kIsWeb) {
+      bool result = await InternetConnectionChecker().hasConnection;
+      if (!result) return;
+    }
+
     final url = Uri.parse(
         "https://msrit-student-proctor-api.herokuapp.com/get_messages");
-    final bod = {"usn": _usn};
+    final bod = {"usn": _usn.trim()};
     final headers = {'Content-Type': 'application/json'};
     final encoding = Encoding.getByName("utf-8");
 
@@ -290,12 +294,44 @@ class SisData with ChangeNotifier {
       encoding: encoding,
       body: jsonEncode(bod),
     );
-    print(resp.body);
+    debugPrint(resp.body);
     if (resp.body.isNotEmpty) {
       final data = jsonDecode(resp.body);
       if (data['message'] == "SUCCESS") {
+        print("doing the data");
         _proctorEmail = data["proctor_email"];
         _proctorMessages = data['messages'];
+      }
+
+      notifyListeners();
+    }
+  }
+
+  Future<void> requestProctor(String email) async {
+    final url = Uri.parse(
+        "https://msrit-student-proctor-api.herokuapp.com/request_proctor");
+    final bod = {
+      "proctor_email": email.trim(),
+      "details": {
+        "name": _name.trim(),
+        "usn": _usn.trim(),
+        "batch": _batch.trim()
+      }
+    };
+    final headers = {'Content-Type': 'application/json'};
+    final encoding = Encoding.getByName("utf-8");
+
+    http.Response resp = await http.post(
+      url,
+      headers: headers,
+      encoding: encoding,
+      body: jsonEncode(bod),
+    );
+    debugPrint(resp.body);
+    if (resp.body.isNotEmpty) {
+      final data = jsonDecode(resp.body);
+      if (data['message'] == "SUCCESS") {
+        showToast("Sent request 🎉 ");
       }
 
       notifyListeners();
@@ -426,7 +462,7 @@ class SisData with ChangeNotifier {
     return _proctorEmail;
   }
 
-  List<Map> get proctorMessages {
+  List<dynamic> get proctorMessages {
     return _proctorMessages;
   }
 

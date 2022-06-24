@@ -158,13 +158,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
                         BorderRadius.circular(30))),
                 child: const Icon(Icons.chevron_left),
                 onPressed: () {
-                  if (!register) {
-                    setState(() {
-                      register = true;
-                    });
-                  } else {
-                    Navigator.pop(context);
-                  }
+                  Navigator.pop(context);
                 },
               ),
             ),
