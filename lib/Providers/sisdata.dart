@@ -259,11 +259,11 @@ class SisData with ChangeNotifier {
   }
 
   void cleanData() async {
-    if (!kIsWeb) {
-      FirebaseMessaging.instance.deleteToken();
-      final url = realtimeDatabaseUrl(_usn);
-      http.delete(Uri.parse(url));
-    }
+    // if (!kIsWeb) {
+    FirebaseMessaging.instance.deleteToken();
+    final url = realtimeDatabaseUrl(_usn);
+    http.delete(Uri.parse(url));
+    // }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     _usn = "";
