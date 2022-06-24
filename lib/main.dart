@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/proctor_data.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -18,14 +19,17 @@ import 'package:flutter/services.dart';
 // 1ms21scn05-t 1996-07-14
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
-    await Firebase.initializeApp();
-  }
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(new MyApp());
-  });
-  runApp(const MyApp());
+  // if (!kIsWeb) {
+  await Firebase.initializeApp();
+  // }
+  FirebaseMessaging.instance.getToken().then(print);
+  if (kIsWeb)
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+        .then((_) {
+      runApp(new MyApp());
+    });
+  else
+    runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
