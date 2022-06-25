@@ -40,7 +40,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
   var selectedDate = DateTime.now();
   bool register = false;
 
-  void _submit() {}
+  // void _submit() {}
 
   void _submitEmail(value) {
     emailController.text = value;
@@ -89,7 +89,7 @@ class _ProctorLoginState extends State<ProctorLogin> {
           setState(() {
             isPressed = false;
           });
-          return "passwords must be equal";
+          return "Passwords must be equal";
         }
         if (value!.length < 8) {
           setState(() {
@@ -131,13 +131,13 @@ class _ProctorLoginState extends State<ProctorLogin> {
       },
     );
 
-    String generateRandomString(int len) {
-      var r = Random();
-      const _chars =
-          'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-      return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
-          .join();
-    }
+    // String generateRandomString(int len) {
+    //   var r = Random();
+    //   const _chars =
+    //       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    //   return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
+    //       .join();
+    // }
 
     // emailController.text = "nandan" + "@msrit.edu";
     // pwdController.text = "password123";
@@ -159,7 +159,13 @@ class _ProctorLoginState extends State<ProctorLogin> {
                           BorderRadius.circular(30))),
                   child: const Icon(Icons.chevron_left),
                   onPressed: () {
-                    Navigator.pop(context);
+                    if (register) {
+                      setState(() {
+                        register = false;
+                      });
+                    } else {
+                      Navigator.pop(context);
+                    }
                   },
                 ),
               ),

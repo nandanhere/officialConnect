@@ -37,6 +37,7 @@ class ProcteesCard extends StatelessWidget {
             dividerColor: Colors.transparent,
           ),
           child: ExpansionTile(
+            initiallyExpanded: true,
             iconColor: const Color(0xffba3237),
             collapsedIconColor: isDark ? Colors.white : Colors.black,
             title: Text(
@@ -52,12 +53,28 @@ class ProcteesCard extends StatelessWidget {
               ),
             ),
             children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => SendMessageScreen(usns: [usn])));
-                },
-                icon: Icon(Icons.send),
+              Padding(
+                padding:
+                    EdgeInsets.only(left: width * 0.05, right: width * 0.05),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => SendMessageScreen(usns: [usn])));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Send Message",
+                        style: subtitle,
+                      ),
+                      Icon(
+                        Icons.send,
+                        color: isDark ? Colors.grey : Colors.black54,
+                      ),
+                    ],
+                  ),
+                ),
               )
               // Padding(
               //   padding: EdgeInsets.symmetric(

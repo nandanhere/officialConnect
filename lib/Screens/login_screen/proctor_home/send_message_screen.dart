@@ -23,7 +23,7 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-
+    final textStyle = CustomTheme.textStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
     final sisData = Provider.of<SisData>(context);
@@ -34,15 +34,15 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
       style: CustomTheme.textStyle(context).copyWith(fontSize: width * 0.05),
       key: const ValueKey('title'),
       controller: titleController,
-      minLines: 5,
+      minLines: 1,
       maxLines: 10,
       decoration: InputDecoration(
         labelText: "Enter title",
-        labelStyle: CustomTheme.textStyle(context).copyWith(),
+        labelStyle: CustomTheme.textStyle(context),
       ),
       validator: (value) {
         if (value!.isEmpty) {
-          return "title cannot be empty";
+          return "Title cannot be empty";
         }
         return null;
       },
@@ -51,11 +51,11 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
       style: CustomTheme.textStyle(context).copyWith(fontSize: width * 0.05),
       key: const ValueKey('message'),
       controller: messageController,
-      minLines: 5,
+      minLines: 2,
       maxLines: 10,
       decoration: InputDecoration(
         labelText: "Enter message",
-        labelStyle: CustomTheme.textStyle(context).copyWith(),
+        labelStyle: CustomTheme.textStyle(context),
       ),
       validator: (value) {
         if (value!.isEmpty) {
@@ -66,7 +66,11 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
     );
     return Scaffold(
       floatingActionButton: NeumorphicFloatingActionButton(
-        child: Icon(Icons.send),
+        style: neumorphicStyle,
+        child: Icon(
+          Icons.send,
+          color: sisData.darkMode ? Colors.white : Colors.black,
+        ),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             proctorData.sendMessage(widget.usns, messageController.text,
@@ -102,7 +106,7 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                padding: EdgeInsets.symmetric(vertical: height * 0.05),
                 child: Center(
                   child: AutoSizeText(
                     "Send Message",
@@ -112,7 +116,7 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
                 ),
               ),
               SizedBox(
-                height: height * 0.08,
+                height: height * 0.05,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
@@ -123,8 +127,9 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
                     ),
                     ...(widget.usns)
                         .map((e) => Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(0.0),
                               child: Neumorphic(
+                                style: neumorphicStyle,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(e),
