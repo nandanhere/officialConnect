@@ -43,22 +43,22 @@ class MessageCard extends StatelessWidget {
               messageData["message_title"],
               style: buttonTrailing.copyWith(fontSize: width * 0.06),
             ),
-            subtitle: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.02, vertical: height * 0.01),
-              child: Text(
-                DateTime.fromMillisecondsSinceEpoch(
-                        (messageData['time'] as double).toInt() * 1000)
-                    .toString(),
-                style: subtitle,
-              ),
+            subtitle: Text(
+              DateTime.fromMillisecondsSinceEpoch(
+                      (messageData['time'] as double).toInt() * 1000)
+                  .toString(),
+              style: subtitle,
             ),
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  NeumorphicButton(
-                    child: Text("View message details"),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.all(height * 0.03),
+                  child: NeumorphicButton(
+                    style: neumorphicStyle,
+                    child: Text(
+                      "View message details",
+                      style: title,
+                    ),
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -69,7 +69,7 @@ class MessageCard extends StatelessWidget {
                       );
                     },
                   ),
-                ],
+                ),
               ),
 
               // Padding(

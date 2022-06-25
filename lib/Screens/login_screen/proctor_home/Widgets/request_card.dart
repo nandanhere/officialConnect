@@ -55,20 +55,34 @@ class RequestCard extends StatelessWidget {
               ),
             ),
             children: [
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  NeumorphicButton(
-                    child: Text("Accept Proctee"),
-                    onPressed: () {
-                      proctorData.acceptProctee(studDetails);
-                    },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: NeumorphicButton(
+                      style: neumorphicStyle,
+                      child: Text(
+                        "Accept Proctee",
+                        style: title,
+                      ),
+                      onPressed: () {
+                        proctorData.acceptProctee(studDetails);
+                      },
+                    ),
                   ),
-                  NeumorphicButton(
-                    child: Text("Reject Proctee"),
-                    onPressed: () {
-                      proctorData.rejectProctee(studDetails);
-                    },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: NeumorphicButton(
+                      style: neumorphicStyle,
+                      child: Text(
+                        "Reject Proctee",
+                        style: title,
+                      ),
+                      onPressed: () {
+                        proctorData.rejectProctee(studDetails);
+                      },
+                    ),
                   ),
                 ],
               ),
