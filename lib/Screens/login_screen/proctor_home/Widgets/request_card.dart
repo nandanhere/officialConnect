@@ -49,9 +49,17 @@ class RequestCard extends StatelessWidget {
             subtitle: Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: width * 0.02, vertical: height * 0.01),
-              child: Text(
-                "Usn : " + studDetails["usn"].toUpperCase(),
-                style: subtitle,
+              child: Column(
+                children: [
+                  Text(
+                    "Usn : " + studDetails["usn"].toUpperCase(),
+                    style: subtitle,
+                  ),
+                   Text(
+                    "Batch : " + studDetails["batch"],
+                    style: subtitle,
+                  ),
+                ],
               ),
             ),
             children: [

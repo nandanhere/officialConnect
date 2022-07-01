@@ -5,6 +5,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/sis_proctor_data.dart';
 import 'package:official_connect/Providers/Themes.dart';
 import 'package:official_connect/Providers/proctor_data.dart';
+import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/proctees_batch_card.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/proctees_card.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/requests_screen.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/sent_messages_screen.dart';
@@ -39,6 +40,7 @@ class ProctorHome extends StatelessWidget {
     final buttonTitle = CustomTheme.buttonTitle(context);
     final sisData = Provider.of<SisData>(context);
     final proctorData = Provider.of<ProctorData>(context);
+    var batchList = [];
     // Future<Void> refresh() async {
 
     //   setState(() {
@@ -47,14 +49,22 @@ class ProctorHome extends StatelessWidget {
 
     // }
 
-    void updateData() {
-      print("Update Data");
-    }
-
     if (!proctorData.dataPresent) {
       proctorData.getData();
       return const LoadingIndicator();
     }
+    void batchToList() {
+      proctorData.enrolled.map((e) {
+        batchList.add(e['batch']);
+      }).toList();
+      batchList = batchList.toSet().toList();
+    }
+
+    batchToList();
+    void updateData() {
+      print("Update Data");
+    }
+
     return Container(
       height: height,
       decoration: BoxDecoration(gradient: linearGradientBG),
@@ -219,19 +229,32 @@ class ProctorHome extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              ...proctorData.enrolled.map((e) {
-                                return ProcteesCard(
-                                  name: e['name'],
-                                  usn: e['usn'],
-                                  height: height,
-                                  width: width,
-                                  title: CustomTheme.buttonTitle(context),
-                                  subtitle: CustomTheme.buttonSubtitle(context),
-                                  neumorphicStyle: neumorphicStyle,
-                                  buttonTrailing: buttonTrailing,
-                                  isDark: sisData.darkMode,
-                                );
-                              }).toList()
+                              // ...proctorData.enrolled.map((e) {
+                              //   return ProcteesCard(
+                              //     name: e['name'],
+                              //     usn: e['usn'],
+                              //     height: height,
+                              //     width: width,
+                              //     title: CustomTheme.buttonTitle(context),
+                              //     subtitle: CustomTheme.buttonSubtitle(context),
+                              //     neumorphicStyle: neumorphicStyle,
+                              //     buttonTrailing: buttonTrailing,
+                              //     isDark: sisData.darkMode,
+                              //   );
+                              // }).toList()
+                              ...batchList
+                                  .map((e) => ProcteesBatchCard(
+                                        batch: e,
+                                        height: height,
+                                        width: width,
+                                        title: CustomTheme.buttonTitle(context),
+                                        subtitle:
+                                            CustomTheme.buttonSubtitle(context),
+                                        neumorphicStyle: neumorphicStyle,
+                                        buttonTrailing: buttonTrailing,
+                                        isDark: sisData.darkMode,
+                                      ))
+                                  .toList(),
                             ],
                           ),
                           SizedBox(
