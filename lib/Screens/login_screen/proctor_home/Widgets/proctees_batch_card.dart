@@ -1,7 +1,10 @@
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:official_connect/Providers/proctor_data.dart';
+import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/proctees_batch_student.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/send_message_screen.dart';
+import 'package:provider/provider.dart';
 
 class ProcteesBatchCard extends StatelessWidget {
   final height, width, neumorphicStyle, buttonTrailing, subtitle, title, isDark;
@@ -21,6 +24,7 @@ class ProcteesBatchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final proctorData = Provider.of<ProctorData>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: NeumorphicButton(
@@ -36,15 +40,16 @@ class ProcteesBatchCard extends StatelessWidget {
             dividerColor: Colors.transparent,
           ),
           child: ListTile(
-            // initiallyExpanded: true,
             onTap: () {
-              
+              Navigator.of(context).push(MaterialPageRoute(
+               builder: (ctx) => ProcteesBatchStudent(batch: batch,)));
             },
+            // initiallyExpanded: true,
             iconColor: const Color(0xffba3237),
             trailing: GestureDetector(
               onTap: (() {
 Navigator.of(context).push(MaterialPageRoute(
-               builder: (ctx) => SendMessageScreen(usns: [batch])));
+               builder: (ctx) => SendMessageScreen(usns: proctorData.enrolled.where((element) => element['batch'] == batch).map((e) => e['usn'] as String).toList())));
               } ),
               child: const Icon(Icons.message)),
             // collapsedIconColor: isDark ? Colors.white : Colors.black,
