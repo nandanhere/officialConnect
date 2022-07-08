@@ -57,7 +57,7 @@ dependencies:
   google_sign_in: ^5.3.3
   firebase_auth: ^3.3.19
   internet_connection_checker: ^0.0.1+4
-  
+  dcdg: ^4.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
