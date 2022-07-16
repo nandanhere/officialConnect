@@ -209,6 +209,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 trailing: isLoadingMessages
                                     ? const CircularProgressIndicator()
                                     : IconButton(
+                                        color: sisData.darkMode
+                                            ? Colors.white70
+                                            : null,
                                         icon: Icon(sisData.proctorEmail == ""
                                             ? Icons.app_registration
                                             : Icons.refresh),

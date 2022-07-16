@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Classes/previous_result.dart';
+import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/latest_results.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/see_details/see_details.dart';
@@ -49,38 +51,38 @@ class SEEScreen extends StatelessWidget {
               children: [
                 Text("Results", textAlign: TextAlign.left, style: titleStyle),
                 const SizedBox(width: 40),
-                NeumorphicButton(
-                  child: Icon(
-                    FontAwesomeIcons.bookAtlas,
-                    color: sisData.darkMode ? Colors.white : Colors.black,
-                    size: width * 0.05,
-                  ),
-                  style: neumorphicStyle,
-                  onPressed: () {
-                    _launchURL(context,
-                        "https://drive.google.com/drive/folders/1xPhB1sYr3TdHmgURiogcqBfJpj7YKyEc?usp=sharing");
-                  },
-                ),
-                NeumorphicButton(
-                  child: Icon(
-                    FontAwesomeIcons.book,
-                    color: sisData.darkMode ? Colors.white : Colors.black,
-                    size: width * 0.05,
-                  ),
-                  style: neumorphicStyle,
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => const SyllabusScreen()));
-
-                    // DummyData.syllabusLinks.keys.forEach((element) {
-                    //   if (RegExp(r"[\w\s]*" + fullCourseName + r"$")
-                    //       .hasMatch(element)) {
-                    //     Navigator.of(context).push(MaterialPageRoute(
-                    //         builder: (ctx) => BranchSyllabus(name: element)));
-                    //   }
-                    // });
-                  },
-                ),
+                // NeumorphicButton(
+                //   child: Icon(
+                //     FontAwesomeIcons.bookAtlas,
+                //     color: sisData.darkMode ? Colors.white : Colors.black,
+                //     size: width * 0.05,
+                //   ),
+                //   style: neumorphicStyle,
+                //   onPressed: () {
+                //     _launchURL(context,
+                //         "https://drive.google.com/drive/folders/1xPhB1sYr3TdHmgURiogcqBfJpj7YKyEc?usp=sharing");
+                //   },
+                // ),
+                // NeumorphicButton(
+                //   child: Icon(
+                //     FontAwesomeIcons.book,
+                //     color: sisData.darkMode ? Colors.white : Colors.black,
+                //     size: width * 0.05,
+                //   ),
+                //   style: neumorphicStyle,
+                //   onPressed: () {
+                //     Navigator.of(context).push(MaterialPageRoute(
+                //         builder: (ctx) => const SyllabusScreen()));
+                //
+                //     // DummyData.syllabusLinks.keys.forEach((element) {
+                //     //   if (RegExp(r"[\w\s]*" + fullCourseName + r"$")
+                //     //       .hasMatch(element)) {
+                //     //     Navigator.of(context).push(MaterialPageRoute(
+                //     //         builder: (ctx) => BranchSyllabus(name: element)));
+                //     //   }
+                //     // });
+                //   },
+                // ),
               ],
             ),
           ),

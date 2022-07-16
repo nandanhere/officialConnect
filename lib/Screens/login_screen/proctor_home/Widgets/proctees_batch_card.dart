@@ -36,55 +36,101 @@ class ProcteesBatchCard extends StatelessWidget {
         onPressed: () {}, //TODO receipt download maybe?
         style: neumorphicStyle,
         child: Theme(
-          data: Theme.of(context).copyWith(
-            dividerColor: Colors.transparent,
-          ),
-          child: ListTile(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-               builder: (ctx) => ProcteesBatchStudent(batch: batch,)));
-            },
-            // initiallyExpanded: true,
-            iconColor: const Color(0xffba3237),
-            trailing: GestureDetector(
-              onTap: (() {
-Navigator.of(context).push(MaterialPageRoute(
-               builder: (ctx) => SendMessageScreen(usns: proctorData.enrolled.where((element) => element['batch'] == batch).map((e) => e['usn'] as String).toList())));
-              } ),
-              child: const Icon(Icons.message)),
-            // collapsedIconColor: isDark ? Colors.white : Colors.black,
-            title: Text(
-              batch,
-              style: buttonTrailing.copyWith(fontSize: width * 0.06),
+            data: Theme.of(context).copyWith(
+              dividerColor: Colors.transparent,
             ),
-
-            // children: [
-            //   Padding(
-            //     padding:
-            //         EdgeInsets.only(left: width * 0.05, right: width * 0.05),
-            //     child: TextButton(
-            //       onPressed: () {
-            //         // Navigator.of(context).push(MaterialPageRoute(
-            //         //     builder: (ctx) => SendMessageScreen(usns: [usn])));
-            //       },
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //         children: [
-            //           Text(
-            //             "Send Message",
-            //             style: subtitle,
-            //           ),
-            //           Icon(
-            //             Icons.send,
-            //             color: isDark ? Colors.grey : Colors.black54,
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   )
-            // ],
-          ),
-        ),
+            // child: ListTile(
+            //   onTap: () {
+            //     Navigator.of(context).push(MaterialPageRoute(
+            //         builder: (ctx) => ProcteesBatchStudent(
+            //               batch: batch,
+            //             )));
+            //   },
+            //   // initiallyExpanded: true,
+            //   iconColor: const Color(0xffba3237),
+            //   trailing: GestureDetector(
+            //       onTap: (() {
+            //         Navigator.of(context).push(MaterialPageRoute(
+            //             builder: (ctx) => SendMessageScreen(
+            //                 usns: proctorData.enrolled
+            //                     .where((element) => element['batch'] == batch)
+            //                     .map((e) => e['usn'] as String)
+            //                     .toList())));
+            //       }),
+            //       child: const Icon(Icons.message)),
+            //   // collapsedIconColor: isDark ? Colors.white : Colors.black,
+            //   title: Text(
+            //     batch,
+            //     style: buttonTrailing.copyWith(fontSize: width * 0.06),
+            //   ),
+            //
+            //   // children: [
+            //   //   Padding(
+            //   //     padding:
+            //   //         EdgeInsets.only(left: width * 0.05, right: width * 0.05),
+            //   //     child: TextButton(
+            //   //       onPressed: () {
+            //   //         // Navigator.of(context).push(MaterialPageRoute(
+            //   //         //     builder: (ctx) => SendMessageScreen(usns: [usn])));
+            //   //       },
+            //   //       child: Row(
+            //   //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   //         children: [
+            //   //           Text(
+            //   //             "Send Message",
+            //   //             style: subtitle,
+            //   //           ),
+            //   //           Icon(
+            //   //             Icons.send,
+            //   //             color: isDark ? Colors.grey : Colors.black54,
+            //   //           ),
+            //   //         ],
+            //   //       ),
+            //   //     ),
+            //   //   )
+            //   // ],
+            // ),
+            child: ExpansionTile(
+              title: Text(
+                batch,
+                style: buttonTrailing.copyWith(fontSize: width * 0.06),
+              ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: NeumorphicButton(
+                      style: neumorphicStyle,
+                      onPressed: (() {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => SendMessageScreen(
+                                usns: proctorData.enrolled
+                                    .where(
+                                        (element) => element['batch'] == batch)
+                                    .map((e) => e['usn'] as String)
+                                    .toList())));
+                      }),
+                      child: Text(
+                        "Message all",
+                        style: title,
+                      )),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(height * 0.009),
+                  child: NeumorphicButton(
+                      style: neumorphicStyle,
+                      onPressed: (() {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => ProcteesBatchStudent(
+                                  batch: batch,
+                                )));
+                      }),
+                      child: Text(
+                        "View Proctees",
+                        style: title,
+                      )),
+                )
+              ],
+            )),
       ),
     );
   }
