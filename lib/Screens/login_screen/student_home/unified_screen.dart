@@ -98,9 +98,15 @@ class Unified extends StatelessWidget {
                             : NeumorphicColors.background,
                       ),
                       BottomNavigationBarItem(
-                        icon: listeningValue == 3
-                            ? const FaIcon(FontAwesomeIcons.solidCalendar)
-                            : const FaIcon(FontAwesomeIcons.calendar),
+                        icon: listeningValue == 1
+                            ? const FaIcon(
+                                Icons.assessment,
+                                size: 30,
+                              )
+                            : const FaIcon(
+                                Icons.assessment_outlined,
+                                size: 30,
+                              ),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
@@ -122,15 +128,9 @@ class Unified extends StatelessWidget {
                             : NeumorphicColors.background,
                       ),
                       BottomNavigationBarItem(
-                        icon: listeningValue == 1
-                            ? const FaIcon(
-                                Icons.assessment,
-                                size: 30,
-                              )
-                            : const FaIcon(
-                                Icons.assessment_outlined,
-                                size: 30,
-                              ),
+                        icon: listeningValue == 3
+                            ? const FaIcon(FontAwesomeIcons.solidCalendar)
+                            : const FaIcon(FontAwesomeIcons.calendar),
                         label: "",
                         backgroundColor: sisData.darkMode
                             ? Colors.black
