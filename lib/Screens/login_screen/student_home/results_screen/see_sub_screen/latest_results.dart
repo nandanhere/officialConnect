@@ -15,6 +15,9 @@ class LatestResultsDetails extends StatelessWidget {
   }) : super(key: key);
 
   Future<PreviousResult> loadResult(String usn) async {
+    // in case you want to test out the api
+    // var url = Uri.parse("http://192.168.43.212:5000/" + usn);
+
     var url = Uri.parse("https://results-scraper-rit.herokuapp.com/" + usn);
     http.Response resp = await http.get(url);
     if (resp.statusCode == 200) {
@@ -53,6 +56,9 @@ class LatestResultsDetails extends StatelessWidget {
           term: "",
           semesterNumber: "");
       return s;
+    }
+    if (resp.statusCode >= 500) {
+      return Future.error("server_error");
     }
     return Future.error('error');
   }
@@ -173,7 +179,55 @@ class LatestResultsDetails extends StatelessWidget {
             ),
           );
         } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
+          String error = "";
+          if (snapshot.error == "server_error") {
+            error =
+                "We encountered a server error. this could mean a server overload.Please try later";
+          } else {
+            error = "Unable to fetch results as of now";
+          }
+          return Scaffold(
+            backgroundColor:
+                (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
+            body: SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                // alignment: Alignment.center,
+                // color: Colors.grey,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    right: width * 0.05,
+                    top: height * 0.06,
+                  ),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(
+                                  Icons.chevron_left,
+                                  color: (!sisData.darkMode)
+                                      ? Colors.black
+                                      : NeumorphicColors.background,
+                                )),
+                          ],
+                        ),
+                      ),
+                      Text("Latest Semester",
+                          style:
+                              buttonTrailing.copyWith(fontSize: width * 0.06)),
+                      Text(error)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
         }
         return Scaffold(
           backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
