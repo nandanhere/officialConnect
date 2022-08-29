@@ -56,6 +56,7 @@ class _ViewSentMessageScreenState extends State<ViewSentMessageScreen> {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             proctorData.deleteMessage(widget.messageData, context);
+            print("deleting");
           }
         },
       ),

@@ -46,7 +46,7 @@ class ProctorData with ChangeNotifier {
       encoding: encoding,
       body: jsonEncode(bod),
     );
-    print(resp.body);
+    debugPrint(resp.body);
     if (resp.body.isNotEmpty) {
       _dataPresent = true;
       processData(jsonDecode(resp.body));

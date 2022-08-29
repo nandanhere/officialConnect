@@ -110,7 +110,7 @@ class SisData with ChangeNotifier {
     debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
-      const debug = false;
+      const debug = true;
       _usn = _data['usn'];
       _proctorData = SisProctorData.proctorData(_data['proctorship']);
       if (debug) debugPrint("Proctor data");
@@ -152,18 +152,18 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint("version");
       _downloadLink = _data["downloadLink"];
       if (debug) debugPrint("downloadLink");
-      // if (!kIsWeb) {
-      FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-        _firebaseMessagingToken = newToken;
-      });
-      _firebaseMessagingToken =
-          await FirebaseMessaging.instance.getToken() ?? "";
-      if (debug) {
-        debugPrint(_firebaseMessagingToken == ""
-            ? "firebase token not got"
-            : "firebase token got");
+      if (!kIsWeb) {
+        FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+          _firebaseMessagingToken = newToken;
+        });
+        _firebaseMessagingToken =
+            await FirebaseMessaging.instance.getToken() ?? "";
+        if (debug) {
+          debugPrint(_firebaseMessagingToken == ""
+              ? "firebase token not got"
+              : "firebase token got");
+        }
       }
-      // }
     } catch (e) {
       debugPrint(e.toString());
       _hasData = true;
@@ -174,9 +174,7 @@ class SisData with ChangeNotifier {
       _data = {};
       notifyListeners();
     }
-    if (
-        // !kIsWeb &&
-        _firebaseMessagingToken != "" && isValidData) {
+    if (!kIsWeb && _firebaseMessagingToken != "" && isValidData) {
       final userdata = {
         'usn': _usn.toUpperCase().trim(),
         'dob': _dob.trim(),
@@ -194,7 +192,7 @@ class SisData with ChangeNotifier {
   }
 
   Future<void> getData(String usn, String dob, bool update) async {
-    const debug = false;
+    const debug = true;
     _hasData = false;
     notifyListeners();
     // usn == "" means we are updating the values.
@@ -203,7 +201,7 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint('parsing url');
       var url = Uri.parse(
         // in case you want to test out the api
-        // "http://127.0.0.1:5000/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
+        // "http://192.168.43.212:5000/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
         "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
       );
       if (debug) debugPrint(url.toString());
@@ -213,7 +211,7 @@ class SisData with ChangeNotifier {
       // final url2 = "www.newgrounds.com";
       // http.Response resp2 = await http.get(Uri.parse(url2));
       // print(resp2.statusCode);
-
+      print(resp.statusCode);
       if (resp.statusCode == 200) {
         final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
         _data = (temp.isEmpty && update) ? _data : temp;
@@ -239,6 +237,10 @@ class SisData with ChangeNotifier {
             }
           }
         }
+      } else if (resp.statusCode >= 500) {
+        isValidData = false;
+        _errorMessage =
+            "We encountered a Server error. Sorry for the inconvinience";
       }
     } else {
       debugPrint("getting dummy data");
@@ -246,7 +248,10 @@ class SisData with ChangeNotifier {
     }
     if (_data.isEmpty) {
       isValidData = false;
-      _errorMessage = "Error! please check the entered details";
+      _errorMessage = _errorMessage ==
+              "We encountered a Server error. Sorry for the inconvinience"
+          ? "We encountered a Server error. Sorry for the inconvinience"
+          : "Error! please check the entered details";
     } else {
       isValidData = true;
     }
@@ -259,11 +264,11 @@ class SisData with ChangeNotifier {
   }
 
   void cleanData() async {
-    // if (!kIsWeb) {
-    FirebaseMessaging.instance.deleteToken();
-    final url = realtimeDatabaseUrl(_usn);
-    http.delete(Uri.parse(url));
-    // }
+    if (!kIsWeb) {
+      FirebaseMessaging.instance.deleteToken();
+      final url = realtimeDatabaseUrl(_usn);
+      http.delete(Uri.parse(url));
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     _usn = "";
@@ -278,7 +283,7 @@ class SisData with ChangeNotifier {
 
   Future<void> getProctorMessages() async {
     // print("usn is " + _usn);
-    await Future.delayed(Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 4));
     if (!kIsWeb) {
       bool result = await InternetConnectionChecker().hasConnection;
       if (!result) return;
