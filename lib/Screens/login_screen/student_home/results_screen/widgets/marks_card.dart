@@ -12,7 +12,9 @@ class MarksCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
-
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     final heads = isBackLog
         ? ["Subject", "Credits", "Attempts"]
         : ["Subject", "Earned", "GPA"];
@@ -26,44 +28,48 @@ class MarksCard extends StatelessWidget {
     );
     return Theme(
       data: sisData.darkMode ? ThemeData.dark() : ThemeData.light(),
-      child: DataTable(
-        dataRowHeight: 100,
-        columnSpacing: 20,
-        columns: [
-          ...heads.map((element) {
-            return DataColumn(
-                label: Text(
-              element,
-              style: headingStyle,
-            ));
-          }).toList()
-        ],
-        rows: [
-          ...subjects.map((e) {
-            return DataRow(cells: [
-              DataCell(
-                Text(
-                  "${e.subjectName} (${e.courseCode})",
-                  style: bodyStyle,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(7),
+        child: DataTable(
+          // horizontalMargin: width*0.05,
+          dataRowHeight: height *0.17,  //100
+          columnSpacing: width *0.07,   //20
+          columns: [
+            ...heads.map((element) {
+              return DataColumn(
+                  label: Text(
+                element,
+                style: headingStyle,
+              ));
+            }).toList()
+          ],
+          rows: [
+            ...subjects.map((e) {
+              return DataRow(cells: [
+                DataCell(
+                  Text(
+                    "${e.subjectName} (${e.courseCode})",
+                    style: bodyStyle,
+                  ),
                 ),
-              ),
-              DataCell(
-                Text(
-                  isBackLog
-                      ? e.creditsRegistered
-                      : "${e.creditsEarned} / ${e.creditsRegistered}",
-                  style: bodyStyle,
+                DataCell(
+                  Text(
+                    isBackLog
+                        ? e.creditsRegistered
+                        : "${e.creditsEarned} / ${e.creditsRegistered}",
+                    style: bodyStyle,
+                  ),
                 ),
-              ),
-              DataCell(
-                Text(
-                  isBackLog ? e.gpa : "${e.gpa} (${e.grade})",
-                  style: bodyStyle,
+                DataCell(
+                  Text(
+                    isBackLog ? e.gpa : "${e.gpa} (${e.grade})",
+                    style: bodyStyle,
+                  ),
                 ),
-              ),
-            ]);
-          }).toList(),
-        ],
+              ]);
+            }).toList(),
+          ],
+        ),
       ),
     );
   }
