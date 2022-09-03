@@ -54,18 +54,6 @@ class SisData with ChangeNotifier {
     // cleanData();
     setup();
   }
-  void update() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    debugPrint("updating");
-    showToast("Updating Data");
-
-    await prefs.setBool('hasData', false);
-    await getData("", "", true);
-    await setVariables();
-    notifyListeners();
-    showToast("Updated data 🎉 ");
-  }
 
   static void showToast(String message) {
     Fluttertoast.showToast(
@@ -80,15 +68,16 @@ class SisData with ChangeNotifier {
 
   void setup() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // if we already have data, check if the data is
     if (prefs.containsKey('hasData')) {
       _hasData = prefs.getBool('hasData')!;
       var time = prefs.getInt('timeStamp');
       _usn = prefs.getString('usn') ?? "";
       _dob = prefs.getString('dob') ?? "";
       _proctorEmail = prefs.getString('proctorEmail') ?? "";
-
       _darkMode = prefs.getBool('darkMode') ?? false;
-      debugPrint("data was there before");
+      debugPrint(
+          "data was there before. checking if it is older than 12 hours");
       needToUpdate = DateTime.fromMillisecondsSinceEpoch(time!)
               .difference(DateTime.now())
               .inHours
@@ -106,6 +95,87 @@ class SisData with ChangeNotifier {
     }
   }
 
+// This runs if the data stored is old/older than 12 hours
+  void update() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    debugPrint("updating");
+    showToast("Updating Data");
+
+    await prefs.setBool('hasData', false);
+    await getData("", "", true);
+    await setVariables();
+    notifyListeners();
+    showToast("Updated data 🎉 ");
+  }
+
+// This calls the scraper and gets the data for a user
+  Future<void> getData(String usn, String dob, bool update) async {
+    const debug = false;
+    _hasData = false;
+    notifyListeners();
+    // usn == "" means we are updating the values.
+    debugPrint("getting data");
+    if (usn != "DUMMY") {
+      var url = Uri.parse(
+        // in case you want to test out the api
+        // "http://192.168.43.212:5000/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
+        "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
+      );
+      debugPrint(url.toString());
+      http.Response resp = await http.get(url);
+      if (resp.statusCode == 200) {
+        final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
+        _data = (temp.isEmpty && update) ? _data : temp;
+        if (_data.isNotEmpty) {
+          try {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            if (debug) debugPrint("");
+            if (resp.body != "{}") prefs.setString('data', resp.body);
+            if (debug) debugPrint("Saved data to sharedprefs");
+            prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
+            if (debug) debugPrint("Saved timestamp to sharedprefs");
+            prefs.setBool('hasData', true);
+            if (!update) {
+              prefs.setString('dob', dob);
+              prefs.setString('usn', usn);
+              prefs.setBool('darkMode', false);
+            }
+          } finally {
+            if (usn != "" && dob != "") {
+              _usn = usn;
+              _dob = dob;
+              await getProctorMessages();
+            }
+          }
+        }
+      } else if (resp.statusCode >= 500) {
+        isValidData = false;
+        _errorMessage =
+            "We encountered a Server error. Sorry for the inconvinience";
+      }
+    } else {
+      debugPrint("getting dummy data");
+      _data = await convert.jsonDecode(DummyData.data);
+    }
+    if (_data.isEmpty) {
+      isValidData = false;
+      _errorMessage = _errorMessage ==
+              "We encountered a Server error. Sorry for the inconvinience"
+          ? "We encountered a Server error. Sorry for the inconvinience"
+          : "Error! please check the entered details";
+    } else {
+      isValidData = true;
+    }
+    _hasData = true;
+    needToUpdate = false;
+    if (_data.isNotEmpty) {
+      setVariables();
+    }
+    notifyListeners();
+  }
+
+// after getting any sort of data, the data has to be read from. this does that
   Future<void> setVariables() async {
     debugPrint("setting variables");
     if (_data.isEmpty && _usn != "") getData("", "", true);
@@ -158,11 +228,9 @@ class SisData with ChangeNotifier {
         });
         _firebaseMessagingToken =
             await FirebaseMessaging.instance.getToken() ?? "";
-        if (debug) {
-          debugPrint(_firebaseMessagingToken == ""
-              ? "firebase token not got"
-              : "firebase token got");
-        }
+        debugPrint(_firebaseMessagingToken == ""
+            ? "firebase token not got"
+            : "firebase token got");
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -189,78 +257,6 @@ class SisData with ChangeNotifier {
       await http.put(Uri.parse(url), body: convert.jsonEncode(userdata));
       debugPrint("entered data in firebase");
     }
-  }
-
-  Future<void> getData(String usn, String dob, bool update) async {
-    const debug = true;
-    _hasData = false;
-    notifyListeners();
-    // usn == "" means we are updating the values.
-    if (debug) debugPrint("getting data");
-    if (usn != "dummy") {
-      if (debug) debugPrint('parsing url');
-      var url = Uri.parse(
-        // in case you want to test out the api
-        // "http://192.168.43.212:5000/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
-        "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
-      );
-      if (debug) debugPrint(url.toString());
-      http.Response resp = await http.get(url);
-
-      // TODO : work on this if the parents.msrit site ever crashes. we need to tell that the server is down. it should give destination unreachable
-      // final url2 = "www.newgrounds.com";
-      // http.Response resp2 = await http.get(Uri.parse(url2));
-      // print(resp2.statusCode);
-      print(resp.statusCode);
-      if (resp.statusCode == 200) {
-        final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
-        _data = (temp.isEmpty && update) ? _data : temp;
-        if (_data.isNotEmpty) {
-          try {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            if (debug) debugPrint("");
-            if (resp.body != "{}") prefs.setString('data', resp.body);
-            if (debug) debugPrint("Saved data to sharedprefs");
-            prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
-            if (debug) debugPrint("Saved timestamp to sharedprefs");
-            prefs.setBool('hasData', true);
-            if (!update) {
-              prefs.setString('dob', dob);
-              prefs.setString('usn', usn);
-              prefs.setBool('darkMode', false);
-            }
-          } finally {
-            if (usn != "" && dob != "") {
-              _usn = usn;
-              _dob = dob;
-              await getProctorMessages();
-            }
-          }
-        }
-      } else if (resp.statusCode >= 500) {
-        isValidData = false;
-        _errorMessage =
-            "We encountered a Server error. Sorry for the inconvinience";
-      }
-    } else {
-      debugPrint("getting dummy data");
-      _data = await convert.jsonDecode(DummyData.data);
-    }
-    if (_data.isEmpty) {
-      isValidData = false;
-      _errorMessage = _errorMessage ==
-              "We encountered a Server error. Sorry for the inconvinience"
-          ? "We encountered a Server error. Sorry for the inconvinience"
-          : "Error! please check the entered details";
-    } else {
-      isValidData = true;
-    }
-    _hasData = true;
-    needToUpdate = false;
-    if (_data.isNotEmpty) {
-      setVariables();
-    }
-    notifyListeners();
   }
 
   void cleanData() async {

@@ -12,13 +12,16 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class LatestResultsDetails extends StatelessWidget {
   const LatestResultsDetails({
     Key? key,
+    required this.even,
   }) : super(key: key);
-
+  final bool even;
   Future<PreviousResult> loadResult(String usn) async {
     // in case you want to test out the api
     // var url = Uri.parse("http://192.168.43.212:5000/" + usn);
 
-    var url = Uri.parse("https://results-scraper-rit.herokuapp.com/" + usn);
+    var url = Uri.parse("https://results-scraper-rit.herokuapp.com/" +
+        (even ? "e/" : "") +
+        usn);
     http.Response resp = await http.get(url);
     if (resp.statusCode == 200) {
       final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
@@ -114,7 +117,7 @@ class LatestResultsDetails extends StatelessWidget {
                           style:
                               buttonTrailing.copyWith(fontSize: width * 0.06),
                         ),
-                      Text("Latest Semester",
+                      Text("Latest ${even ? "Even" : "Odd"} Semester",
                           style:
                               buttonTrailing.copyWith(fontSize: width * 0.06)),
                       if (previousResult.cgpa == null)
