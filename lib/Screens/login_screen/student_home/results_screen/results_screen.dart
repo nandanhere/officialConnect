@@ -23,7 +23,6 @@ class ResultsScreen extends StatelessWidget {
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradient = CustomTheme.linearGradient(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
-
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: RefreshIndicator(

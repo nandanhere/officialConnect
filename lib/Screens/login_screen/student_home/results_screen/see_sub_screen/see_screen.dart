@@ -213,11 +213,39 @@ class SEEScreen extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (ctx) => const LatestResultsDetails()),
+                      builder: (ctx) => const LatestResultsDetails(
+                            even: false,
+                          )),
                 );
               },
               title: AutoSizeText(
-                "Latest Semester results",
+                "Latest Odd Semester results",
+                maxLines: 1,
+                style: buttonTrailing,
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Neumorphic(
+            padding: EdgeInsets.only(
+                top: height * 0.015,
+                bottom: height * 0.015,
+                left: width * 0.025,
+                right: width * 0.01),
+            style: neumorphicStyle,
+            child: ListTile(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (ctx) => const LatestResultsDetails(
+                            even: true,
+                          )),
+                );
+              },
+              title: AutoSizeText(
+                "Latest Even Semester results",
                 maxLines: 1,
                 style: buttonTrailing,
               ),

@@ -5,9 +5,9 @@ class DummyData {
     "Category Claimed:": "GM",
     "Course:": "B.E-Information Science and Engineering",
     "Email Id:": "mark@gmail.com",
-    "MOBILE:": "9845245812",
+    "MOBILE:": "98453165432",
     "Name of student:": "Mark Zuckerberg",
-    "Quota:": "Govt (KEA/CET)",
+    "Quota:": "COMEDCET",
     "Semester:": "5",
     "USN:": "dummy",
     "attendance": [
@@ -1888,7 +1888,7 @@ class DummyData {
       {
         "Academic Year": "2021-2022",
         "Amount Paid": "Rs.1,400.00",
-        "Challan No": "660656933",
+        "Challan No": "987654321",
         "Cheque/DD No": "--",
         "Date": "06-01-2022",
         "Mode": "CASH",
@@ -1899,7 +1899,7 @@ class DummyData {
       {
         "Academic Year": "2021-2022",
         "Amount Paid": "Rs.74,206.00",
-        "Challan No": "071286932",
+        "Challan No": "987654321",
         "Cheque/DD No": "999103319117076",
         "Date": "04-10-2021",
         "Mode": "ONLINE",
@@ -1910,7 +1910,7 @@ class DummyData {
       {
         "Academic Year": "2020-2021",
         "Amount Paid": "Rs.1,400.00",
-        "Challan No": "415840771",
+        "Challan No": "987654321",
         "Cheque/DD No": "--",
         "Date": "06-07-2021",
         "Mode": "CASH",
@@ -1921,7 +1921,7 @@ class DummyData {
       {
         "Academic Year": "2020-2021",
         "Amount Paid": "Rs.1,400.00",
-        "Challan No": "044202910",
+        "Challan No": "987654321",
         "Cheque/DD No": "--",
         "Date": "12-01-2021",
         "Mode": "CASH",
@@ -1932,7 +1932,7 @@ class DummyData {
       {
         "Academic Year": "2020-2021",
         "Amount Paid": "Rs.74,206.00",
-        "Challan No": "284092179",
+        "Challan No": "987654321",
         "Cheque/DD No": "999103319117076",
         "Date": "31-08-2020",
         "Mode": "ONLINE",
@@ -1943,7 +1943,7 @@ class DummyData {
       {
         "Academic Year": "2019-2020",
         "Amount Paid": "Rs.58,806.00",
-        "Challan No": "910316028",
+        "Challan No": "987654321",
         "Cheque/DD No": "KEA",
         "Date": "11-12-2019",
         "Mode": "RTGS",
@@ -1954,7 +1954,7 @@ class DummyData {
       {
         "Academic Year": "2019-2020",
         "Amount Paid": "Rs.1,400.00",
-        "Challan No": "094008984",
+        "Challan No": "987654321",
         "Cheque/DD No": "--",
         "Date": "18-11-2019",
         "Mode": "CASH",
@@ -1965,7 +1965,7 @@ class DummyData {
       {
         "Academic Year": "2019-2020",
         "Amount Paid": "Rs.27,920.00",
-        "Challan No": "626811004",
+        "Challan No": "987654321",
         "Cheque/DD No": "--",
         "Date": "07-08-2019",
         "Mode": "DD",
@@ -1973,7 +1973,20 @@ class DummyData {
         "Pay At": "KARNATAKA BANK LTD",
         "Receipt": ""
       }
-    ],
+    ],"proctorship": {
+        "branch": "Information Science and Engineering",
+        "email": "EduardoSaverin@msrit.edu",
+        "phone": "585468498764",
+        "proctor_name": "Eduardo Saverin",
+        "proctorial_notes": [
+            {
+                "date": "13:21:32 - 2020-05-11",
+                "desc": "Give me back my company",
+                "sender": "by Eduardo Saverin"
+            }
+        ]
+    },    "ver": "0.4"
+,    "downloadLink": "https://www.dropbox.com/s/vfwi6pz5ovqoemb/officialConnectv04.apk?dl=1",
     "marks": [
       {
         "a1": "10/10",
