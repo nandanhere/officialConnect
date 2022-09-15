@@ -57,55 +57,70 @@ class ResultsDetails extends StatelessWidget {
                   child: AutoSizeText(
                     previousResult.term,
                     maxLines: 1,
-                    style: buttonTrailing.copyWith(fontSize: width * 0.06),
+                    style: buttonTrailing.copyWith(fontSize: width * 0.08),
                   ),
                 ),
                 if (!isBackLog) ...[
                   if (previousResult.term.toString().contains('supplementary'))
                     Text("Semester ${previousResult.semesterNumber}",
                         style: buttonTrailing.copyWith(fontSize: width * 0.06)),
-                  Padding(
-                    padding: EdgeInsets.all(height * 0.01),
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: width * 0.1),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            AutoSizeText(
-                              "SGPA : ${previousResult.sgpa}  ",
-                              style: title,
+                  Card(
+                    color:  (sisData.darkMode)
+                     ? NeumorphicColors.decorationMaxDarkColor
+                      : NeumorphicColors.darkDefaultBorder,
+                    elevation: 0.5,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(height * 0.01),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: width * 0.1),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AutoSizeText(
+                                    "SGPA : ${previousResult.sgpa}  ",
+                                    style: title,
+                                  ),
+                                  AutoSizeText(
+                                      "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
+                                      style: title)
+                                ],
+                              ),
                             ),
-                            AutoSizeText(
-                                "CGPA : ${previousResult.cgpa == "" ? previousResult.sgpa : previousResult.cgpa}  ",
-                                style: title)
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(height * 0.01),
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: width * 0.1),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            AutoSizeText(
-                              "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
-                              style: title,
+                        Padding(
+                          padding: EdgeInsets.all(height * 0.01),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: width * 0.1),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AutoSizeText(
+                                    "Registered : ${previousResult.creditsRegistered.toString().trim()}  ",
+                                    style: title,
+                                  ),
+                                  AutoSizeText(
+                                    "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
+                                    style: title,
+                                  )
+                                ],
+                              ),
                             ),
-                            AutoSizeText(
-                              "Earned : ${previousResult.creditsEarned.toString().trim()}  ",
-                              style: title,
-                            )
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
+                SizedBox(height: height * 0.004),
                 MarksCard(
                   subjects: previousResult.results,
                   isBackLog: isBackLog,
