@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/delete_proctee_dialog.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/send_message_screen.dart';
 
 class ProcteesCard extends StatelessWidget {
@@ -52,12 +53,29 @@ class ProcteesCard extends StatelessWidget {
                 style: subtitle,
               ),
             ),
-            trailing: GestureDetector(
-              onTap: (() {
-Navigator.of(context).push(MaterialPageRoute(
-               builder: (ctx) => SendMessageScreen(usns: [usn])));
-              } ),
-              child: const Icon(Icons.message)),
+            trailing: Column(
+              children: [
+                GestureDetector(
+                    onTap: (() {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => SendMessageScreen(usns: [usn])));
+                    }),
+                    child: const Icon(Icons.message)),
+                GestureDetector(
+                    onTap: (() async {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return DeleteProcteeDialog(
+                              height: height,
+                              width: width,
+                              studDetails: usn,
+                            );
+                          });
+                    }),
+                    child: const Icon(Icons.delete))
+              ],
+            ),
 
             // children: [
             //   Padding(

@@ -53,7 +53,7 @@ class Attendance {
       required this.absentDates,
       required this.presentDates});
   static List<Attendance> getList(List<dynamic> data) {
-    final list = data.map((e) {
+    final list = data.where((element) => (element as Map).isNotEmpty).map((e) {
       List<ClassDay> presentDates = ClassDay.getList(e['present_dates']);
       List<ClassDay> absentDates = ClassDay.getList(e['absent_dates']);
       return Attendance(

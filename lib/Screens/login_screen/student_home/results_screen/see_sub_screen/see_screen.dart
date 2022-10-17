@@ -215,6 +215,7 @@ class SEEScreen extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (ctx) => const LatestResultsDetails(
                             even: false,
+                            suppli: false,
                           )),
                 );
               },
@@ -241,11 +242,39 @@ class SEEScreen extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (ctx) => const LatestResultsDetails(
                             even: true,
+                            suppli: false,
                           )),
                 );
               },
               title: AutoSizeText(
                 "Latest Even Semester results",
+                maxLines: 1,
+                style: buttonTrailing,
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Neumorphic(
+            padding: EdgeInsets.only(
+                top: height * 0.015,
+                bottom: height * 0.015,
+                left: width * 0.025,
+                right: width * 0.01),
+            style: neumorphicStyle,
+            child: ListTile(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (ctx) => const LatestResultsDetails(
+                            even: false,
+                            suppli: true,
+                          )),
+                );
+              },
+              title: AutoSizeText(
+                "Supplimentary results",
                 maxLines: 1,
                 style: buttonTrailing,
               ),

@@ -10,18 +10,19 @@ import 'dart:convert' as convert;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LatestResultsDetails extends StatelessWidget {
-  const LatestResultsDetails({
-    Key? key,
-    required this.even,
-  }) : super(key: key);
+  const LatestResultsDetails(
+      {Key? key, required this.even, required this.suppli})
+      : super(key: key);
   final bool even;
+  final bool suppli;
   Future<PreviousResult> loadResult(String usn) async {
     // in case you want to test out the api
     // var url = Uri.parse("http://192.168.43.212:5000/" + usn);
 
-    var url = Uri.parse("https://results-scraper-rit.herokuapp.com/" +
-        (even ? "e/" : "") +
-        usn);
+    var url = Uri.parse(
+        "https://fg9jyaht14.execute-api.us-east-1.amazonaws.com/result" +
+            "?usn=${usn.trim()}&suppli=${suppli ? 'yes' : 'no'}&even=${even ? 'yes' : 'no'}");
+    print(url.toString());
     http.Response resp = await http.get(url);
     if (resp.statusCode == 200) {
       final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
@@ -61,8 +62,10 @@ class LatestResultsDetails extends StatelessWidget {
       return s;
     }
     if (resp.statusCode >= 500) {
+      print("error1");
       return Future.error("server_error");
     }
+    print("error2");
     return Future.error('error');
   }
 
@@ -117,7 +120,8 @@ class LatestResultsDetails extends StatelessWidget {
                           style:
                               buttonTrailing.copyWith(fontSize: width * 0.06),
                         ),
-                      Text("Latest ${even ? "Even" : "Odd"} Semester",
+                      Text(
+                          "Latest ${(even & !suppli) ? "Even" : (!even & !suppli) ? "Odd" : "Supplimentary"} Semester",
                           style:
                               buttonTrailing.copyWith(fontSize: width * 0.06)),
                       if (previousResult.cgpa == null)

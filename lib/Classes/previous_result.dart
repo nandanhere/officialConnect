@@ -46,21 +46,26 @@ class PreviousResult {
   static List<PreviousResult> getList(List<dynamic> data) {
     var semstart = 0;
     var cgpa = "";
-    return data.map((e) {
-      String term = e['term'].toString().toLowerCase();
-      cgpa = term.contains('back') ? cgpa : e['CGPA'];
-      return PreviousResult(
-          cgpa: cgpa,
-          creditsEarned: e["Credits Earned "],
-          creditsRegistered: e['Credits Registered '],
-          sgpa: e['SGPA'],
-          results:
-              Subject.getList(List<Map<String, dynamic>>.from(e['results'])),
-          term: e['term'],
-          semesterNumber:
-              (term.contains('supplementary')) ? semstart : ++semstart
-          // semesterNumber: (data.indexOf(e) + 1).toString(),
-          );
-    }).toList();
+    try {
+      return data.map((e) {
+        String term = e['term'].toString().toLowerCase();
+        cgpa = term.contains('back') ? cgpa : e['CGPA'];
+        return PreviousResult(
+            cgpa: cgpa,
+            creditsEarned: e["Credits Earned "],
+            creditsRegistered: e['Credits Registered '],
+            sgpa: e['SGPA'],
+            results:
+                Subject.getList(List<Map<String, dynamic>>.from(e['results'])),
+            term: e['term'],
+            semesterNumber:
+                (term.contains('supplementary')) ? semstart : ++semstart
+            // semesterNumber: (data.indexOf(e) + 1).toString(),
+            );
+      }).toList();
+    } catch (e) {
+      print(e.toString());
+    }
+    return [];
   }
 }
