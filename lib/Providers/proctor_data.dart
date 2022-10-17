@@ -35,15 +35,15 @@ class ProctorData with ChangeNotifier {
   void getData() async {
     if (_email == "") return;
     final url = Uri.parse(
-        "https://msrit-student-proctor-api.herokuapp.com/get_proctor_details");
+        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=get_proctor_details");
     final bod = {"proctor_email": _email.toLowerCase().trim()};
     final headers = {'Content-Type': 'application/json'};
     final encoding = Encoding.getByName("utf-8");
 
     http.Response resp = await http.post(
       url,
-      headers: headers,
-      encoding: encoding,
+      // headers: headers,
+      // encoding: encoding,
       body: jsonEncode(bod),
     );
     debugPrint(resp.body);
@@ -75,7 +75,7 @@ class ProctorData with ChangeNotifier {
 
   void acceptProctee(Map studDetails) async {
     final url = Uri.parse(
-        "https://msrit-student-proctor-api.herokuapp.com/accept_proctee");
+        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=accept_proctee");
     final bod = {
       "proctor_email": _email.trim().toLowerCase(),
       "usn": studDetails["usn"].toString().toUpperCase().trim()
@@ -84,8 +84,8 @@ class ProctorData with ChangeNotifier {
     final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
-      headers: headers,
-      encoding: encoding,
+      // headers: headers,
+      // encoding: encoding,
       body: jsonEncode(bod),
     );
     if (resp.body.isNotEmpty) {
@@ -104,7 +104,7 @@ class ProctorData with ChangeNotifier {
 
   void rejectProctee(Map studDetails) async {
     final url = Uri.parse(
-        "https://msrit-student-proctor-api.herokuapp.com/reject_proctee");
+        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=reject_proctee");
     final bod = {
       "proctor_email": _email.toLowerCase().trim(),
       "usn": studDetails["usn"].toString().toUpperCase().trim()
@@ -113,8 +113,8 @@ class ProctorData with ChangeNotifier {
     final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
-      headers: headers,
-      encoding: encoding,
+      // headers: headers,
+      // encoding: encoding,
       body: jsonEncode(bod),
     );
     if (resp.body.isNotEmpty) {
@@ -129,10 +129,37 @@ class ProctorData with ChangeNotifier {
     }
   }
 
+  void removeProctee(Map studDetails) async {
+    final url = Uri.parse(
+        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=remove_proctee");
+    final bod = {
+      "proctor_email": _email.toLowerCase().trim(),
+      "usn": studDetails["usn"].toString().toUpperCase().trim()
+    };
+    final headers = {'Content-Type': 'application/json'};
+    final encoding = Encoding.getByName("utf-8");
+    http.Response resp = await http.post(
+      url,
+      // headers: headers,
+      // encoding: encoding,
+      body: jsonEncode(bod),
+    );
+    if (resp.body.isNotEmpty) {
+      if (jsonDecode(resp.body)['message'] == "SUCCESS") {
+        _enrolled.removeAt(
+          _enrolled.indexWhere(
+            (element) => element['usn'] == studDetails['usn'],
+          ),
+        );
+      }
+      notifyListeners();
+    }
+  }
+
   void sendMessage(List<String> usns, String message, String title,
       BuildContext context) async {
     final url = Uri.parse(
-        "https://msrit-student-proctor-api.herokuapp.com/send_message");
+        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=send_message");
     final bod = {
       "proctor_email": _email.toLowerCase().trim(),
       "message_title": title,
@@ -144,8 +171,8 @@ class ProctorData with ChangeNotifier {
     final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
-      headers: headers,
-      encoding: encoding,
+      // headers: headers,
+      // encoding: encoding,
       body: jsonEncode(bod),
     );
     if (resp.body.isNotEmpty) {
@@ -162,17 +189,14 @@ class ProctorData with ChangeNotifier {
 
   void deleteMessage(Map messageDetails, BuildContext context) async {
     final url = Uri.parse(
-        "https://msrit-student-proctor-api.herokuapp.com/delete_message");
-    final bod = {
-      "proctor_email": _email,
-      "message_id": messageDetails['_id']["\$oid"]
-    };
+        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=delete_message");
+    final bod = {"proctor_email": _email, "time": messageDetails['time']};
     final headers = {'Content-Type': 'application/json'};
     final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
-      headers: headers,
-      encoding: encoding,
+      // headers: headers,
+      // encoding: encoding,
       body: jsonEncode(bod),
     );
     if (resp.body.isNotEmpty) {

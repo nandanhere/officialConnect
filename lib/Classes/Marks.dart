@@ -26,6 +26,7 @@ class Marks {
   });
   static List<Marks> getList(List<dynamic> data) {
     final list = data
+        .where((element) => (element as Map).isNotEmpty)
         .map((e) => Marks(
             avga1: e['class_average']["a1"],
             avga2: e['class_average']["a2"],

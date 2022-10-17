@@ -112,6 +112,7 @@ class SisData with ChangeNotifier {
 // This calls the scraper and gets the data for a user
   Future<void> getData(String usn, String dob, bool update) async {
     const debug = false;
+    usn = usn.toUpperCase();
     _hasData = false;
     notifyListeners();
     // usn == "" means we are updating the values.
@@ -120,7 +121,7 @@ class SisData with ChangeNotifier {
       var url = Uri.parse(
         // in case you want to test out the api
         // "http://192.168.43.212:5000/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
-        "https://sis-scraper-rit.herokuapp.com/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
+        "https://upylba53h2.execute-api.us-east-1.amazonaws.com/sis?usn=${update ? _usn.trim() : usn.trim()}&dob=${update ? _dob : dob}",
       );
       debugPrint(url.toString());
       http.Response resp = await http.get(url);
@@ -178,6 +179,7 @@ class SisData with ChangeNotifier {
 // after getting any sort of data, the data has to be read from. this does that
   Future<void> setVariables() async {
     debugPrint("setting variables");
+    // print(_data.toString());
     if (_data.isEmpty && _usn != "") getData("", "", true);
     try {
       const debug = true;
@@ -196,7 +198,7 @@ class SisData with ChangeNotifier {
       if (debug) debugPrint("Earned");
       _toEarn = int.parse(_data['to_earn']);
       if (debug) debugPrint("To earn");
-      _name = _data['name'];
+      _name = _data['Name of student:'];
       if (debug) debugPrint("name");
       _section = _data["sec"];
       if (debug) debugPrint("sec");
@@ -228,6 +230,8 @@ class SisData with ChangeNotifier {
         });
         _firebaseMessagingToken =
             await FirebaseMessaging.instance.getToken() ?? "";
+// TODO : check if the firebase token expires after you sign out.
+        // await FirebaseMessaging.instance.subscribeToTopic();
         debugPrint(_firebaseMessagingToken == ""
             ? "firebase token not got"
             : "firebase token got");
@@ -286,16 +290,12 @@ class SisData with ChangeNotifier {
     }
 
     final url = Uri.parse(
-        "https://msrit-student-proctor-api.herokuapp.com/get_messages");
-    final bod = {"usn": _usn.trim().toUpperCase()};
+        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=get_messages&usn=${usn.trim()}");
     final headers = {'Content-Type': 'application/json'};
-    final encoding = Encoding.getByName("utf-8");
 
-    http.Response resp = await http.post(
+    http.Response resp = await http.get(
       url,
       headers: headers,
-      encoding: encoding,
-      body: jsonEncode(bod),
     );
     debugPrint(resp.body);
     if (resp.body.isNotEmpty) {
@@ -311,7 +311,7 @@ class SisData with ChangeNotifier {
 
   Future<void> requestProctor(String email) async {
     final url = Uri.parse(
-        "https://msrit-student-proctor-api.herokuapp.com/request_proctor");
+        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=request_proctor");
     final bod = {
       "proctor_email": email.trim(),
       "details": {
@@ -325,8 +325,8 @@ class SisData with ChangeNotifier {
 
     http.Response resp = await http.post(
       url,
-      headers: headers,
-      encoding: encoding,
+      // headers: headers,
+      // encoding: encoding,
       body: jsonEncode(bod),
     );
     debugPrint(resp.body);

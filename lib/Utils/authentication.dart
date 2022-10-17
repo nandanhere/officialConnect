@@ -43,9 +43,9 @@ Future<User?> registerWithEmailPassword(
 
       final resp = await http.post(
         Uri.parse(
-            "https://msrit-student-proctor-api.herokuapp.com/add_proctor"),
-        headers: headers,
-        encoding: encoding,
+            "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=add_proctor"),
+        // headers: headers,
+        // encoding: encoding,
         body: jsonEncode(bod),
       );
       if (jsonDecode(resp.body)['message'] != "SUCCESS") {
