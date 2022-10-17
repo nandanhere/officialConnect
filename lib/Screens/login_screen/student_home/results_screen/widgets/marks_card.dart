@@ -28,51 +28,56 @@ class MarksCard extends StatelessWidget {
     );
     return Theme(
       data: sisData.darkMode ? ThemeData.dark() : ThemeData.light(),
-      child: FittedBox(
-        fit: BoxFit.fitWidth,
+      // child: FittedBox(
+      //   fit: BoxFit.fitWidth,
+
         child: SingleChildScrollView(
-          child: DataTable(
-            // horizontalMargin: width*0.05,
-            dataRowHeight: height * 0.37, //100
-            columnSpacing: width * 0.37, //20
-            columns: [
-              ...heads.map((element) {
-                return DataColumn(
-                    label: Text(
-                  element,
-                  style: headingStyle.copyWith(fontSize: 40),
-                ));
-              }).toList()
-            ],
-            rows: [
-              ...subjects.map((e) {
-                return DataRow(cells: [
-                  DataCell(
-                    Text(
-                      "${e.subjectName} (${e.courseCode})",
-                      style: bodyStyle.copyWith(fontSize: 40),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      isBackLog
-                          ? e.creditsRegistered
-                          : "${e.creditsEarned} / ${e.creditsRegistered}",
-                      style: bodyStyle.copyWith(fontSize: 40),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      isBackLog ? e.gpa : "${e.gpa} (${e.grade})",
-                      style: bodyStyle.copyWith(fontSize: 40),
-                    ),
-                  ),
-                ]);
-              }).toList(),
-            ],
-          ),
-        ),
-      ),
+          scrollDirection: Axis.horizontal,
+            // child: FittedBox(
+            //   fit:BoxFit.fitWidth,
+              child: DataTable(
+                // horizontalMargin: 5,
+                dataRowHeight: height * 0.12, //100
+                columnSpacing: width * 0.05, //20
+                columns: [
+                  ...heads.map((element) {
+                    return DataColumn(
+                        label: Text(
+                      element,
+                      style: headingStyle.copyWith(fontSize: 15),
+                    ));
+                  }).toList()
+                ],
+                rows: [
+                  ...subjects.map((e) {
+                    return DataRow(cells: [
+                      DataCell(
+                        Text(
+                          "${e.subjectName} (${e.courseCode})",
+                          style: bodyStyle.copyWith(fontSize: 15),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          isBackLog
+                              ? e.creditsRegistered
+                              : "${e.creditsEarned} / ${e.creditsRegistered}",
+                          style: bodyStyle.copyWith(fontSize: 15),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          isBackLog ? e.gpa : "${e.gpa} (${e.grade})",
+                          style: bodyStyle.copyWith(fontSize: 15),
+                        ),
+                      ),
+                    ]);
+                  }).toList(),
+                ],
+              ),
+            ),
+
+      // ),
     );
   }
 }
