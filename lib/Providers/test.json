@@ -1,0 +1,2485 @@
+{
+    "name": "NANDAN  RAGHAV  HEREKAR",
+    "courseSmall": "B.E-IS",
+    "sem": "SEM 06",
+    "sec": "SEC B",
+    "earned": "114",
+    "to_earn": "61",
+    "attendance": [
+        {
+            "code": "IS61",
+            "name": "Machine Learning",
+            "teacher": "Rudresh Deepak Shirwaikar",
+            "present": "57",
+            "absent": "3",
+            "remaining": "0",
+            "percentage": "95%",
+            "present_dates": [
+                {
+                    "date": "21-07-2022",
+                    "time": "10:00-11:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-07-2022",
+                    "time": "10:00-11:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-07-2022",
+                    "time": "10:00-11:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-07-2022",
+                    "time": "10:00-11:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "08-07-2022",
+                    "time": "09:50-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-07-2022",
+                    "time": "09:50-10:45",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-07-2022",
+                    "time": "01:45-03:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-07-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-07-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-06-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "22-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "16-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "16-06-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "15-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "14-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "09-06-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "08-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "02-06-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "31-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-05-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-05-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "17-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-05-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-05-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-04-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-04-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "31-03-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "31-03-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-03-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-03-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "24-03-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "24-03-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "23-03-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                }
+            ],
+            "absent_dates": [
+                {
+                    "date": "09-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "02-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-04-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                }
+            ]
+        },
+        {
+            "code": "ISL66",
+            "name": "Machine Learning Lab",
+            "teacher": "Rudresh Deepak Shirwaikar",
+            "present": "13",
+            "absent": "0",
+            "remaining": "0",
+            "percentage": "100%",
+            "present_dates": [
+                {
+                    "date": "05-07-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-06-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-06-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "14-06-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-06-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "31-05-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "24-05-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "17-05-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-04-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-04-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-04-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-04-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-03-2022",
+                    "time": "14:40-16:30",
+                    "index": "2",
+                    "status": "None"
+                }
+            ],
+            "absent_dates": []
+        },
+        {
+            "code": "ISL67",
+            "name": "Object Oriented Analysis and Design Patterns Lab",
+            "teacher": "Ashwitha A",
+            "present": "12",
+            "absent": "1",
+            "remaining": "0",
+            "percentage": "92%",
+            "present_dates": [
+                {
+                    "date": "04-07-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-06-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-06-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-06-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-06-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-05-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "23-05-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "02-05-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-04-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "11-04-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-04-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-03-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                }
+            ],
+            "absent_dates": [
+                {
+                    "date": "25-04-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                }
+            ]
+        },
+        {
+            "code": "IS62",
+            "name": "Object Oriented Analysis and Design Patterns",
+            "teacher": "Ashwitha A",
+            "present": "36",
+            "absent": "4",
+            "remaining": "0",
+            "percentage": "90%",
+            "present_dates": [
+                {
+                    "date": "06-07-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-07-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-07-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "22-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "17-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "17-06-2022",
+                    "time": "01:50-03:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "16-06-2022",
+                    "time": "15:40-04:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "15-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "14-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "10-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "03-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "31-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "24-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-05-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-05-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "22-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "08-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "08-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-03-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-03-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-03-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "23-03-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                }
+            ],
+            "absent_dates": [
+                {
+                    "date": "25-05-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                }
+            ]
+        },
+        {
+            "code": "IS65",
+            "name": "Mini Project/NPTEL",
+            "teacher": "Megha P Arakeri",
+            "present": "0",
+            "absent": "0",
+            "remaining": "0",
+            "percentage": "0%",
+            "present_dates": [],
+            "absent_dates": []
+        },
+        {
+            "code": "ISL68",
+            "name": "Java and J2EE Lab",
+            "teacher": "Dr. Sinthuja M",
+            "present": "36",
+            "absent": "10",
+            "remaining": "2",
+            "percentage": "78%",
+            "present_dates": [
+                {
+                    "date": "16-07-2022",
+                    "time": "09:00-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "15-07-2022",
+                    "time": "13:45-03:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-07-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-07-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-07-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-06-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-06-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-06-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "22-06-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "22-06-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-06-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "15-06-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "15-06-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-06-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-06-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-06-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-05-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-05-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "23-05-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-05-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-05-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "09-05-2022",
+                    "time": "14:40-04:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-05-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-05-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-04-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-04-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-04-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "11-04-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-04-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-04-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-04-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-03-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-03-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-03-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "23-03-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "23-03-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                }
+            ],
+            "absent_dates": [
+                {
+                    "date": "13-06-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "08-06-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "08-06-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-05-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "11-05-2022",
+                    "time": "14:40-04:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-04-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-04-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-04-2022",
+                    "time": "13:45-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-04-2022",
+                    "time": "14:40-15:35",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-04-2022",
+                    "time": "15:35-16:30",
+                    "index": "2",
+                    "status": "None"
+                }
+            ]
+        },
+        {
+            "code": "ISE641",
+            "name": "Cloud Computing",
+            "teacher": "Dr. Siddesh G M",
+            "present": "39",
+            "absent": "3",
+            "remaining": "0",
+            "percentage": "92%",
+            "present_dates": [
+                {
+                    "date": "18-07-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-07-2022",
+                    "time": "10:00-10:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "11-07-2022",
+                    "time": "10:00-10:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-07-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-07-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-06-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-06-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "17-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "16-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "14-06-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "10-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "09-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-06-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "03-06-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "02-06-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "24-05-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "17-05-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-05-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-05-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-04-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "22-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-04-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-04-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "08-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-04-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-04-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-04-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "31-03-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-03-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                }
+            ],
+            "absent_dates": [
+                {
+                    "date": "31-05-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-03-2022",
+                    "time": "09:55-10:50",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "24-03-2022",
+                    "time": "09:00-09:55",
+                    "index": "2",
+                    "status": "None"
+                }
+            ]
+        },
+        {
+            "code": "ISE634",
+            "name": "Blockchain Essentials and DAAPS",
+            "teacher": "Sanjay H A",
+            "present": "32",
+            "absent": "4",
+            "remaining": "0",
+            "percentage": "88%",
+            "present_dates": [
+                {
+                    "date": "06-07-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-07-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-07-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-06-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "22-06-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "15-06-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "14-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "10-06-2022",
+                    "time": "13:45-02:45",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-06-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-06-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "31-05-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-05-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-05-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "24-05-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-05-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "16-05-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-05-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-04-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-04-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-04-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "11-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-04-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-03-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                }
+            ],
+            "absent_dates": [
+                {
+                    "date": "12-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-04-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-03-2022",
+                    "time": "13:45-14:40",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-03-2022",
+                    "time": "11:05-12:00",
+                    "index": "2",
+                    "status": "None"
+                }
+            ]
+        },
+        {
+            "code": "HSOE01",
+            "name": "Public Speaking and Speech Acts",
+            "teacher": "Diwakar P",
+            "present": "41",
+            "absent": "3",
+            "remaining": "0",
+            "percentage": "93%",
+            "present_dates": [
+                {
+                    "date": "18-07-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "17-07-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "16-07-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-07-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-07-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-07-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "22-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "21-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "15-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "14-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "08-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "01-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "31-05-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-05-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "24-05-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "23-05-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "17-05-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "16-05-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "10-05-2022",
+                    "time": "12:00-12:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "09-05-2022",
+                    "time": "12:00-13:00",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "04-05-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "27-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "26-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "25-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "20-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "19-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "18-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "13-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "12-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "11-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "06-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "05-04-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-03-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "29-03-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "28-03-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "23-03-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                }
+            ],
+            "absent_dates": [
+                {
+                    "date": "13-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "07-06-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                },
+                {
+                    "date": "30-05-2022",
+                    "time": "12:00-12:55",
+                    "index": "2",
+                    "status": "None"
+                }
+            ]
+        }
+    ],
+    "marks": [
+        {
+            "class_average": {
+                "t1": "23",
+                "t2": "24",
+                "t3": "0",
+                "t4": "0",
+                "a1": "9",
+                "a2": "10",
+                "a3": "0"
+            },
+            "name": "Machine Learning (IS61)",
+            "t1": "29/30",
+            "t2": "25/30",
+            "t3": "-",
+            "t4": "-",
+            "a1": "10/10",
+            "a2": "10/10",
+            "a3": "-",
+            "final cie": "47/50"
+        },
+        {
+            "class_average": {
+                "t1": "18",
+                "t2": "0",
+                "t3": "0",
+                "t4": "0",
+                "a1": "27",
+                "a2": "0",
+                "a3": "0"
+            },
+            "name": "Machine Learning Lab (ISL66)",
+            "t1": "20/20",
+            "t2": "-",
+            "t3": "-",
+            "t4": "-",
+            "a1": "30/30",
+            "a2": "-",
+            "a3": "-",
+            "final cie": "50/50"
+        },
+        {
+            "class_average": {
+                "t1": "19",
+                "t2": "0",
+                "t3": "0",
+                "t4": "0",
+                "a1": "26",
+                "a2": "0",
+                "a3": "0"
+            },
+            "name": "Object Oriented Analysis and Design Patterns Lab (ISL67)",
+            "t1": "20/20",
+            "t2": "-",
+            "t3": "-",
+            "t4": "-",
+            "a1": "28/30",
+            "a2": "-",
+            "a3": "-",
+            "final cie": "48/50"
+        },
+        {
+            "class_average": {
+                "t1": "25",
+                "t2": "26",
+                "t3": "0",
+                "t4": "0",
+                "a1": "10",
+                "a2": "10",
+                "a3": "0"
+            },
+            "name": "Object Oriented Analysis and Design Patterns (IS62)",
+            "t1": "29/30",
+            "t2": "28/30",
+            "t3": "-",
+            "t4": "-",
+            "a1": "10/10",
+            "a2": "10/10",
+            "a3": "-",
+            "final cie": "49/50"
+        },
+        {
+            "class_average": {
+                "t1": "0",
+                "t2": "0",
+                "t3": "0",
+                "t4": "0",
+                "a1": "49",
+                "a2": "0",
+                "a3": "0"
+            },
+            "name": "Mini Project/NPTEL (IS65)",
+            "t1": "-",
+            "t2": "-",
+            "t3": "-",
+            "t4": "-",
+            "a1": "49/50",
+            "a2": "-",
+            "a3": "-",
+            "final cie": "49/50"
+        },
+        {
+            "class_average": {
+                "t1": "19",
+                "t2": "0",
+                "t3": "0",
+                "t4": "0",
+                "a1": "26",
+                "a2": "0",
+                "a3": "0"
+            },
+            "name": "Java and J2EE Lab (ISL68)",
+            "t1": "20/20",
+            "t2": "-",
+            "t3": "-",
+            "t4": "-",
+            "a1": "29/30",
+            "a2": "-",
+            "a3": "-",
+            "final cie": "49/50"
+        },
+        {
+            "class_average": {
+                "t1": "22",
+                "t2": "22",
+                "t3": "0",
+                "t4": "0",
+                "a1": "9",
+                "a2": "10",
+                "a3": "0"
+            },
+            "name": "Cloud Computing (ISE641)",
+            "t1": "30/30",
+            "t2": "30/30",
+            "t3": "-",
+            "t4": "-",
+            "a1": "10/10",
+            "a2": "10/10",
+            "a3": "-",
+            "final cie": "50/50"
+        },
+        {
+            "class_average": {
+                "t1": "24",
+                "t2": "22",
+                "t3": "0",
+                "t4": "0",
+                "a1": "9",
+                "a2": "9",
+                "a3": "0"
+            },
+            "name": "Blockchain Essentials and DAAPS (ISE634)",
+            "t1": "26/30",
+            "t2": "19/30",
+            "t3": "-",
+            "t4": "-",
+            "a1": "10/10",
+            "a2": "10/10",
+            "a3": "-",
+            "final cie": "43/50"
+        },
+        {
+            "class_average": {
+                "t1": "22",
+                "t2": "24",
+                "t3": "0",
+                "t4": "0",
+                "a1": "7",
+                "a2": "8",
+                "a3": "0"
+            },
+            "name": "Public Speaking and Speech Acts (HSOE01)",
+            "t1": "25/30",
+            "t2": "27/30",
+            "t3": "-",
+            "t4": "-",
+            "a1": "8/10",
+            "a2": "8/10",
+            "a3": "-",
+            "final cie": "42/50"
+        }
+    ],
+    "prevResults": [
+        {
+            "Credits Registered ": "  20",
+            "Credits Earned ": "  20",
+            "SGPA": "  8.35",
+            "CGPA": "",
+            "term": "Jan 2020",
+            "results": [
+                {
+                    "COURSE CODE": "PY12",
+                    "SUBJECT NAME": "ENGINEERING PHYSICS",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "8",
+                    "Grade": "B"
+                },
+                {
+                    "COURSE CODE": "ME13",
+                    "SUBJECT NAME": "ELEMENTS OF MECHANICAL ENGINEERING",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "CV14",
+                    "SUBJECT NAME": "BASICS OF CIVIL ENGINEERING & MECHANICS",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "7",
+                    "Grade": "C"
+                },
+                {
+                    "COURSE CODE": "EC15",
+                    "SUBJECT NAME": "BASIC ELECTRONICS",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "8",
+                    "Grade": "B"
+                },
+                {
+                    "COURSE CODE": "HS17K",
+                    "SUBJECT NAME": "KANNADA KALI",
+                    "Credits Reg.": "Audit",
+                    "Credits Earned": "Audit",
+                    "GPA": "0",
+                    "Grade": "Pass"
+                },
+                {
+                    "COURSE CODE": "HS16",
+                    "SUBJECT NAME": "ENVIRONMENTAL STUDIES",
+                    "Credits Reg.": "Audit",
+                    "Credits Earned": "Audit",
+                    "GPA": "0",
+                    "Grade": "Pass"
+                },
+                {
+                    "COURSE CODE": "MA11",
+                    "SUBJECT NAME": "ADVANCED CALCULUS",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "PYL18",
+                    "SUBJECT NAME": "ENGINEERING PHYSICS LAB",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "MEL19",
+                    "SUBJECT NAME": "WORKSHOP PRACTICE",
+                    "Credits Reg.": "2",
+                    "Credits Earned": "2",
+                    "GPA": "9",
+                    "Grade": "A"
+                }
+            ]
+        },
+        {
+            "Credits Registered ": "  20",
+            "Credits Earned ": "  20",
+            "SGPA": "  9",
+            "CGPA": " 8.67",
+            "term": "July - October 2020",
+            "results": [
+                {
+                    "COURSE CODE": "CY22",
+                    "SUBJECT NAME": "ENGINEERING CHEMISTRY",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "CS26",
+                    "SUBJECT NAME": "FUNDAMENTALS OF COMPUTING",
+                    "Credits Reg.": "2",
+                    "Credits Earned": "2",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "EE25",
+                    "SUBJECT NAME": "BASIC ELECTRICAL ENGINEERING",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "HS23",
+                    "SUBJECT NAME": "CONSTITUTION OF INDIA",
+                    "Credits Reg.": "Audit",
+                    "Credits Earned": "Audit",
+                    "GPA": "0",
+                    "Grade": "Pass"
+                },
+                {
+                    "COURSE CODE": "MA21",
+                    "SUBJECT NAME": "ENGINEERING MATHEMATICS-II",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "HS24",
+                    "SUBJECT NAME": "PROFESSIONAL COMMUNICATION AND LIFE SKILLS",
+                    "Credits Reg.": "2",
+                    "Credits Earned": "2",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "ME29",
+                    "SUBJECT NAME": "COMPUTER AIDED ENGINEERING DRAWING",
+                    "Credits Reg.": "2",
+                    "Credits Earned": "2",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "CYL27",
+                    "SUBJECT NAME": "ENGINEERING CHEMISTRY LAB",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "CSL28",
+                    "SUBJECT NAME": "FUNDAMENTALS OF COMPUTING & C PROGRAMMING LABORATORY",
+                    "Credits Reg.": "2",
+                    "Credits Earned": "2",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "AL21",
+                    "SUBJECT NAME": "ENGINEERING DESIGN",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "9",
+                    "Grade": "A"
+                }
+            ]
+        },
+        {
+            "Credits Registered ": "  25",
+            "Credits Earned ": "  25",
+            "SGPA": "  8.64",
+            "CGPA": " 8.66",
+            "term": "Jan 2021",
+            "results": [
+                {
+                    "COURSE CODE": "IS36",
+                    "SUBJECT NAME": "OBJECT ORIENTED PROGRAMMING WITH JAVA",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "8",
+                    "Grade": "B"
+                },
+                {
+                    "COURSE CODE": "IS35",
+                    "SUBJECT NAME": "DATA STRUCTURES",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "8",
+                    "Grade": "B"
+                },
+                {
+                    "COURSE CODE": "IS33",
+                    "SUBJECT NAME": "DISCRETE MATHEMATICAL STRUCTURES",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "IS32",
+                    "SUBJECT NAME": "COMPUTER ORGANIZATION AND ARCHITECTURE",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "IS34",
+                    "SUBJECT NAME": "DATA COMMUNICATION",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "8",
+                    "Grade": "B"
+                },
+                {
+                    "COURSE CODE": "IS31",
+                    "SUBJECT NAME": "ENGINEERING MATHEMATICS-III",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "ISL37",
+                    "SUBJECT NAME": "DATA STRUCTURES LAB",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "10",
+                    "Grade": "S"
+                },
+                {
+                    "COURSE CODE": "ISL38",
+                    "SUBJECT NAME": "OBJECT ORIENTED PROGRAMMING WITH JAVA LAB",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "10",
+                    "Grade": "S"
+                }
+            ]
+        },
+        {
+            "Credits Registered ": "  25",
+            "Credits Earned ": "  25",
+            "SGPA": "  9.16",
+            "CGPA": " 8.8",
+            "term": "July 2021",
+            "results": [
+                {
+                    "COURSE CODE": "IS42",
+                    "SUBJECT NAME": "OPERATING SYSTEMS",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "10",
+                    "Grade": "S"
+                },
+                {
+                    "COURSE CODE": "IS45",
+                    "SUBJECT NAME": "DESIGN AND ANALYSIS OF ALGORITHMS",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "IS41",
+                    "SUBJECT NAME": "ENGINEERING MATHEMATICS-IV",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "IS44",
+                    "SUBJECT NAME": "FINITE AUTOMATA AND FORMAL LANGUAGES",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "IS43",
+                    "SUBJECT NAME": "OPERATIONS RESEARCH",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "IS46",
+                    "SUBJECT NAME": "MICROCONTROLLERS",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "ISL48",
+                    "SUBJECT NAME": "MICROCONTROLLERS LAB",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "ISL47",
+                    "SUBJECT NAME": "DESIGN AND ANALYSIS OF ALGORITHMS LAB",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "10",
+                    "Grade": "S"
+                }
+            ]
+        },
+        {
+            "Credits Registered ": "  24",
+            "Credits Earned ": "  24",
+            "SGPA": "  8.54",
+            "CGPA": " 8.74",
+            "term": "Feb / Mar 2022",
+            "results": [
+                {
+                    "COURSE CODE": "IS54",
+                    "SUBJECT NAME": "INTELLECTUAL PROPERTY RIGHTS",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "IS51",
+                    "SUBJECT NAME": "COMPUTER NETWORKS",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "7",
+                    "Grade": "C"
+                },
+                {
+                    "COURSE CODE": "IS52",
+                    "SUBJECT NAME": "DATABASE MANAGEMENT SYSTEMS",
+                    "Credits Reg.": "4",
+                    "Credits Earned": "4",
+                    "GPA": "8",
+                    "Grade": "B"
+                },
+                {
+                    "COURSE CODE": "IS53",
+                    "SUBJECT NAME": "SOFTWARE ENGINEERING",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "8",
+                    "Grade": "B"
+                },
+                {
+                    "COURSE CODE": "ISE551",
+                    "SUBJECT NAME": "DIGITAL IMAGE PROCESSING",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "MAOE04",
+                    "SUBJECT NAME": "APPLIED GRAPH THEORY",
+                    "Credits Reg.": "3",
+                    "Credits Earned": "3",
+                    "GPA": "9",
+                    "Grade": "A"
+                },
+                {
+                    "COURSE CODE": "ISL56",
+                    "SUBJECT NAME": "COMPUTER NETWORKS LABORATORY",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "10",
+                    "Grade": "S"
+                },
+                {
+                    "COURSE CODE": "ISL57",
+                    "SUBJECT NAME": "DATABASE MANAGEMENT SYSTEMS LABORATORY",
+                    "Credits Reg.": "1",
+                    "Credits Earned": "1",
+                    "GPA": "10",
+                    "Grade": "S"
+                },
+                {
+                    "COURSE CODE": "ISL58",
+                    "SUBJECT NAME": "SCRIPTING LANGUAGES LABORATORY",
+                    "Credits Reg.": "2",
+                    "Credits Earned": "2",
+                    "GPA": "10",
+                    "Grade": "S"
+                }
+            ]
+        }
+    ],
+    "proctorship": {
+        "proctorial_notes": [
+            {
+                "date": "13:21:32 - 2020-05-11",
+                "sender": "by Deepthi K",
+                "desc": "Online classes are conducted for subjects and assignment/practice work provided by the respective subject handling faculty."
+            }
+        ],
+        "proctor_name": "Ashwitha A",
+        "branch": "Information Science and Engineering",
+        "email": "ashwitha.a@msrit.edu",
+        "phone": "9980268979"
+    },
+    "usn": "1ms19is076",
+    "downloadLink": "https://www.dl.dropboxusercontent.com/s/1keww8izjzs727a/officialConnectv03.apk?dl=0",
+    "ver": "0.3"
+}

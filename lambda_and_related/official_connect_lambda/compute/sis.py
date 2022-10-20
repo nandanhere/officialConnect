@@ -1,16 +1,18 @@
 import re
-import requests
-import cchardet
 from lxml import etree
 import datetime, math,json
+import asyncio
+import aiohttp
+# from codeguru_profiler_agent import with_lambda_profiler
 
 baseurl = "https://parents.msrit.edu/"
 # baseurl = "https://parents.msrit.edu/parents_even2022/"
-def scrape_login_dashboard(respobj):
+async def scrape_login_dashboard(respobj):
+	body = await respobj.content.read()
     # scrape all the fee data here. 
 	# print(respobj.text)
 	# soup = BeautifulSoup(respobj.content,'lxml', from_encoding="utf8")
-	dom = etree.HTML(respobj.content)
+	dom = etree.HTML(body)
 	firstScreenData = {}
 	studdetailshead = dom.xpath('//*[@class="cn-basic-details"]/table/tbody/tr/td/span/text()')
 	studdetailstable = dom.xpath('//*[@class="cn-basic-details"]/table/tbody/tr/td/text()')
@@ -52,9 +54,10 @@ def scrape_login_dashboard(respobj):
 
 
 
-def scrape_prev_exams(respobj):
+async def scrape_prev_exams(respobj):
 	# soup = BeautifulSoup(respobj.content,'lxml', from_encoding="utf8")
-	dom = etree.HTML(respobj.content)
+	body = await respobj.content.read()
+	dom = etree.HTML(body)
 	x = dom.xpath('//*[contains(@class,"uk-table uk-table-striped res-table")]')
 	results = []
 	for table in x:
@@ -81,9 +84,10 @@ def scrape_prev_exams(respobj):
 
 	return results
 
-def scrape_proctor(respobj):
+async def scrape_proctor(respobj):
 	# soup = BeautifulSoup(respobj.content,'lxml', from_encoding="utf8")
-	dom = etree.HTML(respobj.content)
+	body = await respobj.content.read()
+	dom = etree.HTML(body)
 	# print(soup.text)
 	d = {}
 	proctorname = dom.xpath('//h3[@class="md-card-head-text uk-margin-small"]/text()')
@@ -118,10 +122,10 @@ def scrape_proctor(respobj):
 	return d
 
 
-def scrape_attendance(session,respobj):
+def scrape_attendance(text):
 	# do this for each attendance link. there are attendance links for each subject
 	att = dict()
-	dom = etree.HTML(respobj.content)
+	dom = etree.HTML(text)
 	try:
 		# Note that details should be in the order : [subject code - name, teacher email id , phone number]
 		#TODO: Make this pretty
@@ -174,7 +178,7 @@ def scrape_attendance(session,respobj):
 		
 	except Exception as e:
 		print(["Error in attendance scrape : ", e])
-		return {}
+		return att
 
 	return att
 		
@@ -196,9 +200,9 @@ def scrape_attendance(session,respobj):
 
 
 	
-def scrape_marks(session,respobj):
+def scrape_marks(text):
 	marks = dict()
-	response = etree.HTML(respobj.content)
+	response = etree.HTML(text)
 
 	try :
 		graph = response.xpath('//div[@class="uk-card  uk-card-body cn-cie-stat"]//script/text()')[0]
@@ -228,7 +232,7 @@ def scrape_marks(session,respobj):
 		
 	except Exception as e:
 		print(["Error in marks scrape",e])
-		return {}
+		return marks
 	return marks
 		
 		
@@ -237,10 +241,16 @@ def scrape_marks(session,respobj):
 
 
 
-def scrape_student_dashboard(session,respobj):
+async def fetch(session, url):
+    async with session.get(url) as response:
+        return await response.content.read()
+
+
+async def scrape_student_dashboard(session,respobj):
     # scrape all the cie / attendance links here, then call the scrape_attendance and scrape marks links here  
 	d  = {}
-	response = etree.HTML(respobj.content)
+	body = await respobj.content.read()
+	response = etree.HTML(body)
 	details = response.xpath('//a/@href')
 	d = {}
 	d['name'] = response.xpath('//div[@class="uk-card uk-card-body cn-stu-data cn-stu-data1"]/h3/text()')[0]
@@ -255,14 +265,48 @@ def scrape_student_dashboard(session,respobj):
 			cieLinks.append(deet)
 		elif 'attendencelist' in deet:
 			attendanceLinks.append(deet)
-	
-	marks=[]
-	attendance=[]
+	marks = []
+	attendance = []
+	mtasks = []
+	atasks = []
 	for i in attendanceLinks:
-		attendance.append(scrape_attendance(session,session.get(baseurl+i)))
+		atasks.append(fetch(session,baseurl + i))
+	htmls1 = await asyncio.gather(*atasks)
 	for i in cieLinks:
-		marks.append(scrape_marks(session,session.get(baseurl+i)))
+		mtasks.append(fetch(session,baseurl + i))
+	htmls2 = await asyncio.gather(*mtasks)
+
+	attendance = [scrape_attendance(i) for i in htmls1]
+	marks = [scrape_marks(i) for i in htmls2]
 	
+	# with concurrent.futures.ThreadPoolExecutor(5) as executor: # optimally defined number of threads
+	# 	atts = [scrape_marks(session.get(baseurl + i)) for i in cieLinks] + [scrape_attendance(session.get(baseurl + i)) for i in attendanceLinks]
+	# 	for r in executor.map(wrapper, atts):
+	# 		if r['ismarks']:
+	# 			marks.append(r)
+	# 		else:
+	# 			attendance.append(r)
+	# 		print(time.ctime())
+		# concurrent.futures.wait(atts)
+		# for i in atts:
+			# x = i.result()
+			# if x['ismarks']:
+				# marks.append(x)
+			# else:
+				# attendance.append(x)
+
+
+	# marks=[]
+	# attendance=[]
+	# attasklist = []
+	# # loop = asyncio.get_event_loop()
+
+	# for i in attendanceLinks:
+		# attendance.append(scrape_attendance(session,session.get(baseurl+i)))
+	# for i in cieLinks:
+		# marks.append(scrape_marks(session,session.get(baseurl+i)))
+	# attendance = loop.run_until_complete(asyncio.gather(*attasklist))
+
 	d["attendance"] = attendance
 	d["marks"] = marks
 	return d
@@ -272,50 +316,48 @@ def scrape_student_dashboard(session,respobj):
 
 
 
-
-def login(usn,dob):
+async def login(usn,dob):
 	yy = dob[0:4]
 	mm = dob[5:7]
 	dd = dob[8:10]
-	session = requests.Session()
-	
-	resp = session.get(baseurl)
-	# soup = BeautifulSoup(resp.content, "lxml")
-	dom = etree.HTML(resp.content)
-	# print(dom)
-	token = dom.xpath('//input[@value="1"]/@name')[0]
-	# soup.decompose()
-	data = {
-			'username': usn,
-			'dd': dd,
-			'mm': mm,
-			'yyyy': yy,
-			'passwd': dob,
-			'remember': 'No',
-			'option': 'com_user',
-			'task': 'login',
-			'return': '�w^Ƙi',
-			'return': '',
-			token : '1'
-		}
-
 	ret = {}
-	resp2 = session.post(resp.url,data=data)
-	# resp2 contains the body of text to be processed, session has to be passed among the functions.
-	ret = scrape_login_dashboard(resp2)
+	async with aiohttp.ClientSession() as session:
+		async with session.get(baseurl) as resp:
+			body = await resp.content.read()
+			dom = etree.HTML(body)
+			token = dom.xpath('//input[@value="1"]/@name')[0]
+			data = {
+				'username': usn,
+				'dd': dd,
+				'mm': mm,
+				'yyyy': yy,
+				'passwd': dob,
+				'remember': 'No',
+				'option': 'com_user',
+				'task': 'login',
+				'return': '�w^Ƙi',
+				'return': '',
+				token : '1'
+			}
+			async with session.post(resp.url,data =data) as resp2:
+		# resp2 contains the body of text to be processed, session has to be passed among the functions.
+				x1 = await scrape_login_dashboard(resp2)
+				ret.update(x1)
+			async with session.get(baseurl + "index.php?option=com_studentdashboard&controller=studentdashboard&task=dashboard") as resp3:
+				x = await scrape_student_dashboard(session,resp3)
+				ret.update(x)
+			async with session.get(baseurl + "index.php?option=com_history&task=getResult") as resp4:
+				ret["prevResults"] = await scrape_prev_exams(resp4)
+			async with session.get(baseurl + "index.php?option=com_studentdashboard&controller=studentdashboard&task=observation") as resp5:
+				ret["proctorship"] = await scrape_proctor(resp5)
 
-	resp3 = session.get(baseurl + "index.php?option=com_studentdashboard&controller=studentdashboard&task=dashboard")
-	resp4 = session.get(baseurl + "index.php?option=com_history&task=getResult")
-	resp5 = session.get(baseurl + "index.php?option=com_studentdashboard&controller=studentdashboard&task=observation")
-	ret.update(scrape_student_dashboard(session,resp3))
+			
 
-	ret["prevResults"] = scrape_prev_exams(resp4)
+			ret["usn"] = usn
 
-	ret["usn"] = usn
-
-	ret["proctorship"] = scrape_proctor(resp5)
-	ret["downloadLink"]=  "https://www.dl.dropboxusercontent.com/s/1keww8izjzs727a/officialConnectv03.apk?dl=0"
-	ret[ "ver"] = "0.3"
+			
+			ret["downloadLink"]=  "https://www.dl.dropboxusercontent.com/s/1keww8izjzs727a/officialConnectv03.apk?dl=0"
+			ret[ "ver"] = "0.3"
 	return ret
 	# print(resp3.text)
 
@@ -325,19 +367,43 @@ def login(usn,dob):
 # 	f.write(json.dumps(data,indent=3))
 
     
-def lambda_handler(event, context):
-    dob = event['queryStringParameters']['dob']
-    usn  = event['queryStringParameters']['usn']
-    return {
-    "statusCode":200,
-    "body":json.dumps(login(usn,dob))
-    
-    }
+
 
 
 
 # import cProfile
-# # login("1MS20CS023","2001-10-07")
+async def main(usn,dob):
+	# import time
+	# t = time.time()
+	x = await login("1ms19is076","2000-12-08")
+	return x
+	# print(x)
+	# print(time.time() - t)
 # cProfile.run('login("1MS20CS023","2001-10-07")')	#arnav
 
+def lambda_handler(event, context):
+	dob = event['queryStringParameters']['dob']
+	usn  = event['queryStringParameters']['usn']
+	loop = asyncio.get_event_loop()
+	x = loop.run_until_complete(main(usn,dob))
 
+	return {
+	"statusCode":200,
+	"body":json.dumps(x)
+
+	}
+
+
+def sasa(usn,dob):
+	loop = asyncio.get_event_loop()
+	x = loop.run_until_complete(main(usn,dob))
+
+	return {
+	"statusCode":200,
+	"body":json.dumps(x)
+
+	}
+import time
+t = time.time()
+print(sasa("1ms19is076","2000-12-08"))
+print(time.time() - t)
