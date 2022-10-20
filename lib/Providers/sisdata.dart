@@ -291,11 +291,11 @@ class SisData with ChangeNotifier {
 
     final url = Uri.parse(
         "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=get_messages&usn=${usn.trim()}");
-    final headers = {'Content-Type': 'application/json'};
+    // final headers = {'Content-Type': 'application/json'};
 
     http.Response resp = await http.get(
       url,
-      headers: headers,
+      // headers: headers,
     );
     debugPrint(resp.body);
     if (resp.body.isNotEmpty) {
