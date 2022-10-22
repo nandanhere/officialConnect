@@ -188,6 +188,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           setState(() {
                             fillForm = false;
+                            dobController.clear();
+                            _formKey.currentState!.reset();
+                            sisData.isValidData = true;
                           });
                         },
                       ),

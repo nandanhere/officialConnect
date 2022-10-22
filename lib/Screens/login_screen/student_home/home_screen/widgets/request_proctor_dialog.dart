@@ -32,11 +32,14 @@ class _RequestProctorDialogState extends State<RequestProctorDialog> {
           .copyWith(fontSize: widget.width * 0.05),
       key: const ValueKey('message'),
       controller: messageController,
-      maxLines: 2,
+      maxLines: null,
       decoration: InputDecoration(
-        labelText: "Enter Email here ",
-        labelStyle: CustomTheme.textStyle(context).copyWith(),
-      ),
+          contentPadding: EdgeInsets.symmetric(horizontal: widget.width * 0.06),
+          filled: true,
+          fillColor: Colors.white10,
+          labelText: "Enter Email here ",
+          labelStyle: CustomTheme.textStyle(context).copyWith(),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30))),
       validator: (value) {
         if (value!.isEmpty) {
           return "Email cannot be empty";
@@ -46,8 +49,8 @@ class _RequestProctorDialogState extends State<RequestProctorDialog> {
     );
     return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.grey.shade900)),
       backgroundColor:
           sisData.darkMode ? Colors.black : NeumorphicColors.background,
       title: Text(
