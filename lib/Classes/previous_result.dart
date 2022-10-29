@@ -1,3 +1,7 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
+import 'package:flutter/material.dart';
+
 class Subject {
   final courseCode, creditsEarned, creditsRegistered, gpa, grade, subjectName;
 
@@ -31,7 +35,6 @@ class Subject {
 }
 
 class PreviousResult {
-  // ignore: prefer_typing_uninitialized_variables
   final cgpa, creditsEarned, creditsRegistered, sgpa, term, semesterNumber;
   final List<Subject> results;
 
@@ -64,7 +67,7 @@ class PreviousResult {
             );
       }).toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
     return [];
   }

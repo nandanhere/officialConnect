@@ -5,10 +5,11 @@ import asyncio
 import aiohttp
 # from codeguru_profiler_agent import with_lambda_profiler
 
-baseurl = "https://parents.msrit.edu/"
+baseurl = "http://parents.msrit.edu/"
 # baseurl = "https://parents.msrit.edu/parents_even2022/"
 async def scrape_login_dashboard(respobj):
 	body = await respobj.content.read()
+	print(body.text)
     # scrape all the fee data here. 
 	# print(respobj.text)
 	# soup = BeautifulSoup(respobj.content,'lxml', from_encoding="utf8")
@@ -111,7 +112,6 @@ async def scrape_proctor(respobj):
 			message['date'],message['sender'],message['desc'] = data
 		except Exception as e:
 			print(e)
-			# log([e],error=True)
 		messages.append(message)
 	d = {'proctorial_notes': messages}
 	d['proctor_name'] = "No data" if not proctorname else "".join(proctorname).strip()
@@ -128,8 +128,6 @@ def scrape_attendance(text):
 	dom = etree.HTML(text)
 	try:
 		# Note that details should be in the order : [subject code - name, teacher email id , phone number]
-		#TODO: Make this pretty
-		# First getting subject name and code
 		tmp = dom.xpath('//h3[@class="md-card-head-text"]/span/text()')
 		details = tmp if len(tmp) != 0 else dom.xpath('//h3[@class="md-card-head-text uk-margin-remove"]/span/text()')
 		inter = [x for x in details[0].split() if x != '-']
@@ -178,11 +176,13 @@ def scrape_attendance(text):
 		
 	except Exception as e:
 		print(["Error in attendance scrape : ", e])
-		return att
+		return {}
 
 	return att
 		
-	
+
+
+	#  Example output
 	# 	  "code": "MAOE04",  done
     #     "name": "Applied Graph Theory", done
     #     "teacher": "Azghar Pasha.B", 	done
@@ -192,14 +192,6 @@ def scrape_attendance(text):
     #     "percentage": "86%",
     #     "present_dates":[]
 	
-	
-	
-
-
-	
-
-
-	
 def scrape_marks(text):
 	marks = dict()
 	response = etree.HTML(text)
@@ -207,11 +199,11 @@ def scrape_marks(text):
 	try :
 		graph = response.xpath('//div[@class="uk-card  uk-card-body cn-cie-stat"]//script/text()')[0]
 		averages = {}
+		marks['name'] = response.xpath('//th[@colspan="9"]/text()')[0]
 		headers = ['t1','t2','t3','t4','a1','a2','a3']
 		for h,v in zip(headers,  re.findall(r'"col1": (\d+)',graph)):
 			averages[h] = v
 		marks['class_average'] = averages
-		marks['name'] = response.xpath('//th[@colspan="9"]/text()')[0]
 		name = list(marks['name'])
 		index = name.index('(')
 		name[index] = ' '
@@ -232,14 +224,9 @@ def scrape_marks(text):
 		
 	except Exception as e:
 		print(["Error in marks scrape",e])
-		return marks
+		return {}
 	return marks
 		
-		
-
-
-
-
 
 async def fetch(session, url):
     async with session.get(url) as response:
@@ -269,44 +256,17 @@ async def scrape_student_dashboard(session,respobj):
 	attendance = []
 	mtasks = []
 	atasks = []
+
+	# create tasks for each of the attendances and marks := problem in lambda is that requests are slow. so we do all of them in paralell so that we get responses
+	# quicker. here we do attendances first then marks. processing the requests takes little to no time.
 	for i in attendanceLinks:
 		atasks.append(fetch(session,baseurl + i))
 	htmls1 = await asyncio.gather(*atasks)
 	for i in cieLinks:
 		mtasks.append(fetch(session,baseurl + i))
 	htmls2 = await asyncio.gather(*mtasks)
-
 	attendance = [scrape_attendance(i) for i in htmls1]
 	marks = [scrape_marks(i) for i in htmls2]
-	
-	# with concurrent.futures.ThreadPoolExecutor(5) as executor: # optimally defined number of threads
-	# 	atts = [scrape_marks(session.get(baseurl + i)) for i in cieLinks] + [scrape_attendance(session.get(baseurl + i)) for i in attendanceLinks]
-	# 	for r in executor.map(wrapper, atts):
-	# 		if r['ismarks']:
-	# 			marks.append(r)
-	# 		else:
-	# 			attendance.append(r)
-	# 		print(time.ctime())
-		# concurrent.futures.wait(atts)
-		# for i in atts:
-			# x = i.result()
-			# if x['ismarks']:
-				# marks.append(x)
-			# else:
-				# attendance.append(x)
-
-
-	# marks=[]
-	# attendance=[]
-	# attasklist = []
-	# # loop = asyncio.get_event_loop()
-
-	# for i in attendanceLinks:
-		# attendance.append(scrape_attendance(session,session.get(baseurl+i)))
-	# for i in cieLinks:
-		# marks.append(scrape_marks(session,session.get(baseurl+i)))
-	# attendance = loop.run_until_complete(asyncio.gather(*attasklist))
-
 	d["attendance"] = attendance
 	d["marks"] = marks
 	return d
@@ -321,7 +281,7 @@ async def login(usn,dob):
 	mm = dob[5:7]
 	dd = dob[8:10]
 	ret = {}
-	async with aiohttp.ClientSession() as session:
+	async with aiohttp.ClientSession(trust_env=True) as session:
 		async with session.get(baseurl) as resp:
 			body = await resp.content.read()
 			dom = etree.HTML(body)
@@ -359,27 +319,12 @@ async def login(usn,dob):
 			ret["downloadLink"]=  "https://www.dl.dropboxusercontent.com/s/1keww8izjzs727a/officialConnectv03.apk?dl=0"
 			ret[ "ver"] = "0.3"
 	return ret
-	# print(resp3.text)
-
-# with open("./hello.json","w") as f:
-# 	data = login("1MS19IS076","2000-12-08")	#nandan
-# 	import json
-# 	f.write(json.dumps(data,indent=3))
-
-    
 
 
 
-
-# import cProfile
 async def main(usn,dob):
-	# import time
-	# t = time.time()
-	x = await login("1ms19is076","2000-12-08")
+	x = await login(usn,dob)
 	return x
-	# print(x)
-	# print(time.time() - t)
-# cProfile.run('login("1MS20CS023","2001-10-07")')	#arnav
 
 def lambda_handler(event, context):
 	dob = event['queryStringParameters']['dob']
@@ -407,3 +352,9 @@ import time
 t = time.time()
 print(sasa("1ms19is076","2000-12-08"))
 print(time.time() - t)
+
+
+# with open("./hello.json","w") as f:
+# 	data = login("1MS19IS076","2000-12-08")	#nandan
+# 	import json
+# 	f.write(json.dumps(data,indent=3))

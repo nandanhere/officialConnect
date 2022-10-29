@@ -22,7 +22,6 @@ class LatestResultsDetails extends StatelessWidget {
     var url = Uri.parse(
         "https://fg9jyaht14.execute-api.us-east-1.amazonaws.com/result" +
             "?usn=${usn.trim()}&suppli=${suppli ? 'yes' : 'no'}&even=${even ? 'yes' : 'no'}");
-    print(url.toString());
     http.Response resp = await http.get(url);
     if (resp.statusCode == 200) {
       final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);

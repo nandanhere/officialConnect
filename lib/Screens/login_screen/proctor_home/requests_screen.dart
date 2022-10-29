@@ -1,11 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/Themes.dart';
 import 'package:official_connect/Providers/proctor_data.dart';
-import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/proctees_card.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/request_card.dart';
-import 'package:official_connect/Utils/authentication.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 // TODO
@@ -33,6 +30,7 @@ class RequestsScreen extends StatelessWidget {
     void updateData() {
       print("Update Data");
     }
+
     return Container(
       height: height,
       decoration: BoxDecoration(gradient: linearGradientBG),
@@ -89,7 +87,8 @@ class RequestsScreen extends StatelessWidget {
                     Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                          padding:
+                              EdgeInsets.symmetric(vertical: height * 0.02),
                           child: Center(
                             child: AutoSizeText(
                               "Requested Students",

@@ -1,11 +1,10 @@
 // ignore_for_file: dead_code
 
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:official_connect/Classes/attendance.dart';
 import 'package:official_connect/Classes/fees_data.dart';
 import 'package:official_connect/Classes/marks.dart';
@@ -15,7 +14,6 @@ import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SisData with ChangeNotifier {
@@ -55,6 +53,18 @@ class SisData with ChangeNotifier {
     setup();
   }
 
+  Future<bool> isConnected() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+    return false;
+  }
+
   static void showToast(String message) {
     Fluttertoast.showToast(
         msg: message,
@@ -80,17 +90,22 @@ class SisData with ChangeNotifier {
           "data was there before. checking if it is older than 12 hours");
       needToUpdate = DateTime.fromMillisecondsSinceEpoch(time!)
               .difference(DateTime.now())
-              .inHours
+              .inMilliseconds
               .abs() >
           12;
       notifyListeners();
 
       _data = await convert.jsonDecode(prefs.getString('data')!);
-      if (needToUpdate) {
+      final bool iscon = await isConnected();
+      if (needToUpdate && iscon) {
         update();
       }
       await setVariables();
-      await getProctorMessages();
+      if (iscon) {
+        await getProctorMessages();
+      }
+      needToUpdate = false;
+
       notifyListeners();
     }
   }
@@ -117,13 +132,15 @@ class SisData with ChangeNotifier {
     notifyListeners();
     // usn == "" means we are updating the values.
     debugPrint("getting data");
+    // final aws2 =
+    // "https://upylba53h2.execute-api.us-east-1.amazonaws.com/sis?usn=${update ? _usn.trim() : usn.trim()}&dob=${update ? _dob : dob}";
     if (usn != "DUMMY") {
       var url = Uri.parse(
         // in case you want to test out the api
         // "http://192.168.43.212:5000/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
-        "https://upylba53h2.execute-api.us-east-1.amazonaws.com/sis?usn=${update ? _usn.trim() : usn.trim()}&dob=${update ? _dob : dob}",
+        "https://exv9mhwed2.execute-api.ap-south-1.amazonaws.com/default/sis?usn=${update ? _usn.trim() : usn.trim()}&dob=${update ? _dob : dob}",
       );
-      debugPrint(url.toString());
+      // debugPrint(url.toString());
       http.Response resp = await http.get(url);
       if (resp.statusCode == 200) {
         final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
@@ -258,8 +275,11 @@ class SisData with ChangeNotifier {
         'token': _firebaseMessagingToken
       };
       final url = realtimeDatabaseUrl(_usn.toUpperCase().trim());
-      await http.put(Uri.parse(url), body: convert.jsonEncode(userdata));
-      debugPrint("entered data in firebase");
+      final iscon = await isConnected();
+      if (iscon) {
+        await http.put(Uri.parse(url), body: convert.jsonEncode(userdata));
+        debugPrint("entered data in firebase");
+      }
     }
   }
 
@@ -320,8 +340,8 @@ class SisData with ChangeNotifier {
         "batch": _batch.trim()
       }
     };
-    final headers = {'Content-Type': 'application/json'};
-    final encoding = Encoding.getByName("utf-8");
+    // final headers = {'Content-Type': 'application/json'};
+    // final encoding = Encoding.getByName("utf-8");
 
     http.Response resp = await http.post(
       url,

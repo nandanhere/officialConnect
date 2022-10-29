@@ -37,8 +37,8 @@ class ProctorData with ChangeNotifier {
     final url = Uri.parse(
         "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=get_proctor_details");
     final bod = {"proctor_email": _email.toLowerCase().trim()};
-    final headers = {'Content-Type': 'application/json'};
-    final encoding = Encoding.getByName("utf-8");
+    // final headers = {'Content-Type': 'application/json'};
+    // final encoding = Encoding.getByName("utf-8");
 
     http.Response resp = await http.post(
       url,
@@ -80,8 +80,8 @@ class ProctorData with ChangeNotifier {
       "proctor_email": _email.trim().toLowerCase(),
       "usn": studDetails["usn"].toString().toUpperCase().trim()
     };
-    final headers = {'Content-Type': 'application/json'};
-    final encoding = Encoding.getByName("utf-8");
+    // final headers = {'Content-Type': 'application/json'};
+    // final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
       // headers: headers,
@@ -109,8 +109,8 @@ class ProctorData with ChangeNotifier {
       "proctor_email": _email.toLowerCase().trim(),
       "usn": studDetails["usn"].toString().toUpperCase().trim()
     };
-    final headers = {'Content-Type': 'application/json'};
-    final encoding = Encoding.getByName("utf-8");
+    // final headers = {'Content-Type': 'application/json'};
+    // final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
       // headers: headers,
@@ -136,8 +136,8 @@ class ProctorData with ChangeNotifier {
       "proctor_email": _email.toLowerCase().trim(),
       "usn": studDetails["usn"].toString().toUpperCase().trim()
     };
-    final headers = {'Content-Type': 'application/json'};
-    final encoding = Encoding.getByName("utf-8");
+    // final headers = {'Content-Type': 'application/json'};
+    // final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
       // headers: headers,
@@ -167,8 +167,8 @@ class ProctorData with ChangeNotifier {
       "message_body": message,
       "usn_list": usns
     };
-    final headers = {'Content-Type': 'application/json'};
-    final encoding = Encoding.getByName("utf-8");
+    // final headers = {'Content-Type': 'application/json'};
+    // final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
       // headers: headers,
@@ -191,8 +191,8 @@ class ProctorData with ChangeNotifier {
     final url = Uri.parse(
         "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=delete_message");
     final bod = {"proctor_email": _email, "time": messageDetails['time']};
-    final headers = {'Content-Type': 'application/json'};
-    final encoding = Encoding.getByName("utf-8");
+    // final headers = {'Content-Type': 'application/json'};
+    // final encoding = Encoding.getByName("utf-8");
     http.Response resp = await http.post(
       url,
       // headers: headers,

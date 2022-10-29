@@ -56,8 +56,9 @@ dependencies:
   ota_update: ^4.0.1
   google_sign_in: ^5.3.3
   firebase_auth: ^3.3.19
-  internet_connection_checker: ^0.0.1+4
   dcdg: ^4.0.1
+  responsive_framework: ^0.2.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
