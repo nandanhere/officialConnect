@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'Screens/loading_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
@@ -24,13 +24,14 @@ void main() async {
 
     FirebaseMessaging.instance.getToken().then(debugPrint);
   }
-  if (kIsWeb)
+  if (kIsWeb) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
         .then((_) {
-      runApp(new MyApp());
+      runApp(const MyApp());
     });
-  else
+  } else {
     runApp(const MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -40,12 +41,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // FirebaseAuth.instance.signOut();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => SisData()),
         ChangeNotifierProvider(create: (ctx) => ProctorData())
       ],
       child: MaterialApp(
+        builder: (context, child) => ResponsiveWrapper.builder(
+          child,
+          maxWidth: 1200,
+          minWidth: 480,
+          defaultScale: true,
+          breakpoints: [
+            const ResponsiveBreakpoint.resize(480, name: MOBILE),
+            const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+            const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+          ],
+          background: Container(
+            color: const Color.fromARGB(0, 0, 0, 0),
+          ),
+        ),
         title: 'Connect',
         theme: ThemeData(
           primarySwatch: Colors.blue,

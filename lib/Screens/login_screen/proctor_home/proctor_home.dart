@@ -1,12 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Classes/sis_proctor_data.dart';
 import 'package:official_connect/Providers/Themes.dart';
 import 'package:official_connect/Providers/proctor_data.dart';
 import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/proctees_batch_card.dart';
-import 'package:official_connect/Screens/login_screen/proctor_home/Widgets/proctees_card.dart';
-import 'package:official_connect/Screens/login_screen/proctor_home/requests_screen.dart';
-import 'package:official_connect/Screens/login_screen/proctor_home/sent_messages_screen.dart';
 import 'package:official_connect/Utils/authentication.dart';
 import 'package:official_connect/Widgets/loading_indicator.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +56,7 @@ class ProctorHome extends StatelessWidget {
 
     batchToList();
     void updateData() {
-      print("Update Data");
+      debugPrint("Update Data");
     }
 
     return Container(
@@ -70,7 +66,7 @@ class ProctorHome extends StatelessWidget {
         color: Colors.red,
         backgroundColor: sisData.darkMode ? Colors.black : Colors.white,
         onRefresh: () async {
-          await Future.delayed(Duration(seconds: 2));
+          await Future.delayed(const Duration(seconds: 2));
           updateData();
         },
         child: SingleChildScrollView(
