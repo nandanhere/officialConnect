@@ -5,7 +5,7 @@ import asyncio
 import aiohttp
 # from codeguru_profiler_agent import with_lambda_profiler
 
-baseurl = "http://parents.msrit.edu/"
+baseurl = "https://parents.msrit.edu/"
 # baseurl = "https://parents.msrit.edu/parents_even2022/"
 async def scrape_login_dashboard(respobj):
 	body = await respobj.content.read()
