@@ -1,16 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/cie_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/see_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ResultsScreen extends StatelessWidget {
   final seeOpt;
-  const ResultsScreen(this.seeOpt);
+  const ResultsScreen(this.seeOpt, {Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
 import 'package:official_connect/Providers/Themes.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -110,7 +110,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
         allDateList.add([
           1,
           DateTime(fromDate.year, fromDate.month, fromDate.day),
-          fromDate.add(Duration(hours: 7)),
+          fromDate.add(const Duration(hours: 7)),
           attendance.presentDates
               .where((element) => element.date == fromDate)
               .first
@@ -120,7 +120,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
         allDateList.add([
           0,
           DateTime(fromDate.year, fromDate.month, fromDate.day),
-          fromDate.add(Duration(hours: 7)),
+          fromDate.add(const Duration(hours: 7)),
           attendance.absentDates
               .where((element) => element.date == fromDate)
               .first
@@ -169,7 +169,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
       return Colors.transparent;
     }
 
-    return Container(
+    return SizedBox(
       height: height * 0.7,
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -270,6 +270,6 @@ class DataSource {
   @override
   String toString() {
     // TODO: implement toString
-    return "${this.eventName},${this.from},${this.to},${this.background},${this.isAllDay}";
+    return "$eventName,$from,$to,$background,$isAllDay";
   }
 }

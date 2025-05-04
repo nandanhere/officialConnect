@@ -4,19 +4,19 @@ import 'package:official_connect/Screens/login_screen/student_home/unified_scree
 import 'package:official_connect/Screens/login_screen/student_home/settings_screen/widgets/about_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ota_update/ota_update.dart';
 
-const double version = 0.4;
+const double version = 1;
 
 class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url),
-        mode: LaunchMode.externalNonBrowserApplication))
+        mode: LaunchMode.externalNonBrowserApplication)) {
       throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -145,7 +145,6 @@ class SettingsInfo extends StatelessWidget {
                     ),
                   ),
                 ),
-                // TODO : what is going on here? it is too convoluted.
                 ...tiles.map((e) => Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: NeumorphicButton(
@@ -243,33 +242,6 @@ class SettingsInfo extends StatelessWidget {
                       SizedBox(
                         width: width * 0.07,
                       ),
-                      if (sisData.ver != version)
-                        NeumorphicButton(
-                          onPressed: () {
-                            try {
-                              //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
-                              OtaUpdate()
-                                  .execute(
-                                sisData.downloadLink,
-                                // OPTIONAL
-                                destinationFilename: 'connect.apk',
-                              )
-                                  .listen(
-                                (OtaEvent event) {
-                                  debugPrint(event.toString());
-                                },
-                              );
-                            } catch (e) {
-                              debugPrint(
-                                  'Failed to make OTA update. Details: $e');
-                            }
-                          },
-                          style: neumorphicStyle,
-                          child: Text(
-                            "Update",
-                            style: buttonTitle,
-                          ),
-                        ),
                     ],
                   ),
                 ),
@@ -278,9 +250,6 @@ class SettingsInfo extends StatelessWidget {
                 ),
                 if (sisData.ver == version)
                   Text("Currently using version " + version.toString(),
-                      style: CustomTheme.textStyle(context)),
-                if (sisData.ver != version)
-                  Text("Using Outdated Verison",
                       style: CustomTheme.textStyle(context)),
                 SizedBox(
                   height: height * 0.07,

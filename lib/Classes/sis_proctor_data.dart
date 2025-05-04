@@ -17,9 +17,9 @@ class SisProctorData {
   static SisProctorData proctorData(Map<String, dynamic> data) {
     return SisProctorData(
         ProctorMessage.getMessageList(data['proctorial_notes']),
-        data['proctor_name'],
-        data['phone'],
-        data['email'],
-        data['branch']);
+        data['proctor_name'] ?? 'Not given',
+        data['phone'] ?? 'Not given',
+        data['email'] ?? 'Not given',
+        data['branch'] ?? 'Not given');
   }
 }

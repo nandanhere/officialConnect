@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/student_home/attendance_screen/widgets/attendance_graph.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'attendance_details/attendance_details.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:fluttertoast/fluttertoast.dart';

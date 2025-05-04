@@ -2909,6 +2909,21 @@ class DummyData {
   };
   static const List<Map<String, String>> clubs = [
     {
+      "name": "AWS Cloud Club RIT",
+      'image': 'aws.png',
+      'desc':
+          "Learn cloud computing, earn certifications, and build your future in the cloud.",
+      "website": "https://awscloudclubrit.tech/",
+      "linktree": "https://awscloudclubrit.tech/",
+    },
+    {
+      "name": "MSRIT discord",
+      'image': 'discord.png',
+      'desc': "Discord for general discussions",
+      "website": "http://gdscrit.tech/",
+      "linktree": "https://discord.gg/VKKMvaWYsa"
+    },
+    {
       "name": "GDSC-RIT",
       'image': 'gdsc.png',
       'desc':

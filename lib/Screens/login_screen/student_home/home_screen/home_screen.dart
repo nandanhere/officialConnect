@@ -1,17 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/Proctor_messages_card.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/fees_card.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/new_proctor_messages_card%20copy.dart';
-import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/request_proctor_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import "dart:math";
 import 'package:official_connect/Providers/themes.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 extension StringCasingExtension on String {
   String toCapitalized() =>
@@ -124,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             .split('.')
                                                             .first
                                                     : sisData.studentImage,
-                                                headers: {
+                                                headers: const {
                                                     "Origin":
                                                         "http://localhost:8080",
                                                   })
@@ -217,24 +215,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                             : Icons.refresh),
                                         onPressed: () async {
                                           if (sisData.proctorEmail == "") {
-                                            showDialog(
-                                                context: context,
-                                                builder: (ctx) {
-                                                  return RequestProctorDialog(
-                                                    height: height,
-                                                    width: width,
-                                                  );
-                                                });
+                                            // showDialog(
+                                            //     context: context,
+                                            //     builder: (ctx) {
+                                            //       return RequestProctorDialog(
+                                            //         height: height,
+                                            //         width: width,
+                                            //       );
+                                            //     });
                                           } else {
                                             setState(() {
                                               isLoadingMessages = true;
                                             });
-                                            await sisData.getProctorMessages();
+                                            // await sisData.getProctorMessages();
                                             setState(() {
                                               isLoadingMessages = false;
                                             });
-                                            SisData.showToast(
-                                                "Proctor messages recieved!");
+                                            // SisData.showToast(
+                                            //     "Proctor messages recieved!");
                                           }
                                         },
                                       ),

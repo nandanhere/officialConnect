@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/widgets/marks_card.dart';
@@ -65,9 +65,9 @@ class ResultsDetails extends StatelessWidget {
                     Text("Semester ${previousResult.semesterNumber}",
                         style: buttonTrailing.copyWith(fontSize: width * 0.06)),
                   Card(
-                    color:  (sisData.darkMode)
-                     ? NeumorphicColors.decorationMaxDarkColor
-                      : NeumorphicColors.darkDefaultBorder,
+                    color: (sisData.darkMode)
+                        ? NeumorphicColors.decorationMaxDarkColor
+                        : NeumorphicColors.darkDefaultBorder,
                     elevation: 0.5,
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
