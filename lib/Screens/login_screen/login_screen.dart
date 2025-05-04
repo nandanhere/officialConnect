@@ -1,5 +1,4 @@
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:official_connect/Screens/login_screen/proctor_login.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +6,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:date_picker_plus/date_picker_plus.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = "login";
@@ -29,25 +29,27 @@ class _LoginScreenState extends State<LoginScreen> {
   var selectedDate = DateTime.now();
 
   Widget getDateRangePicker() {
-    return SfDateRangePickerTheme(
-      data: SfDateRangePickerThemeData(
-          // TODO : dark mode stuff
-          // brightness: Brightness.dark,
-          // backgroundColor: Colors.grey,
+    return Center(
+      // child: SfDateRangePicker(
+      //   view: DateRangePickerView.decade,
+      //   selectionMode: DateRangePickerSelectionMode.single,
+      //   // minDate: DateTime(1990, 01, 01),
+      //   // maxDate: DateTime(2009, 01, 01),
 
-          ),
-      child: SfDateRangePicker(
-        view: DateRangePickerView.decade,
-        selectionMode: DateRangePickerSelectionMode.single,
-        // minDate: DateTime(1990, 01, 01),
-        // maxDate: DateTime(2009, 01, 01),
+      //   navigationDirection: DateRangePickerNavigationDirection.vertical,
+      //   onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+      //     selectedDate = args.value;
+      //     setState(() {
+      //       dobController.text = formatter.format(selectedDate);
+      //     });
+      //   },
+      child: DatePicker(
+        initialPickerType: PickerType.years,
         minDate: DateTime(DateTime.now().year - 32, 01, 01),
         maxDate: DateTime(DateTime.now().year - 15, 01, 01),
-        navigationDirection: DateRangePickerNavigationDirection.vertical,
-        onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-          selectedDate = args.value;
+        onDateSelected: (value) {
           setState(() {
-            dobController.text = formatter.format(selectedDate);
+            dobController.text = formatter.format(value);
           });
         },
       ),
@@ -70,7 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: size.width * 0.8,
                 child: Column(
                   children: <Widget>[
-                    Expanded(child: getDateRangePicker()),
+                    Center(
+                      child: getDateRangePicker(),
+                    ),
                     MaterialButton(
                       child: const Text("OK"),
                       onPressed: () {
@@ -306,34 +310,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(
                                 height: 20,
                               ),
-
-                              // // TODO : Comment this for now while releasing
-                              if (!fillForm)
-                                NeumorphicButton(
-                                  style: NeumorphicStyle(
-                                      intensity: 0.5,
-                                      color: const Color(0x00c00000),
-                                      boxShape: NeumorphicBoxShape.roundRect(
-                                          BorderRadius.circular(30))),
-                                  child: const Text(
-                                    "Proctor Login",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                        fontFamily: 'Comfortaa'),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ProctorLogin(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              //   // TODO :
                               if (!sisData.isValidData)
                                 Text(
                                   sisData.errorMessage,

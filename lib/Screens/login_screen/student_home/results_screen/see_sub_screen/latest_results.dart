@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/Themes.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -20,8 +20,7 @@ class LatestResultsDetails extends StatelessWidget {
     // var url = Uri.parse("http://192.168.43.212:5000/" + usn);
 
     var url = Uri.parse(
-        "https://fg9jyaht14.execute-api.us-east-1.amazonaws.com/result" +
-            "?usn=${usn.trim()}&suppli=${suppli ? 'yes' : 'no'}&even=${even ? 'yes' : 'no'}");
+        "https://fg9jyaht14.execute-api.us-east-1.amazonaws.com/result" "?usn=${usn.trim()}&suppli=${suppli ? 'yes' : 'no'}&even=${even ? 'yes' : 'no'}");
     http.Response resp = await http.get(url);
     if (resp.statusCode == 200) {
       final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);

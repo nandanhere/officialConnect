@@ -1,7 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:official_connect/Providers/proctor_data.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
@@ -16,14 +13,9 @@ import 'package:flutter/services.dart';
 
 // to build flutter apk:
 // flutter build apk --split-per-abi
-// 1ms21scn05-t 1996-07-14
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
-    await Firebase.initializeApp();
 
-    FirebaseMessaging.instance.getToken().then(debugPrint);
-  }
   if (kIsWeb) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
         .then((_) {
@@ -40,12 +32,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // FirebaseAuth.instance.signOut();
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => SisData()),
-        ChangeNotifierProvider(create: (ctx) => ProctorData())
       ],
       child: MaterialApp(
         builder: (context, child) => ResponsiveWrapper.builder(

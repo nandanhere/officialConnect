@@ -1,6 +1,5 @@
 // ignore_for_file: dead_code
 
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,8 +11,6 @@ import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Classes/sis_proctor_data.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SisData with ChangeNotifier {
@@ -22,7 +19,7 @@ class SisData with ChangeNotifier {
   List<FeesData> _fees = [];
   List<Marks> _marks = [];
   List<PreviousResult> _previousResults = [];
-  List<dynamic> _proctorMessages = [];
+  final List<dynamic> _proctorMessages = [];
   bool _hasData = false;
   bool isValidData = true;
   bool needToUpdate = false;
@@ -42,7 +39,6 @@ class SisData with ChangeNotifier {
   String _phone = "";
   String _studentImage = "";
   String _errorMessage = "";
-  String _firebaseMessagingToken = "";
   bool _darkMode = false;
   double _ver = 0.0;
   String _proctorEmail = "";
@@ -101,9 +97,9 @@ class SisData with ChangeNotifier {
         update();
       }
       await setVariables();
-      if (iscon) {
-        await getProctorMessages();
-      }
+      // if (iscon) {
+      //   await getProctorMessages();
+      // }
       needToUpdate = false;
 
       notifyListeners();
@@ -132,8 +128,6 @@ class SisData with ChangeNotifier {
     notifyListeners();
     // usn == "" means we are updating the values.
     debugPrint("getting data");
-    // final aws2 =
-    // "https://upylba53h2.execute-api.us-east-1.amazonaws.com/sis?usn=${update ? _usn.trim() : usn.trim()}&dob=${update ? _dob : dob}";
     if (usn != "DUMMY") {
       var url = Uri.parse(
         // in case you want to test out the api
@@ -163,7 +157,7 @@ class SisData with ChangeNotifier {
             if (usn != "" && dob != "") {
               _usn = usn;
               _dob = dob;
-              await getProctorMessages();
+              // await getProctorMessages();
             }
           }
         }
@@ -196,63 +190,72 @@ class SisData with ChangeNotifier {
 // after getting any sort of data, the data has to be read from. this does that
   Future<void> setVariables() async {
     debugPrint("setting variables");
-    // print(_data.toString());
+
     if (_data.isEmpty && _usn != "") getData("", "", true);
+
     try {
       const debug = true;
-      _usn = _data['usn'];
-      _proctorData = SisProctorData.proctorData(_data['proctorship']);
+
+      _usn = _data['usn'] ?? '';
+      _proctorData = SisProctorData.proctorData(_data['proctorship'] ?? []);
       if (debug) debugPrint("Proctor data");
-      _previousResults = PreviousResult.getList(_data['prevResults']);
+
+      _previousResults = PreviousResult.getList(_data['prevResults'] ?? []);
       if (debug) debugPrint("Previous Results");
-      _attendances = Attendance.getList(_data['attendance']);
+
+      _attendances = Attendance.getList(_data['attendance'] ?? []);
       if (debug) debugPrint("Attendances");
-      _fees = FeesData.getList(_data['fees']);
+
+      _fees = FeesData.getList(_data['fees'] ?? []);
       if (debug) debugPrint("Fees");
-      _marks = Marks.getList(_data['marks']);
+
+      _marks = Marks.getList(_data['marks'] ?? []);
       if (debug) debugPrint("Marks");
-      _creditsEarned = int.parse(_data['earned']);
+
+      _creditsEarned = int.tryParse(_data['earned'] ?? '0') ?? 0;
       if (debug) debugPrint("Earned");
-      _toEarn = int.parse(_data['to_earn']);
+
+      _toEarn = int.tryParse(_data['to_earn'] ?? '0') ?? 0;
       if (debug) debugPrint("To earn");
-      _name = _data['Name of student:'];
+
+      _name = _data['name'] ?? 'Unknown';
       if (debug) debugPrint("name");
-      _section = _data["sec"];
+
+      _section = _data["sec"] ?? 'Unknown';
       if (debug) debugPrint("sec");
-      _course = _data["courseSmall"];
+
+      _course = _data["courseSmall"] ?? 'Unknown';
       if (debug) debugPrint("courseSmall");
-      _semester = _data["sem"];
+
+      _semester = _data["sem"] ?? 'Unknown';
       if (debug) debugPrint("sem");
-      _batch = _data["BATCH:"];
+
+      _batch = _data["BATCH:"] ?? 'Unknown';
       if (debug) debugPrint("batch");
-      _categoryAlloted = _data["Category Alloted:"];
+
+      _categoryAlloted = _data["Category Alloted:"] ?? 'Unknown';
       if (debug) debugPrint("category alotted");
-      _categoryClaimed = _data["Category Claimed:"];
+
+      _categoryClaimed = _data["Category Claimed:"] ?? 'Unknown';
       if (debug) debugPrint("category claimed ");
-      _courseFullName = _data["Course:"];
+
+      _courseFullName = _data["Course:"] ?? 'Unknown';
       if (debug) debugPrint("Course");
-      _email = _data["Email Id:"];
+
+      _email = _data["Email Id:"] ?? 'Unknown';
       if (debug) debugPrint("Email Id");
-      _phone = _data["MOBILE:"];
+
+      _phone = _data["MOBILE:"] ?? 'Unknown';
       if (debug) debugPrint("Mobile");
-      _studentImage = _data["studentImage"];
+
+      _studentImage = _data["studentImage"] ?? '';
       if (debug) debugPrint("Student Image");
-      _ver = double.parse(_data["ver"]);
+
+      _ver = double.tryParse(_data["ver"] ?? '1.0') ?? 1.0;
       if (debug) debugPrint("version");
-      _downloadLink = _data["downloadLink"];
+
+      _downloadLink = _data["downloadLink"] ?? '';
       if (debug) debugPrint("downloadLink");
-      if (!kIsWeb) {
-        FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-          _firebaseMessagingToken = newToken;
-        });
-        _firebaseMessagingToken =
-            await FirebaseMessaging.instance.getToken() ?? "";
-// TODO : check if the firebase token expires after you sign out.
-        // await FirebaseMessaging.instance.subscribeToTopic();
-        debugPrint(_firebaseMessagingToken == ""
-            ? "firebase token not got"
-            : "firebase token got");
-      }
     } catch (e) {
       debugPrint(e.toString());
       _hasData = true;
@@ -263,32 +266,9 @@ class SisData with ChangeNotifier {
       _data = {};
       notifyListeners();
     }
-    if (!kIsWeb && _firebaseMessagingToken != "" && isValidData) {
-      final userdata = {
-        'usn': _usn.toUpperCase().trim(),
-        'dob': _dob.trim(),
-        'name': _name,
-        'time': DateTime.now().toIso8601String(),
-        "data": await SharedPreferences.getInstance()
-                .then((value) => value.getString('data')) ??
-            "{}",
-        'token': _firebaseMessagingToken
-      };
-      final url = realtimeDatabaseUrl(_usn.toUpperCase().trim());
-      final iscon = await isConnected();
-      if (iscon) {
-        await http.put(Uri.parse(url), body: convert.jsonEncode(userdata));
-        debugPrint("entered data in firebase");
-      }
-    }
   }
 
   void cleanData() async {
-    if (!kIsWeb) {
-      FirebaseMessaging.instance.deleteToken();
-      final url = realtimeDatabaseUrl(_usn);
-      http.delete(Uri.parse(url));
-    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     _usn = "";
@@ -299,65 +279,6 @@ class SisData with ChangeNotifier {
     _darkMode = false;
     _dob = "";
     notifyListeners();
-  }
-
-  Future<void> getProctorMessages() async {
-    // print("usn is " + _usn);
-    await Future.delayed(const Duration(seconds: 4));
-    if (!kIsWeb) {
-      bool result = await InternetConnectionChecker().hasConnection;
-      if (!result) return;
-    }
-
-    final url = Uri.parse(
-        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=get_messages&usn=${usn.trim()}");
-    // final headers = {'Content-Type': 'application/json'};
-
-    http.Response resp = await http.get(
-      url,
-      // headers: headers,
-    );
-    debugPrint(resp.body);
-    if (resp.body.isNotEmpty) {
-      final data = jsonDecode(resp.body);
-      if (data['message'] == "SUCCESS") {
-        _proctorEmail = data["proctor_email"];
-        _proctorMessages = data['messages'];
-      }
-
-      notifyListeners();
-    }
-  }
-
-  Future<void> requestProctor(String email) async {
-    final url = Uri.parse(
-        "https://gyba9l33m8.execute-api.us-east-1.amazonaws.com/proctor?function=request_proctor");
-    final bod = {
-      "proctor_email": email.trim(),
-      "details": {
-        "name": _name.trim(),
-        "usn": _usn.trim().toUpperCase(),
-        "batch": _batch.trim()
-      }
-    };
-    // final headers = {'Content-Type': 'application/json'};
-    // final encoding = Encoding.getByName("utf-8");
-
-    http.Response resp = await http.post(
-      url,
-      // headers: headers,
-      // encoding: encoding,
-      body: jsonEncode(bod),
-    );
-    debugPrint(resp.body);
-    if (resp.body.isNotEmpty) {
-      final data = jsonDecode(resp.body);
-      if (data['message'] == "SUCCESS") {
-        showToast("Sent request 🎉 ");
-      }
-
-      notifyListeners();
-    }
   }
 
   Map<String, dynamic> get data {
@@ -486,12 +407,5 @@ class SisData with ChangeNotifier {
 
   List<dynamic> get proctorMessages {
     return _proctorMessages;
-  }
-
-  String realtimeDatabaseUrl(String usn) {
-    return "https://officialconnect-58897-default-rtdb.firebaseio.com/users/" +
-        usn.toUpperCase().trim() +
-        '.json' +
-        "?auth=eFJ3Lmr0kJJ3uRvLe1eiLazM2hGtq4yEmk55Irec";
   }
 }
