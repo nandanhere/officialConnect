@@ -2,7 +2,8 @@
 set -eu
 
 project_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-output_dir=${1:-"$project_dir/../outputs"}
+# Resolve to an absolute path: the packaging step runs inside a temp dir.
+output_dir=$(mkdir -p "${1:-"$project_dir/outputs"}" && CDPATH= cd -- "${1:-"$project_dir/outputs"}" && pwd)
 developer_dir=${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}
 
 if [ ! -d "$developer_dir" ]; then
