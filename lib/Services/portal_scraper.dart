@@ -40,6 +40,14 @@ class PortalScraper {
     final result = <String, dynamic>{};
     _parseStudentSummary(document, result);
     _parseFees(document, result);
+    // The portal serves the student photo only to its authenticated browser
+    // session, so plain HTTP image loading in the UI fails. Download it here
+    // through the WebView and store a self-contained data URI instead.
+    final studentImageUrl = result['studentImage']?.toString();
+    if (studentImageUrl != null && studentImageUrl.startsWith('http')) {
+      final dataUri = await session.fetchDataUri(Uri.parse(studentImageUrl));
+      if (dataUri != null) result['studentImage'] = dataUri;
+    }
     final profileValues = [
       result['name'],
       result['courseSmall'],
@@ -341,6 +349,17 @@ class PortalScraper {
     for (final row in details) {
       final cells = row.querySelectorAll('td');
       if (cells.length >= 2) out[cells[0].text.trim()] = cells[1].text.trim();
+    }
+    // Student profile photo (the portal page may hold several images with
+    // this class; the last one is the student photo, matching the old
+    // lambda scraper behaviour).
+    final images = doc.querySelectorAll('img.uk-preserve-width.uk-border');
+    final imgSrc = images.isEmpty ? null : images.last.attributes['src'];
+    if (imgSrc != null && imgSrc.trim().isNotEmpty) {
+      final src = imgSrc.trim();
+      out['studentImage'] = src.startsWith('http')
+          ? src
+          : 'https://parents.msrit.edu/newparents/$src';
     }
   }
 

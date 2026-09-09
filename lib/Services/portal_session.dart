@@ -309,6 +309,53 @@ class PortalSession {
     return body;
   }
 
+  /// Fetches a binary resource through the WebView itself (session cookies
+  /// included) and returns it as a data URI. Used for the student photo,
+  /// which the portal only serves to its authenticated browser session.
+  Future<String?> fetchDataUri(Uri uri) async {
+    final controller = _controller;
+    if (controller == null) return null;
+    try {
+      final result = await controller.callAsyncJavaScript(
+        functionBody: '''
+          const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'include',
+            cache: 'no-store'
+          });
+          if (!response.ok) return {status: response.status};
+          const buffer = await response.arrayBuffer();
+          const bytes = new Uint8Array(buffer);
+          let binary = '';
+          const chunk = 0x8000;
+          for (let i = 0; i < bytes.length; i += chunk) {
+            binary += String.fromCharCode.apply(
+              null, bytes.subarray(i, i + chunk));
+          }
+          return {
+            status: response.status,
+            mime: response.headers.get('content-type') || 'image/jpeg',
+            base64: btoa(binary)
+          };
+        ''',
+        arguments: {'url': uri.toString()},
+      ).timeout(const Duration(seconds: 20));
+      if (result == null || result.error != null || result.value is! Map) {
+        return null;
+      }
+      final value = Map<String, dynamic>.from(result.value as Map);
+      final base64 = value['base64']?.toString();
+      if ((value['status'] as int? ?? 0) != 200 ||
+          base64 == null ||
+          base64.isEmpty) {
+        return null;
+      }
+      return 'data:${value['mime']};base64,$base64';
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<bool> isAuthenticated() async {
     final controller = _controller;
     if (controller != null) {

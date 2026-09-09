@@ -15,6 +15,15 @@ class CieGraph extends StatefulWidget {
 class _CieGraphState extends State<CieGraph> {
   late TooltipBehavior _tooltipBehavior;
 
+  /// Extracts a plottable number from formats like "44/50", "78%", "-".
+  /// Returns null when there is nothing numeric to plot.
+  static double? _parseCieValue(String raw) {
+    var s = raw.trim();
+    if (s.isEmpty || s == '-') return null;
+    s = s.replaceAll('%', '').split('/').first.trim();
+    return double.tryParse(s);
+  }
+
   @override
   void initState() {
     // documentation at https://help.syncfusion.com/flutter/cartesian-charts/tooltip for customisation.
@@ -31,9 +40,10 @@ class _CieGraphState extends State<CieGraph> {
 
     return SfCartesianChart(
       onTooltipRender: (TooltipArgs args) {
-        if (args.pointIndex != null) {
-          args.header = widget.marks[args.pointIndex!.toInt()].subjectName;
-          args.text = widget.marks[args.pointIndex!.toInt()].finalCie;
+        final i = args.pointIndex?.toInt();
+        if (i != null && i >= 0 && i < widget.marks.length) {
+          args.header = widget.marks[i].subjectName;
+          args.text = widget.marks[i].finalCie;
         }
       },
       tooltipBehavior: _tooltipBehavior,
@@ -43,7 +53,11 @@ class _CieGraphState extends State<CieGraph> {
               fontSize: MediaQuery.of(context).size.width * 0.025,
               fontFamily: 'Comfortaa')),
       isTransposed: true,
-      primaryYAxis: const NumericAxis(minimum: 0, maximum: 50),
+      primaryYAxis: NumericAxis(
+          minimum: 0,
+          maximum: widget.marks
+              .map((m) => _parseCieValue(m.finalCie) ?? 0)
+              .fold<double>(50, (a, b) => b > a ? b.toDouble() : a)),
       series: <CartesianSeries<Marks, String>>[
         BarSeries<Marks, String>(
           borderRadius: const BorderRadius.only(
@@ -59,13 +73,9 @@ class _CieGraphState extends State<CieGraph> {
           // Bind data source
           dataSource: widget.marks,
           xValueMapper: (Marks a, _) =>
-              RegExp(r'\((.*)\)').firstMatch(a.subjectName)!.group(1),
-          yValueMapper: (Marks b, _) =>
-              // int.parse(b.finalCie.split('/').first))
-              double.parse((b.finalCie.contains('%'))
-                      ? ((b.a1 != "-") ? b.finalCie.replaceAll('%', "") : "0")
-                      : b.finalCie.split('/').first)
-                  .round(),
+              RegExp(r'\(([^)]*)\)').firstMatch(a.subjectName)?.group(1) ??
+              a.subjectName,
+          yValueMapper: (Marks b, _) => _parseCieValue(b.finalCie),
           enableTooltip: true,
         )
       ],

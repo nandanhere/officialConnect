@@ -44,7 +44,7 @@ class _UnifiedState extends State<Unified> {
     }
     if (sisData.data.isEmpty || sisData.updating) {
       return Scaffold(
-        backgroundColor: sisData.darkMode ? Colors.black : Colors.white,
+        backgroundColor: sisData.darkMode ? const Color(0xff101114) : Colors.white,
         body: const Center(
           child: SpinKitSpinningLines(color: Color(0xffba3237), size: 80),
         ),
@@ -54,7 +54,7 @@ class _UnifiedState extends State<Unified> {
     final navColor =
         sisData.darkMode ? Colors.black : NeumorphicColors.background;
     return Scaffold(
-      backgroundColor: sisData.darkMode ? Colors.black : Colors.white,
+      backgroundColor: sisData.darkMode ? const Color(0xff101114) : Colors.white,
       body: PageView(
         physics: const BouncingScrollPhysics(),
         controller: _pageController,

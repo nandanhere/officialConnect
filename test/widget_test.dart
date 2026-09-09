@@ -11,6 +11,48 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  test('cached portal data survives a simulated app restart', () async {
+    SharedPreferences.setMockInitialValues({});
+    final firstRun = SisData();
+    await firstRun.getData('DUMMY', '', false);
+    await firstRun.applyPortalData(
+      {
+        'name': 'Cache Test Student',
+        'marks': <dynamic>[],
+        '_sync': {'version': 1, 'sections': const {}},
+      },
+      'CACHE01',
+      '2000-01-01',
+    );
+    expect(firstRun.hasData, isTrue);
+
+    // A fresh provider against the same prefs is what a cold start does.
+    final secondRun = SisData();
+    for (var i = 0; i < 40 && !secondRun.hasData; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 25));
+    }
+
+    expect(secondRun.hasData, isTrue);
+    expect(secondRun.isValidData, isTrue);
+    expect(secondRun.studentName, 'Cache Test Student');
+    expect(secondRun.usn, 'CACHE01');
+  });
+
+  test('a corrupted cache resets cleanly instead of hanging', () async {
+    SharedPreferences.setMockInitialValues({
+      'hasData': true,
+      'timeStamp': 0,
+      'data': '{not valid json',
+    });
+    final sisData = SisData();
+    for (var i = 0; i < 40; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 25));
+      if (!sisData.hasData) break;
+    }
+    expect(sisData.hasData, isFalse);
+    expect(sisData.data, isEmpty);
+  });
+
   test('examination result HTML is converted into native result data', () {
     const html = '''
       <div class="stu-data stu-data2"><p>Even May 2026 Semester 6</p></div>

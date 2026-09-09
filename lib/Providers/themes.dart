@@ -2,11 +2,27 @@ import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 
+/// Central palette and shared styles. Dark mode uses a soft slate scale
+/// instead of pure black; light mode keeps the neumorphic base with a
+/// slightly warmer finish. All screens pick these up through the helpers
+/// below.
 class CustomTheme {
+  /// Brand accent used across the app.
+  static const Color accent = Color(0xffba3237);
+  static const Color accentBright = Color(0xffd93b3f);
+
+  // Dark palette
+  static const Color _darkBase = Color(0xff101114);
+  static const Color _darkRaised = Color(0xff1b1d22);
+  static const Color _darkEdge = Color(0xff26292f);
+
+  // Light palette
+  static const Color _lightText = Color(0xff1d1f24);
+
   static TextStyle textStyle(context) {
     final sisData = Provider.of<SisData>(context);
     return TextStyle(
-        color: sisData.darkMode ? Colors.white : Colors.black,
+        color: sisData.darkMode ? Colors.white : _lightText,
         fontSize: MediaQuery.of(context).size.width * 0.04,
         fontFamily: 'Comfortaa');
   }
@@ -14,7 +30,7 @@ class CustomTheme {
   static TextStyle titleStyle(context) {
     final sisData = Provider.of<SisData>(context);
     return TextStyle(
-        color: sisData.darkMode ? Colors.white : Colors.black,
+        color: sisData.darkMode ? Colors.white : _lightText,
         fontSize: (MediaQuery.of(context).size.width * 0.09).clamp(28.0, 36.0),
         fontWeight: FontWeight.w600,
         fontFamily: 'Comfortaa');
@@ -31,7 +47,7 @@ class CustomTheme {
   static TextStyle buttonTitle(context) {
     final sisData = Provider.of<SisData>(context);
     return TextStyle(
-        color: sisData.darkMode ? Colors.white : Colors.black,
+        color: sisData.darkMode ? Colors.white : _lightText,
         fontSize: MediaQuery.of(context).size.width * 0.045,
         fontFamily: 'Comfortaa');
   }
@@ -39,7 +55,7 @@ class CustomTheme {
   static TextStyle buttonTrailing(context) {
     final sisData = Provider.of<SisData>(context);
     return TextStyle(
-        color: sisData.darkMode ? Colors.white : Colors.black,
+        color: sisData.darkMode ? Colors.white : _lightText,
         fontSize: MediaQuery.of(context).size.width * 0.055,
         fontWeight: FontWeight.bold,
         fontFamily: 'Comfortaa');
@@ -48,17 +64,16 @@ class CustomTheme {
   static NeumorphicStyle neumorphicStyle(context) {
     final sisData = Provider.of<SisData>(context);
     return NeumorphicStyle(
-        shadowLightColor: sisData.darkMode ? Colors.blueGrey.shade600 : null,
-        shadowDarkColor: sisData.darkMode ? Colors.grey.shade900 : null,
+        shadowLightColor:
+            sisData.darkMode ? Colors.white.withValues(alpha: 0.04) : null,
+        shadowDarkColor:
+            sisData.darkMode ? Colors.black.withValues(alpha: 0.7) : null,
         border: sisData.darkMode
-            ? NeumorphicBorder(width: 0.14, color: Colors.grey.shade900)
+            ? const NeumorphicBorder(width: 0.6, color: _darkEdge)
             : const NeumorphicBorder(width: 0),
-        color: sisData.darkMode
-            // ? const Color.fromARGB(1, 77, 74, 74)
-            ? Colors.black.withValues(alpha: 0.4)
-            : NeumorphicColors.background,
+        color:
+            sisData.darkMode ? _darkRaised : NeumorphicColors.background,
         depth: 2,
-        //intensity: sisData.darkMode ? 0.7 : null,
         boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)));
   }
 
@@ -68,13 +83,7 @@ class CustomTheme {
         begin: Alignment.bottomRight,
         end: Alignment.topLeft,
         colors: (sisData.darkMode)
-            ? [
-                Colors.black,
-                Colors.black,
-                Colors.black,
-                Colors.black,
-                Colors.blueGrey.shade900
-              ]
+            ? const [_darkBase, _darkBase, Color(0xff17181d), Color(0xff1d2026)]
             : [
                 NeumorphicColors.background,
                 NeumorphicColors.background,
@@ -88,11 +97,7 @@ class CustomTheme {
         begin: Alignment.bottomRight,
         end: Alignment.topLeft,
         colors: (sisData.darkMode)
-            ? [
-                Colors.black,
-                Colors.black,
-                Colors.black87
-              ] // Equal people seem to like both.. idk what to do about it
+            ? const [_darkBase, Color(0xff17181d)]
             : [
                 NeumorphicColors.background,
                 NeumorphicColors.background,
@@ -107,7 +112,7 @@ class CustomTheme {
         begin: Alignment.bottomRight,
         end: Alignment.topCenter,
         colors: (sisData.darkMode)
-            ? [Colors.black, Colors.black, Colors.blueGrey.shade900]
+            ? const [_darkBase, _darkBase, Color(0xff1d2026)]
             : [
                 NeumorphicColors.background,
                 NeumorphicColors.background,
@@ -115,28 +120,3 @@ class CustomTheme {
               ]);
   }
 }
-
-// ThemeData t = ThemeData(textTheme: TextTheme(
-//   bodyMedium: TextStyle(
-//       color: sisData.darkMode ? Colors.white : Colors.black,
-//       fontSize: MediaQuery.of(context).size.width * 0.055,
-//       fontWeight: FontWeight.bold,
-//       fontFamily: 'Comfortaa'),
-//   bodyLarge: TextStyle(
-//       color: sisData.darkMode ? Colors.white : Colors.black,
-//       fontSize: MediaQuery.of(context).size.width * 0.045,
-//       fontFamily: 'Comfortaa'),
-//   subtitle1: TextStyle(
-//       color: sisData.darkMode ? Colors.white54 : Colors.black54,
-//       fontSize: MediaQuery.of(context).size.width * 0.04,
-//       fontFamily: 'Comfortaa'),
-//   titleLarge: TextStyle(
-//       color: sisData.darkMode ? Colors.white : Colors.black,
-//       fontSize: MediaQuery.of(context).size.width * 0.115,
-//       fontFamily: 'Comfortaa'),
-//
-//   bodySmall: TextStyle(
-//       color: sisData.darkMode ? Colors.white : Colors.black,
-//       fontSize: MediaQuery.of(context).size.width * 0.04,
-//       fontFamily: 'Comfortaa')
-// ));

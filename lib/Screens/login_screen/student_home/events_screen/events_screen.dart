@@ -30,7 +30,7 @@ class EventsScreen extends StatelessWidget {
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: RefreshIndicator(
         displacement: height * 0.1,
-        backgroundColor: sisData.darkMode ? Colors.black : Colors.white,
+        backgroundColor: sisData.darkMode ? const Color(0xff101114) : Colors.white,
         color: sisData.darkMode
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
