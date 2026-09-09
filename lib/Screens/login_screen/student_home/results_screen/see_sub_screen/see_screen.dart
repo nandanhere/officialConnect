@@ -6,7 +6,8 @@ import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/latest_results.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/see_details/see_details.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:official_connect/Services/exam_result_scraper.dart';
+import 'package:official_connect/Screens/login_screen/student_home/widgets/sync_issue_notice.dart';
 
 class SEEScreen extends StatelessWidget {
   final height,
@@ -31,16 +32,52 @@ class SEEScreen extends StatelessWidget {
       this.sisData,
       this.buttonTrailing})
       : super(key: key);
-  void _launchURL(BuildContext context, String url) async {
-    if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
-  }
-
   @override
   Widget build(BuildContext context) {
+    final rawCgpa = sisData.previousResults.isEmpty
+        ? ''
+        : sisData.previousResults.last.cgpa.toString();
+    final cgpa = rawCgpa
+        .replaceFirst(RegExp(r'^CGPA\s*:\s*', caseSensitive: false), '')
+        .trim();
+    Widget latestResultTile({
+      required String title,
+      required IconData icon,
+      required ExamResultSource source,
+    }) =>
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Neumorphic(
+            style: neumorphicStyle,
+            child: ListTile(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              leading: Icon(icon, color: const Color(0xffba3237)),
+              title: Text(title, style: buttonTitle),
+              subtitle: Text(
+                source == ExamResultSource.regular
+                    ? 'From the current MSRIT examination results page'
+                    : 'From the MSRIT supplementary results page',
+                style: CustomTheme.textStyle(context).copyWith(
+                  color: sisData.darkMode ? Colors.white54 : Colors.black45,
+                  fontSize: 11,
+                ),
+              ),
+              trailing: const Icon(Icons.chevron_right, size: 20),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => LatestResultsDetails(
+                    source: source,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(bottom: height * 0.04),
+          padding: EdgeInsets.only(bottom: height * 0.025),
           child: Align(
             alignment: Alignment.topLeft,
             child: Row(
@@ -86,9 +123,9 @@ class SEEScreen extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(
-              vertical: height * 0.02, horizontal: width * 0.1),
+              vertical: height * 0.01, horizontal: width * 0.06),
           child: SizedBox(
-            height: height * 0.1,
+            height: height * 0.065,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -101,7 +138,7 @@ class SEEScreen extends StatelessWidget {
                       "CIE",
                       textAlign: TextAlign.left,
                       style: CustomTheme.titleStyle(context).copyWith(
-                        fontSize: width * (seeOpt.value ? 0.06 : 0.1),
+                        fontSize: width * (seeOpt.value ? 0.05 : 0.065),
                         fontWeight: (seeOpt.value
                             ? FontWeight.normal
                             : FontWeight.bold),
@@ -110,7 +147,7 @@ class SEEScreen extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                  padding: EdgeInsets.symmetric(vertical: height * 0.01),
                   child: VerticalDivider(
                     color: sisData.darkMode ? Colors.white38 : Colors.black26,
                     thickness: 1.6,
@@ -126,8 +163,8 @@ class SEEScreen extends StatelessWidget {
                       "SEE",
                       textAlign: TextAlign.right,
                       style: CustomTheme.titleStyle(context).copyWith(
-                        color: Colors.lightBlue,
-                        fontSize: width * (!seeOpt.value ? 0.06 : 0.1),
+                        color: const Color(0xffba3237),
+                        fontSize: width * (!seeOpt.value ? 0.05 : 0.065),
                         fontWeight: (!seeOpt.value
                             ? FontWeight.normal
                             : FontWeight.bold),
@@ -139,13 +176,21 @@ class SEEScreen extends StatelessWidget {
             ),
           ),
         ),
+        SyncIssueNotice(
+          sisData: sisData,
+          section: 'results',
+          hasVisibleData: sisData.previousResults.isNotEmpty,
+        ),
         if (sisData.previousResults.isNotEmpty) ...[
           SizedBox(
             height: height * 0.015,
           ),
-          Text("CGPA - ${sisData.previousResults.last.cgpa}",
+          Text("CGPA $cgpa",
               textAlign: TextAlign.left,
-              style: buttonTitle.copyWith(fontSize: width * 0.08)),
+              style: buttonTitle.copyWith(
+                fontSize: width * 0.065,
+                fontWeight: FontWeight.w600,
+              )),
           Container(
             padding: EdgeInsets.only(
                 left: width * 0.16,
@@ -197,86 +242,28 @@ class SEEScreen extends StatelessWidget {
                   ))
               .toList(),
         ],
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Neumorphic(
-            padding: EdgeInsets.only(
-                top: height * 0.015,
-                bottom: height * 0.015,
-                left: width * 0.025,
-                right: width * 0.01),
-            style: neumorphicStyle,
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (ctx) => const LatestResultsDetails(
-                            even: false,
-                            suppli: false,
-                          )),
-                );
-              },
-              title: AutoSizeText(
-                "Latest Odd Semester results",
-                maxLines: 1,
-                style: buttonTrailing,
+        if (sisData.previousResults.isNotEmpty) ...[
+          const SizedBox(height: 18),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 7),
+              child: Text(
+                'Quick results',
+                style: buttonTrailing.copyWith(fontSize: 20.0),
               ),
             ),
           ),
+        ],
+        latestResultTile(
+          title: 'Latest regular result',
+          icon: Icons.school_outlined,
+          source: ExamResultSource.regular,
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Neumorphic(
-            padding: EdgeInsets.only(
-                top: height * 0.015,
-                bottom: height * 0.015,
-                left: width * 0.025,
-                right: width * 0.01),
-            style: neumorphicStyle,
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (ctx) => const LatestResultsDetails(
-                            even: true,
-                            suppli: false,
-                          )),
-                );
-              },
-              title: AutoSizeText(
-                "Latest Even Semester results",
-                maxLines: 1,
-                style: buttonTrailing,
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Neumorphic(
-            padding: EdgeInsets.only(
-                top: height * 0.015,
-                bottom: height * 0.015,
-                left: width * 0.025,
-                right: width * 0.01),
-            style: neumorphicStyle,
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (ctx) => const LatestResultsDetails(
-                            even: false,
-                            suppli: true,
-                          )),
-                );
-              },
-              title: AutoSizeText(
-                "Supplimentary results",
-                maxLines: 1,
-                style: buttonTrailing,
-              ),
-            ),
-          ),
+        latestResultTile(
+          title: 'Supplementary results',
+          icon: Icons.history_edu_outlined,
+          source: ExamResultSource.supplementary,
         ),
         SizedBox(
           height: height * 0.095,

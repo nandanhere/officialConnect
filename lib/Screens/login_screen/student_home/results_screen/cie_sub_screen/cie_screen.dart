@@ -4,7 +4,7 @@ import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/cie_details/cie_details.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/widgets/cie_graph.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:official_connect/Screens/login_screen/student_home/widgets/sync_issue_notice.dart';
 
 class CIEScreen extends StatelessWidget {
   final height,
@@ -28,21 +28,12 @@ class CIEScreen extends StatelessWidget {
       this.sisData,
       this.buttonTrailing})
       : super(key: key);
-  void _launchURL(BuildContext context, String url) async {
-    if (!await launch(url)) throw 'Could not launch $url';
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (ctx) => PDF().fromUrl(url),
-    //   ),
-    // );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(bottom: height * 0.04),
+          padding: EdgeInsets.only(bottom: height * 0.025),
           child: Align(
             alignment: Alignment.topLeft,
             child: Row(
@@ -88,11 +79,11 @@ class CIEScreen extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(
-            vertical: height * 0.02,
-            horizontal: width * 0.1,
+            vertical: height * 0.01,
+            horizontal: width * 0.06,
           ),
           child: SizedBox(
-            height: height * 0.1,
+            height: height * 0.065,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -105,8 +96,8 @@ class CIEScreen extends StatelessWidget {
                       "CIE",
                       textAlign: TextAlign.left,
                       style: CustomTheme.titleStyle(context).copyWith(
-                          color: Colors.lightBlue,
-                          fontSize: width * (seeOpt.value ? 0.06 : 0.1),
+                          color: const Color(0xffba3237),
+                          fontSize: width * (seeOpt.value ? 0.05 : 0.065),
                           fontWeight: (seeOpt.value
                               ? FontWeight.normal
                               : FontWeight.bold)),
@@ -114,7 +105,7 @@ class CIEScreen extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                  padding: EdgeInsets.symmetric(vertical: height * 0.01),
                   child: VerticalDivider(
                     color: sisData.darkMode ? Colors.white38 : Colors.black26,
                     thickness: 1.6,
@@ -130,7 +121,7 @@ class CIEScreen extends StatelessWidget {
                         textAlign: TextAlign.right,
                         style: CustomTheme.titleStyle(context).copyWith(
                           color: Colors.grey,
-                          fontSize: width * (!seeOpt.value ? 0.06 : 0.1),
+                          fontSize: width * (!seeOpt.value ? 0.05 : 0.065),
                           fontWeight: (!seeOpt.value
                               ? FontWeight.normal
                               : FontWeight.bold),
@@ -141,11 +132,42 @@ class CIEScreen extends StatelessWidget {
             ),
           ),
         ),
-        sisData.attendances.isEmpty
-            ? Center(
-                child: Text(
-                  "Data Not Uploaded",
-                  style: titleStyle.copyWith(fontSize: width * 0.08),
+        SyncIssueNotice(
+          sisData: sisData,
+          section: 'marks',
+          hasVisibleData: sisData.marks.isNotEmpty,
+        ),
+        sisData.marks.isEmpty
+            ? Padding(
+                padding: EdgeInsets.only(top: height * 0.035),
+                child: Neumorphic(
+                  style: neumorphicStyle,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 28,
+                  ),
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.fact_check_outlined,
+                        color: Color(0xffba3237),
+                        size: 44,
+                      ),
+                      const SizedBox(height: 14),
+                      Text('No current CIE data', style: buttonTrailing),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Switch to SEE for your semester results, or refresh to check for new internal marks.',
+                        textAlign: TextAlign.center,
+                        style: buttonTitle.copyWith(
+                          color: sisData.darkMode
+                              ? Colors.white60
+                              : Colors.black54,
+                          height: 1.45,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               )
             : CieGraph(marks: sisData.marks),
@@ -181,9 +203,7 @@ class CIEScreen extends StatelessWidget {
                   ),
                 ))
             .toList(),
-        SizedBox(
-          height: height * 0.15,
-        )
+        const SizedBox(height: 32),
       ],
     );
   }

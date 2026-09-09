@@ -6,17 +6,11 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:official_connect/Providers/themes.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/syllabus_sub_screen/syllabus_screen.dart';
 
 class EventsScreen extends StatelessWidget {
   const EventsScreen({Key? key}) : super(key: key);
-
-  void _launchURL(String url) async {
-    if (!await launchUrl(Uri.dataFromString(url))) {
-      throw 'Could not launch $url';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,26 +35,12 @@ class EventsScreen extends StatelessWidget {
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
         onRefresh: () async {
-          Fluttertoast.showToast(
-              msg: "Updating data ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
-          await sisData.getData("", "", true);
-          Fluttertoast.showToast(
-              msg: "Updated data 🎉 ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
+          await openPortalRefresh(context);
         },
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           child: Container(
             decoration: BoxDecoration(gradient: linearGradientBG),
             padding: EdgeInsets.only(
@@ -71,7 +51,7 @@ class EventsScreen extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(bottom: height * 0.04),
+                  padding: EdgeInsets.only(bottom: height * 0.025),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
@@ -97,15 +77,25 @@ class EventsScreen extends StatelessWidget {
                         context: context,
                       ),
                       child: ListTile(
-                        leading: Image.asset(
-                          'images/club_images/' +
-                              (sisData.darkMode ? "dark_" : "light_") +
-                              e['image']!,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 2,
                         ),
-                        trailing: Text(
+                        leading: SizedBox(
+                          width: 48,
+                          height: 42,
+                          child: Image.asset(
+                            'images/club_images/' +
+                                (sisData.darkMode ? "dark_" : "light_") +
+                                e['image']!,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        title: Text(
                           e['name']!,
                           style: buttonTitle,
                         ),
+                        trailing: const Icon(Icons.chevron_right, size: 20),
                       ),
                     ),
                   ),
@@ -122,7 +112,7 @@ class EventsScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: height * 0.04),
+                  padding: EdgeInsets.symmetric(vertical: height * 0.025),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
@@ -136,7 +126,7 @@ class EventsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: NeumorphicButton(
                     child: ListTile(
-                      leading: Icon(
+                      leading: FaIcon(
                         FontAwesomeIcons.bookAtlas,
                         color: sisData.darkMode ? Colors.white : Colors.black,
                       ),
@@ -156,7 +146,7 @@ class EventsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: NeumorphicButton(
                     child: ListTile(
-                      leading: Icon(
+                      leading: FaIcon(
                         FontAwesomeIcons.book,
                         color: sisData.darkMode ? Colors.white : Colors.black,
                       ),

@@ -1,5 +1,5 @@
 name: official_connect
-description: A new Flutter project.
+description: A native companion for viewing student information from MSRIT services.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+6
 
 environment:
-  sdk: ">=2.16.1 <3.0.0"
+  sdk: ">=3.8.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,26 +35,29 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   provider: ^6.0.2
-  intl: ^0.17.0
-  http: ^0.13.4
-  shared_preferences: ^2.0.13
-  font_awesome_flutter: ^10.1.0
-  syncfusion_flutter_charts: ^20.1.48
-  syncfusion_flutter_datepicker: ^20.1.50
+  intl: ^0.20.2
+  http: ^1.6.0
+  shared_preferences: ^2.5.5
+  font_awesome_flutter: ^11.0.0
+  syncfusion_flutter_charts: ^31.2.5
+  syncfusion_flutter_datepicker: ^31.2.5
   cached_network_image: ^3.2.0
   auto_size_text: ^3.0.0
   url_launcher: ^6.0.20
   animated_text_kit: ^4.2.1
-  flutter_cached_pdfview: ^0.4.1
   string_similarity: ^2.0.0
-  fluttertoast: ^8.0.9
-  syncfusion_flutter_calendar: ^20.1.56
-  date_picker_plus: ^4.1.0
+  fluttertoast: ^10.0.0
+  flutter_inappwebview: ^6.2.0-beta.3
+  html: ^0.15.5
+  syncfusion_flutter_calendar: ^31.2.5
+  date_picker_plus: ^8.0.0
  
   dcdg: ^4.0.1
   responsive_framework: ^0.2.0
   flutter_neumorphic_plus: ^3.3.0
   flutter_launcher_icons: ^0.12.0
+  firebase_core: ^4.14.0
+  firebase_analytics: ^12.5.0
   
 dev_dependencies:
   flutter_test:

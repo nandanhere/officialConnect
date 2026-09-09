@@ -12,6 +12,7 @@ import 'package:official_connect/Classes/sis_proctor_data.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 
 class SisData with ChangeNotifier {
   Map<String, dynamic> _data = {};
@@ -40,6 +41,7 @@ class SisData with ChangeNotifier {
   String _studentImage = "";
   String _errorMessage = "";
   bool _darkMode = false;
+  bool _diagnosticsEnabled = true;
   double _ver = 0.0;
   String _proctorEmail = "";
   String _downloadLink = "";
@@ -63,13 +65,14 @@ class SisData with ChangeNotifier {
 
   static void showToast(String message) {
     Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: const Color(0xffba3237),
-        textColor: Colors.white,
-        fontSize: 16.0);
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: const Color(0xffba3237),
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 
   void setup() async {
@@ -82,20 +85,22 @@ class SisData with ChangeNotifier {
       _dob = prefs.getString('dob') ?? "";
       _proctorEmail = prefs.getString('proctorEmail') ?? "";
       _darkMode = prefs.getBool('darkMode') ?? false;
+      _diagnosticsEnabled = prefs.getBool('diagnosticsEnabled') ?? true;
+      await SyncDiagnostics.setEnabled(_diagnosticsEnabled);
       debugPrint(
-          "data was there before. checking if it is older than 12 hours");
-      needToUpdate = DateTime.fromMillisecondsSinceEpoch(time!)
-              .difference(DateTime.now())
-              .inMilliseconds
-              .abs() >
-          12;
+        "data was there before. checking if it is older than 12 hours",
+      );
+      needToUpdate =
+          DateTime.fromMillisecondsSinceEpoch(
+            time!,
+          ).difference(DateTime.now()).inMilliseconds.abs() >
+          const Duration(hours: 12).inMilliseconds;
       notifyListeners();
 
       _data = await convert.jsonDecode(prefs.getString('data')!);
-      final bool iscon = await isConnected();
-      if (needToUpdate && iscon) {
-        update();
-      }
+      // Keep showing cached data immediately. Refresh now requires the
+      // authenticated portal WebView session; the legacy Lambda path cannot
+      // satisfy the portal's current verification flow.
       await setVariables();
       // if (iscon) {
       //   await getProctorMessages();
@@ -106,7 +111,7 @@ class SisData with ChangeNotifier {
     }
   }
 
-// This runs if the data stored is old/older than 12 hours
+  // This runs if the data stored is old/older than 12 hours
   void update() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -120,7 +125,7 @@ class SisData with ChangeNotifier {
     showToast("Updated data 🎉 ");
   }
 
-// This calls the scraper and gets the data for a user
+  // This calls the scraper and gets the data for a user
   Future<void> getData(String usn, String dob, bool update) async {
     const debug = false;
     usn = usn.toUpperCase();
@@ -161,6 +166,16 @@ class SisData with ChangeNotifier {
             }
           }
         }
+      } else if (resp.statusCode == 428) {
+        try {
+          final validation = convert.jsonDecode(resp.body);
+          _errorMessage =
+              validation['message'] ??
+              "The portal requires an additional validation step.";
+        } catch (_) {
+          _errorMessage = "The portal requires an additional validation step.";
+        }
+        isValidData = false;
       } else if (resp.statusCode >= 500) {
         isValidData = false;
         _errorMessage =
@@ -172,7 +187,8 @@ class SisData with ChangeNotifier {
     }
     if (_data.isEmpty) {
       isValidData = false;
-      _errorMessage = _errorMessage ==
+      _errorMessage =
+          _errorMessage ==
               "We encountered a Server error. Sorry for the inconvinience"
           ? "We encountered a Server error. Sorry for the inconvinience"
           : "Error! please check the entered details";
@@ -187,7 +203,59 @@ class SisData with ChangeNotifier {
     notifyListeners();
   }
 
-// after getting any sort of data, the data has to be read from. this does that
+  /// Applies data scraped inside the authenticated portal WebView and writes
+  /// it to the same cache used by the existing native screens.
+  Future<void> applyPortalData(
+    Map<String, dynamic> data,
+    String usn,
+    String dob,
+  ) async {
+    final previous = Map<String, dynamic>.from(_data);
+    final merged = Map<String, dynamic>.from(data);
+    final sections = ((data['_sync'] as Map?)?['sections'] as Map?) ?? {};
+    const sectionKeys = {
+      'attendance': ['attendance'],
+      'marks': ['marks'],
+      'results': ['prevResults'],
+      'fees': ['fees', 'refunds'],
+      'proctor': ['proctorship'],
+    };
+    for (final entry in sectionKeys.entries) {
+      final status = (sections[entry.key] as Map?)?['status'];
+      if (status == 'error') {
+        for (final key in entry.value) {
+          if (previous.containsKey(key)) merged[key] = previous[key];
+        }
+      }
+    }
+    // A partial profile update should not blank fields already shown by the
+    // app. Successful empty data sections are still allowed to replace cache.
+    for (final entry in previous.entries) {
+      if (!merged.containsKey(entry.key) && entry.key != '_sync') {
+        merged[entry.key] = entry.value;
+      }
+    }
+    merged['usn'] = usn.toUpperCase();
+    _data = merged;
+    _usn = usn.toUpperCase();
+    _dob = dob;
+    _hasData = true;
+    isValidData = true;
+    needToUpdate = false;
+    await setVariables();
+    if (!isValidData || _data.isEmpty) {
+      throw const FormatException('Portal data is incompatible with the app');
+    }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('data', convert.jsonEncode(merged));
+    await prefs.setString('usn', _usn);
+    await prefs.setString('dob', _dob);
+    await prefs.setBool('hasData', true);
+    await prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
+    notifyListeners();
+  }
+
+  // after getting any sort of data, the data has to be read from. this does that
   Future<void> setVariables() async {
     debugPrint("setting variables");
 
@@ -270,7 +338,20 @@ class SisData with ChangeNotifier {
 
   void cleanData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    // Keep portal_* autofill suggestions across sign-out. A user can erase the
+    // whole saved login set by clearing the USN on the native login screen.
+    for (final key in const [
+      'hasData',
+      'timeStamp',
+      'usn',
+      'dob',
+      'proctorEmail',
+      'darkMode',
+      'data',
+      'auth',
+    ]) {
+      await prefs.remove(key);
+    }
     _usn = "";
     _data = {};
     isValidData = true;
@@ -307,6 +388,17 @@ class SisData with ChangeNotifier {
 
   bool get darkMode {
     return _darkMode;
+  }
+
+  bool get diagnosticsEnabled => _diagnosticsEnabled;
+
+  set diagnosticsEnabled(bool value) {
+    _diagnosticsEnabled = value;
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setBool('diagnosticsEnabled', value);
+    });
+    SyncDiagnostics.setEnabled(value);
+    notifyListeners();
   }
 
   bool get hasData {
@@ -407,5 +499,22 @@ class SisData with ChangeNotifier {
 
   List<dynamic> get proctorMessages {
     return _proctorMessages;
+  }
+
+  Map<String, dynamic> get syncMetadata =>
+      Map<String, dynamic>.from((_data['_sync'] as Map?) ?? const {});
+
+  String syncStatusFor(String section) {
+    final sections = syncMetadata['sections'] as Map?;
+    return (sections?[section] as Map?)?['status']?.toString() ?? 'unknown';
+  }
+
+  bool get hasSyncIssues {
+    final sections = syncMetadata['sections'] as Map?;
+    if (sections == null) return false;
+    return sections.values.whereType<Map>().any((section) {
+      final status = section['status'];
+      return status == 'partial' || status == 'error';
+    });
   }
 }

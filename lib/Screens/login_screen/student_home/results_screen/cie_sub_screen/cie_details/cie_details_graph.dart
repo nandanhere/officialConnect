@@ -53,7 +53,7 @@ class _CieDetailsGraphState extends State<CieDetailsGraph> {
           toggleSeriesVisibility: true,
           position: LegendPosition.bottom),
       tooltipBehavior: _tooltipBehavior,
-      primaryXAxis: CategoryAxis(),
+      primaryXAxis: const CategoryAxis(),
       isTransposed: true,
       primaryYAxis: NumericAxis(
           minimum: 0,
@@ -62,7 +62,7 @@ class _CieDetailsGraphState extends State<CieDetailsGraph> {
                   .toList()
                   .reduce(max) +
               1),
-      series: <ChartSeries<List<String>, String>>[
+      series: <CartesianSeries<List<String>, String>>[
         BarSeries<List<String>, String>(
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(7), topRight: Radius.circular(7)),

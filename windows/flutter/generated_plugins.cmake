@@ -3,6 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  firebase_core
+  flutter_inappwebview_windows
   url_launcher_windows
 )
 

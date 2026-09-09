@@ -1,15 +1,15 @@
 import re
 from lxml import etree
-import datetime, math,json
+import datetime, math,json,base64
+import urllib.parse
 import asyncio
 import aiohttp
 # from codeguru_profiler_agent import with_lambda_profiler
 
-baseurl = "https://parents.msrit.edu/"
-# baseurl = "https://parents.msrit.edu/parents_even2022/"
-async def scrape_login_dashboard(respobj):
-	body = await respobj.content.read()
-	print(body.text)
+baseurl = "https://parents.msrit.edu/newparents/"
+async def scrape_login_dashboard(respobj, body=None):
+	if body is None:
+		body = await respobj.content.read()
     # scrape all the fee data here. 
 	# print(respobj.text)
 	# soup = BeautifulSoup(respobj.content,'lxml', from_encoding="utf8")
@@ -139,7 +139,7 @@ def scrape_attendance(text):
 		#attendanceOverView must be in the format present, absent, remaining , so just use re and get all of them in one go
 		attendanceOverView = "".join(dom.xpath('//div[@class="cn-legend"]//text()'))
 		# print(attendanceOverView)
-		find = re.findall('\[.*\]',attendanceOverView)
+		find = re.findall(r'\[.*\]',attendanceOverView)
 		attendanceOverView = [x[1:-1] for x in find]
 		attendanceOverView = [x if x != '' else "0" for x in attendanceOverView]
 		att['present'],att['absent'],att['remaining'] = attendanceOverView
@@ -233,10 +233,11 @@ async def fetch(session, url):
         return await response.content.read()
 
 
-async def scrape_student_dashboard(session,respobj):
+async def scrape_student_dashboard(session,respobj, body=None):
     # scrape all the cie / attendance links here, then call the scrape_attendance and scrape marks links here  
 	d  = {}
-	body = await respobj.content.read()
+	if body is None:
+		body = await respobj.content.read()
 	response = etree.HTML(body)
 	details = response.xpath('//a/@href')
 	d = {}
@@ -276,7 +277,14 @@ async def scrape_student_dashboard(session,respobj):
 
 
 
-async def login(usn,dob):
+def encode_portal_password(dob):
+	import base64, random, string
+	noise = string.ascii_letters + string.digits
+	encoded = ''.join(ch + ''.join(random.choice(noise) for _ in range(2)) for ch in dob)
+	return base64.b64encode(encoded.encode()).decode()
+
+
+async def login(usn, dob, captcha_response=None, otp=None):
 	yy = dob[0:4]
 	mm = dob[5:7]
 	dd = dob[8:10]
@@ -285,23 +293,36 @@ async def login(usn,dob):
 		async with session.get(baseurl) as resp:
 			body = await resp.content.read()
 			dom = etree.HTML(body)
-			token = dom.xpath('//input[@value="1"]/@name')[0]
+			csrf = dom.xpath('//input[@value="1"]/@name')
+			if not csrf:
+				return {"validation": "portal_changed", "message": "Portal CSRF token not found"}
+			if not captcha_response:
+				return {"validation": "captcha_required", "message": "A reCAPTCHA token is required"}
+			token = csrf[0]
 			data = {
 				'username': usn,
 				'dd': dd,
 				'mm': mm,
 				'yyyy': yy,
-				'passwd': dob,
+				'passwd': encode_portal_password(dob),
 				'remember': 'No',
 				'option': 'com_user',
-				'task': 'login',
+				'task': 'loginOtp',
 				'return': '�w^Ƙi',
 				'return': '',
-				token : '1'
+				token : '1',
+				'captcha-response': captcha_response,
 			}
-			async with session.post(resp.url,data =data) as resp2:
-		# resp2 contains the body of text to be processed, session has to be passed among the functions.
-				x1 = await scrape_login_dashboard(resp2)
+			if otp:
+				data['otp'] = otp
+			async with session.post(resp.url,data =data, allow_redirects=True) as resp2:
+			# resp2 contains the body of text to be processed, session has to be passed among the functions.
+				result_body = await resp2.read()
+				result_dom = etree.HTML(result_body)
+				if 'loginOtp' in str(resp2.url) or result_dom.xpath("//*[contains(translate(text(),'OTP','otp'),'otp')]"):
+					return {"validation": "otp_required", "message": "The portal requires the OTP sent to the registered contact", "usn": usn}
+				resp2._body = result_body
+				x1 = await scrape_login_dashboard(resp2, result_body)
 				ret.update(x1)
 			async with session.get(baseurl + "index.php?option=com_studentdashboard&controller=studentdashboard&task=dashboard") as resp3:
 				x = await scrape_student_dashboard(session,resp3)
@@ -321,16 +342,110 @@ async def login(usn,dob):
 	return ret
 
 
+def _signed_url(url, ksign):
+	"""Preserve the browser-issued signed session parameter on portal reads."""
+	if not ksign:
+		return url
+	parts = urllib.parse.urlsplit(url)
+	query = dict(urllib.parse.parse_qsl(parts.query, keep_blank_values=True))
+	query.setdefault('ksign', ksign)
+	return urllib.parse.urlunsplit((parts.scheme, parts.netloc, parts.path,
+		urllib.parse.urlencode(query), parts.fragment))
+
+
+async def scrape_authenticated_session(cookies, ksign=None, entry_url=None, user_agent=None, usn=None):
+	"""Scrape using a short-lived session established by the app WebView.
+
+	Cookies are used only for this invocation and are never logged or persisted.
+	"""
+	if not isinstance(cookies, list) or not cookies:
+		return {'validation': 'session_required', 'message': 'Portal session cookies are required'}
+	valid_cookies = []
+	for cookie in cookies:
+		if not isinstance(cookie, dict):
+			continue
+		name, value = cookie.get('name'), cookie.get('value')
+		if name and value and '\n' not in name and '\r' not in name and '\n' not in value and '\r' not in value:
+			valid_cookies.append((name, value))
+	if not valid_cookies:
+		return {'validation': 'session_required', 'message': 'No valid portal cookies were supplied'}
+
+	headers = {
+		'Cookie': '; '.join('%s=%s' % item for item in valid_cookies),
+		'User-Agent': user_agent or 'OfficialConnect/1.0',
+		'Accept': 'text/html,application/xhtml+xml',
+	}
+	timeout = aiohttp.ClientTimeout(total=25, connect=8)
+	ret = {}
+	async with aiohttp.ClientSession(headers=headers, timeout=timeout, trust_env=True) as session:
+		landing = entry_url if isinstance(entry_url, str) and entry_url.startswith(baseurl) else baseurl + 'index.php'
+		landing = _signed_url(landing, ksign)
+		async with session.get(landing, allow_redirects=True) as resp:
+			body = await resp.read()
+			lower = body.lower()
+			if b'name="username"' in lower or b'login to your account' in lower:
+				return {'validation': 'session_expired', 'message': 'Portal session expired; sign in again'}
+			try:
+				ret.update(await scrape_login_dashboard(resp, body))
+			except Exception:
+				# Some accounts land directly on the student dashboard; remaining
+				# endpoints still contain the complete native-app data set.
+				pass
+
+		dashboard_url = _signed_url(baseurl + 'index.php?option=com_studentdashboard&controller=studentdashboard&task=dashboard', ksign)
+		async with session.get(dashboard_url) as resp:
+			body = await resp.read()
+			if b'name="username"' in body.lower():
+				return {'validation': 'session_expired', 'message': 'Portal session expired; sign in again'}
+			ret.update(await scrape_student_dashboard(session, resp, body))
+
+		async with session.get(_signed_url(baseurl + 'index.php?option=com_history&task=getResult', ksign)) as resp:
+			ret['prevResults'] = await scrape_prev_exams(resp)
+		async with session.get(_signed_url(baseurl + 'index.php?option=com_studentdashboard&controller=studentdashboard&task=observation', ksign)) as resp:
+			ret['proctorship'] = await scrape_proctor(resp)
+
+	ret['usn'] = usn or ret.get('USN:') or ''
+	ret['ver'] = '1.0'
+	ret['downloadLink'] = ''
+	return ret
+
+
 
 async def main(usn,dob):
 	x = await login(usn,dob)
 	return x
 
 def lambda_handler(event, context):
-	dob = event['queryStringParameters']['dob']
-	usn  = event['queryStringParameters']['usn']
-	loop = asyncio.get_event_loop()
-	x = loop.run_until_complete(main(usn,dob))
+	request_body = event.get('body')
+	if request_body:
+		try:
+			if event.get('isBase64Encoded'):
+				request_body = base64.b64decode(request_body).decode('utf-8')
+			payload = json.loads(request_body)
+		except Exception:
+			return {'statusCode': 400, 'body': json.dumps({'message': 'Invalid JSON body'})}
+		if payload.get('mode') == 'session':
+			result = asyncio.run(scrape_authenticated_session(
+				payload.get('cookies'), payload.get('ksign'), payload.get('entryUrl'),
+				payload.get('userAgent'), payload.get('usn')))
+			status = 401 if result.get('validation') in ('session_required', 'session_expired') else 200
+			return {
+				'statusCode': status,
+				'headers': {'Content-Type': 'application/json', 'Cache-Control': 'no-store'},
+				'body': json.dumps(result),
+			}
+	params = event.get('queryStringParameters') or {}
+	dob = params.get('dob')
+	usn  = params.get('usn')
+	if not usn or not dob:
+		return {"statusCode": 400, "body": json.dumps({"message": "usn and dob are required"})}
+	captcha_response = params.get('captcha_response') or params.get('captcha-response')
+	otp = params.get('otp')
+	if not captcha_response:
+		return {"statusCode": 428, "body": json.dumps({"validation": "captcha_required", "message": "A reCAPTCHA token is required"})}
+	x = asyncio.run(login(usn, dob, captcha_response, otp))
+	if x.get('validation'):
+		return {"statusCode": 428, "body": json.dumps(x)}
 
 	return {
 	"statusCode":200,
@@ -340,21 +455,13 @@ def lambda_handler(event, context):
 
 
 def sasa(usn,dob):
-	loop = asyncio.get_event_loop()
-	x = loop.run_until_complete(main(usn,dob))
+	x = asyncio.run(main(usn,dob))
 
 	return {
 	"statusCode":200,
 	"body":json.dumps(x)
 
 	}
-import time
-t = time.time()
-print(sasa("1ms19is076","2000-12-08"))
-print(time.time() - t)
-
-
 # with open("./hello.json","w") as f:
-# 	data = login("1MS19IS076","2000-12-08")	#nandan
 # 	import json
 # 	f.write(json.dumps(data,indent=3))

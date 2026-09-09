@@ -1,11 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
-import 'package:intl/intl.dart';
-import 'package:official_connect/Providers/Themes.dart';
+import 'package:official_connect/Providers/themes.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:official_connect/Classes/attendance.dart';
 import 'package:provider/provider.dart';
-import '../../../../../../Providers/Themes.dart';
 import '../../../../../../Providers/sisdata.dart';
 
 extension DateOnlyCompare on DateTime {
@@ -38,7 +36,6 @@ class AttendanceCalenderVersion extends StatelessWidget {
         maxDate = dates[i].date;
       }
     }
-    print("Max Date $maxDate");
     return maxDate;
   }
 

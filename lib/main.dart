@@ -7,6 +7,9 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'Screens/loading_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
+import 'package:official_connect/Services/firebase_sync_diagnostics.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // to build web app
 // flutter build web --web-renderer canvaskit --no-sound-null-safety --release
@@ -15,10 +18,15 @@ import 'package:flutter/services.dart';
 // flutter build apk --split-per-abi
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final diagnosticsEnabled = prefs.getBool('diagnosticsEnabled') ?? true;
+  await SyncDiagnostics.setEnabled(diagnosticsEnabled);
+  await FirebaseSyncDiagnostics.initialize(enabled: diagnosticsEnabled);
 
   if (kIsWeb) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-        .then((_) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
+      _,
+    ) {
       runApp(const MyApp());
     });
   } else {
@@ -33,10 +41,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (ctx) => SisData()),
-      ],
+      providers: [ChangeNotifierProvider(create: (ctx) => SisData())],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         builder: (context, child) => ResponsiveWrapper.builder(
           child,
           maxWidth: 1200,
@@ -47,19 +54,15 @@ class MyApp extends StatelessWidget {
             const ResponsiveBreakpoint.autoScale(800, name: TABLET),
             const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
           ],
-          background: Container(
-            color: const Color.fromARGB(0, 0, 0, 0),
-          ),
+          background: Container(color: const Color.fromARGB(0, 0, 0, 0)),
         ),
         title: 'Connect',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: ThemeData(primarySwatch: Colors.blue),
         // home: Unified(),
         home: const LoadingScreen(),
         routes: {
           LoginScreen.id: (context) => const LoginScreen(),
-          Unified.id: (context) => Unified(),
+          Unified.id: (context) => const Unified(),
         },
       ),
     );

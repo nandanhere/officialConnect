@@ -2,7 +2,6 @@
 
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 
-import 'package:official_connect/Providers/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutClubDialog extends StatelessWidget {
@@ -20,52 +19,60 @@ class AboutClubDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+      contentPadding: const EdgeInsets.fromLTRB(22, 8, 22, 8),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
       ),
       backgroundColor: sisData.darkMode ? Colors.black87 : Colors.white,
-      title: FittedBox(
+      title: SizedBox(
+        height: height * 0.24,
         child: Image.asset(
           "images/club_images/" +
               (sisData.darkMode ? "dark_" : "light_") +
               e['image']!,
+          fit: BoxFit.contain,
         ),
       ),
       content: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(e['name']!, style: title.copyWith(fontSize: width * 0.075)),
-          SizedBox(
-            height: height * 0.02,
+          Text(
+            e['name']!,
+            style: title.copyWith(
+              fontSize: width * 0.065,
+              fontWeight: FontWeight.w600,
+            ),
           ),
+          const SizedBox(height: 12),
           Text(
             e['desc']!,
-            style: (title as TextStyle).copyWith(fontSize: 15),
+            style: (title as TextStyle).copyWith(fontSize: 13, height: 1.4),
           ),
-          SizedBox(
-            height: height * 0.04,
-          ),
-          NeumorphicButton(
+          const SizedBox(height: 20),
+          FilledButton.icon(
             onPressed: () async {
-              if (!await launch(e['linktree']!)) throw 'Could not launch  ';
+              if (!await launchUrl(Uri.parse(e['linktree']!))) {
+                throw 'Could not open club links';
+              }
             },
-            style: CustomTheme.neumorphicStyle(context).copyWith(
-              boxShape: const NeumorphicBoxShape.circle(),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xffba3237),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 12),
             ),
-            child: Image.asset('images/linktree.png', width: 40, height: 40),
+            icon: const Icon(Icons.open_in_new, size: 18),
+            label: const Text('Open club links'),
           ),
         ],
       ),
       actions: <Widget>[
-        NeumorphicButton(
-          style: CustomTheme.neumorphicStyle(context),
+        TextButton(
           onPressed: () {
-            Navigator.pop(context, "Cancel");
+            Navigator.pop(context);
           },
-          child: Text(
-            'Ok',
-            style: CustomTheme.buttonTitle(context),
-          ),
+          child: const Text('Close'),
         ),
       ],
     );

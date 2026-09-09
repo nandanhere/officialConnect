@@ -1,5 +1,5 @@
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:official_connect/Providers/Themes.dart';
+import 'package:official_connect/Providers/themes.dart';
+import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/settings_screen/widgets/about_dialog.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +13,10 @@ class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);
 
   void _launchURL(String url) async {
-    if (!await launchUrl(Uri.parse(url),
-        mode: LaunchMode.externalNonBrowserApplication)) {
+    if (!await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalNonBrowserApplication,
+    )) {
       throw 'Could not launch $url';
     }
   }
@@ -35,17 +37,19 @@ class SettingsInfo extends StatelessWidget {
       //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
       //TODO add links for fee payment and wifi complaint
       Element(
-          icon: Icons.attach_money_outlined,
-          onPressed: () {
-            _launchURL("https://google.com");
-          },
-          text: "Fee Payment"),
+        icon: Icons.attach_money_outlined,
+        onPressed: () {
+          _launchURL("https://google.com");
+        },
+        text: "Fee Payment",
+      ),
       Element(
-          icon: Icons.wifi_off_outlined,
-          onPressed: () {
-            _launchURL("http://ithelpdesk.msrit.edu/");
-          },
-          text: "Register WiFi complaint"),
+        icon: Icons.wifi_off_outlined,
+        onPressed: () {
+          _launchURL("http://ithelpdesk.msrit.edu/");
+        },
+        text: "Register WiFi complaint",
+      ),
 
       Element(
         icon: Icons.settings,
@@ -54,45 +58,32 @@ class SettingsInfo extends StatelessWidget {
         toggle: true,
       ),
       Element(
-          icon: Icons.lock,
-          onPressed: () {
-            _launchURL("https://forms.gle/FyF3PZxxonNf8kUz5");
-          },
-          text: "Feedback"),
+        icon: Icons.lock,
+        onPressed: () {
+          _launchURL("https://forms.gle/FyF3PZxxonNf8kUz5");
+        },
+        text: "Feedback",
+      ),
       Element(
-          icon: Icons.info_outline_rounded,
-          onPressed: () => showDialog(
-                builder: (context) => AboutConnectDialog(
-                  sisData: sisData,
-                  width: width,
-                  title: title,
-                  height: height,
-                ),
-                context: context,
-              ),
-          text: "About"),
+        icon: Icons.info_outline_rounded,
+        onPressed: () => showDialog(
+          builder: (context) => AboutConnectDialog(
+            sisData: sisData,
+            width: width,
+            title: title,
+            height: height,
+          ),
+          context: context,
+        ),
+        text: "About",
+      ),
       Element(
-          icon: Icons.update,
-          onPressed: () async {
-            Fluttertoast.showToast(
-                msg: "Updating data ",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: const Color(0xffba3237),
-                textColor: Colors.white,
-                fontSize: 16.0);
-            await sisData.getData("", "", true);
-            Fluttertoast.showToast(
-                msg: "Updated data 🎉 ",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: const Color(0xffba3237),
-                textColor: Colors.white,
-                fontSize: 16.0);
-          },
-          text: "Update data"),
+        icon: Icons.update,
+        onPressed: () {
+          openPortalRefresh(context);
+        },
+        text: "Update data",
+      ),
     ];
 
     return Container(
@@ -104,26 +95,12 @@ class SettingsInfo extends StatelessWidget {
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
         onRefresh: () async {
-          Fluttertoast.showToast(
-              msg: "Updating data ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
-          await sisData.getData("", "", true);
-          Fluttertoast.showToast(
-              msg: "Updated data 🎉 ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
+          await openPortalRefresh(context);
         },
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           child: Container(
             decoration: BoxDecoration(gradient: linearGradientBG),
             padding: EdgeInsets.only(
@@ -135,7 +112,7 @@ class SettingsInfo extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(bottom: height * 0.04),
+                  padding: EdgeInsets.only(bottom: height * 0.025),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
@@ -145,115 +122,134 @@ class SettingsInfo extends StatelessWidget {
                     ),
                   ),
                 ),
-                ...tiles.map((e) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: NeumorphicButton(
-                        onPressed: e.toggle
-                            ? () {
-                                sisData.darkMode = !sisData.darkMode;
-                              }
-                            : e.onPressed,
-                        style: neumorphicStyle,
-                        child: ListTile(
-                          leading: Icon(
-                            e.icon,
-                            color: const Color(0xffd93b3f),
-                            size: 30,
-                          ),
-                          title: Text(
-                            e.text,
-                            style: buttonTitle,
-                          ),
-                          trailing: e.toggle
-                              ? NeumorphicSwitch(
-                                  style: const NeumorphicSwitchStyle(
-                                      trackDepth: 10, thumbDepth: 2),
-                                  height: width * 0.055,
-                                  value: sisData.darkMode,
-                                  onChanged: (value) {
-                                    sisData.darkMode = value;
-                                  },
-                                )
-                              : null,
+                ...tiles.map(
+                  (e) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: NeumorphicButton(
+                      onPressed: e.toggle
+                          ? () {
+                              sisData.darkMode = !sisData.darkMode;
+                            }
+                          : e.onPressed,
+                      style: neumorphicStyle,
+                      child: ListTile(
+                        leading: Icon(
+                          e.icon,
+                          color: const Color(0xffd93b3f),
+                          size: 30,
+                        ),
+                        title: Text(e.text, style: buttonTitle),
+                        trailing: e.toggle
+                            ? NeumorphicSwitch(
+                                style: const NeumorphicSwitchStyle(
+                                  trackDepth: 10,
+                                  thumbDepth: 2,
+                                ),
+                                height: width * 0.055,
+                                value: sisData.darkMode,
+                                onChanged: (value) {
+                                  sisData.darkMode = value;
+                                },
+                              )
+                            : null,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Neumorphic(
+                    style: neumorphicStyle,
+                    child: SwitchListTile.adaptive(
+                      secondary: const Icon(
+                        Icons.insights_outlined,
+                        color: Color(0xffd93b3f),
+                        size: 30,
+                      ),
+                      title: Text('Help improve updates', style: buttonTitle),
+                      subtitle: Text(
+                        'Share which sections update successfully. Student details and marks are not included.',
+                        style: CustomTheme.textStyle(context).copyWith(
+                          fontSize: 12.5,
+                          color: sisData.darkMode
+                              ? Colors.white54
+                              : Colors.black54,
                         ),
                       ),
-                    )),
-                SizedBox(
-                  height: height * 0.06,
+                      value: sisData.diagnosticsEnabled,
+                      activeThumbColor: const Color(0xffba3237),
+                      onChanged: (value) {
+                        sisData.diagnosticsEnabled = value;
+                      },
+                    ),
+                  ),
                 ),
+                SizedBox(height: height * 0.035),
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      NeumorphicButton(
+                      TextButton.icon(
                         onPressed: () {
                           showDialog(
-                              context: context,
-                              builder: (ctx) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                            context: context,
+                            builder: (ctx) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                backgroundColor: sisData.darkMode
+                                    ? Colors.black
+                                    : NeumorphicColors.background,
+                                title: Text('Sign out?', style: buttonTrailing),
+                                content: Text(
+                                  'Cached portal data will be removed. Your saved login suggestions will remain for next time.',
+                                  style: buttonTitle,
+                                ),
+                                actions: <Widget>[
+                                  NeumorphicButton(
+                                    style: neumorphicStyle,
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                    child: Text('Cancel', style: buttonTitle),
                                   ),
-                                  backgroundColor: sisData.darkMode
-                                      ? Colors.black
-                                      : NeumorphicColors.background,
-                                  title: Text(
-                                    'Do you want to Log out?',
-                                    style: buttonTrailing,
-                                  ),
-                                  content: Text(
-                                    'All stored data will be wiped out',
-                                    style: buttonTitle,
-                                  ),
-                                  actions: <Widget>[
-                                    NeumorphicButton(
-                                      style: neumorphicStyle,
-                                      onPressed: () {
-                                        Navigator.of(context).pop(false);
-                                      },
-                                      child: Text(
-                                        'No',
-                                        style: buttonTitle,
+                                  NeumorphicButton(
+                                    style: neumorphicStyle,
+                                    onPressed: () {
+                                      Unified.screenNumber.value = 2;
+                                      Navigator.of(context).pop(false);
+                                      sisData.cleanData();
+                                    },
+                                    child: const Text(
+                                      'Sign out',
+                                      style: TextStyle(
+                                        color: Color(0xffba3237),
                                       ),
                                     ),
-                                    NeumorphicButton(
-                                      style: neumorphicStyle,
-                                      onPressed: () {
-                                        Unified.screenNumber.value = 2;
-                                        Navigator.of(context).pop(false);
-                                        sisData.cleanData();
-                                      },
-                                      child: Text(
-                                        'Yes',
-                                        style: buttonTitle,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              });
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
-                        style: neumorphicStyle,
-                        child: Text(
-                          "Sign out",
-                          style: buttonTitle,
+                        icon: const Icon(Icons.logout, size: 18),
+                        label: const Text('Sign out'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xffba3237),
                         ),
-                      ),
-                      SizedBox(
-                        width: width * 0.07,
                       ),
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: height * 0.015,
-                ),
+                SizedBox(height: height * 0.015),
                 if (sisData.ver == version)
-                  Text("Currently using version " + version.toString(),
-                      style: CustomTheme.textStyle(context)),
-                SizedBox(
-                  height: height * 0.07,
-                )
+                  Text(
+                    "Currently using version " + version.toString(),
+                    style: CustomTheme.textStyle(context),
+                  ),
+                SizedBox(height: height * 0.07),
               ],
             ),
           ),
@@ -268,9 +264,10 @@ class Element {
   final String text;
   bool toggle;
   final IconData icon;
-  Element(
-      {required this.onPressed,
-      required this.text,
-      this.toggle = false,
-      required this.icon});
+  Element({
+    required this.onPressed,
+    required this.text,
+    this.toggle = false,
+    required this.icon,
+  });
 }

@@ -15,7 +15,8 @@ class CustomTheme {
     final sisData = Provider.of<SisData>(context);
     return TextStyle(
         color: sisData.darkMode ? Colors.white : Colors.black,
-        fontSize: MediaQuery.of(context).size.width * 0.115,
+        fontSize: (MediaQuery.of(context).size.width * 0.09).clamp(28.0, 36.0),
+        fontWeight: FontWeight.w600,
         fontFamily: 'Comfortaa');
   }
 
@@ -54,11 +55,11 @@ class CustomTheme {
             : const NeumorphicBorder(width: 0),
         color: sisData.darkMode
             // ? const Color.fromARGB(1, 77, 74, 74)
-            ? Colors.black.withOpacity(0.4)
+            ? Colors.black.withValues(alpha: 0.4)
             : NeumorphicColors.background,
-        depth: 3,
+        depth: 2,
         //intensity: sisData.darkMode ? 0.7 : null,
-        boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20)));
+        boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)));
   }
 
   static LinearGradient linearGradient(context) {

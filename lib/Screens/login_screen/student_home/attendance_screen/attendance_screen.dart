@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'attendance_details/attendance_details.dart';
 import 'package:official_connect/Providers/themes.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
+import 'package:official_connect/Screens/login_screen/student_home/widgets/sync_issue_notice.dart';
 
 class AttendanceInfo extends StatelessWidget {
   const AttendanceInfo({Key? key}) : super(key: key);
@@ -32,26 +33,12 @@ class AttendanceInfo extends StatelessWidget {
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
         onRefresh: () async {
-          Fluttertoast.showToast(
-              msg: "Updating data ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
-          await sisData.getData("", "", true);
-          Fluttertoast.showToast(
-              msg: "Updated data 🎉 ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
+          await openPortalRefresh(context);
         },
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           child: Container(
             decoration: BoxDecoration(
               gradient: linearGradient,
@@ -62,17 +49,62 @@ class AttendanceInfo extends StatelessWidget {
               top: height * 0.06,
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 AutoSizeText(
-                  "Attendance Info",
-                  maxFontSize: 45,
+                  "Attendance",
+                  maxFontSize: 36,
                   style: titleStyle,
                 ),
+                SyncIssueNotice(
+                  sisData: sisData,
+                  section: 'attendance',
+                  hasVisibleData: sisData.attendances.isNotEmpty,
+                ),
                 sisData.attendances.isEmpty
-                    ? Center(
-                        child: Text(
-                          "Data Not Uploaded",
-                          style: titleStyle.copyWith(fontSize: width * 0.08),
+                    ? Padding(
+                        padding: EdgeInsets.only(top: height * 0.055),
+                        child: Neumorphic(
+                          style: neumorphicStyle,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 30,
+                          ),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.event_busy_outlined,
+                                color: Color(0xffba3237),
+                                size: 48,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                "No attendance data",
+                                textAlign: TextAlign.center,
+                                style: buttonTrailing,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "The portal has no current-semester attendance for this account.",
+                                textAlign: TextAlign.center,
+                                style: buttonTitle.copyWith(
+                                  color: sisData.darkMode
+                                      ? Colors.white60
+                                      : Colors.black54,
+                                  height: 1.45,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              TextButton.icon(
+                                onPressed: () => openPortalRefresh(context),
+                                icon: const Icon(Icons.refresh),
+                                label: const Text('Refresh data'),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: const Color(0xffba3237),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       )
                     : AttendanceGraph(
@@ -107,9 +139,7 @@ class AttendanceInfo extends StatelessWidget {
                           ),
                         ))
                     .toList(),
-                SizedBox(
-                  height: height * 0.13,
-                )
+                const SizedBox(height: 32),
               ],
             ),
           ),

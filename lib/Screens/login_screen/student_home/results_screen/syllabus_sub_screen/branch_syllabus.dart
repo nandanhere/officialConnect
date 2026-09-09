@@ -7,10 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BranchSyllabus extends StatelessWidget {
-  final name;
-  const BranchSyllabus({Key? key, this.name}) : super(key: key);
-  static void launchURL(BuildContext context, String url) async {
-    if (!await launch(url)) throw 'Could not launch $url';
+  final String name;
+  const BranchSyllabus({Key? key, required this.name}) : super(key: key);
+  static void launchURL(String url) async {
+    if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
     // Navigator.of(context).push(
     //   MaterialPageRoute(
     //     builder: (ctx) => PDF().fromUrl(url),
@@ -70,7 +70,7 @@ class BranchSyllabus extends StatelessWidget {
                                 left: width * 0.025,
                                 right: width * 0.01),
                             onPressed: () async {
-                              launchURL(context, l[1]);
+                              launchURL(l[1]);
                             },
                             style: neumorphicStyle,
                             child: ListTile(
