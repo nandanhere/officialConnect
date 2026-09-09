@@ -13,13 +13,18 @@ class PortalLoginScreen extends StatefulWidget {
       this.initialDob,
       this.initialVerificationType,
       this.initialVerificationValue,
-      this.reuseSession = false});
+      this.reuseSession = false,
+      this.silent = false});
 
   final String? initialUsn;
   final String? initialDob;
   final String? initialVerificationType;
   final String? initialVerificationValue;
   final bool reuseSession;
+
+  /// Runs the portal login and scrape off-screen (transparent route). The
+  /// caller stays visible and shows its own completion notification.
+  final bool silent;
 
   @override
   State<PortalLoginScreen> createState() => _PortalLoginScreenState();
@@ -117,6 +122,13 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
         return true;
       }());
       if (mounted) {
+        if (widget.silent) {
+          // No UI is visible in silent mode; report failure to the caller
+          // so it can notify and offer the full sync page instead.
+          _finished = true;
+          Navigator.of(context).pop(false);
+          return;
+        }
         setState(() {
           _error = 'Some information could not be updated. You can show the '
               'page if it needs your attention.';
@@ -304,11 +316,16 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfff2f7f8),
+      backgroundColor:
+          widget.silent ? Colors.transparent : const Color(0xfff2f7f8),
       body: Stack(
         children: [
           Positioned.fill(
-            child: InAppWebView(
+            child: Opacity(
+              opacity: widget.silent ? 0 : 1,
+              child: IgnorePointer(
+                ignoring: widget.silent,
+                child: InAppWebView(
               initialUrlRequest: URLRequest(url: WebUri('about:blank')),
               initialSettings: InAppWebViewSettings(
                 javaScriptEnabled: true,
@@ -337,9 +354,11 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
                 await _prefillPortalForm(controller);
                 if (!_finished) await _checkSession();
               },
+                ),
+              ),
             ),
           ),
-          if (!_showPortal)
+          if (!widget.silent && !_showPortal)
             Positioned.fill(
               child: ColoredBox(
                 color: const Color(0xfff2f7f8),

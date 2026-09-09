@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code
 
 import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -40,6 +41,7 @@ class SisData with ChangeNotifier {
   String _phone = "";
   String _studentImage = "";
   String _errorMessage = "";
+  String _themeMode = 'system';
   bool _darkMode = false;
   bool _diagnosticsEnabled = true;
   double _ver = 0.0;
@@ -47,6 +49,11 @@ class SisData with ChangeNotifier {
   String _downloadLink = "";
   SisProctorData _proctorData = SisProctorData([], "", "", "", "");
   SisData() {
+    // Re-evaluate the effective theme when the OS theme changes while the
+    // preference is set to "system".
+    ui.PlatformDispatcher.instance.onPlatformBrightnessChanged = () {
+      if (_themeMode == 'system') notifyListeners();
+    };
     // cleanData();
     setup();
   }
@@ -78,26 +85,53 @@ class SisData with ChangeNotifier {
   void setup() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // if we already have data, check if the data is
-    if (prefs.containsKey('hasData')) {
-      _hasData = prefs.getBool('hasData')!;
-      var time = prefs.getInt('timeStamp');
+    if (prefs.containsKey('hasData') && prefs.getBool('hasData') == true) {
+      _hasData = true;
+      var time = prefs.getInt('timeStamp') ?? 0;
       _usn = prefs.getString('usn') ?? "";
       _dob = prefs.getString('dob') ?? "";
       _proctorEmail = prefs.getString('proctorEmail') ?? "";
       _darkMode = prefs.getBool('darkMode') ?? false;
+      // Migrate the old boolean preference: an explicit dark/light choice is
+      // kept, otherwise the theme follows the OS setting.
+      _themeMode = prefs.getString('themeMode') ??
+          (prefs.containsKey('darkMode')
+              ? (_darkMode ? 'dark' : 'light')
+              : 'system');
       _diagnosticsEnabled = prefs.getBool('diagnosticsEnabled') ?? true;
       await SyncDiagnostics.setEnabled(_diagnosticsEnabled);
       debugPrint(
         "data was there before. checking if it is older than 12 hours",
       );
-      needToUpdate =
-          DateTime.fromMillisecondsSinceEpoch(
-            time!,
-          ).difference(DateTime.now()).inMilliseconds.abs() >
+      needToUpdate = DateTime.fromMillisecondsSinceEpoch(time)
+              .difference(DateTime.now())
+              .inMilliseconds
+              .abs() >
           const Duration(hours: 12).inMilliseconds;
       notifyListeners();
 
-      _data = await convert.jsonDecode(prefs.getString('data')!);
+      // A missing or corrupted cache payload must never leave the app stuck
+      // on the loading spinner: mark it as logged out instead.
+      final raw = prefs.getString('data');
+      if (raw == null || raw.isEmpty) {
+        debugPrint('cache flagged as present but payload missing; resetting');
+        await prefs.setBool('hasData', false);
+        _hasData = false;
+        notifyListeners();
+        return;
+      }
+      try {
+        _data = Map<String, dynamic>.from(
+          await convert.jsonDecode(raw) as Map,
+        );
+      } catch (e) {
+        debugPrint('cached payload unreadable ($e); resetting');
+        await prefs.setBool('hasData', false);
+        _hasData = false;
+        _data = {};
+        notifyListeners();
+        return;
+      }
       // Keep showing cached data immediately. Refresh now requires the
       // authenticated portal WebView session; the legacy Lambda path cannot
       // satisfy the portal's current verification flow.
@@ -382,12 +416,26 @@ class SisData with ChangeNotifier {
 
   set darkMode(bool val) {
     _darkMode = val;
-    setDark(val);
+    themeMode = val ? 'dark' : 'light';
+  }
+
+  /// 'system' (default), 'light' or 'dark'.
+  String get themeMode => _themeMode;
+
+  set themeMode(String val) {
+    _themeMode = val;
+    _darkMode = val == 'dark';
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString('themeMode', val);
+    });
     notifyListeners();
   }
 
   bool get darkMode {
-    return _darkMode;
+    if (_themeMode == 'dark') return true;
+    if (_themeMode == 'light') return false;
+    return ui.PlatformDispatcher.instance.platformBrightness ==
+        ui.Brightness.dark;
   }
 
   bool get diagnosticsEnabled => _diagnosticsEnabled;

@@ -52,9 +52,9 @@ class SettingsInfo extends StatelessWidget {
       ),
 
       Element(
-        icon: Icons.settings,
+        icon: Icons.brightness_6_outlined,
         onPressed: () {},
-        text: "Dark Mode",
+        text: "Theme",
         toggle: true,
       ),
       Element(
@@ -90,7 +90,7 @@ class SettingsInfo extends StatelessWidget {
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: RefreshIndicator(
         displacement: height * 0.1,
-        backgroundColor: sisData.darkMode ? Colors.black : Colors.white,
+        backgroundColor: sisData.darkMode ? const Color(0xff101114) : Colors.white,
         color: sisData.darkMode
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
@@ -128,7 +128,11 @@ class SettingsInfo extends StatelessWidget {
                     child: NeumorphicButton(
                       onPressed: e.toggle
                           ? () {
-                              sisData.darkMode = !sisData.darkMode;
+                              const order = ['system', 'light', 'dark'];
+                              final next = order[
+                                  (order.indexOf(sisData.themeMode) + 1) %
+                                      order.length];
+                              sisData.themeMode = next;
                             }
                           : e.onPressed,
                       style: neumorphicStyle,
@@ -140,15 +144,32 @@ class SettingsInfo extends StatelessWidget {
                         ),
                         title: Text(e.text, style: buttonTitle),
                         trailing: e.toggle
-                            ? NeumorphicSwitch(
-                                style: const NeumorphicSwitchStyle(
-                                  trackDepth: 10,
-                                  thumbDepth: 2,
-                                ),
-                                height: width * 0.055,
-                                value: sisData.darkMode,
+                            ? DropdownButton<String>(
+                                value: sisData.themeMode,
+                                underline: const SizedBox.shrink(),
+                                icon: const SizedBox.shrink(),
+                                style: buttonTrailing,
+                                dropdownColor: sisData.darkMode
+                                    ? const Color(0xff1e1e1e)
+                                    : Colors.white,
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: 'system',
+                                    child: Text('System'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'light',
+                                    child: Text('Light'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'dark',
+                                    child: Text('Dark'),
+                                  ),
+                                ],
                                 onChanged: (value) {
-                                  sisData.darkMode = value;
+                                  if (value != null) {
+                                    sisData.themeMode = value;
+                                  }
                                 },
                               )
                             : null,

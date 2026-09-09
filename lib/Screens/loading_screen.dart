@@ -33,7 +33,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
     return Scaffold(
-        backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
+        backgroundColor: (sisData.darkMode) ? const Color(0xff101114) : Colors.white,
         body: const LoadingIndicator());
   }
 }

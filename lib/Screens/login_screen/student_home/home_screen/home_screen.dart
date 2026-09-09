@@ -44,10 +44,23 @@ class _HomeScreenState extends State<HomeScreen> {
     final sisData = Provider.of<SisData>(context);
     bool isKnown(String value) =>
         value.trim().isNotEmpty && !value.toLowerCase().contains('unknown');
-    final hasStudentImage =
-        sisData.studentImage.trim().isNotEmpty &&
-        sisData.studentImage !=
-            'http://parents.msrit.edu/images/defaultimages.png';
+    final hasStudentImage = sisData.studentImage.trim().isNotEmpty &&
+        !sisData.studentImage.contains('defaultimages');
+    ImageProvider? studentImageProvider;
+    if (hasStudentImage) {
+      final source = sisData.studentImage;
+      if (source.startsWith('data:')) {
+        final parsed = UriData.parse(source);
+        studentImageProvider = MemoryImage(parsed.contentAsBytes());
+      } else if (!kIsWeb) {
+        studentImageProvider = CachedNetworkImageProvider(source);
+      } else {
+        studentImageProvider = CachedNetworkImageProvider(
+          "https://sis-scraper-rit.herokuapp.com/getimage/" +
+              source.split('/').last.split('.').first,
+        );
+      }
+    }
     final classParts = [
       sisData.semester,
       sisData.section,
@@ -56,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: RefreshIndicator(
         displacement: height * 0.1,
-        backgroundColor: sisData.darkMode ? Colors.black : Colors.white,
+        backgroundColor: sisData.darkMode ? const Color(0xff101114) : Colors.white,
         color: sisData.darkMode
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
@@ -117,31 +130,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       boxShape:
                                           const NeumorphicBoxShape.circle(),
                                     ),
-                                    // TODO : show circular progress indicator while loading image
                                     child: CircleAvatar(
-                                      child: !hasStudentImage
+                                      child: studentImageProvider == null
                                           ? const Icon(
                                               Icons.person_outline,
                                               color: Color(0xffba3237),
                                               size: 34,
                                             )
                                           : null,
-                                      backgroundImage: hasStudentImage
-                                          ? CachedNetworkImageProvider(
-                                              kIsWeb
-                                                  ? "https://sis-scraper-rit.herokuapp.com/getimage/" +
-                                                        sisData.studentImage
-                                                            .split('/')
-                                                            .last
-                                                            .split('.')
-                                                            .first
-                                                  : sisData.studentImage,
-                                              headers: const {
-                                                "Origin":
-                                                    "http://localhost:8080",
-                                              },
-                                            )
-                                          : null,
+                                      backgroundImage: studentImageProvider,
                                       backgroundColor: sisData.darkMode
                                           ? Colors.white12
                                           : Colors.white70,

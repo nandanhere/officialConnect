@@ -253,7 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return sisData.updating
         ? Scaffold(
-            backgroundColor: (sisData.darkMode) ? Colors.black : Colors.white,
+            backgroundColor: (sisData.darkMode) ? const Color(0xff101114) : Colors.white,
             body: const Center(
               child: SpinKitSpinningLines(
                 color: Colors.red,
