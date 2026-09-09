@@ -43,8 +43,8 @@ class _CieGraphState extends State<CieGraph> {
               fontSize: MediaQuery.of(context).size.width * 0.025,
               fontFamily: 'Comfortaa')),
       isTransposed: true,
-      primaryYAxis: NumericAxis(minimum: 0, maximum: 50),
-      series: <ChartSeries<Marks, String>>[
+      primaryYAxis: const NumericAxis(minimum: 0, maximum: 50),
+      series: <CartesianSeries<Marks, String>>[
         BarSeries<Marks, String>(
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(7), topRight: Radius.circular(7)),

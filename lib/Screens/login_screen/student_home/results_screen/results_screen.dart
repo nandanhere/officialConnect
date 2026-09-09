@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/themes.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 
 class ResultsScreen extends StatelessWidget {
-  final seeOpt;
+  final ValueNotifier<bool> seeOpt;
   const ResultsScreen(this.seeOpt, {Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -31,23 +31,7 @@ class ResultsScreen extends StatelessWidget {
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
         onRefresh: () async {
-          Fluttertoast.showToast(
-              msg: "Updating data ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
-          await sisData.getData("", "", true);
-          Fluttertoast.showToast(
-              msg: "Updated data 🎉 ",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffba3237),
-              textColor: Colors.white,
-              fontSize: 16.0);
+          await openPortalRefresh(context);
         },
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

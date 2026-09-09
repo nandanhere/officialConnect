@@ -62,7 +62,9 @@ class PreviousResult {
                 Subject.getList(List<Map<String, dynamic>>.from(e['results'])),
             term: e['term'],
             semesterNumber:
-                (term.contains('supplementary')) ? semstart : ++semstart
+                (term.contains('supplementary') || term.contains('back'))
+                    ? semstart
+                    : ++semstart
             // semesterNumber: (data.indexOf(e) + 1).toString(),
             );
       }).toList();

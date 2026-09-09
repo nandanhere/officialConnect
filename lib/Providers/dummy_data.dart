@@ -1882,7 +1882,7 @@ class DummyData {
       }
     ],
     "courseSmall": "B.E-IS",
-    "dob": "2000-12-08",
+    "dob": "2000-01-01",
     "earned": "90",
     "fees": [
       {
