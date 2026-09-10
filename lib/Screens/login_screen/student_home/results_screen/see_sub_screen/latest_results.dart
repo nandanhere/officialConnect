@@ -88,7 +88,9 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
   Future<void> _prepareCaptcha(InAppWebViewController controller) async {
     final usn = jsonEncode(_usn.toUpperCase());
     final selector = jsonEncode(widget.source.captchaSelector);
-    await controller.evaluateJavascript(source: '''
+    await controller.evaluateJavascript(
+      source:
+          '''
       (function() {
         const usn = document.querySelector('#usn, input[name="usn"]');
         if (usn) {
@@ -114,7 +116,8 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
         if (image.complete && image.naturalWidth) sendImage();
         else image.addEventListener('load', sendImage, {once: true});
       })();
-    ''');
+    ''',
+    );
   }
 
   Future<void> _submitCaptcha() async {
@@ -128,7 +131,9 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
     _submitted = true;
     final selector = jsonEncode(widget.source.captchaInputSelector);
     final encodedValue = jsonEncode(value);
-    await _webController!.evaluateJavascript(source: '''
+    await _webController!.evaluateJavascript(
+      source:
+          '''
       (function() {
         const input = document.querySelector($selector);
         if (!input) return false;
@@ -141,7 +146,8 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
         else form.submit();
         return true;
       })();
-    ''');
+    ''',
+    );
   }
 
   Future<void> _refreshCaptcha() async {
@@ -155,7 +161,9 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
     final reload = widget.source == ExamResultSource.regular
         ? "document.querySelector('#reloadCaptcha')?.click();"
         : "if (typeof reloadCapthcha === 'function') reloadCapthcha(0);";
-    await _webController?.evaluateJavascript(source: '''
+    await _webController?.evaluateJavascript(
+      source:
+          '''
       (function() {
         $reload
         setTimeout(function() {
@@ -169,14 +177,14 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
             'officialConnectExamCaptcha', canvas.toDataURL('image/png'));
         }, 700);
       })();
-    ''');
+    ''',
+    );
   }
 
   Future<void> _handleLoadedPage(InAppWebViewController controller) async {
     final html = (await controller.evaluateJavascript(
       source: 'document.documentElement.outerHTML',
-    ))
-        .toString();
+    )).toString();
     try {
       final result = ExamResultScraper.parse(html, widget.source);
       await (await SharedPreferences.getInstance()).setString(
@@ -207,42 +215,46 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
   }
 
   Map<String, dynamic> _resultToJson(PreviousResult result) => {
-        'cgpa': result.cgpa,
-        'creditsEarned': result.creditsEarned,
-        'creditsRegistered': result.creditsRegistered,
-        'sgpa': result.sgpa,
-        'term': result.term,
-        'semesterNumber': result.semesterNumber,
-        'results': result.results
-            .map((subject) => {
-                  'courseCode': subject.courseCode,
-                  'subjectName': subject.subjectName,
-                  'creditsEarned': subject.creditsEarned,
-                  'creditsRegistered': subject.creditsRegistered,
-                  'gpa': subject.gpa,
-                  'grade': subject.grade,
-                })
-            .toList(),
-      };
+    'cgpa': result.cgpa,
+    'creditsEarned': result.creditsEarned,
+    'creditsRegistered': result.creditsRegistered,
+    'sgpa': result.sgpa,
+    'term': result.term,
+    'semesterNumber': result.semesterNumber,
+    'results': result.results
+        .map(
+          (subject) => {
+            'courseCode': subject.courseCode,
+            'subjectName': subject.subjectName,
+            'creditsEarned': subject.creditsEarned,
+            'creditsRegistered': subject.creditsRegistered,
+            'gpa': subject.gpa,
+            'grade': subject.grade,
+          },
+        )
+        .toList(),
+  };
 
   PreviousResult _resultFromJson(Map<String, dynamic> value) => PreviousResult(
-        cgpa: value['cgpa'],
-        creditsEarned: value['creditsEarned'],
-        creditsRegistered: value['creditsRegistered'],
-        sgpa: value['sgpa'],
-        term: value['term'],
-        semesterNumber: value['semesterNumber'],
-        results: (value['results'] as List)
-            .map((item) => Subject(
-                  courseCode: item['courseCode'],
-                  subjectName: item['subjectName'],
-                  creditsEarned: item['creditsEarned'],
-                  creditsRegistered: item['creditsRegistered'],
-                  gpa: item['gpa'],
-                  grade: item['grade'],
-                ))
-            .toList(),
-      );
+    cgpa: value['cgpa'],
+    creditsEarned: value['creditsEarned'],
+    creditsRegistered: value['creditsRegistered'],
+    sgpa: value['sgpa'],
+    term: value['term'],
+    semesterNumber: value['semesterNumber'],
+    results: (value['results'] as List)
+        .map(
+          (item) => Subject(
+            courseCode: item['courseCode'],
+            subjectName: item['subjectName'],
+            creditsEarned: item['creditsEarned'],
+            creditsRegistered: item['creditsRegistered'],
+            gpa: item['gpa'],
+            grade: item['grade'],
+          ),
+        )
+        .toList(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -257,8 +269,9 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
 
     final foreground = sisData.darkMode ? Colors.white : Colors.black87;
     return Scaffold(
-      backgroundColor:
-          sisData.darkMode ? Colors.black : NeumorphicColors.background,
+      backgroundColor: sisData.darkMode
+          ? Colors.black
+          : NeumorphicColors.background,
       body: Stack(
         children: [
           Positioned(
@@ -306,9 +319,8 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
                   _submitted = false;
                   _captchaController.clear();
                   final portalMessage = request.message?.trim() ?? '';
-                  final isRejectedCode = portalMessage.toLowerCase().contains(
-                            'captcha',
-                          ) ||
+                  final isRejectedCode =
+                      portalMessage.toLowerCase().contains('captcha') ||
                       portalMessage.toLowerCase().contains('security code');
                   if (mounted) {
                     setState(() {
@@ -402,13 +414,18 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
     if (_stage == _ResultStage.error) {
       return Column(
         children: [
-          const Icon(Icons.cloud_off_outlined,
-              size: 48, color: Color(0xffba3237)),
+          const Icon(
+            Icons.cloud_off_outlined,
+            size: 48,
+            color: Color(0xffba3237),
+          ),
           const SizedBox(height: 16),
           Text(_error ?? 'Unable to load results', textAlign: TextAlign.center),
           const SizedBox(height: 20),
           ElevatedButton(
-              onPressed: _startFetch, child: const Text('Try again')),
+            onPressed: _startFetch,
+            child: const Text('Try again'),
+          ),
         ],
       );
     }
@@ -417,8 +434,11 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Icon(Icons.fact_check_outlined,
-              size: 48, color: Color(0xffba3237)),
+          const Icon(
+            Icons.fact_check_outlined,
+            size: 48,
+            color: Color(0xffba3237),
+          ),
           const SizedBox(height: 14),
           Text(
             widget.source.label,
@@ -429,10 +449,9 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
           Text(
             'Enter the security code shown by the examination site. This is the only manual step.',
             textAlign: TextAlign.center,
-            style: CustomTheme.textStyle(context).copyWith(
-              color: foreground.withValues(alpha: 0.68),
-              height: 1.4,
-            ),
+            style: CustomTheme.textStyle(
+              context,
+            ).copyWith(color: foreground.withValues(alpha: 0.68), height: 1.4),
           ),
           if (_error != null) ...[
             const SizedBox(height: 14),
@@ -447,8 +466,10 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
             Center(
               child: Container(
                 color: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 child: Image.memory(
                   _captchaBytes!,
                   height: 55,
@@ -466,12 +487,23 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
           TextField(
             key: const ValueKey('exam-captcha'),
             controller: _captchaController,
+            style: CustomTheme.buttonTitle(context).copyWith(color: foreground),
+            cursorColor: CustomTheme.accent,
             textCapitalization: TextCapitalization.characters,
             autocorrect: false,
             enableSuggestions: false,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Security code',
-              border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: foreground.withValues(alpha: 0.72)),
+              floatingLabelStyle: const TextStyle(color: CustomTheme.accent),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: foreground.withValues(alpha: 0.38),
+                ),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: CustomTheme.accent, width: 2),
+              ),
             ),
             onSubmitted: (_) => _submitCaptcha(),
           ),
