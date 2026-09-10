@@ -44,7 +44,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final sisData = Provider.of<SisData>(context);
     bool isKnown(String value) =>
         value.trim().isNotEmpty && !value.toLowerCase().contains('unknown');
-    final hasStudentImage = sisData.studentImage.trim().isNotEmpty &&
+    final hasStudentImage =
+        sisData.studentImage.trim().isNotEmpty &&
         !sisData.studentImage.contains('defaultimages');
     ImageProvider? studentImageProvider;
     if (hasStudentImage) {
@@ -69,7 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: RefreshIndicator(
         displacement: height * 0.1,
-        backgroundColor: sisData.darkMode ? const Color(0xff101114) : Colors.white,
+        backgroundColor: sisData.darkMode
+            ? const Color(0xff101114)
+            : Colors.white,
         color: sisData.darkMode
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
@@ -159,18 +162,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: width * 0.045,
                                     ),
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: height * 0.01,
-                                      horizontal: width * 0.02,
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: height * 0.01,
+                                        horizontal: width * 0.02,
+                                      ),
+                                      child: Text(
+                                        classParts.join(' · '),
+                                        style: subtitle,
+                                        textAlign: TextAlign.end,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      // decoration: BoxDecoration(
+                                      // border: Border.all(width: 1.3),
+                                      // borderRadius: BorderRadius.circular(width)),
                                     ),
-                                    child: Text(
-                                      classParts.join(' · '),
-                                      style: subtitle,
-                                    ),
-                                    // decoration: BoxDecoration(
-                                    // border: Border.all(width: 1.3),
-                                    // borderRadius: BorderRadius.circular(width)),
                                   ),
                                 ],
                               ),
@@ -185,18 +193,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: width * 0.045,
                                     ),
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: height * 0.01,
-                                      horizontal: width * 0.02,
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: height * 0.01,
+                                        horizontal: width * 0.02,
+                                      ),
+                                      child: Text(
+                                        sisData.course,
+                                        style: subtitle,
+                                        textAlign: TextAlign.end,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      // decoration: BoxDecoration(
+                                      // border: Border.all(width: 1.3),
+                                      // borderRadius: BorderRadius.circular(width)),
                                     ),
-                                    child: Text(
-                                      sisData.course,
-                                      style: subtitle,
-                                    ),
-                                    // decoration: BoxDecoration(
-                                    // border: Border.all(width: 1.3),
-                                    // borderRadius: BorderRadius.circular(width)),
                                   ),
                                 ],
                               ),

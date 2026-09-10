@@ -7,14 +7,16 @@ import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:provider/provider.dart';
 
 class PortalLoginScreen extends StatefulWidget {
-  const PortalLoginScreen(
-      {super.key,
-      this.initialUsn,
-      this.initialDob,
-      this.initialVerificationType,
-      this.initialVerificationValue,
-      this.reuseSession = false,
-      this.silent = false});
+  const PortalLoginScreen({
+    super.key,
+    this.initialUsn,
+    this.initialDob,
+    this.initialVerificationType,
+    this.initialVerificationValue,
+    this.reuseSession = false,
+    this.silent = false,
+    this.onFinished,
+  });
 
   final String? initialUsn;
   final String? initialDob;
@@ -25,6 +27,11 @@ class PortalLoginScreen extends StatefulWidget {
   /// Runs the portal login and scrape off-screen (transparent route). The
   /// caller stays visible and shows its own completion notification.
   final bool silent;
+
+  /// Lets background refresh run in a pointer-transparent overlay instead of
+  /// pushing a modal route over the app. Interactive login flows continue to
+  /// use the Navigator when no callback is supplied.
+  final ValueChanged<bool>? onFinished;
 
   @override
   State<PortalLoginScreen> createState() => _PortalLoginScreenState();
@@ -40,11 +47,20 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
   String? _error;
   final Stopwatch _flowWatch = Stopwatch();
 
+  void _finish(bool result) {
+    if (_finished) return;
+    _finished = true;
+    final callback = widget.onFinished;
+    if (callback != null) {
+      callback(result);
+    } else if (mounted) {
+      Navigator.of(context).pop(result);
+    }
+  }
+
   void _updateStage(String stage, {String? detail}) {
     assert(() {
-      debugPrint(
-        'Portal timing: ${_flowWatch.elapsedMilliseconds}ms - $stage',
-      );
+      debugPrint('Portal timing: ${_flowWatch.elapsedMilliseconds}ms - $stage');
       return true;
     }());
     if (!mounted || _finished) return;
@@ -58,10 +74,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
     if (_scrapeStarted) return;
     _scrapeStarted = true;
     final scrapeWatch = Stopwatch()..start();
-    _updateStage(
-      'Login complete',
-      detail: 'Updating your information.',
-    );
+    _updateStage('Login complete', detail: 'Updating your information.');
     try {
       // The portal currently rejects replay of its browser session from AWS.
       // Scraping directly in this authenticated WebView avoids that failed
@@ -71,14 +84,17 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
         onProgress: (stage) => _updateStage(stage),
       ).scrapeAll();
       assert(() {
-        debugPrint('Portal scraper sections: '
-            'attendance=${(data['attendance'] as List?)?.length ?? 0}, '
-            'marks=${(data['marks'] as List?)?.length ?? 0}, '
-            'results=${(data['prevResults'] as List?)?.length ?? 0}, '
-            'fees=${(data['fees'] as List?)?.length ?? 0}');
+        debugPrint(
+          'Portal scraper sections: '
+          'attendance=${(data['attendance'] as List?)?.length ?? 0}, '
+          'marks=${(data['marks'] as List?)?.length ?? 0}, '
+          'results=${(data['prevResults'] as List?)?.length ?? 0}, '
+          'fees=${(data['fees'] as List?)?.length ?? 0}',
+        );
         return true;
       }());
-      final hasUsefulSections = data['courseSmall'] != null ||
+      final hasUsefulSections =
+          data['courseSmall'] != null ||
           (data['attendance'] is List &&
               (data['attendance'] as List).isNotEmpty) ||
           (data['marks'] is List && (data['marks'] as List).isNotEmpty) ||
@@ -91,11 +107,10 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
           'scraper returned incomplete portal data',
         );
       }
-      await Provider.of<SisData>(context, listen: false).applyPortalData(
-        data,
-        widget.initialUsn ?? '',
-        widget.initialDob ?? '',
-      );
+      await Provider.of<SisData>(
+        context,
+        listen: false,
+      ).applyPortalData(data, widget.initialUsn ?? '', widget.initialDob ?? '');
       await SyncDiagnostics.recordSummary(
         Map<String, dynamic>.from((data['_sync'] as Map?) ?? const {}),
         refresh: widget.reuseSession,
@@ -111,8 +126,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
         return true;
       }());
       if (mounted) {
-        _finished = true;
-        Navigator.of(context).pop(true);
+        _finish(true);
       }
     } catch (error) {
       await SyncDiagnostics.recordFailure(refresh: widget.reuseSession);
@@ -125,12 +139,12 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
         if (widget.silent) {
           // No UI is visible in silent mode; report failure to the caller
           // so it can notify and offer the full sync page instead.
-          _finished = true;
-          Navigator.of(context).pop(false);
+          _finish(false);
           return;
         }
         setState(() {
-          _error = 'Some information could not be updated. You can show the '
+          _error =
+              'Some information could not be updated. You can show the '
               'page if it needs your attention.';
           _stage = 'Update needs attention';
           _detail = 'Anything already available will remain visible.';
@@ -144,10 +158,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
     if (!mounted) return;
     if (authenticated) await _scrapeAndCache();
     if (!authenticated) {
-      _updateStage(
-        'Signing you in',
-        detail: 'Finishing the sign-in steps.',
-      );
+      _updateStage('Signing you in', detail: 'Finishing the sign-in steps.');
     }
   }
 
@@ -157,12 +168,15 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
     if (usn == null || dob == null || dob.length != 10) return;
     final parts = dob.split('-');
     if (parts.length != 3) return;
-    final verification =
-        (widget.initialVerificationValue ?? '').replaceAll("'", "\\'");
+    final verification = (widget.initialVerificationValue ?? '').replaceAll(
+      "'",
+      "\\'",
+    );
     final verificationType = (widget.initialVerificationType ?? '')
         .toLowerCase()
         .replaceAll("'", "\\'");
-    final script = """
+    final script =
+        """
       (function() {
         const username = document.getElementById('username');
         const isVerificationPage = document.body.innerText.toLowerCase()
@@ -299,7 +313,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
     for (final delay in const [
       Duration.zero,
       Duration(milliseconds: 350),
-      Duration(milliseconds: 900)
+      Duration(milliseconds: 900),
     ]) {
       if (delay != Duration.zero) await Future.delayed(delay);
       if (!mounted || _finished) return;
@@ -316,8 +330,9 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          widget.silent ? Colors.transparent : const Color(0xfff2f7f8),
+      backgroundColor: widget.silent
+          ? Colors.transparent
+          : const Color(0xfff2f7f8),
       body: Stack(
         children: [
           Positioned.fill(
@@ -326,34 +341,34 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
               child: IgnorePointer(
                 ignoring: widget.silent,
                 child: InAppWebView(
-              initialUrlRequest: URLRequest(url: WebUri('about:blank')),
-              initialSettings: InAppWebViewSettings(
-                javaScriptEnabled: true,
-                javaScriptCanOpenWindowsAutomatically: true,
-                mediaPlaybackRequiresUserGesture: false,
-                domStorageEnabled: true,
-                databaseEnabled: true,
-                thirdPartyCookiesEnabled: true,
-              ),
-              onWebViewCreated: (controller) async {
-                _flowWatch.start();
-                _session.attachController(controller);
-                if (!widget.reuseSession) await _session.clear();
-                await controller.loadUrl(
-                  urlRequest: URLRequest(
-                    url: WebUri(PortalSession.loginUri.toString()),
+                  initialUrlRequest: URLRequest(url: WebUri('about:blank')),
+                  initialSettings: InAppWebViewSettings(
+                    javaScriptEnabled: true,
+                    javaScriptCanOpenWindowsAutomatically: true,
+                    mediaPlaybackRequiresUserGesture: false,
+                    domStorageEnabled: true,
+                    databaseEnabled: true,
+                    thirdPartyCookiesEnabled: true,
                   ),
-                );
-              },
-              onUpdateVisitedHistory: (_, url, __) {
-                _session.rememberPage(url);
-              },
-              onLoadStop: (controller, __) async {
-                if (_finished) return;
-                _session.rememberPage(await controller.getUrl());
-                await _prefillPortalForm(controller);
-                if (!_finished) await _checkSession();
-              },
+                  onWebViewCreated: (controller) async {
+                    _flowWatch.start();
+                    _session.attachController(controller);
+                    if (!widget.reuseSession) await _session.clear();
+                    await controller.loadUrl(
+                      urlRequest: URLRequest(
+                        url: WebUri(PortalSession.loginUri.toString()),
+                      ),
+                    );
+                  },
+                  onUpdateVisitedHistory: (_, url, __) {
+                    _session.rememberPage(url);
+                  },
+                  onLoadStop: (controller, __) async {
+                    if (_finished) return;
+                    _session.rememberPage(await controller.getUrl());
+                    await _prefillPortalForm(controller);
+                    if (!_finished) await _checkSession();
+                  },
                 ),
               ),
             ),
@@ -369,7 +384,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
                         alignment: Alignment.centerLeft,
                         child: IconButton(
                           tooltip: 'Cancel',
-                          onPressed: () => Navigator.of(context).pop(false),
+                          onPressed: () => _finish(false),
                           icon: const Icon(Icons.close),
                         ),
                       ),

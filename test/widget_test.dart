@@ -5,6 +5,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/results_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/widgets/marks_card.dart';
+import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
 import 'package:official_connect/Services/exam_result_scraper.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:provider/provider.dart';
@@ -202,6 +203,28 @@ void main() {
     expect(sisData.attendances, isNotEmpty);
     expect(sisData.marks, isNotEmpty);
     expect(sisData.previousResults, isNotEmpty);
+  });
+
+  testWidgets('stale cached data remains navigable during refresh', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final sisData = SisData();
+    await sisData.getData('DUMMY', '', false);
+    sisData.needToUpdate = true;
+    Unified.screenNumber.value = 2;
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: sisData,
+        child: const MaterialApp(home: Unified()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Attendance'), findsOneWidget);
+    expect(find.byType(BottomNavigationBar), findsOneWidget);
   });
 
   testWidgets('SEE renders quick-result shortcuts without a runtime error', (
