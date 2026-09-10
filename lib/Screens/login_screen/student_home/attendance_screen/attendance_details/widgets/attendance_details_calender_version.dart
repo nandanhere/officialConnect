@@ -15,7 +15,7 @@ extension DateOnlyCompare on DateTime {
 class AttendanceCalenderVersion extends StatelessWidget {
   final Attendance attendance;
   const AttendanceCalenderVersion({Key? key, required this.attendance})
-      : super(key: key);
+    : super(key: key);
 
   DateTime calcMinDate(List<ClassDay> dates) {
     //Calculates min date
@@ -111,7 +111,7 @@ class AttendanceCalenderVersion extends StatelessWidget {
           attendance.presentDates
               .where((element) => element.date == fromDate)
               .first
-              .time
+              .time,
         ]);
       } else if (isPresentInDates(attendance.absentDates, fromDate)) {
         allDateList.add([
@@ -121,11 +121,13 @@ class AttendanceCalenderVersion extends StatelessWidget {
           attendance.absentDates
               .where((element) => element.date == fromDate)
               .first
-              .time
+              .time,
         ]);
       } else {
-        allDateList
-            .add([-1, DateTime(fromDate.year, fromDate.month, fromDate.day)]);
+        allDateList.add([
+          -1,
+          DateTime(fromDate.year, fromDate.month, fromDate.day),
+        ]);
       }
       fromDate = fromDate.add(const Duration(days: 1));
     }
@@ -145,12 +147,18 @@ class AttendanceCalenderVersion extends StatelessWidget {
 
       for (List data in allDateList) {
         if (data.length > 2) {
-          DataSource newData =
-              DataSource(data[3], data[1], data[2], getColor(data[0]), true);
+          DataSource newData = DataSource(
+            data[3],
+            data[1],
+            data[2],
+            getColor(data[0]),
+            true,
+          );
           _dataSource.add(newData);
         } else {
-          _dataSource
-              .add(DataSource("No Class", data[1], data[1], Colors.grey, true));
+          _dataSource.add(
+            DataSource("No Class", data[1], data[1], Colors.grey, true),
+          );
         }
       }
       return _dataSource;
@@ -176,46 +184,59 @@ class AttendanceCalenderVersion extends StatelessWidget {
           minDate: allDateList[0][1],
           maxDate: DateTime.now(),
           viewHeaderStyle: ViewHeaderStyle(
-              dateTextStyle: textStyle, dayTextStyle: textStyle),
-          headerStyle: CalendarHeaderStyle(textStyle: textStyle),
-          cellBorderColor: sisData.darkMode ? Colors.white : Colors.black,
+            backgroundColor: Colors.transparent,
+            dateTextStyle: textStyle,
+            dayTextStyle: textStyle,
+          ),
+          headerStyle: CalendarHeaderStyle(
+            backgroundColor: Colors.transparent,
+            textStyle: textStyle.copyWith(fontWeight: FontWeight.w600),
+          ),
+          cellBorderColor: sisData.darkMode
+              ? Colors.white.withValues(alpha: 0.32)
+              : Colors.black.withValues(alpha: 0.28),
           view: CalendarView.month,
           dataSource: MeetingDataSource(_getSource()),
           monthViewSettings: MonthViewSettings(
-              showTrailingAndLeadingDates: false,
-              appointmentDisplayMode: MonthAppointmentDisplayMode.none,
-              showAgenda: true,
-              agendaItemHeight: height * 0.07),
+            showTrailingAndLeadingDates: false,
+            appointmentDisplayMode: MonthAppointmentDisplayMode.none,
+            showAgenda: true,
+            agendaItemHeight: height * 0.07,
+          ),
           monthCellBuilder:
               (BuildContext buildContext, MonthCellDetails details) {
-            final Color backgroundColor =
-                _getMonthCellBackgroundColor(details.date);
-            final Color defaultColor =
-                Theme.of(context).brightness == Brightness.dark
-                    ? Colors.black54
+                final Color backgroundColor = _getMonthCellBackgroundColor(
+                  details.date,
+                );
+                final Color defaultColor =
+                    Theme.of(context).brightness == Brightness.dark
+                    ? const Color(0xff101114)
                     : Colors.white;
-            return Container(
-              decoration: BoxDecoration(
-                  color: backgroundColor == Colors.blue
-                      ? Colors.transparent
-                      : backgroundColor,
-                  border:
-                      Border.all(color: defaultColor, width: 0.002 * width)),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(4),
+                return Container(
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: backgroundColor,
+                    color: backgroundColor == Colors.blue
+                        ? Colors.transparent
+                        : backgroundColor,
+                    border: Border.all(
+                      color: defaultColor,
+                      width: 0.002 * width,
+                    ),
                   ),
-                  child: Text(
-                    details.date.day.toString(),
-                    style: textStyle,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: backgroundColor,
+                      ),
+                      child: Text(
+                        details.date.day.toString(),
+                        style: textStyle,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
+                );
+              },
           showNavigationArrow: true,
         ),
       ),
@@ -258,7 +279,12 @@ class MeetingDataSource extends CalendarDataSource {
 
 class DataSource {
   DataSource(
-      this.eventName, this.from, this.to, this.background, this.isAllDay);
+    this.eventName,
+    this.from,
+    this.to,
+    this.background,
+    this.isAllDay,
+  );
   String eventName;
   DateTime? from;
   DateTime? to;
