@@ -49,8 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final savedDob = prefs.getString('portal_dob') ?? '';
     final parsedDob = DateTime.tryParse(savedDob);
     // Never reuse an impossible future DOB from stale local cache.
-    dobController.text =
-        parsedDob != null && !parsedDob.isAfter(DateTime.now()) ? savedDob : '';
+    dobController.text = parsedDob != null && !parsedDob.isAfter(DateTime.now())
+        ? savedDob
+        : '';
     verificationType =
         prefs.getString('portal_verification_type') ?? verificationType;
     verificationValueController.text =
@@ -80,11 +81,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _saveLogin() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-        'portal_usn', usnController.text.trim().toUpperCase());
+      'portal_usn',
+      usnController.text.trim().toUpperCase(),
+    );
     await prefs.setString('portal_dob', dobController.text.trim());
     await prefs.setString('portal_verification_type', verificationType);
     await prefs.setString(
-        'portal_verification_value', verificationValueController.text.trim());
+      'portal_verification_value',
+      verificationValueController.text.trim(),
+    );
   }
 
   Future<void> _clearSavedLogin() async {
@@ -129,35 +134,35 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-// TODO : Make this more organised.
+  // TODO : Make this more organised.
   _selectDate(BuildContext context) async {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          final size = MediaQuery.of(context).size;
-          return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              title: const Text('Pick a date'),
-              content: SizedBox(
-                height: size.height * 0.5,
-                width: size.width * 0.8,
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                      child: getDateRangePicker(),
-                    ),
-                    MaterialButton(
-                      child: const Text("OK"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )
-                  ],
+      context: context,
+      builder: (BuildContext context) {
+        final size = MediaQuery.of(context).size;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text('Pick a date'),
+          content: SizedBox(
+            height: size.height * 0.5,
+            width: size.width * 0.8,
+            child: Column(
+              children: <Widget>[
+                Center(child: getDateRangePicker()),
+                MaterialButton(
+                  child: const Text("OK"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-              ));
-        });
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _openPortalLogin() async {
@@ -165,22 +170,25 @@ class _LoginScreenState extends State<LoginScreen> {
     final isDummy = usnController.text.trim().toUpperCase() == 'DUMMY';
     if (!isDummy && !(_formKey.currentState?.validate() ?? false)) return;
     if (isDummy) {
-      await sisData.getData('DUMMY', '', false);
+      await sisData.loadDummyData();
       if (mounted && widget.closeAfterSync) Navigator.of(context).pop();
       return;
     }
     await _saveLogin();
-    final synced = await Navigator.of(context).push<bool>(MaterialPageRoute(
-      builder: (_) => PortalLoginScreen(
-        initialUsn: usnController.text.toUpperCase(),
-        initialDob: dobController.text,
-        initialVerificationType: verificationType,
-        initialVerificationValue: verificationValueController.text.trim(),
-        reuseSession: sisData.hasData &&
-            sisData.usn.trim().toUpperCase() ==
-                usnController.text.trim().toUpperCase(),
+    final synced = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => PortalLoginScreen(
+          initialUsn: usnController.text.toUpperCase(),
+          initialDob: dobController.text,
+          initialVerificationType: verificationType,
+          initialVerificationValue: verificationValueController.text.trim(),
+          reuseSession:
+              sisData.hasData &&
+              sisData.usn.trim().toUpperCase() ==
+                  usnController.text.trim().toUpperCase(),
+        ),
       ),
-    ));
+    );
     if (synced == true &&
         mounted &&
         (widget.closeAfterSync || Navigator.of(context).canPop())) {
@@ -241,24 +249,24 @@ class _LoginScreenState extends State<LoginScreen> {
       controller: dobController,
       focusNode: passwordFocus,
       decoration: InputDecoration(
-          labelText: "Date of Birth",
-          labelStyle: textStyle,
-          suffix: GestureDetector(
-            child: const Icon(Icons.calendar_view_month),
-            onTap: () {
-              _selectDate(context);
-            },
-          )),
+        labelText: "Date of Birth",
+        labelStyle: textStyle,
+        suffix: GestureDetector(
+          child: const Icon(Icons.calendar_view_month),
+          onTap: () {
+            _selectDate(context);
+          },
+        ),
+      ),
     );
 
     return sisData.updating
         ? Scaffold(
-            backgroundColor: (sisData.darkMode) ? const Color(0xff101114) : Colors.white,
+            backgroundColor: (sisData.darkMode)
+                ? const Color(0xff101114)
+                : Colors.white,
             body: const Center(
-              child: SpinKitSpinningLines(
-                color: Colors.red,
-                size: 100.0,
-              ),
+              child: SpinKitSpinningLines(color: Colors.red, size: 100.0),
             ),
           )
         : Scaffold(
@@ -273,10 +281,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: NeumorphicButton(
                         padding: EdgeInsets.all(width * 0.03),
                         style: NeumorphicStyle(
-                            intensity: 0.5,
-                            color: const Color(0x00c00000),
-                            boxShape: NeumorphicBoxShape.roundRect(
-                                BorderRadius.circular(30))),
+                          intensity: 0.5,
+                          color: const Color(0x00c00000),
+                          boxShape: NeumorphicBoxShape.roundRect(
+                            BorderRadius.circular(30),
+                          ),
+                        ),
                         child: const Icon(Icons.chevron_left),
                         onPressed: () {
                           setState(() {
@@ -293,165 +303,181 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: const EdgeInsets.only(top: 60.0),
                       child: SafeArea(
                         child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 40.0),
-                                child: Image.asset('images/logo.png'),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 40.0,
                               ),
-                              const SizedBox(
-                                height: 20,
+                              child: Image.asset('images/logo.png'),
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "CONNECT",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 40,
+                                fontFamily: 'Comfortaa',
                               ),
+                            ),
+                            if (!fillForm)
                               const Text(
-                                "CONNECT",
+                                "By students of",
                                 style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 40,
-                                    fontFamily: 'Comfortaa'),
-                              ),
-                              if (!fillForm)
-                                const Text(
-                                  "By students of",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontFamily: 'Comfortaa'),
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontFamily: 'Comfortaa',
                                 ),
-                              SizedBox(
-                                height: (!fillForm) ? 50 : 10,
                               ),
-                              if (!fillForm)
-                                const Text(
-                                  "MSRIT",
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 20,
-                                      fontFamily: 'Comfortaa'),
+                            SizedBox(height: (!fillForm) ? 50 : 10),
+                            if (!fillForm)
+                              const Text(
+                                "MSRIT",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 20,
+                                  fontFamily: 'Comfortaa',
                                 ),
-                              if (fillForm)
-                                Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 50.0, right: 50.0),
-                                        child: usnForm,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 50.0, right: 50.0),
-                                        child: dobForm,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 50.0),
-                                        child: DropdownButtonFormField<String>(
-                                          initialValue: verificationType,
-                                          decoration: InputDecoration(
-                                              labelText: 'Verification type',
-                                              labelStyle: textStyle),
-                                          items: const [
-                                            DropdownMenuItem(
-                                                value: "Father's mobile number",
-                                                child: Text(
-                                                    "Father's mobile number")),
-                                            DropdownMenuItem(
-                                                value: "Mother's mobile number",
-                                                child: Text(
-                                                    "Mother's mobile number")),
-                                            DropdownMenuItem(
-                                                value: 'ID card number',
-                                                child: Text('ID card number')),
-                                          ],
-                                          onChanged: (value) => setState(
-                                              () => verificationType = value!),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 50.0),
-                                        child: TextFormField(
-                                          controller:
-                                              verificationValueController,
-                                          keyboardType: TextInputType.number,
-                                          maxLength: 4,
-                                          decoration: InputDecoration(
-                                              labelText: verificationType ==
-                                                      'ID card number'
-                                                  ? 'ID card number'
-                                                  : 'Last four digits',
-                                              labelStyle: textStyle),
-                                          validator: (value) => value == null ||
-                                                  value.trim().length < 4
-                                              ? 'Enter the required verification value'
-                                              : null,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              const SizedBox(
-                                height: 10,
                               ),
-                              (isPressed &&
-                                      !sisData.hasData &&
-                                      _formKey.currentState!.validate())
-                                  ? const CircularProgressIndicator()
-                                  : NeumorphicButton(
-                                      style: NeumorphicStyle(
-                                          intensity: 0.5,
-                                          color: const Color(0x00c00000),
-                                          boxShape:
-                                              NeumorphicBoxShape.roundRect(
-                                                  BorderRadius.circular(30))),
-                                      child: fillForm
-                                          ? const Text(
-                                              "Login",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                  fontSize: 20,
-                                                  fontFamily: 'Comfortaa'),
-                                            )
-                                          : const Text(
-                                              "Student Login",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                  fontSize: 15,
-                                                  fontFamily: 'Comfortaa'),
-                                            ),
-                                      onPressed: () async {
-                                        if (!fillForm) {
-                                          setState(() {
-                                            fillForm = true;
-                                            depthVal = -1 * depthVal;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            isPressed = true;
-                                          });
-                                          setState(() => isPressed = false);
-                                          await _openPortalLogin();
-                                        }
-                                      },
+                            if (fillForm)
+                              Form(
+                                key: _formKey,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 50.0,
+                                        right: 50.0,
+                                      ),
+                                      child: usnForm,
                                     ),
-                              const SizedBox(
-                                height: 20,
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 50.0,
+                                        right: 50.0,
+                                      ),
+                                      child: dobForm,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 50.0,
+                                      ),
+                                      child: DropdownButtonFormField<String>(
+                                        initialValue: verificationType,
+                                        decoration: InputDecoration(
+                                          labelText: 'Verification type',
+                                          labelStyle: textStyle,
+                                        ),
+                                        items: const [
+                                          DropdownMenuItem(
+                                            value: "Father's mobile number",
+                                            child: Text(
+                                              "Father's mobile number",
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: "Mother's mobile number",
+                                            child: Text(
+                                              "Mother's mobile number",
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 'ID card number',
+                                            child: Text('ID card number'),
+                                          ),
+                                        ],
+                                        onChanged: (value) => setState(
+                                          () => verificationType = value!,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 50.0,
+                                      ),
+                                      child: TextFormField(
+                                        controller: verificationValueController,
+                                        keyboardType: TextInputType.number,
+                                        maxLength: 4,
+                                        decoration: InputDecoration(
+                                          labelText:
+                                              verificationType ==
+                                                  'ID card number'
+                                              ? 'ID card number'
+                                              : 'Last four digits',
+                                          labelStyle: textStyle,
+                                        ),
+                                        validator: (value) =>
+                                            value == null ||
+                                                value.trim().length < 4
+                                            ? 'Enter the required verification value'
+                                            : null,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              if (!sisData.isValidData)
-                                Text(
-                                  sisData.errorMessage,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 10,
-                                      fontFamily: 'Comfortaa'),
-                                )
-                            ]),
+                            const SizedBox(height: 10),
+                            (isPressed &&
+                                    !sisData.hasData &&
+                                    _formKey.currentState!.validate())
+                                ? const CircularProgressIndicator()
+                                : NeumorphicButton(
+                                    style: NeumorphicStyle(
+                                      intensity: 0.5,
+                                      color: const Color(0x00c00000),
+                                      boxShape: NeumorphicBoxShape.roundRect(
+                                        BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    child: fillForm
+                                        ? const Text(
+                                            "Login",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                              fontFamily: 'Comfortaa',
+                                            ),
+                                          )
+                                        : const Text(
+                                            "Student Login",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontFamily: 'Comfortaa',
+                                            ),
+                                          ),
+                                    onPressed: () async {
+                                      if (!fillForm) {
+                                        setState(() {
+                                          fillForm = true;
+                                          depthVal = -1 * depthVal;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          isPressed = true;
+                                        });
+                                        setState(() => isPressed = false);
+                                        await _openPortalLogin();
+                                      }
+                                    },
+                                  ),
+                            const SizedBox(height: 20),
+                            if (!sisData.isValidData)
+                              Text(
+                                sisData.errorMessage,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 10,
+                                  fontFamily: 'Comfortaa',
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -1,4 +1,0 @@
-lxml
-beautifulsoup4
-requests
-cchardet

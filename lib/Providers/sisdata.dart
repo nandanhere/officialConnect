@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'package:official_connect/Classes/attendance.dart';
 import 'package:official_connect/Classes/fees_data.dart';
 import 'package:official_connect/Classes/marks.dart';
@@ -21,7 +20,6 @@ class SisData with ChangeNotifier {
   List<FeesData> _fees = [];
   List<Marks> _marks = [];
   List<PreviousResult> _previousResults = [];
-  final List<dynamic> _proctorMessages = [];
   bool _hasData = false;
   bool isValidData = true;
   bool needToUpdate = false;
@@ -45,7 +43,6 @@ class SisData with ChangeNotifier {
   bool _darkMode = false;
   bool _diagnosticsEnabled = true;
   double _ver = 0.0;
-  String _proctorEmail = "";
   String _downloadLink = "";
   SisProctorData _proctorData = SisProctorData([], "", "", "", "");
   SisData() {
@@ -90,7 +87,6 @@ class SisData with ChangeNotifier {
       var time = prefs.getInt('timeStamp') ?? 0;
       _usn = prefs.getString('usn') ?? "";
       _dob = prefs.getString('dob') ?? "";
-      _proctorEmail = prefs.getString('proctorEmail') ?? "";
       _darkMode = prefs.getBool('darkMode') ?? false;
       // Migrate the old boolean preference: an explicit dark/light choice is
       // kept, otherwise the theme follows the OS setting.
@@ -131,93 +127,22 @@ class SisData with ChangeNotifier {
         notifyListeners();
         return;
       }
-      // Keep showing cached data immediately. Refresh now requires the
-      // authenticated portal WebView session; the legacy Lambda path cannot
-      // satisfy the portal's current verification flow.
+      // Keep showing cached data immediately. Refresh uses the authenticated
+      // portal WebView session.
       await setVariables();
-      // if (iscon) {
-      //   await getProctorMessages();
-      // }
       needToUpdate = false;
 
       notifyListeners();
     }
   }
 
-  // This runs if the data stored is old/older than 12 hours
-  void update() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    debugPrint("updating");
-    showToast("Updating Data");
-
-    await prefs.setBool('hasData', false);
-    await getData("", "", true);
-    await setVariables();
-    notifyListeners();
-    showToast("Updated data 🎉 ");
-  }
-
-  // This calls the scraper and gets the data for a user
-  Future<void> getData(String usn, String dob, bool update) async {
-    const debug = false;
-    usn = usn.toUpperCase();
+  /// Loads the bundled demo account. Real accounts are populated exclusively
+  /// by [applyPortalData] after the authenticated on-device WebView scrape.
+  Future<void> loadDummyData() async {
     _hasData = false;
     notifyListeners();
-    // usn == "" means we are updating the values.
-    debugPrint("getting data");
-    if (usn != "DUMMY") {
-      var url = Uri.parse(
-        // in case you want to test out the api
-        // "http://192.168.43.212:5000/getsisdata/${update ? _usn : usn}/${update ? _dob : dob}",
-        "https://exv9mhwed2.execute-api.ap-south-1.amazonaws.com/default/sis?usn=${update ? _usn.trim() : usn.trim()}&dob=${update ? _dob : dob}",
-      );
-      // debugPrint(url.toString());
-      http.Response resp = await http.get(url);
-      if (resp.statusCode == 200) {
-        final Map<String, dynamic> temp = await convert.jsonDecode(resp.body);
-        _data = (temp.isEmpty && update) ? _data : temp;
-        if (_data.isNotEmpty) {
-          try {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            if (debug) debugPrint("");
-            if (resp.body != "{}") prefs.setString('data', resp.body);
-            if (debug) debugPrint("Saved data to sharedprefs");
-            prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
-            if (debug) debugPrint("Saved timestamp to sharedprefs");
-            prefs.setBool('hasData', true);
-            if (!update) {
-              prefs.setString('dob', dob);
-              prefs.setString('usn', usn);
-              prefs.setBool('darkMode', false);
-            }
-          } finally {
-            if (usn != "" && dob != "") {
-              _usn = usn;
-              _dob = dob;
-              // await getProctorMessages();
-            }
-          }
-        }
-      } else if (resp.statusCode == 428) {
-        try {
-          final validation = convert.jsonDecode(resp.body);
-          _errorMessage =
-              validation['message'] ??
-              "The portal requires an additional validation step.";
-        } catch (_) {
-          _errorMessage = "The portal requires an additional validation step.";
-        }
-        isValidData = false;
-      } else if (resp.statusCode >= 500) {
-        isValidData = false;
-        _errorMessage =
-            "We encountered a Server error. Sorry for the inconvinience";
-      }
-    } else {
-      debugPrint("getting dummy data");
-      _data = await convert.jsonDecode(DummyData.data);
-    }
+    debugPrint("getting dummy data");
+    _data = await convert.jsonDecode(DummyData.data);
     if (_data.isEmpty) {
       isValidData = false;
       _errorMessage =
@@ -349,8 +274,6 @@ class SisData with ChangeNotifier {
   Future<void> setVariables() async {
     debugPrint("setting variables");
 
-    if (_data.isEmpty && _usn != "") getData("", "", true);
-
     try {
       const debug = true;
 
@@ -463,11 +386,6 @@ class SisData with ChangeNotifier {
   Future<void> setDark(bool val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('darkMode', val);
-  }
-
-  void proctorAuth(bool val) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('auth', val);
   }
 
   set darkMode(bool val) {
@@ -595,14 +513,6 @@ class SisData with ChangeNotifier {
 
   String get studentImage {
     return _studentImage;
-  }
-
-  String get proctorEmail {
-    return _proctorEmail;
-  }
-
-  List<dynamic> get proctorMessages {
-    return _proctorMessages;
   }
 
   Map<String, dynamic> get syncMetadata =>

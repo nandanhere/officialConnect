@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/proctor_messages_card.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/fees_card.dart';
-import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/new_proctor_messages_card.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Providers/themes.dart';
@@ -28,7 +27,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isLoadingMessages = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -262,61 +260,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.symmetric(vertical: height * 0.02),
                         child: Center(
                           child: ListTile(
-                            trailing: isLoadingMessages
-                                ? const CircularProgressIndicator()
-                                : IconButton(
-                                    color: sisData.darkMode
-                                        ? Colors.white70
-                                        : null,
-                                    icon: Icon(
-                                      sisData.proctorEmail == ""
-                                          ? Icons.app_registration
-                                          : Icons.refresh,
-                                    ),
-                                    onPressed: () async {
-                                      if (sisData.proctorEmail == "") {
-                                        // showDialog(
-                                        //     context: context,
-                                        //     builder: (ctx) {
-                                        //       return RequestProctorDialog(
-                                        //         height: height,
-                                        //         width: width,
-                                        //       );
-                                        //     });
-                                      } else {
-                                        setState(() {
-                                          isLoadingMessages = true;
-                                        });
-                                        // await sisData.getProctorMessages();
-                                        setState(() {
-                                          isLoadingMessages = false;
-                                        });
-                                        // SisData.showToast(
-                                        //     "Proctor messages recieved!");
-                                      }
-                                    },
-                                  ),
                             title: AutoSizeText(
-                              "Proctor Announcements",
+                              "Proctor Notes",
                               maxLines: 1,
                               style: buttonTrailing,
                             ),
                           ),
                         ),
                       ),
-                      if (sisData.proctorEmail != "")
-                        ...sisData.proctorMessages.map(
-                          (e) => NewProctorMessagesCard(
-                            height: height,
-                            width: width,
-                            title: title,
-                            subtitle: subtitle,
-                            neumorphicStyle: neumorphicStyle,
-                            buttonTrailing: buttonTrailing,
-                            isDark: sisData.darkMode,
-                            messageData: e,
-                          ),
-                        ),
                       ...sisData.proctordata.messages
                           .map(
                             (e) => ProctorMessagesCard(

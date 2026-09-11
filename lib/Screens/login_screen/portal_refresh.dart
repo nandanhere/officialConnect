@@ -84,7 +84,7 @@ Future<void> openPortalRefresh(
     }
     setBackgroundSyncState(BackgroundSyncState.updating);
     if (usn.trim().toUpperCase() == 'DUMMY') {
-      await sisData.getData('DUMMY', '', false);
+      await sisData.loadDummyData();
       setBackgroundSyncState(BackgroundSyncState.success);
       return;
     }

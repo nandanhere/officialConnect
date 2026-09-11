@@ -49,3 +49,7 @@ app.*.map.json
 /android/build/
 /work/
 /outputs/
+
+# Retired server-side scraper/proctor implementation. The production app is
+# intentionally on-device only; do not reintroduce local Lambda environments.
+/lambda_and_related/
