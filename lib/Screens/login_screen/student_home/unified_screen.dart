@@ -9,6 +9,8 @@ import 'package:official_connect/Screens/login_screen/student_home/results_scree
 import 'package:official_connect/Screens/login_screen/student_home/settings_screen/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Widgets/background_sync_status.dart';
+import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
+import 'package:official_connect/Services/firebase_feature_flags.dart';
 
 class Unified extends StatefulWidget {
   static const String id = 'unified';
@@ -23,6 +25,7 @@ class Unified extends StatefulWidget {
 class _UnifiedState extends State<Unified> {
   late final PageController _pageController;
   final ValueNotifier<bool> _showSee = ValueNotifier(false);
+  bool _automaticRefreshRequested = false;
 
   @override
   void initState() {
@@ -54,6 +57,18 @@ class _UnifiedState extends State<Unified> {
           child: SpinKitSpinningLines(color: Color(0xffba3237), size: 80),
         ),
       );
+    }
+
+    if (!_automaticRefreshRequested &&
+        sisData.hasData &&
+        sisData.needToUpdate &&
+        FirebaseFeatureFlags.automaticRefreshEnabled) {
+      _automaticRefreshRequested = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          openPortalRefresh(context, allowInteractiveFallback: false);
+        }
+      });
     }
 
     final navColor = sisData.darkMode

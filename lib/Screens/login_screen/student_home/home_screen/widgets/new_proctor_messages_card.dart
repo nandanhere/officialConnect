@@ -1,8 +1,6 @@
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 
-import '../../../../../Classes/sis_proctor_data.dart';
-
-class ProctorMessagesCard extends StatelessWidget {
+class NewProctorMessagesCard extends StatelessWidget {
   final double height;
   final double width;
   final NeumorphicStyle neumorphicStyle;
@@ -11,8 +9,8 @@ class ProctorMessagesCard extends StatelessWidget {
   final Object? title;
   final TextStyle subtitle;
   final bool isDark;
-  final ProctorMessage messageData;
-  const ProctorMessagesCard({
+  final Map messageData;
+  const NewProctorMessagesCard({
     Key? key,
     required this.height,
     required this.width,
@@ -43,17 +41,22 @@ class ProctorMessagesCard extends StatelessWidget {
             iconColor: const Color(0xffba3237),
             collapsedIconColor: isDark ? Colors.white : Colors.black,
             title: Text(
-              messageData.from,
+              messageData['message_title'],
               style: buttonTrailing.copyWith(fontSize: width * 0.06),
             ),
-            subtitle: Text(messageData.date, style: subtitle),
+            subtitle: Text(
+              DateTime.fromMillisecondsSinceEpoch(
+                (messageData['time'] as double).toInt() * 1000,
+              ).toString(),
+              style: subtitle,
+            ),
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: width * 0.04,
                   vertical: height * 0.02,
                 ),
-                child: Text(messageData.desc, style: subtitle),
+                child: Text(messageData['message_body'], style: subtitle),
               ),
             ],
           ),

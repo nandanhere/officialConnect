@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
-import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/Proctor_messages_card.dart';
+import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/proctor_messages_card.dart';
 import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/fees_card.dart';
-import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/new_proctor_messages_card%20copy.dart';
+import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/new_proctor_messages_card.dart';
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Providers/themes.dart';
