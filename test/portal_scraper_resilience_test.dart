@@ -99,4 +99,23 @@ void main() {
     expect((result['fees'] as List), hasLength(1));
     expect((result['prevResults'] as List), hasLength(1));
   });
+
+  test(
+    'missing course links are structural failures, not empty data',
+    () async {
+      final values = fixtures();
+      values['dashboard'] = values['dashboard']!
+          .replaceAll(RegExp(r'<a href="\?task=attendencelist[^<]+</a>'), '')
+          .replaceAll(RegExp(r'<a href="\?task=ciedetails[^<]+</a>'), '');
+      final pages = _FixturePages(values);
+
+      final result = await PortalScraper.forTesting(
+        navigateAndRead: pages.navigateAndRead,
+      ).scrapeAll();
+
+      expect(result['_sync']['sections']['attendance']['status'], 'error');
+      expect(result['_sync']['sections']['marks']['status'], 'error');
+      expect(result['_sync']['outcome'], 'partial');
+    },
+  );
 }

@@ -23,4 +23,11 @@ class FirebaseOperations {
       debugPrint('App health services are unavailable in this build.');
     }
   }
+
+  static Future<void> setDiagnosticsEnabled(bool enabled) async {
+    await Future.wait([
+      FirebaseSyncDiagnostics.setEnabled(enabled),
+      FirebaseCrashReporting.setEnabled(enabled),
+    ]);
+  }
 }

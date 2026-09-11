@@ -6,6 +6,7 @@ void main() {
   tearDown(() {
     FirebaseFeatureFlags.setValuesForTesting(const {});
     SyncDiagnostics.configure(null);
+    FirebaseFeatureFlags.configureRefreshForTesting(null);
   });
 
   test('feature controls default to enabled and compose safely', () {
@@ -82,5 +83,46 @@ void main() {
     await SyncDiagnostics.recordLoginStarted(refresh: true);
     await SyncDiagnostics.recordResult(source: 'regular', outcome: 'success');
     expect(events, isEmpty);
+  });
+
+  test('diagnostics sink failures never propagate', () async {
+    SyncDiagnostics.configure((_, __) async => throw StateError('offline'));
+    await SyncDiagnostics.setEnabled(true);
+
+    await expectLater(
+      SyncDiagnostics.recordLoginStarted(refresh: false),
+      completes,
+    );
+    await expectLater(
+      SyncDiagnostics.recordSummary({
+        'outcome': 'partial',
+        'sections': {
+          'marks': {'status': 'error'},
+        },
+      }, refresh: true),
+      completes,
+    );
+  });
+
+  test('collection toggle failures never propagate', () async {
+    SyncDiagnostics.configure(
+      null,
+      collectionToggle: (_) async => throw StateError('unavailable'),
+    );
+    await expectLater(SyncDiagnostics.setEnabled(false), completes);
+  });
+
+  test('feature refresh is fail-open and throttled while offline', () async {
+    var attempts = 0;
+    FirebaseFeatureFlags.configureRefreshForTesting(() async {
+      attempts++;
+      throw StateError('offline');
+    });
+
+    await FirebaseFeatureFlags.refresh();
+    await FirebaseFeatureFlags.refresh();
+
+    expect(attempts, 1);
+    expect(FirebaseFeatureFlags.portalSyncEnabled, isTrue);
   });
 }

@@ -31,7 +31,9 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
   Uint8List? _captchaBytes;
   PreviousResult? _result;
   String? _error;
+  String? _notice;
   bool _submitted = false;
+  bool _cacheChecked = false;
   String _usn = '';
   Stopwatch? _fetchWatch;
 
@@ -64,12 +66,14 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
         setState(() {
           _result = _resultFromJson(jsonDecode(cached));
           _stage = _ResultStage.result;
+          _cacheChecked = true;
         });
         return;
       } catch (_) {
         // A stale cache should never block a fresh fetch.
       }
     }
+    if (mounted) setState(() => _cacheChecked = true);
     await _startFetch();
   }
 
@@ -81,9 +85,14 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
       );
       if (mounted) {
         setState(() {
-          _stage = _ResultStage.error;
-          _error =
-              'This result source is temporarily unavailable. Any saved result remains available.';
+          _notice =
+              'This result source is temporarily unavailable. Showing your saved result.';
+          if (_result == null) {
+            _stage = _ResultStage.error;
+            _error = 'This result source is temporarily unavailable.';
+          } else {
+            _stage = _ResultStage.result;
+          }
         });
       }
       return;
@@ -96,6 +105,7 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
         _stage = _ResultStage.loading;
         _captchaBytes = null;
         _error = null;
+        _notice = null;
       });
     }
     final controller = _webController;
@@ -286,10 +296,38 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
   Widget build(BuildContext context) {
     final sisData = Provider.of<SisData>(context);
     if (_stage == _ResultStage.result && _result != null) {
-      return ResultsDetails(
-        previousResult: _result!,
-        contextLabel: widget.source.label,
-        onRefresh: _startFetch,
+      return Stack(
+        children: [
+          ResultsDetails(
+            previousResult: _result!,
+            contextLabel: widget.source.label,
+            onRefresh: _startFetch,
+          ),
+          if (_notice != null)
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: 16,
+              child: SafeArea(
+                child: Material(
+                  color: const Color(0xff32383b),
+                  elevation: 6,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    child: Text(
+                      _notice!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       );
     }
 
@@ -300,89 +338,92 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
           : NeumorphicColors.background,
       body: Stack(
         children: [
-          Positioned(
-            left: 0,
-            top: 0,
-            width: 1,
-            height: 1,
-            child: IgnorePointer(
-              child: InAppWebView(
-                initialUrlRequest: URLRequest(url: WebUri('about:blank')),
-                initialSettings: InAppWebViewSettings(
-                  javaScriptEnabled: true,
-                  domStorageEnabled: true,
-                  thirdPartyCookiesEnabled: true,
-                ),
-                onWebViewCreated: (controller) async {
-                  _webController = controller;
-                  controller.addJavaScriptHandler(
-                    handlerName: 'officialConnectExamCaptcha',
-                    callback: (arguments) {
-                      if (arguments.isEmpty || !mounted) return;
-                      final data = arguments.first.toString();
-                      final comma = data.indexOf(',');
-                      if (comma < 0) return;
+          if (_cacheChecked)
+            Positioned(
+              left: 0,
+              top: 0,
+              width: 1,
+              height: 1,
+              child: IgnorePointer(
+                child: InAppWebView(
+                  initialUrlRequest: URLRequest(url: WebUri('about:blank')),
+                  initialSettings: InAppWebViewSettings(
+                    javaScriptEnabled: true,
+                    domStorageEnabled: true,
+                    thirdPartyCookiesEnabled: true,
+                  ),
+                  onWebViewCreated: (controller) async {
+                    _webController = controller;
+                    controller.addJavaScriptHandler(
+                      handlerName: 'officialConnectExamCaptcha',
+                      callback: (arguments) {
+                        if (arguments.isEmpty || !mounted) return;
+                        final data = arguments.first.toString();
+                        final comma = data.indexOf(',');
+                        if (comma < 0) return;
+                        setState(() {
+                          _captchaBytes = base64Decode(
+                            data.substring(comma + 1),
+                          );
+                          _stage = _ResultStage.captcha;
+                        });
+                      },
+                    );
+                    controller.addJavaScriptHandler(
+                      handlerName: 'officialConnectExamCaptchaError',
+                      callback: (_) {
+                        if (!mounted) return;
+                        setState(() {
+                          _stage = _ResultStage.error;
+                          _error = 'The security image could not be loaded.';
+                        });
+                      },
+                    );
+                    if (_stage != _ResultStage.result) await _startFetch();
+                  },
+                  onLoadStop: (controller, _) => _handleLoadedPage(controller),
+                  onJsAlert: (controller, request) async {
+                    _submitted = false;
+                    _captchaController.clear();
+                    final portalMessage = request.message?.trim() ?? '';
+                    final isRejectedCode =
+                        portalMessage.toLowerCase().contains('captcha') ||
+                        portalMessage.toLowerCase().contains('security code');
+                    if (mounted) {
                       setState(() {
-                        _captchaBytes = base64Decode(data.substring(comma + 1));
-                        _stage = _ResultStage.captcha;
+                        _captchaBytes = null;
+                        _stage = _ResultStage.loading;
+                        _error = isRejectedCode || portalMessage.isEmpty
+                            ? 'That security code was not accepted. Please try the new one.'
+                            : portalMessage;
                       });
-                    },
-                  );
-                  controller.addJavaScriptHandler(
-                    handlerName: 'officialConnectExamCaptchaError',
-                    callback: (_) {
-                      if (!mounted) return;
-                      setState(() {
-                        _stage = _ResultStage.error;
-                        _error = 'The security image could not be loaded.';
-                      });
-                    },
-                  );
-                  if (_stage != _ResultStage.result) await _startFetch();
-                },
-                onLoadStop: (controller, _) => _handleLoadedPage(controller),
-                onJsAlert: (controller, request) async {
-                  _submitted = false;
-                  _captchaController.clear();
-                  final portalMessage = request.message?.trim() ?? '';
-                  final isRejectedCode =
-                      portalMessage.toLowerCase().contains('captcha') ||
-                      portalMessage.toLowerCase().contains('security code');
-                  if (mounted) {
+                    }
+                    Future<void>.delayed(
+                      const Duration(milliseconds: 100),
+                      controller.reload,
+                    );
+                    return JsAlertResponse(
+                      handledByClient: true,
+                      action: JsAlertResponseAction.CONFIRM,
+                    );
+                  },
+                  onReceivedError: (_, request, __) {
+                    if (request.isForMainFrame != true) return;
+                    if (!mounted) return;
                     setState(() {
-                      _captchaBytes = null;
-                      _stage = _ResultStage.loading;
-                      _error = isRejectedCode || portalMessage.isEmpty
-                          ? 'That security code was not accepted. Please try the new one.'
-                          : portalMessage;
+                      _stage = _ResultStage.error;
+                      _error =
+                          'The examination results site could not be reached.';
                     });
-                  }
-                  Future<void>.delayed(
-                    const Duration(milliseconds: 100),
-                    controller.reload,
-                  );
-                  return JsAlertResponse(
-                    handledByClient: true,
-                    action: JsAlertResponseAction.CONFIRM,
-                  );
-                },
-                onReceivedError: (_, request, __) {
-                  if (request.isForMainFrame != true) return;
-                  if (!mounted) return;
-                  setState(() {
-                    _stage = _ResultStage.error;
-                    _error =
-                        'The examination results site could not be reached.';
-                  });
-                  SyncDiagnostics.recordResult(
-                    source: _sourceName,
-                    outcome: 'network_error',
-                    durationMs: _fetchWatch?.elapsedMilliseconds,
-                  );
-                },
+                    SyncDiagnostics.recordResult(
+                      source: _sourceName,
+                      outcome: 'network_error',
+                      durationMs: _fetchWatch?.elapsedMilliseconds,
+                    );
+                  },
+                ),
               ),
             ),
-          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),

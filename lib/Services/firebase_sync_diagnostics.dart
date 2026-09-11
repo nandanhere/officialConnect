@@ -25,4 +25,7 @@ class FirebaseSyncDiagnostics {
       debugPrint('Update diagnostics are unavailable in this build.');
     }
   }
+
+  static Future<void> setEnabled(bool enabled) =>
+      SyncDiagnostics.setEnabled(enabled);
 }
