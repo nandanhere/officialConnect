@@ -39,20 +39,25 @@ void setBackgroundSyncState(
 /// off-screen and a small notification reports the outcome. Falls back to
 /// the full sync page when no saved login exists or the background sync
 /// needs user attention.
-Future<void> openPortalRefresh(BuildContext context) async {
+Future<void> openPortalRefresh(
+  BuildContext context, {
+  bool allowInteractiveFallback = true,
+}) async {
   if (_portalRefreshInFlight) return;
   _portalRefreshInFlight = true;
   try {
     final messenger = ScaffoldMessenger.of(context);
     if (!FirebaseFeatureFlags.portalSyncEnabled) {
-      messenger.showSnackBar(
-        const SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text(
-            'Updates are temporarily unavailable. Your saved information is still here.',
+      if (allowInteractiveFallback) {
+        messenger.showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(
+              'Updates are temporarily unavailable. Your saved information is still here.',
+            ),
           ),
-        ),
-      );
+        );
+      }
       return;
     }
     final sisData = Provider.of<SisData>(context, listen: false);
@@ -74,7 +79,7 @@ Future<void> openPortalRefresh(BuildContext context) async {
     // Without a complete saved login the user must review the form, so keep
     // the original full-page flow.
     if (usn.isEmpty || dob.isEmpty || verificationValue.isEmpty) {
-      await openFullSyncPage();
+      if (allowInteractiveFallback) await openFullSyncPage();
       return;
     }
     setBackgroundSyncState(BackgroundSyncState.updating);
@@ -128,6 +133,7 @@ Future<void> openPortalRefresh(BuildContext context) async {
         );
     } else {
       setBackgroundSyncState(BackgroundSyncState.error);
+      if (!allowInteractiveFallback) return;
       messenger
         ..hideCurrentSnackBar()
         ..showSnackBar(

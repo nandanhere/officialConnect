@@ -6,7 +6,10 @@ import 'package:official_connect/Services/firebase_sync_diagnostics.dart';
 import 'package:official_connect/firebase_options.dart';
 
 class FirebaseOperations {
+  static bool _desiredDiagnosticsEnabled = true;
+
   static Future<void> initialize({required bool enabled}) async {
+    _desiredDiagnosticsEnabled = enabled;
     if (kIsWeb) return;
     try {
       if (Firebase.apps.isEmpty) {
@@ -19,12 +22,17 @@ class FirebaseOperations {
         FirebaseFeatureFlags.initialize(),
         FirebaseCrashReporting.initialize(enabled: enabled),
       ]);
+      // A user can change this preference while Firebase is starting. Apply
+      // the latest choice once initialization finishes instead of restoring
+      // the value captured at launch.
+      await setDiagnosticsEnabled(_desiredDiagnosticsEnabled);
     } catch (_) {
       debugPrint('App health services are unavailable in this build.');
     }
   }
 
   static Future<void> setDiagnosticsEnabled(bool enabled) async {
+    _desiredDiagnosticsEnabled = enabled;
     await Future.wait([
       FirebaseSyncDiagnostics.setEnabled(enabled),
       FirebaseCrashReporting.setEnabled(enabled),

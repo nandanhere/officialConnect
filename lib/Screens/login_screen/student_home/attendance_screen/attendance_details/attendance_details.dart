@@ -11,7 +11,7 @@ class AttendanceDetails extends StatelessWidget {
   final Attendance attendanceDetails;
 
   const AttendanceDetails({Key? key, required this.attendanceDetails})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +20,12 @@ class AttendanceDetails extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
-    final textStyle =
-        CustomTheme.textStyle(context).copyWith(fontSize: width * 0.045);
+    final textStyle = CustomTheme.textStyle(
+      context,
+    ).copyWith(fontSize: width * 0.045);
     final linearGradient = CustomTheme.linearGradient2(context);
-    var totalClasses = attendanceDetails.present +
+    var totalClasses =
+        attendanceDetails.present +
         attendanceDetails.absent +
         attendanceDetails.remaining;
     var alreadyMissed = attendanceDetails.absent;
@@ -55,8 +57,9 @@ class AttendanceDetails extends StatelessWidget {
 
     ValueNotifier<bool> show = ValueNotifier(false);
     return Scaffold(
-      backgroundColor:
-          (sisData.darkMode) ? Colors.black : NeumorphicColors.background,
+      backgroundColor: (sisData.darkMode)
+          ? Colors.black
+          : NeumorphicColors.background,
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(gradient: linearGradient),
@@ -76,18 +79,17 @@ class AttendanceDetails extends StatelessWidget {
                   child: Row(
                     children: [
                       IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          icon: Icon(
-                            Icons.chevron_left,
-                            color: (!sisData.darkMode)
-                                ? Colors.black
-                                : NeumorphicColors.background,
-                          )),
-                      SizedBox(
-                        width: width * 0.03,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        icon: Icon(
+                          Icons.chevron_left,
+                          color: (!sisData.darkMode)
+                              ? Colors.black
+                              : NeumorphicColors.background,
+                        ),
                       ),
+                      SizedBox(width: width * 0.03),
                       Expanded(
                         child: GestureDetector(
                           onLongPress: () {
@@ -97,14 +99,15 @@ class AttendanceDetails extends StatelessWidget {
                             });
                           },
                           child: Text(
-                              "${attendanceDetails.subjectName} (${attendanceDetails.code})",
-                              style: textStyle.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.055,
-                              )),
+                            "${attendanceDetails.subjectName} (${attendanceDetails.code})",
+                            style: textStyle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.055,
+                            ),
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -167,7 +170,7 @@ class AttendanceDetails extends StatelessWidget {
                   style: neumorphicStyle.copyWith(
                     color: sisData.darkMode
                         // ? const Color.fromARGB(1, 77, 74, 74)
-                        ? Colors.black.withOpacity(0.4)
+                        ? Colors.black.withValues(alpha: 0.4)
                         : NeumorphicColors.background.withAlpha(150),
                   ),
                   child: Padding(
@@ -180,14 +183,14 @@ class AttendanceDetails extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               AutoSizeText(
-                                  "Attended : ${attendanceDetails.present}",
-                                  style: textStyle),
-                              SizedBox(
-                                width: width * 0.03,
+                                "Attended : ${attendanceDetails.present}",
+                                style: textStyle,
                               ),
+                              SizedBox(width: width * 0.03),
                               AutoSizeText(
-                                  "Missed : ${attendanceDetails.absent}",
-                                  style: textStyle)
+                                "Missed : ${attendanceDetails.absent}",
+                                style: textStyle,
+                              ),
                             ],
                           ),
                         ),
@@ -197,14 +200,14 @@ class AttendanceDetails extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               AutoSizeText(
-                                  "Remaining: ${attendanceDetails.remaining}",
-                                  style: textStyle),
-                              SizedBox(
-                                width: width * 0.03,
+                                "Remaining: ${attendanceDetails.remaining}",
+                                style: textStyle,
                               ),
+                              SizedBox(width: width * 0.03),
                               AutoSizeText(
-                                  "Percentage : ${attendanceDetails.percentage}",
-                                  style: textStyle)
+                                "Percentage : ${attendanceDetails.percentage}",
+                                style: textStyle,
+                              ),
                             ],
                           ),
                         ),
@@ -223,33 +226,35 @@ class AttendanceDetails extends StatelessWidget {
                 //column end here
                 SizedBox(height: height * 0.004),
                 ValueListenableBuilder(
-                    valueListenable: show,
-                    builder: (context, bool listening, child) => (listening)
-                        ? Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AnimatedTextKit(
-                                    totalRepeatCount: 1,
-                                    animatedTexts: [
-                                      TypewriterAnimatedText(
-                                          //"For 85% : ${howManyYouCanMiss(85)}/$totalClasses",
-                                          "You can miss ${howManyYouCanMiss(85)} classes for 85%",
-                                          textStyle: textStyle,
-                                          speed:
-                                              const Duration(milliseconds: 60)),
-                                      TypewriterAnimatedText(
-                                          "You can miss ${howManyYouCanMiss(75)} classes for 75%",
-                                          textStyle: textStyle,
-                                          speed:
-                                              const Duration(milliseconds: 60))
-                                    ])
-                              ],
-                            ),
-                          )
-                        : Container()),
-                AttendanceCalenderVersion(attendance: attendanceDetails)
+                  valueListenable: show,
+                  builder: (context, bool listening, child) => (listening)
+                      ? Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AnimatedTextKit(
+                                totalRepeatCount: 1,
+                                animatedTexts: [
+                                  TypewriterAnimatedText(
+                                    //"For 85% : ${howManyYouCanMiss(85)}/$totalClasses",
+                                    "You can miss ${howManyYouCanMiss(85)} classes for 85%",
+                                    textStyle: textStyle,
+                                    speed: const Duration(milliseconds: 60),
+                                  ),
+                                  TypewriterAnimatedText(
+                                    "You can miss ${howManyYouCanMiss(75)} classes for 75%",
+                                    textStyle: textStyle,
+                                    speed: const Duration(milliseconds: 60),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(),
+                ),
+                AttendanceCalenderVersion(attendance: attendanceDetails),
               ],
             ),
           ),
