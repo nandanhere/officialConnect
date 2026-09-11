@@ -127,6 +127,13 @@ class PortalScraper {
       }
     }
     attendanceWatch.stop();
+    // An enabled dashboard with no discoverable course links is not proof that
+    // the student has no attendance. It more commonly means the portal changed
+    // its link shape, so flag it and let the cache layer preserve known data.
+    if (attendanceLinks.isEmpty &&
+        FirebaseFeatureFlags.sectionEnabled('attendance')) {
+      attendanceFailures++;
+    }
     // The current portal appends one intentionally blank link. Ignore that
     // shell when valid courses exist, but flag empty/extra invalid pages.
     attendanceFailures += attendance.isEmpty
@@ -168,6 +175,11 @@ class PortalScraper {
       }
     }
     marksWatch.stop();
+    // As with attendance, missing dashboard links are a structural discovery
+    // failure rather than an authoritative empty marks response.
+    if (marksLinks.isEmpty && FirebaseFeatureFlags.sectionEnabled('marks')) {
+      marksFailures++;
+    }
     marksFailures += marks.isEmpty
         ? invalidMarksPages
         : (invalidMarksPages - 1).clamp(0, invalidMarksPages);

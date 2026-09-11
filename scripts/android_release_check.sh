@@ -111,7 +111,9 @@ build_recovery() {
   (( version_code >= MIN_RECOVERY_VERSION_CODE )) || die "recovery version code must be at least $MIN_RECOVERY_VERSION_CODE"
   git -C "$PROJECT_DIR" cat-file -e "$BASELINE_COMMIT^{commit}" || die "baseline commit $BASELINE_COMMIT is unavailable"
 
+  [[ -d "$(dirname "$output_path")" ]] || die "recovery output directory does not exist: $(dirname "$output_path")"
   output_path="$(cd "$(dirname "$output_path")" && pwd)/$(basename "$output_path")"
+  [[ ! -e "$output_path" ]] || die "refusing to overwrite existing recovery artifact: $output_path"
   temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/officialconnect-recovery.XXXXXX")"
   worktree="$temp_dir/source"
   cleanup_recovery() {
@@ -137,20 +139,20 @@ build_recovery() {
             excludes += ["lib/armeabi-v7a/**", "lib/x86/**", "lib/x86_64/**"]
 ' "$worktree/android/app/build.gradle"
   rm "$worktree/android/app/build.gradle.bak"
-  # Current Flutter can no longer compile two Android plugins locked by the
-  # 2025 release. Apply the smallest compatibility-only dependency overrides
-  # inside the disposable worktree; the caller's manifest remains untouched.
+  # Current Flutter can no longer compile several plugins locked by the 2025
+  # release. Pin compatibility overrides to versions validated by the current
+  # release; never resolve a newer major version during an emergency build.
   sed -i.bak \
     -e 's/sdk: ">=2\.16\.1 <3\.0\.0"/sdk: ">=3.8.0 <4.0.0"/' \
-    -e 's/shared_preferences: \^2\.0\.13/shared_preferences: ^2.5.5/' \
-    -e 's/fluttertoast: \^8\.0\.9/fluttertoast: ^10.0.0/' \
-    -e 's/intl: \^0\.17\.0/intl: ^0.20.2/' \
-    -e 's/http: \^0\.13\.4/http: ^1.6.0/' \
-    -e 's/font_awesome_flutter: \^10\.1\.0/font_awesome_flutter: ^11.0.0/' \
-    -e 's/syncfusion_flutter_charts: \^20\.1\.48/syncfusion_flutter_charts: ^31.2.5/' \
-    -e 's/syncfusion_flutter_datepicker: \^20\.1\.50/syncfusion_flutter_datepicker: ^31.2.5/' \
-    -e 's/syncfusion_flutter_calendar: \^20\.1\.56/syncfusion_flutter_calendar: ^31.2.5/' \
-    -e 's/date_picker_plus: \^4\.1\.0/date_picker_plus: ^8.0.0/' \
+    -e 's/shared_preferences: \^2\.0\.13/shared_preferences: 2.5.5/' \
+    -e 's/fluttertoast: \^8\.0\.9/fluttertoast: 10.0.0/' \
+    -e 's/intl: \^0\.17\.0/intl: 0.20.3/' \
+    -e 's/http: \^0\.13\.4/http: 1.6.0/' \
+    -e 's/font_awesome_flutter: \^10\.1\.0/font_awesome_flutter: 11.0.0/' \
+    -e 's/syncfusion_flutter_charts: \^20\.1\.48/syncfusion_flutter_charts: 31.2.18/' \
+    -e 's/syncfusion_flutter_datepicker: \^20\.1\.50/syncfusion_flutter_datepicker: 31.2.18/' \
+    -e 's/syncfusion_flutter_calendar: \^20\.1\.56/syncfusion_flutter_calendar: 31.2.18/' \
+    -e 's/date_picker_plus: \^4\.1\.0/date_picker_plus: 8.0.0/' \
     "$worktree/pubspec.yaml"
   rm "$worktree/pubspec.yaml.bak" "$worktree/pubspec.lock"
   # Adapt a few baseline call sites whose dependency APIs changed with modern
@@ -180,6 +182,31 @@ build_recovery() {
     ln -s "$PROJECT_DIR/android/upload-keystore.jks" "$worktree/android/upload-keystore.jks"
   fi
 
+  cat >"$worktree/test/recovery_smoke_test.dart" <<'DART'
+import 'dart:convert';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:official_connect/Classes/attendance.dart';
+import 'package:official_connect/Classes/marks.dart';
+import 'package:official_connect/Classes/previous_result.dart';
+import 'package:official_connect/Providers/dummy_data.dart';
+
+void main() {
+  test('production baseline parses its bundled offline data contract', () {
+    final data = jsonDecode(DummyData.data) as Map<String, dynamic>;
+    expect(Attendance.getList(data['attendance'] as List<dynamic>), isNotEmpty);
+    expect(Marks.getList(data['marks'] as List<dynamic>), isNotEmpty);
+    expect(
+      PreviousResult.getList(data['prevResults'] as List<dynamic>),
+      isNotEmpty,
+    );
+  });
+}
+DART
+
+  note "Running production-baseline recovery smoke test"
+  (cd "$worktree" && flutter_cmd test test/recovery_smoke_test.dart)
+
   note "Building production source as emergency version 1.0.0+$version_code"
   # The production-era PDF plugin bundles an obsolete 32-bit pdfium binary
   # that cannot run on 16 KB devices. The recovery artifact intentionally
@@ -187,7 +214,9 @@ build_recovery() {
   (cd "$worktree" && flutter_cmd build appbundle --release --target-platform android-arm64 --build-name=1.0.0 --build-number="$version_code")
   artifact="$worktree/build/app/outputs/bundle/release/app-release.aab"
   check_native_elfs "$artifact"
-  cp "$artifact" "$output_path"
+  local staged_output="${output_path}.partial.$$"
+  cp "$artifact" "$staged_output"
+  mv "$staged_output" "$output_path"
   note "Recovery bundle written to $output_path"
   cleanup_recovery
   trap - EXIT INT TERM

@@ -13,7 +13,7 @@ import 'package:official_connect/Classes/sis_proctor_data.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:official_connect/Services/sync_diagnostics.dart';
+import 'package:official_connect/Services/firebase_operations.dart';
 
 class SisData with ChangeNotifier {
   Map<String, dynamic> _data = {};
@@ -100,7 +100,7 @@ class SisData with ChangeNotifier {
               ? (_darkMode ? 'dark' : 'light')
               : 'system');
       _diagnosticsEnabled = prefs.getBool('diagnosticsEnabled') ?? true;
-      await SyncDiagnostics.setEnabled(_diagnosticsEnabled);
+      await FirebaseOperations.setDiagnosticsEnabled(_diagnosticsEnabled);
       debugPrint(
         "data was there before. checking if it is older than 12 hours",
       );
@@ -259,6 +259,14 @@ class SisData with ChangeNotifier {
         for (final key in entry.value) {
           if (previous.containsKey(key)) merged[key] = previous[key];
         }
+      } else if (status == 'partial' &&
+          (entry.key == 'attendance' || entry.key == 'marks')) {
+        final key = entry.value.single;
+        merged[key] = _mergePartialCourseData(
+          previous[key],
+          merged[key],
+          section: entry.key,
+        );
       }
     }
     // A partial profile update should not blank fields already shown by the
@@ -286,6 +294,55 @@ class SisData with ChangeNotifier {
     await prefs.setBool('hasData', true);
     await prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
     notifyListeners();
+  }
+
+  List<dynamic> _mergePartialCourseData(
+    Object? cached,
+    Object? refreshed, {
+    required String section,
+  }) {
+    final mergedByIdentity = <String, dynamic>{};
+    final unidentified = <dynamic>[];
+
+    void addItems(Object? source) {
+      if (source is! List) return;
+      for (final item in source) {
+        if (item is! Map) continue;
+        final identity = _courseIdentity(item, section: section);
+        if (identity.isEmpty) {
+          unidentified.add(item);
+        } else {
+          // Cached values are inserted first; refreshed values with the same
+          // stable identity replace them when this helper is called second.
+          mergedByIdentity[identity] = item;
+        }
+      }
+    }
+
+    addItems(cached);
+    addItems(refreshed);
+    return [...mergedByIdentity.values, ...unidentified];
+  }
+
+  String _courseIdentity(Map item, {required String section}) {
+    String normalize(Object? value) =>
+        value.toString().toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+
+    if (section == 'attendance') {
+      final code = normalize(item['code']);
+      if (code.isNotEmpty) return 'code:$code';
+    }
+
+    final name = item['name']?.toString() ?? '';
+    final codeInName = RegExp(
+      r'\(([a-z0-9]+)\)',
+      caseSensitive: false,
+    ).firstMatch(name)?.group(1);
+    if (codeInName != null && codeInName.isNotEmpty) {
+      return 'code:${normalize(codeInName)}';
+    }
+    final normalizedName = normalize(name);
+    return normalizedName.isEmpty ? '' : 'name:$normalizedName';
   }
 
   // after getting any sort of data, the data has to be read from. this does that
@@ -444,7 +501,7 @@ class SisData with ChangeNotifier {
     SharedPreferences.getInstance().then((prefs) {
       prefs.setBool('diagnosticsEnabled', value);
     });
-    SyncDiagnostics.setEnabled(value);
+    FirebaseOperations.setDiagnosticsEnabled(value);
     notifyListeners();
   }
 

@@ -45,7 +45,11 @@ class SyncDiagnostics {
 
   static Future<void> setEnabled(bool enabled) async {
     _enabled = enabled;
-    await _collectionToggle?.call(enabled);
+    try {
+      await _collectionToggle?.call(enabled);
+    } catch (error) {
+      debugPrint('Diagnostics collection preference could not be applied.');
+    }
   }
 
   static Future<void> recordSummary(
@@ -111,7 +115,12 @@ class SyncDiagnostics {
       debugPrint('Diagnostics: $name $parameters');
       return true;
     }());
-    await _sink?.call(name, parameters);
+    try {
+      await _sink?.call(name, parameters);
+    } catch (error) {
+      // Operational diagnostics must never affect login, sync, or navigation.
+      debugPrint('Diagnostics event could not be recorded.');
+    }
   }
 
   static String _safeToken(Object? value) {

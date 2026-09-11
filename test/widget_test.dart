@@ -4,12 +4,40 @@ import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/results_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/latest_results.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/widgets/marks_card.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
 import 'package:official_connect/Services/exam_result_scraper.dart';
+import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+Map<String, dynamic> _attendance(
+  String code,
+  String name, {
+  String present = '1',
+}) => {
+  'code': code,
+  'name': name,
+  'teacher': 'Test Teacher',
+  'present': present,
+  'absent': '0',
+  'remaining': '0',
+  'percentage': '100%',
+  'present_dates': <dynamic>[],
+  'absent_dates': <dynamic>[],
+};
+
+Map<String, dynamic> _marks(String name, {String finalCie = '40'}) => {
+  'name': name,
+  't1': '-',
+  't2': '-',
+  'a1': '-',
+  'a2': '-',
+  'final cie': finalCie,
+  'class_average': {'t1': '-', 't2': '-', 'a1': '-', 'a2': '-'},
+};
 
 void main() {
   test('cached portal data survives a simulated app restart', () async {
@@ -123,6 +151,118 @@ void main() {
     expect(sisData.marks, isEmpty);
     expect(sisData.hasSyncIssues, isTrue);
     expect(sisData.syncStatusFor('attendance'), 'error');
+  });
+
+  test('partial course updates merge cache by stable identity', () async {
+    SharedPreferences.setMockInitialValues({});
+    final sisData = SisData();
+    await sisData.getData('DUMMY', '', false);
+    await sisData.applyPortalData(
+      {
+        'name': 'Merge Test',
+        'attendance': [
+          _attendance('IS101', 'Old one', present: '2'),
+          _attendance('IS102', 'Cached failed subject', present: '4'),
+        ],
+        'marks': [
+          _marks('First Subject (IS101)', finalCie: '20'),
+          _marks('Second Subject (IS102)', finalCie: '30'),
+        ],
+        '_sync': {'sections': const {}},
+      },
+      'MERGE01',
+      '2000-01-01',
+    );
+
+    await sisData.applyPortalData(
+      {
+        'name': 'Merge Test',
+        'attendance': [_attendance('IS101', 'New one', present: '9')],
+        'marks': [_marks('Renamed Subject (IS101)', finalCie: '45')],
+        '_sync': {
+          'sections': {
+            'attendance': {'status': 'partial'},
+            'marks': {'status': 'partial'},
+          },
+        },
+      },
+      'MERGE01',
+      '2000-01-01',
+    );
+
+    expect(sisData.attendances, hasLength(2));
+    expect(
+      sisData.attendances.singleWhere((item) => item.code == 'IS101').present,
+      9,
+    );
+    expect(sisData.attendances.any((item) => item.code == 'IS102'), isTrue);
+    expect(sisData.marks, hasLength(2));
+    expect(
+      sisData.marks
+          .singleWhere((item) => item.subjectName.contains('IS101'))
+          .finalCie,
+      '45',
+    );
+
+    await sisData.applyPortalData(
+      {
+        'name': 'Merge Test',
+        'attendance': [_attendance('IS101', 'Only current subject')],
+        'marks': [_marks('Only current subject (IS101)')],
+        '_sync': {
+          'sections': {
+            'attendance': {'status': 'ok'},
+            'marks': {'status': 'ok'},
+          },
+        },
+      },
+      'MERGE01',
+      '2000-01-01',
+    );
+
+    expect(sisData.attendances, hasLength(1));
+    expect(sisData.marks, hasLength(1));
+  });
+
+  testWidgets('disabled result refresh keeps a cached result visible', (
+    WidgetTester tester,
+  ) async {
+    FirebaseFeatureFlags.setValuesForTesting(const {
+      'results_regular_enabled': false,
+    });
+    addTearDown(() => FirebaseFeatureFlags.setValuesForTesting(const {}));
+    SharedPreferences.setMockInitialValues({
+      'exam-result:regular:CACHE01':
+          '{"term":"May 2026","creditsEarned":"20","creditsRegistered":"20","sgpa":"8.0","cgpa":"8.0","semesterNumber":6,"results":[]}',
+    });
+    final sisData = SisData();
+    await sisData.getData('DUMMY', '', false);
+    await sisData.applyPortalData(
+      {
+        'name': 'Cached Student',
+        '_sync': {'sections': const {}},
+      },
+      'CACHE01',
+      '2000-01-01',
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: sisData,
+        child: const MaterialApp(
+          home: LatestResultsDetails(source: ExamResultSource.regular),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Latest regular result'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Check for a newer result'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Latest regular result'), findsOneWidget);
+    expect(find.textContaining('Showing your saved result'), findsOneWidget);
+    expect(find.text('Try again'), findsNothing);
   });
 
   test('update diagnostics only emit bounded aggregate fields', () async {
