@@ -1,1 +1,0 @@
-https://bitcoden.com/answers/how-to-import-lxml-from-precompiled-binary-on-aws-lambda

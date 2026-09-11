@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<SisData> _restoreCachedStudent() async {
   final seed = SisData();
-  await seed.getData('DUMMY', '', false);
+  await seed.loadDummyData();
   await seed.applyPortalData(seed.data, 'OFFLINE01', '2000-01-01');
   final restored = SisData();
   for (var i = 0; i < 40 && restored.data.isEmpty; i++) {
@@ -56,7 +56,7 @@ void main() {
     tester,
   ) async {
     final sisData = SisData();
-    await sisData.getData('DUMMY', '', false);
+    await sisData.loadDummyData();
     await sisData.applyPortalData(sisData.data, 'OFFLINE01', '2000-01-01');
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(

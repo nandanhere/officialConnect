@@ -43,7 +43,7 @@ void main() {
   test('cached portal data survives a simulated app restart', () async {
     SharedPreferences.setMockInitialValues({});
     final firstRun = SisData();
-    await firstRun.getData('DUMMY', '', false);
+    await firstRun.loadDummyData();
     await firstRun.applyPortalData(
       {
         'name': 'Cache Test Student',
@@ -127,7 +127,7 @@ void main() {
   test('partial portal updates preserve failed sections', () async {
     SharedPreferences.setMockInitialValues({});
     final sisData = SisData();
-    await sisData.getData('DUMMY', '', false);
+    await sisData.loadDummyData();
     final previousAttendance = sisData.attendances.length;
 
     await sisData.applyPortalData(
@@ -156,7 +156,7 @@ void main() {
   test('partial course updates merge cache by stable identity', () async {
     SharedPreferences.setMockInitialValues({});
     final sisData = SisData();
-    await sisData.getData('DUMMY', '', false);
+    await sisData.loadDummyData();
     await sisData.applyPortalData(
       {
         'name': 'Merge Test',
@@ -236,7 +236,7 @@ void main() {
           '{"term":"May 2026","creditsEarned":"20","creditsRegistered":"20","sgpa":"8.0","cgpa":"8.0","semesterNumber":6,"results":[]}',
     });
     final sisData = SisData();
-    await sisData.getData('DUMMY', '', false);
+    await sisData.loadDummyData();
     await sisData.applyPortalData(
       {
         'name': 'Cached Student',
@@ -350,7 +350,7 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     final sisData = SisData();
-    await sisData.getData('DUMMY', '', false);
+    await sisData.loadDummyData();
     sisData.needToUpdate = true;
     Unified.screenNumber.value = 2;
 
@@ -372,7 +372,7 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     final sisData = SisData();
-    await sisData.getData('DUMMY', '', false);
+    await sisData.loadDummyData();
     final showSee = ValueNotifier(false);
     addTearDown(showSee.dispose);
 

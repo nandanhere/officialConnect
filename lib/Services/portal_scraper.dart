@@ -442,7 +442,7 @@ class PortalScraper {
     }
     // Student profile photo (the portal page may hold several images with
     // this class; the last one is the student photo, matching the old
-    // lambda scraper behaviour).
+    // previous parser behaviour).
     final images = doc.querySelectorAll('img.uk-preserve-width.uk-border');
     final imgSrc = images.isEmpty ? null : images.last.attributes['src'];
     if (imgSrc != null && imgSrc.trim().isNotEmpty) {
