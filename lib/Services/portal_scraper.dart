@@ -2,13 +2,26 @@ import 'dart:async';
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart';
 import 'package:official_connect/Services/portal_session.dart';
+import 'package:official_connect/Services/firebase_feature_flags.dart';
 
 /// Parses the portal's authenticated HTML into the JSON shape used by the
 /// existing Flutter models. Requests are made with the WebView session cookie.
 class PortalScraper {
-  PortalScraper(this.session, {this.onProgress});
+  PortalScraper(PortalSession session, {this.onProgress})
+    : _navigateAndRead = session.navigateAndRead,
+      _fetchDataUri = session.fetchDataUri;
 
-  final PortalSession session;
+  /// Allows fixture tests to exercise the complete scrape without creating a
+  /// native WebView. Production callers should use [PortalScraper.new].
+  PortalScraper.forTesting({
+    required Future<String> Function(Uri uri) navigateAndRead,
+    Future<String?> Function(Uri uri)? fetchDataUri,
+    this.onProgress,
+  }) : _navigateAndRead = navigateAndRead,
+       _fetchDataUri = fetchDataUri ?? ((_) async => null);
+
+  final Future<String> Function(Uri uri) _navigateAndRead;
+  final Future<String?> Function(Uri uri) _fetchDataUri;
   final void Function(String stage)? onProgress;
 
   Future<Map<String, dynamic>> scrapeAll() async {
@@ -35,18 +48,27 @@ class PortalScraper {
     // A previous sync normally leaves the browser on result history. Always
     // return to the signed dashboard so refreshes rediscover every current
     // attendance, CIE, fee and history link before scraping.
-    final dashboard = await session.navigateAndRead(PortalSession.dashboardUri);
+    final dashboard = await _navigateAndRead(PortalSession.dashboardUri);
     final document = parser.parse(dashboard);
     final result = <String, dynamic>{};
-    _parseStudentSummary(document, result);
-    _parseFees(document, result);
+    if (FirebaseFeatureFlags.sectionEnabled('profile')) {
+      _parseStudentSummary(document, result);
+    }
+    if (FirebaseFeatureFlags.sectionEnabled('fees')) {
+      _parseFees(document, result);
+    }
     // The portal serves the student photo only to its authenticated browser
     // session, so plain HTTP image loading in the UI fails. Download it here
     // through the WebView and store a self-contained data URI instead.
     final studentImageUrl = result['studentImage']?.toString();
     if (studentImageUrl != null && studentImageUrl.startsWith('http')) {
-      final dataUri = await session.fetchDataUri(Uri.parse(studentImageUrl));
-      if (dataUri != null) result['studentImage'] = dataUri;
+      try {
+        final dataUri = await _fetchDataUri(Uri.parse(studentImageUrl));
+        if (dataUri != null) result['studentImage'] = dataUri;
+      } catch (_) {
+        // A protected or temporarily unavailable photo must never prevent the
+        // rest of the student's data from being returned.
+      }
     }
     final profileValues = [
       result['name'],
@@ -58,7 +80,9 @@ class PortalScraper {
         .length;
     recordSection(
       'profile',
-      profileCount == profileValues.length
+      !FirebaseFeatureFlags.sectionEnabled('profile')
+          ? 'disabled'
+          : profileCount == profileValues.length
           ? 'ok'
           : profileCount == 0
           ? 'error'
@@ -74,12 +98,12 @@ class PortalScraper {
         .where((href) => href.isNotEmpty)
         .map((href) => PortalSession.loginUri.resolve(href))
         .toSet();
-    final attendanceLinks = links
-        .where((u) => u.toString().contains('attendencelist'))
-        .toList();
-    final marksLinks = links
-        .where((u) => u.toString().contains('ciedetails'))
-        .toList();
+    final attendanceLinks = FirebaseFeatureFlags.sectionEnabled('attendance')
+        ? links.where((u) => u.toString().contains('attendencelist')).toList()
+        : <Uri>[];
+    final marksLinks = FirebaseFeatureFlags.sectionEnabled('marks')
+        ? links.where((u) => u.toString().contains('ciedetails')).toList()
+        : <Uri>[];
 
     final attendance = <Map<String, dynamic>>[];
     var attendanceFailures = 0;
@@ -90,9 +114,7 @@ class PortalScraper {
     }
     for (final uri in attendanceLinks) {
       try {
-        final attendanceDocument = parser.parse(
-          await session.navigateAndRead(uri),
-        );
+        final attendanceDocument = parser.parse(await _navigateAndRead(uri));
         final item = _parseAttendance(attendanceDocument);
         if (_hasCourseIdentity('${item['code']} ${item['name']}') &&
             _hasAttendanceStructure(attendanceDocument)) {
@@ -113,11 +135,13 @@ class PortalScraper {
     result['attendance'] = attendance;
     recordSection(
       'attendance',
-      _sectionStatus(
-        attendanceLinks.length,
-        attendance.length,
-        attendanceFailures,
-      ),
+      !FirebaseFeatureFlags.sectionEnabled('attendance')
+          ? 'disabled'
+          : _sectionStatus(
+              attendanceLinks.length,
+              attendance.length,
+              attendanceFailures,
+            ),
       count: attendance.length,
       attempted: attendanceLinks.length,
       failed: attendanceFailures,
@@ -131,10 +155,10 @@ class PortalScraper {
     if (marksLinks.isNotEmpty) onProgress?.call('Syncing internal marks');
     for (final uri in marksLinks) {
       try {
-        final marksDocument = parser.parse(await session.navigateAndRead(uri));
+        final marksDocument = parser.parse(await _navigateAndRead(uri));
         final item = _parseMarks(marksDocument);
         if (_hasCourseIdentity(item['name'].toString()) &&
-            marksDocument.querySelectorAll('tr.odd td').isNotEmpty) {
+            _marksCells(marksDocument).isNotEmpty) {
           marks.add(item);
         } else {
           invalidMarksPages++;
@@ -153,7 +177,9 @@ class PortalScraper {
     result['marks'] = marks;
     recordSection(
       'marks',
-      _sectionStatus(marksLinks.length, marks.length, marksFailures),
+      !FirebaseFeatureFlags.sectionEnabled('marks')
+          ? 'disabled'
+          : _sectionStatus(marksLinks.length, marks.length, marksFailures),
       count: marks.length,
       attempted: marksLinks.length,
       failed: marksFailures,
@@ -173,28 +199,35 @@ class PortalScraper {
     // The portal's result endpoint is not ready immediately after login. Visit
     // the lighter authenticated pages first so result history can initialize
     // in the background instead of waiting through a guaranteed empty shell.
-    onProgress?.call('Syncing proctor updates');
+    if (FirebaseFeatureFlags.sectionEnabled('proctor')) {
+      onProgress?.call('Syncing proctor updates');
+    }
     final proctorWatch = Stopwatch()..start();
     Document? proctorDocument;
     try {
-      proctorDocument = parser.parse(
-        await session.navigateAndRead(
-          matchingLink(
-            'task=observation',
-            Uri.parse(
-              'https://parents.msrit.edu/newparents/index.php?option=com_studentdashboard&controller=studentdashboard&task=observation',
+      if (!FirebaseFeatureFlags.sectionEnabled('proctor')) {
+        result['proctorship'] = <dynamic>[];
+        recordSection('proctor', 'disabled');
+      } else {
+        proctorDocument = parser.parse(
+          await _navigateAndRead(
+            matchingLink(
+              'task=observation',
+              Uri.parse(
+                'https://parents.msrit.edu/newparents/index.php?option=com_studentdashboard&controller=studentdashboard&task=observation',
+              ),
             ),
           ),
-        ),
-      );
-      result['proctorship'] = _parseProctor(proctorDocument);
-      recordSection(
-        'proctor',
-        'ok',
-        count: 1,
-        attempted: 1,
-        durationMs: proctorWatch.elapsedMilliseconds,
-      );
+        );
+        result['proctorship'] = _parseProctor(proctorDocument);
+        recordSection(
+          'proctor',
+          'ok',
+          count: 1,
+          attempted: 1,
+          durationMs: proctorWatch.elapsedMilliseconds,
+        );
+      }
     } catch (_) {
       result['proctorship'] = <dynamic>[];
       recordSection(
@@ -209,13 +242,13 @@ class PortalScraper {
     final feeLink = links.where(
       (uri) => uri.queryParameters['option'] == 'com_fee',
     );
-    if (feeLink.isNotEmpty) {
+    if (!FirebaseFeatureFlags.sectionEnabled('fees')) {
+      recordSection('fees', 'disabled');
+    } else if (feeLink.isNotEmpty) {
       onProgress?.call('Syncing fee history');
       final feeWatch = Stopwatch()..start();
       try {
-        final feeDocument = parser.parse(
-          await session.navigateAndRead(feeLink.first),
-        );
+        final feeDocument = parser.parse(await _navigateAndRead(feeLink.first));
         _parseFees(feeDocument, result);
         final feeCount = (result['fees'] as List?)?.length ?? 0;
         recordSection(
@@ -244,31 +277,36 @@ class PortalScraper {
       );
     }
 
-    onProgress?.call('Syncing semester results');
+    if (FirebaseFeatureFlags.sectionEnabled('results')) {
+      onProgress?.call('Syncing semester results');
+    }
     final resultsWatch = Stopwatch()..start();
     Document? resultsDocument;
     var resultAttempts = 0;
     try {
-      resultAttempts++;
-      resultsDocument = parser.parse(await session.navigateAndRead(resultLink));
-      result['prevResults'] = _parsePreviousResults(resultsDocument);
-      // Keep one fast retry for unusually slow portal sessions.
-      if ((result['prevResults'] as List).isEmpty) {
-        await Future<void>.delayed(const Duration(milliseconds: 500));
+      if (!FirebaseFeatureFlags.sectionEnabled('results')) {
+        result['prevResults'] = <dynamic>[];
+        recordSection('results', 'disabled');
+      } else {
         resultAttempts++;
-        resultsDocument = parser.parse(
-          await session.navigateAndRead(resultLink),
-        );
+        resultsDocument = parser.parse(await _navigateAndRead(resultLink));
         result['prevResults'] = _parsePreviousResults(resultsDocument);
+        // Keep one fast retry for unusually slow portal sessions.
+        if ((result['prevResults'] as List).isEmpty) {
+          await Future<void>.delayed(const Duration(milliseconds: 500));
+          resultAttempts++;
+          resultsDocument = parser.parse(await _navigateAndRead(resultLink));
+          result['prevResults'] = _parsePreviousResults(resultsDocument);
+        }
+        final count = (result['prevResults'] as List).length;
+        recordSection(
+          'results',
+          count == 0 ? 'empty' : 'ok',
+          count: count,
+          attempted: resultAttempts,
+          durationMs: resultsWatch.elapsedMilliseconds,
+        );
       }
-      final count = (result['prevResults'] as List).length;
-      recordSection(
-        'results',
-        count == 0 ? 'empty' : 'ok',
-        count: count,
-        attempted: resultAttempts,
-        durationMs: resultsWatch.elapsedMilliseconds,
-      );
     } catch (_) {
       result['prevResults'] = <dynamic>[];
       recordSection(
@@ -316,17 +354,55 @@ class PortalScraper {
       value.replaceAll(RegExp(r'[\s()\-]'), '').isNotEmpty;
 
   bool _hasAttendanceStructure(Document document) =>
-      RegExp(
-        r'\[[^\]]*\]',
-      ).allMatches(document.querySelector('.cn-legend')?.text ?? '').length >=
-      2;
+      _attendanceCounts(document).length >= 2;
+
+  String _clean(String value) => value.replaceAll(RegExp(r'\s+'), ' ').trim();
+
+  String _label(String value) =>
+      _clean(value).toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), ' ').trim();
+
+  List<String> _attendanceCounts(Document doc) {
+    final legend = doc.querySelector(
+      '.cn-legend, [data-section="attendance-summary"]',
+    );
+    if (legend == null) return const [];
+    final bracketed = RegExp(r'\[\s*(\d*)\s*\]')
+        .allMatches(legend.text)
+        .map((match) => match.group(1)!.isEmpty ? '0' : match.group(1)!)
+        .toList();
+    if (bracketed.length >= 2) return bracketed;
+
+    String countFor(String name) {
+      final element = legend.querySelector('[data-count="$name"]');
+      final source = element?.text ?? legend.text;
+      return RegExp(
+            '$name\\s*[:=-]?\\s*(\\d+)',
+            caseSensitive: false,
+          ).firstMatch(source)?.group(1) ??
+          '0';
+    }
+
+    final labelled = ['present', 'absent', 'remaining'].map(countFor).toList();
+    return labelled.take(2).every((value) => value == '0') &&
+            !RegExp(
+              r'present|absent',
+              caseSensitive: false,
+            ).hasMatch(legend.text)
+        ? const []
+        : labelled;
+  }
 
   void _parseStudentSummary(Document doc, Map<String, dynamic> out) {
-    final name = doc.querySelector('.cn-stu-data1 h3')?.text.trim();
+    final name = doc
+        .querySelector('.cn-stu-data1 h3, [data-student-name], .student-name')
+        ?.text
+        .trim();
     if (name != null && name.isNotEmpty) out['name'] = name;
     final summary =
         doc
-            .querySelector('.cn-stu-data p')
+            .querySelector(
+              '.cn-stu-data p, [data-student-summary], .student-summary',
+            )
             ?.text
             .split(',')
             .map((x) => x.trim())
@@ -345,7 +421,9 @@ class PortalScraper {
       out['earned'] = legend[0].split(' ').first;
       out['to_earn'] = legend[1].split(' ').first;
     }
-    final details = doc.querySelectorAll('.cn-basic-details table tr');
+    final details = doc.querySelectorAll(
+      '.cn-basic-details table tr, [data-section="student-details"] tr',
+    );
     for (final row in details) {
       final cells = row.querySelectorAll('td');
       if (cells.length >= 2) out[cells[0].text.trim()] = cells[1].text.trim();
@@ -366,13 +444,19 @@ class PortalScraper {
   void _parseFees(Document doc, Map<String, dynamic> out) {
     final fees = <Map<String, String>>[];
     final refunds = <Map<String, String>>[];
-    for (final table in doc.querySelectorAll('table.cn-pay-table')) {
+    final tables = doc.querySelectorAll(
+      'table.cn-pay-table, table[data-section="fees"], table[data-section="refunds"]',
+    );
+    if (tables.isEmpty) return;
+    for (final table in tables) {
       final headers = table
           .querySelectorAll('thead th, thead td')
           .map((e) => e.text.replaceAll(RegExp(r'\s+'), ' ').trim())
           .toList();
+      final caption = _label(table.querySelector('caption')?.text ?? '');
       final target =
-          (table.querySelector('caption')?.text.trim() == 'Refund Details')
+          (caption.contains('refund') ||
+              table.attributes['data-section'] == 'refunds')
           ? refunds
           : fees;
       for (final row in table.querySelectorAll('tbody tr')) {
@@ -403,18 +487,19 @@ class PortalScraper {
   }
 
   Map<String, dynamic> _parseAttendance(Document doc) {
-    final details = doc
-        .querySelectorAll('h3.md-card-head-text span')
-        .map((e) => e.text.trim())
-        .toList();
+    final heading = doc.querySelector(
+      'h3.md-card-head-text, [data-course-title], .course-title',
+    );
+    final details =
+        (heading?.querySelectorAll('span').isNotEmpty == true
+                ? heading!.querySelectorAll('span')
+                : <Element>[if (heading != null) heading])
+            .map((e) => e.text.trim())
+            .toList();
     final title = details.isNotEmpty
         ? details.first.split(RegExp(r'\s*-\s*'))
         : <String>[];
-    final legend = doc.querySelector('.cn-legend')?.text ?? '';
-    final nums = RegExp(r'\[([^\]]*)\]')
-        .allMatches(legend)
-        .map((m) => m.group(1)!.isEmpty ? '0' : m.group(1)!)
-        .toList();
+    final nums = _attendanceCounts(doc);
     final present = nums.isNotEmpty ? nums[0] : '0';
     final absent = nums.length > 1 ? nums[1] : '0';
     final remaining = nums.length > 2 ? nums[2] : '0';
@@ -423,7 +508,9 @@ class PortalScraper {
       'code': title.isNotEmpty ? title.first.trim() : '',
       'name': title.length > 1 ? title.sublist(1).join(' - ').trim() : '',
       'teacher':
-          doc.querySelector('h3.md-card-head-text')?.nodes.first.text?.trim() ??
+          heading?.attributes['data-teacher'] ??
+          doc.querySelector('[data-teacher-name]')?.text.trim() ??
+          heading?.nodes.first.text?.trim() ??
           '',
       'present': present,
       'absent': absent,
@@ -431,10 +518,14 @@ class PortalScraper {
       'percentage':
           '${total == 0 ? 0 : ((int.parse(present) / total) * 100).floor()}%',
       'present_dates': _parseClassDates(
-        doc.querySelector('table.cn-attend-list1'),
+        doc.querySelector(
+          'table.cn-attend-list1, table[data-attendance="present"]',
+        ),
       ),
       'absent_dates': _parseClassDates(
-        doc.querySelector('table.cn-attend-list2'),
+        doc.querySelector(
+          'table.cn-attend-list2, table[data-attendance="absent"]',
+        ),
       ),
     };
   }
@@ -455,11 +546,17 @@ class PortalScraper {
       [];
 
   Map<String, dynamic> _parseMarks(Document doc) {
-    final values = doc
-        .querySelectorAll('tr.odd td')
-        .map((e) => e.text.trim().isEmpty ? '-' : e.text.trim())
-        .toList();
-    final name = doc.querySelector('th[colspan="9"]')?.text.trim() ?? '';
+    final values = _marksCells(
+      doc,
+    ).map((e) => e.text.trim().isEmpty ? '-' : e.text.trim()).toList();
+    final name =
+        doc
+            .querySelector(
+              'th[colspan="9"], [data-course-title], .course-title',
+            )
+            ?.text
+            .trim() ??
+        '';
     final averageValues = RegExp(r'"col1"\s*:\s*(\d+)')
         .allMatches(doc.querySelector('.cn-cie-stat script')?.text ?? '')
         .map((m) => m.group(1)!)
@@ -484,43 +581,54 @@ class PortalScraper {
     };
   }
 
-  List<Map<String, dynamic>> _parsePreviousResults(
-    Document doc,
-  ) => doc.querySelectorAll('table.res-table').map((table) {
-    final result = <String, dynamic>{
-      'term':
-          table
-              .querySelector('caption')
-              ?.nodes
-              .whereType<Text>()
-              .map((n) => n.data.trim())
-              .where((s) => s.isNotEmpty)
-              .join(' ') ??
-          '',
-    };
-    for (final span in table.querySelectorAll('caption span')) {
-      final parts = span.text.split(':');
-      if (parts.length >= 2) {
-        result['${parts.first.trim()}${span.text.contains('Credits') ? ' ' : ''}'] =
-            parts.sublist(1).join(':').trim();
-      }
-    }
-    result['results'] = table.querySelectorAll('tbody tr').map((row) {
-      final heads = table
-          .querySelectorAll('thead th')
-          .map((e) => e.text.replaceAll(RegExp(r'\s+'), ' ').trim())
-          .toList();
-      final vals = row
-          .querySelectorAll('td')
-          .map((e) => e.text.trim())
-          .toList();
-      return <String, String>{
-        for (var i = 0; i < vals.length && i < heads.length; i++)
-          heads[i]: vals[i],
-      };
-    }).toList();
-    return result;
-  }).toList();
+  List<Element> _marksCells(Document doc) {
+    final legacy = doc.querySelectorAll('tr.odd td');
+    if (legacy.isNotEmpty) return legacy;
+    return doc.querySelectorAll(
+      'tr[data-marks] td, table[data-section="cie"] tbody tr td',
+    );
+  }
+
+  List<Map<String, dynamic>> _parsePreviousResults(Document doc) => doc
+      .querySelectorAll(
+        'table.res-table, table[data-section="semester-result"]',
+      )
+      .map((table) {
+        final result = <String, dynamic>{
+          'term':
+              table
+                  .querySelector('caption')
+                  ?.nodes
+                  .whereType<Text>()
+                  .map((n) => n.data.trim())
+                  .where((s) => s.isNotEmpty)
+                  .join(' ') ??
+              '',
+        };
+        for (final span in table.querySelectorAll('caption span')) {
+          final parts = span.text.split(':');
+          if (parts.length >= 2) {
+            result['${parts.first.trim()}${span.text.contains('Credits') ? ' ' : ''}'] =
+                parts.sublist(1).join(':').trim();
+          }
+        }
+        result['results'] = table.querySelectorAll('tbody tr').map((row) {
+          final heads = table
+              .querySelectorAll('thead th')
+              .map((e) => e.text.replaceAll(RegExp(r'\s+'), ' ').trim())
+              .toList();
+          final vals = row
+              .querySelectorAll('td')
+              .map((e) => e.text.trim())
+              .toList();
+          return <String, String>{
+            for (var i = 0; i < vals.length && i < heads.length; i++)
+              heads[i]: vals[i],
+          };
+        }).toList();
+        return result;
+      })
+      .toList();
 
   Map<String, dynamic> _parseProctor(Document doc) => {
     'proctor_name':

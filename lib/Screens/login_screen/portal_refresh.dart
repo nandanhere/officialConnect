@@ -4,10 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
 import 'package:official_connect/Screens/login_screen/portal_login_screen.dart';
+import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 bool _portalRefreshInFlight = false;
+
+enum BackgroundSyncState { idle, updating, success, partial, error }
+
+/// Lightweight app-wide state for the status chip shown above navigation.
+/// It deliberately lives with the refresh coordinator so screens do not need
+/// to maintain separate loading flags or block their own content.
+final ValueNotifier<BackgroundSyncState> backgroundSyncState = ValueNotifier(
+  BackgroundSyncState.idle,
+);
+
+Timer? _statusTimer;
+
+void setBackgroundSyncState(
+  BackgroundSyncState state, {
+  Duration visibleFor = const Duration(seconds: 3),
+}) {
+  _statusTimer?.cancel();
+  backgroundSyncState.value = state;
+  if (state != BackgroundSyncState.idle &&
+      state != BackgroundSyncState.updating) {
+    _statusTimer = Timer(visibleFor, () {
+      backgroundSyncState.value = BackgroundSyncState.idle;
+    });
+  }
+}
 
 /// Refreshes portal data in place: the authenticated portal flow runs
 /// off-screen and a small notification reports the outcome. Falls back to
@@ -18,6 +44,17 @@ Future<void> openPortalRefresh(BuildContext context) async {
   _portalRefreshInFlight = true;
   try {
     final messenger = ScaffoldMessenger.of(context);
+    if (!FirebaseFeatureFlags.portalSyncEnabled) {
+      messenger.showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(
+            'Updates are temporarily unavailable. Your saved information is still here.',
+          ),
+        ),
+      );
+      return;
+    }
     final sisData = Provider.of<SisData>(context, listen: false);
     final prefs = await SharedPreferences.getInstance();
     final usn = prefs.getString('portal_usn') ?? '';
@@ -40,8 +77,10 @@ Future<void> openPortalRefresh(BuildContext context) async {
       await openFullSyncPage();
       return;
     }
+    setBackgroundSyncState(BackgroundSyncState.updating);
     if (usn.trim().toUpperCase() == 'DUMMY') {
       await sisData.getData('DUMMY', '', false);
+      setBackgroundSyncState(BackgroundSyncState.success);
       return;
     }
 
@@ -73,6 +112,11 @@ Future<void> openPortalRefresh(BuildContext context) async {
     if (!context.mounted) return;
 
     if (synced == true) {
+      setBackgroundSyncState(
+        sisData.hasSyncIssues
+            ? BackgroundSyncState.partial
+            : BackgroundSyncState.success,
+      );
       messenger
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -83,6 +127,7 @@ Future<void> openPortalRefresh(BuildContext context) async {
           ),
         );
     } else {
+      setBackgroundSyncState(BackgroundSyncState.error);
       messenger
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -101,5 +146,8 @@ Future<void> openPortalRefresh(BuildContext context) async {
     }
   } finally {
     _portalRefreshInFlight = false;
+    if (backgroundSyncState.value == BackgroundSyncState.updating) {
+      setBackgroundSyncState(BackgroundSyncState.error);
+    }
   }
 }

@@ -8,9 +8,11 @@ class FirebaseSyncDiagnostics {
   static Future<void> initialize({required bool enabled}) async {
     if (kIsWeb) return;
     try {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
       final analytics = FirebaseAnalytics.instance;
       SyncDiagnostics.configure(
         (name, parameters) =>

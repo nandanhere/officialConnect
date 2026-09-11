@@ -4,6 +4,7 @@ import 'package:official_connect/Services/portal_session.dart';
 import 'package:official_connect/Services/portal_scraper.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
+import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:provider/provider.dart';
 
 class PortalLoginScreen extends StatefulWidget {
@@ -74,6 +75,14 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
     if (_scrapeStarted) return;
     _scrapeStarted = true;
     final scrapeWatch = Stopwatch()..start();
+    if (!FirebaseFeatureFlags.portalSyncEnabled) {
+      await SyncDiagnostics.recordLoginFinished(
+        outcome: 'disabled',
+        refresh: widget.reuseSession,
+      );
+      _finish(false);
+      return;
+    }
     _updateStage('Login complete', detail: 'Updating your information.');
     try {
       // The portal currently rejects replay of its browser session from AWS.
@@ -115,6 +124,11 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
         Map<String, dynamic>.from((data['_sync'] as Map?) ?? const {}),
         refresh: widget.reuseSession,
       );
+      await SyncDiagnostics.recordLoginFinished(
+        outcome: 'success',
+        refresh: widget.reuseSession,
+        durationMs: _flowWatch.elapsedMilliseconds,
+      );
       scrapeWatch.stop();
       _updateStage('Finishing up');
       assert(() {
@@ -130,6 +144,11 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
       }
     } catch (error) {
       await SyncDiagnostics.recordFailure(refresh: widget.reuseSession);
+      await SyncDiagnostics.recordLoginFinished(
+        outcome: 'error',
+        refresh: widget.reuseSession,
+        durationMs: _flowWatch.elapsedMilliseconds,
+      );
       assert(() {
         final detail = error is PortalRequestException ? error.reason : '';
         debugPrint('Portal scraper failed: ${error.runtimeType} $detail');
@@ -352,6 +371,9 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
                   ),
                   onWebViewCreated: (controller) async {
                     _flowWatch.start();
+                    await SyncDiagnostics.recordLoginStarted(
+                      refresh: widget.reuseSession,
+                    );
                     _session.attachController(controller);
                     if (!widget.reuseSession) await _session.clear();
                     await controller.loadUrl(

@@ -8,6 +8,8 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/see_details/see_details.dart';
 import 'package:official_connect/Services/exam_result_scraper.dart';
+import 'package:official_connect/Services/firebase_feature_flags.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +33,10 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
   String? _error;
   bool _submitted = false;
   String _usn = '';
+  Stopwatch? _fetchWatch;
+
+  String get _sourceName =>
+      widget.source == ExamResultSource.regular ? 'regular' : 'supplementary';
 
   String get _cacheKey =>
       'exam-result:${widget.source.name}:${_usn.toUpperCase()}';
@@ -68,6 +74,21 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
   }
 
   Future<void> _startFetch() async {
+    if (!FirebaseFeatureFlags.resultSourceEnabled(_sourceName)) {
+      await SyncDiagnostics.recordResult(
+        source: _sourceName,
+        outcome: 'disabled',
+      );
+      if (mounted) {
+        setState(() {
+          _stage = _ResultStage.error;
+          _error =
+              'This result source is temporarily unavailable. Any saved result remains available.';
+        });
+      }
+      return;
+    }
+    _fetchWatch = Stopwatch()..start();
     _submitted = false;
     _captchaController.clear();
     if (mounted) {
@@ -196,6 +217,11 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
         _result = result;
         _stage = _ResultStage.result;
       });
+      await SyncDiagnostics.recordResult(
+        source: _sourceName,
+        outcome: 'success',
+        durationMs: _fetchWatch?.elapsedMilliseconds,
+      );
       return;
     } on ExamResultParseException {
       // Landing and failed-challenge pages legitimately have no result table.
@@ -348,6 +374,11 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
                     _error =
                         'The examination results site could not be reached.';
                   });
+                  SyncDiagnostics.recordResult(
+                    source: _sourceName,
+                    outcome: 'network_error',
+                    durationMs: _fetchWatch?.elapsedMilliseconds,
+                  );
                 },
               ),
             ),

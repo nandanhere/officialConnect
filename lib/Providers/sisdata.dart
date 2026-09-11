@@ -94,7 +94,8 @@ class SisData with ChangeNotifier {
       _darkMode = prefs.getBool('darkMode') ?? false;
       // Migrate the old boolean preference: an explicit dark/light choice is
       // kept, otherwise the theme follows the OS setting.
-      _themeMode = prefs.getString('themeMode') ??
+      _themeMode =
+          prefs.getString('themeMode') ??
           (prefs.containsKey('darkMode')
               ? (_darkMode ? 'dark' : 'light')
               : 'system');
@@ -103,10 +104,10 @@ class SisData with ChangeNotifier {
       debugPrint(
         "data was there before. checking if it is older than 12 hours",
       );
-      needToUpdate = DateTime.fromMillisecondsSinceEpoch(time)
-              .difference(DateTime.now())
-              .inMilliseconds
-              .abs() >
+      needToUpdate =
+          DateTime.fromMillisecondsSinceEpoch(
+            time,
+          ).difference(DateTime.now()).inMilliseconds.abs() >
           const Duration(hours: 12).inMilliseconds;
       notifyListeners();
 
@@ -121,9 +122,7 @@ class SisData with ChangeNotifier {
         return;
       }
       try {
-        _data = Map<String, dynamic>.from(
-          await convert.jsonDecode(raw) as Map,
-        );
+        _data = Map<String, dynamic>.from(await convert.jsonDecode(raw) as Map);
       } catch (e) {
         debugPrint('cached payload unreadable ($e); resetting');
         await prefs.setBool('hasData', false);
@@ -256,7 +255,7 @@ class SisData with ChangeNotifier {
     };
     for (final entry in sectionKeys.entries) {
       final status = (sections[entry.key] as Map?)?['status'];
-      if (status == 'error') {
+      if (status == 'error' || status == 'disabled') {
         for (final key in entry.value) {
           if (previous.containsKey(key)) merged[key] = previous[key];
         }
