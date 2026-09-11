@@ -1,4 +1,4 @@
-import aws_cdk as core
+from aws_cdk import core
 import aws_cdk.assertions as assertions
 
 from official_connect_lambda.official_connect_lambda_stack import OfficialConnectLambdaStack
