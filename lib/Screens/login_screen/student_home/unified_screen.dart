@@ -8,6 +8,7 @@ import 'package:official_connect/Screens/login_screen/student_home/home_screen/h
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/results_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/settings_screen/settings_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:official_connect/Widgets/background_sync_status.dart';
 
 class Unified extends StatefulWidget {
   static const String id = 'unified';
@@ -62,16 +63,26 @@ class _UnifiedState extends State<Unified> {
       backgroundColor: sisData.darkMode
           ? const Color(0xff101114)
           : Colors.white,
-      body: PageView(
-        physics: const BouncingScrollPhysics(),
-        controller: _pageController,
-        onPageChanged: (page) => Unified.screenNumber.value = page,
+      body: Stack(
         children: [
-          const EventsScreen(),
-          ResultsScreen(_showSee),
-          const HomeScreen(),
-          const AttendanceInfo(),
-          const SettingsInfo(),
+          PageView(
+            physics: const BouncingScrollPhysics(),
+            controller: _pageController,
+            onPageChanged: (page) => Unified.screenNumber.value = page,
+            children: [
+              const EventsScreen(),
+              ResultsScreen(_showSee),
+              const HomeScreen(),
+              const AttendanceInfo(),
+              const SettingsInfo(),
+            ],
+          ),
+          const Positioned(
+            left: 16,
+            right: 16,
+            bottom: 12,
+            child: Center(child: BackgroundSyncStatus()),
+          ),
         ],
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(

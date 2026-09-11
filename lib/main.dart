@@ -7,7 +7,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'Screens/loading_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
-import 'package:official_connect/Services/firebase_sync_diagnostics.dart';
+import 'package:official_connect/Services/firebase_operations.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +21,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final diagnosticsEnabled = prefs.getBool('diagnosticsEnabled') ?? true;
   await SyncDiagnostics.setEnabled(diagnosticsEnabled);
-  await FirebaseSyncDiagnostics.initialize(enabled: diagnosticsEnabled);
+  await FirebaseOperations.initialize(enabled: diagnosticsEnabled);
 
   if (kIsWeb) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((

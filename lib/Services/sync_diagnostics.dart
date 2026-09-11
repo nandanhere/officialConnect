@@ -4,9 +4,33 @@ typedef DiagnosticsEventSink =
     Future<void> Function(String name, Map<String, Object> parameters);
 typedef DiagnosticsCollectionToggle = Future<void> Function(bool enabled);
 
-/// Emits only aggregate synchronization health. The production analytics sink
-/// is attached during app startup; debug builds remain useful without it.
+/// Emits only bounded, allowlisted operational health signals.
 class SyncDiagnostics {
+  static const _sections = {
+    'profile',
+    'attendance',
+    'marks',
+    'proctor',
+    'fees',
+    'results',
+  };
+  static const _outcomes = {
+    'started',
+    'success',
+    'complete',
+    'partial',
+    'empty',
+    'ok',
+    'error',
+    'disabled',
+    'cancelled',
+    'session_expired',
+    'network_error',
+    'portal_attention',
+    'parse_error',
+  };
+  static const _resultSources = {'regular', 'supplementary'};
+
   static DiagnosticsEventSink? _sink;
   static DiagnosticsCollectionToggle? _collectionToggle;
   static bool _enabled = true;
@@ -32,8 +56,8 @@ class SyncDiagnostics {
     for (final entry in sections.entries) {
       final value = entry.value as Map? ?? const {};
       await _emit('sync_section', {
-        'section': _safeToken(entry.key),
-        'outcome': _safeToken(value['status']),
+        'section': _safeSection(entry.key),
+        'outcome': _safeOutcome(value['status']),
         'item_count': _safeCount(value['count']),
         'attempted_count': _safeCount(value['attempted']),
         'failed_count': _safeCount(value['failed']),
@@ -43,8 +67,8 @@ class SyncDiagnostics {
       });
     }
     await _emit('sync_finished', {
-      'outcome': _safeToken(sync['outcome']),
-      'section_count': sections.length,
+      'outcome': _safeOutcome(sync['outcome']),
+      'section_count': sections.length.clamp(0, _sections.length),
       'duration_ms': _safeDuration(sync['duration_ms']),
       'sync_mode': refresh ? 'refresh' : 'first_login',
       'parser_version': _safeCount(sync['version']),
@@ -55,6 +79,31 @@ class SyncDiagnostics {
     'sync_finished',
     {'outcome': 'error', 'sync_mode': refresh ? 'refresh' : 'first_login'},
   );
+
+  static Future<void> recordLoginStarted({required bool refresh}) => _emit(
+    'login_flow_started',
+    {'sync_mode': refresh ? 'refresh' : 'first_login'},
+  );
+
+  static Future<void> recordLoginFinished({
+    required String outcome,
+    required bool refresh,
+    int? durationMs,
+  }) => _emit('login_flow_finished', {
+    'outcome': _safeOutcome(outcome),
+    'sync_mode': refresh ? 'refresh' : 'first_login',
+    if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
+  });
+
+  static Future<void> recordResult({
+    required String source,
+    required String outcome,
+    int? durationMs,
+  }) => _emit('result_fetch_finished', {
+    'result_source': _resultSources.contains(source) ? source : 'unknown',
+    'outcome': _safeOutcome(outcome),
+    if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
+  });
 
   static Future<void> _emit(String name, Map<String, Object> parameters) async {
     if (!_enabled) return;
@@ -68,6 +117,16 @@ class SyncDiagnostics {
   static String _safeToken(Object? value) {
     final token = value?.toString().toLowerCase() ?? 'unknown';
     return RegExp(r'^[a-z0-9_]{1,32}$').hasMatch(token) ? token : 'unknown';
+  }
+
+  static String _safeSection(Object? value) {
+    final token = _safeToken(value);
+    return _sections.contains(token) ? token : 'unknown';
+  }
+
+  static String _safeOutcome(Object? value) {
+    final token = _safeToken(value);
+    return _outcomes.contains(token) ? token : 'unknown';
   }
 
   static int _safeCount(Object? value) {
