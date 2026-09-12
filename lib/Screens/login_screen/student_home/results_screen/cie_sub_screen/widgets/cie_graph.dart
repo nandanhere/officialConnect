@@ -28,9 +28,10 @@ class _CieGraphState extends State<CieGraph> {
   void initState() {
     // documentation at https://help.syncfusion.com/flutter/cartesian-charts/tooltip for customisation.
     _tooltipBehavior = TooltipBehavior(
-        enable: true,
-        header: "Subject Code",
-        tooltipPosition: TooltipPosition.pointer);
+      enable: true,
+      header: "Subject Code",
+      tooltipPosition: TooltipPosition.pointer,
+    );
     super.initState();
   }
 
@@ -48,27 +49,30 @@ class _CieGraphState extends State<CieGraph> {
       },
       tooltipBehavior: _tooltipBehavior,
       primaryXAxis: CategoryAxis(
-          labelStyle: TextStyle(
-              color: sisData.darkMode ? Colors.white54 : Colors.black54,
-              fontSize: MediaQuery.of(context).size.width * 0.025,
-              fontFamily: 'Comfortaa')),
+        labelIntersectAction: AxisLabelIntersectAction.rotate45,
+        labelStyle: TextStyle(
+          color: sisData.darkMode ? Colors.white54 : Colors.black54,
+          fontSize: 10,
+          fontFamily: 'Comfortaa',
+        ),
+      ),
       isTransposed: true,
       primaryYAxis: NumericAxis(
-          minimum: 0,
-          maximum: widget.marks
-              .map((m) => _parseCieValue(m.finalCie) ?? 0)
-              .fold<double>(50, (a, b) => b > a ? b.toDouble() : a)),
+        minimum: 0,
+        maximum: widget.marks
+            .map((m) => _parseCieValue(m.finalCie) ?? 0)
+            .fold<double>(50, (a, b) => b > a ? b.toDouble() : a),
+      ),
       series: <CartesianSeries<Marks, String>>[
         BarSeries<Marks, String>(
           borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(7), topRight: Radius.circular(7)),
+            topLeft: Radius.circular(7),
+            topRight: Radius.circular(7),
+          ),
           gradient: const LinearGradient(
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
-            colors: [
-              Colors.blue,
-              Colors.red,
-            ],
+            colors: [Colors.blue, Colors.red],
           ),
           // Bind data source
           dataSource: widget.marks,
@@ -77,7 +81,7 @@ class _CieGraphState extends State<CieGraph> {
               a.subjectName,
           yValueMapper: (Marks b, _) => _parseCieValue(b.finalCie),
           enableTooltip: true,
-        )
+        ),
       ],
     );
   }

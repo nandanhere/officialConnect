@@ -121,71 +121,79 @@ class _UnifiedState extends State<Unified> {
           ),
         ],
       ),
-      bottomNavigationBar: ValueListenableBuilder<int>(
-        valueListenable: Unified.screenNumber,
-        builder: (context, selected, _) => DecoratedBox(
-          decoration: BoxDecoration(
-            color: navColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 12,
-                offset: const Offset(0, -3),
-              ),
-            ],
+      bottomNavigationBar: MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(
+            MediaQuery.textScalerOf(context).scale(1).clamp(0.8, 1.15),
           ),
-          child: SafeArea(
-            top: false,
-            child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: navColor,
-              elevation: 0,
-              currentIndex: selected,
-              selectedItemColor: const Color(0xffba3237),
-              unselectedItemColor: sisData.darkMode
-                  ? Colors.white70
-                  : Colors.black54,
-              selectedFontSize: 10,
-              unselectedFontSize: 10,
-              selectedLabelStyle: const TextStyle(
-                fontFamily: 'Comfortaa',
-                fontWeight: FontWeight.bold,
-              ),
-              unselectedLabelStyle: const TextStyle(fontFamily: 'Comfortaa'),
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.explore_outlined),
-                  activeIcon: Icon(Icons.explore),
-                  label: 'Explore',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.assessment_outlined),
-                  activeIcon: Icon(Icons.assessment),
-                  label: 'Results',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined, size: 27),
-                  activeIcon: Icon(Icons.home, size: 27),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_outlined),
-                  activeIcon: Icon(Icons.calendar_month),
-                  label: 'Attendance',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings_outlined),
-                  activeIcon: Icon(Icons.settings),
-                  label: 'Settings',
+        ),
+        child: ValueListenableBuilder<int>(
+          valueListenable: Unified.screenNumber,
+          builder: (context, selected, _) => DecoratedBox(
+            decoration: BoxDecoration(
+              color: navColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 12,
+                  offset: const Offset(0, -3),
                 ),
               ],
-              onTap: (index) {
-                _pageController.animateToPage(
-                  index,
-                  curve: Curves.easeOutCubic,
-                  duration: const Duration(milliseconds: 280),
-                );
-              },
+            ),
+            child: SafeArea(
+              top: false,
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: navColor,
+                elevation: 0,
+                currentIndex: selected,
+                selectedItemColor: const Color(0xffba3237),
+                unselectedItemColor: sisData.darkMode
+                    ? Colors.white70
+                    : Colors.black54,
+                selectedFontSize: 11,
+                unselectedFontSize: 11,
+                iconSize: 29,
+                selectedLabelStyle: const TextStyle(
+                  fontFamily: 'Comfortaa',
+                  fontWeight: FontWeight.bold,
+                ),
+                unselectedLabelStyle: const TextStyle(fontFamily: 'Comfortaa'),
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.explore_outlined),
+                    activeIcon: Icon(Icons.explore),
+                    label: 'Explore',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.assessment_outlined),
+                    activeIcon: Icon(Icons.assessment),
+                    label: 'Results',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    activeIcon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    activeIcon: Icon(Icons.calendar_month),
+                    label: 'Attendance',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings_outlined),
+                    activeIcon: Icon(Icons.settings),
+                    label: 'Settings',
+                  ),
+                ],
+                onTap: (index) {
+                  _pageController.animateToPage(
+                    index,
+                    curve: Curves.easeOutCubic,
+                    duration: const Duration(milliseconds: 280),
+                  );
+                },
+              ),
             ),
           ),
         ),

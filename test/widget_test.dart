@@ -4,6 +4,7 @@ import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/results_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/widgets/cie_graph.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/latest_results.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/widgets/marks_card.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
@@ -375,7 +376,6 @@ void main() {
     await sisData.loadDummyData();
     final showSee = ValueNotifier(false);
     addTearDown(showSee.dispose);
-
     await tester.pumpWidget(
       ChangeNotifierProvider.value(
         value: sisData,
@@ -390,6 +390,107 @@ void main() {
     expect(find.text('Quick results'), findsOneWidget);
     expect(find.text('Latest regular result'), findsOneWidget);
     expect(find.text('Supplementary results'), findsOneWidget);
+  });
+
+  testWidgets(
+    'results fit a compact Galaxy viewport at large Android text scale',
+    (WidgetTester tester) async {
+      // A stricter compact viewport catches failures that can be hidden by
+      // MediaQuery-only tests which do not change the render constraints.
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      SharedPreferences.setMockInitialValues({});
+      final sisData = SisData();
+      await sisData.loadDummyData();
+      final showSee = ValueNotifier(false);
+      addTearDown(showSee.dispose);
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(
+          value: sisData,
+          child: MaterialApp(
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                padding: const EdgeInsets.only(top: 32),
+                textScaler: const TextScaler.linear(2),
+              ),
+              child: child!,
+            ),
+            home: Scaffold(body: ResultsScreen(showSee)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.getTopLeft(find.text('Results')).dy,
+        greaterThanOrEqualTo(32),
+      );
+      expect(find.text('CIE'), findsOneWidget);
+      expect(find.text('SEE'), findsOneWidget);
+      expect(find.byType(CieGraph), findsOneWidget);
+
+      final resultContext = tester.element(find.text('CIE'));
+      expect(
+        MediaQuery.textScalerOf(resultContext).scale(1),
+        lessThanOrEqualTo(1.3),
+      );
+
+      final firstCourse = find.text(sisData.marks.first.subjectName);
+      expect(firstCourse, findsOneWidget);
+      expect(tester.getSize(firstCourse).height, lessThanOrEqualTo(55));
+
+      await tester.tap(find.text('SEE'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Quick results'), findsOneWidget);
+    },
+  );
+
+  testWidgets('Galaxy A52s layout keeps bottom navigation balanced', (
+    WidgetTester tester,
+  ) async {
+    // 1080x2400 at Samsung's common 420 dpi setting is about 411x914 logical.
+    tester.view.physicalSize = const Size(411, 914);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final sisData = SisData();
+    await sisData.loadDummyData();
+    Unified.screenNumber.value = 1;
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: sisData,
+        child: MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              padding: const EdgeInsets.only(top: 32),
+              textScaler: const TextScaler.linear(1.5),
+            ),
+            child: child!,
+          ),
+          home: const Unified(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    final navigation = tester.widget<BottomNavigationBar>(
+      find.byType(BottomNavigationBar),
+    );
+    expect(navigation.iconSize, greaterThanOrEqualTo(29));
+    expect(
+      MediaQuery.textScalerOf(
+        tester.element(find.byType(BottomNavigationBar)),
+      ).scale(1),
+      lessThanOrEqualTo(1.15),
+    );
   });
 
   testWidgets('result subjects render as a compact table', (

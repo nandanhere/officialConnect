@@ -19,74 +19,71 @@ class CIEScreen extends StatelessWidget {
       neumorphicStyle,
       sisData,
       buttonTrailing;
-  const CIEScreen(
-      {Key? key,
-      this.height,
-      this.titleStyle,
-      this.buttonTitle,
-      this.isSEE,
-      this.width,
-      this.seeOpt,
-      this.neumorphicStyle,
-      this.sisData,
-      this.buttonTrailing})
-      : super(key: key);
+  const CIEScreen({
+    Key? key,
+    this.height,
+    this.titleStyle,
+    this.buttonTitle,
+    this.isSEE,
+    this.width,
+    this.seeOpt,
+    this.neumorphicStyle,
+    this.sisData,
+    this.buttonTrailing,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(bottom: height * 0.025),
+          padding: const EdgeInsets.only(bottom: 16),
           child: Align(
             alignment: Alignment.topLeft,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Results", textAlign: TextAlign.left, style: titleStyle),
-                const SizedBox(width: 40),
-                // NeumorphicButton(
-                //   child: Icon(
-                //     FontAwesomeIcons.bookAtlas,
-                //     color: sisData.darkMode ? Colors.white : Colors.black,
-                //     size: width * 0.05,
-                //   ),
-                //   style: neumorphicStyle,
-                //   onPressed: () {
-                //     _launchURL(context,
-                //         "https://drive.google.com/drive/folders/1xPhB1sYr3TdHmgURiogcqBfJpj7YKyEc?usp=sharing");
-                //   },
-                // ),
-                // NeumorphicButton(
-                //   child: Icon(
-                //     FontAwesomeIcons.book,
-                //     color: sisData.darkMode ? Colors.white : Colors.black,
-                //     size: width * 0.05,
-                //   ),
-                //   style: neumorphicStyle,
-                //   onPressed: () {
-                //     Navigator.of(context).push(MaterialPageRoute(
-                //         builder: (ctx) => const SyllabusScreen()));
-                //
-                //     // DummyData.syllabusLinks.keys.forEach((element) {
-                //     //   if (RegExp(r"[\w\s]*" + fullCourseName + r"$")
-                //     //       .hasMatch(element)) {
-                //     //     Navigator.of(context).push(MaterialPageRoute(
-                //     //         builder: (ctx) => BranchSyllabus(name: element)));
-                //     //   }
-                //     // });
-                //   },
-                // ),
-              ],
+            child: Text(
+              "Results",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.left,
+              style: titleStyle.copyWith(fontSize: 30.0),
             ),
+            // NeumorphicButton(
+            //   child: Icon(
+            //     FontAwesomeIcons.bookAtlas,
+            //     color: sisData.darkMode ? Colors.white : Colors.black,
+            //     size: width * 0.05,
+            //   ),
+            //   style: neumorphicStyle,
+            //   onPressed: () {
+            //     _launchURL(context,
+            //         "https://drive.google.com/drive/folders/1xPhB1sYr3TdHmgURiogcqBfJpj7YKyEc?usp=sharing");
+            //   },
+            // ),
+            // NeumorphicButton(
+            //   child: Icon(
+            //     FontAwesomeIcons.book,
+            //     color: sisData.darkMode ? Colors.white : Colors.black,
+            //     size: width * 0.05,
+            //   ),
+            //   style: neumorphicStyle,
+            //   onPressed: () {
+            //     Navigator.of(context).push(MaterialPageRoute(
+            //         builder: (ctx) => const SyllabusScreen()));
+            //
+            //     // DummyData.syllabusLinks.keys.forEach((element) {
+            //     //   if (RegExp(r"[\w\s]*" + fullCourseName + r"$")
+            //     //       .hasMatch(element)) {
+            //     //     Navigator.of(context).push(MaterialPageRoute(
+            //     //         builder: (ctx) => BranchSyllabus(name: element)));
+            //     //   }
+            //     // });
+            //   },
+            // ),
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: height * 0.01,
-            horizontal: width * 0.06,
-          ),
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
           child: SizedBox(
-            height: height * 0.065,
+            height: 48,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -100,16 +97,17 @@ class CIEScreen extends StatelessWidget {
                       "CIE",
                       textAlign: TextAlign.left,
                       style: CustomTheme.titleStyle(context).copyWith(
-                          color: const Color(0xffba3237),
-                          fontSize: width * (seeOpt.value ? 0.05 : 0.065),
-                          fontWeight: (seeOpt.value
-                              ? FontWeight.normal
-                              : FontWeight.bold)),
+                        color: const Color(0xffba3237),
+                        fontSize: seeOpt.value ? 19.0 : 23.0,
+                        fontWeight: (seeOpt.value
+                            ? FontWeight.normal
+                            : FontWeight.bold),
+                      ),
                     ),
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: height * 0.01),
+                  padding: const EdgeInsets.symmetric(vertical: 7),
                   child: VerticalDivider(
                     color: sisData.darkMode ? Colors.white38 : Colors.black26,
                     thickness: 1.6,
@@ -124,15 +122,17 @@ class CIEScreen extends StatelessWidget {
                       );
                       seeOpt.value = true;
                     },
-                    child: Text("SEE",
-                        textAlign: TextAlign.right,
-                        style: CustomTheme.titleStyle(context).copyWith(
-                          color: Colors.grey,
-                          fontSize: width * (!seeOpt.value ? 0.05 : 0.065),
-                          fontWeight: (!seeOpt.value
-                              ? FontWeight.normal
-                              : FontWeight.bold),
-                        )),
+                    child: Text(
+                      "SEE",
+                      textAlign: TextAlign.right,
+                      style: CustomTheme.titleStyle(context).copyWith(
+                        color: Colors.grey,
+                        fontSize: !seeOpt.value ? 19.0 : 23.0,
+                        fontWeight: (!seeOpt.value
+                            ? FontWeight.normal
+                            : FontWeight.bold),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -177,38 +177,46 @@ class CIEScreen extends StatelessWidget {
                   ),
                 ),
               )
-            : CieGraph(marks: sisData.marks),
+            : SizedBox(
+                height: (220.0 + sisData.marks.length * 8).clamp(240.0, 300.0),
+                child: CieGraph(marks: sisData.marks),
+              ),
         ...sisData.marks
-            .map((e) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: NeumorphicButton(
-                    padding: EdgeInsets.only(
-                        top: height * 0.015,
-                        bottom: height * 0.015,
-                        left: width * 0.025,
-                        right: width * 0.01),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (ctx) => CIEDetails(subjectDetails: e),
-                        ),
-                      );
-                    },
-                    style: neumorphicStyle,
-                    child: ListTile(
-                      title: Text(
-                        e.subjectName,
-                        style: buttonTitle,
+            .map(
+              (e) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: NeumorphicButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 5,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => CIEDetails(subjectDetails: e),
                       ),
-                      trailing: Text(
-                        e.finalCie.contains('%')
-                            ? "-"
-                            : ((e.t1 == '-') ? e.t1 : e.finalCie.toString()),
-                        style: buttonTrailing,
-                      ),
+                    );
+                  },
+                  style: neumorphicStyle,
+                  child: ListTile(
+                    minVerticalPadding: 8,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    title: Text(
+                      e.subjectName,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: buttonTitle.copyWith(fontSize: 16.0, height: 1.3),
+                    ),
+                    trailing: Text(
+                      e.finalCie.contains('%')
+                          ? "-"
+                          : ((e.t1 == '-') ? e.t1 : e.finalCie.toString()),
+                      style: buttonTrailing.copyWith(fontSize: 18.0),
                     ),
                   ),
-                ))
+                ),
+              ),
+            )
             .toList(),
         const SizedBox(height: 32),
       ],
