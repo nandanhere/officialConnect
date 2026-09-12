@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:official_connect/Services/portal_session.dart';
@@ -65,7 +67,8 @@ class PortalLoginScreen extends StatefulWidget {
   State<PortalLoginScreen> createState() => _PortalLoginScreenState();
 }
 
-class _PortalLoginScreenState extends State<PortalLoginScreen> {
+class _PortalLoginScreenState extends State<PortalLoginScreen>
+    with WidgetsBindingObserver {
   final PortalSession _session = PortalSession();
   bool _scrapeStarted = false;
   bool _finished = false;
@@ -74,9 +77,55 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
   String _detail = 'This usually takes a few seconds.';
   String? _error;
   final Stopwatch _flowWatch = Stopwatch();
+  Timer? _attentionTimer;
+  bool _flowStarted = false;
+  final Set<String> _recordedAttention = {};
+
+  String get _diagnosticStage {
+    if (_error != null) return 'needs_attention';
+    if (_stage == 'Signing you in') return 'signing_in';
+    if (_stage == 'Login complete') return 'scraping';
+    if (_stage == 'Finishing up') return 'finishing';
+    return 'getting_ready';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _recordAttention(String reason) async {
+    if (!_flowStarted || _finished || !_recordedAttention.add(reason)) return;
+    await SyncDiagnostics.recordLoginAttention(
+      reason: reason,
+      stage: _diagnosticStage,
+      refresh: widget.reuseSession,
+      durationMs: _flowWatch.elapsedMilliseconds,
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      unawaited(_recordAttention('backgrounded'));
+    }
+  }
+
+  @override
+  void dispose() {
+    _attentionTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    if (_flowStarted && !_finished) {
+      unawaited(_recordAttention('disposed'));
+    }
+    super.dispose();
+  }
 
   void _finish(bool result) {
     if (_finished) return;
+    _attentionTimer?.cancel();
     _finished = true;
     final callback = widget.onFinished;
     if (callback != null) {
@@ -396,9 +445,23 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
               ),
               onWebViewCreated: (controller) async {
                 _flowWatch.start();
-                await SyncDiagnostics.recordLoginStarted(
-                  refresh: widget.reuseSession,
+                _flowStarted = true;
+                unawaited(
+                  SyncDiagnostics.recordLoginStarted(
+                    refresh: widget.reuseSession,
+                  ),
                 );
+                unawaited(
+                  SyncDiagnostics.recordLoginAttention(
+                    reason: 'visibility_guarded',
+                    stage: _diagnosticStage,
+                    refresh: widget.reuseSession,
+                    durationMs: 0,
+                  ),
+                );
+                _attentionTimer = Timer(const Duration(seconds: 45), () {
+                  unawaited(_recordAttention('timeout'));
+                });
                 _session.attachController(controller);
                 if (!widget.reuseSession) await _session.clear();
                 await controller.loadUrl(
@@ -429,7 +492,10 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
                         alignment: Alignment.centerLeft,
                         child: IconButton(
                           tooltip: 'Cancel',
-                          onPressed: () => _finish(false),
+                          onPressed: () {
+                            unawaited(_recordAttention('cancelled'));
+                            _finish(false);
+                          },
                           icon: const Icon(Icons.close),
                         ),
                       ),
@@ -479,8 +545,14 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
                               if (_error != null) ...[
                                 const SizedBox(height: 28),
                                 FilledButton.icon(
-                                  onPressed: () =>
-                                      setState(() => _showPortal = true),
+                                  onPressed: () {
+                                    unawaited(
+                                      _recordAttention('manual_portal'),
+                                    );
+                                    if (mounted && !_finished) {
+                                      setState(() => _showPortal = true);
+                                    }
+                                  },
                                   icon: const Icon(Icons.open_in_browser),
                                   label: const Text('Show page'),
                                   style: FilledButton.styleFrom(

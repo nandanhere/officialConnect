@@ -52,6 +52,12 @@ void main() {
       refresh: false,
       durationMs: 999999999,
     );
+    await SyncDiagnostics.recordLoginAttention(
+      reason: 'student_identifier_1MS22IS086',
+      stage: '24/02/2004',
+      refresh: false,
+      durationMs: 999999999,
+    );
     await SyncDiagnostics.recordResult(
       source: '1MS22IS086',
       outcome: '<html>secret</html>',
@@ -72,7 +78,37 @@ void main() {
     expect(encoded, contains('duration_ms: 600000'));
     expect(encoded, contains('duration_ms: 0'));
     expect(encoded, contains('section: unknown'));
+    expect(encoded, contains('reason: unknown'));
+    expect(encoded, contains('stage: unknown'));
   });
+
+  test(
+    'login attention diagnostics use only coarse allowlisted values',
+    () async {
+      final events = <Map<String, Object>>[];
+      SyncDiagnostics.configure((name, parameters) async {
+        events.add({'name': name, ...parameters});
+      });
+      await SyncDiagnostics.setEnabled(true);
+
+      await SyncDiagnostics.recordLoginAttention(
+        reason: 'manual_portal',
+        stage: 'needs_attention',
+        refresh: false,
+        durationMs: 1234,
+      );
+
+      expect(events, [
+        {
+          'name': 'login_flow_attention',
+          'reason': 'manual_portal',
+          'stage': 'needs_attention',
+          'sync_mode': 'first_login',
+          'duration_ms': 1234,
+        },
+      ]);
+    },
+  );
 
   test('disabled collection suppresses all operational events', () async {
     final events = <Map<String, Object>>[];
