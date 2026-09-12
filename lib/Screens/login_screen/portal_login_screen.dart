@@ -105,6 +105,16 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
     );
   }
 
+  void _recordCancelledFinish() {
+    unawaited(
+      SyncDiagnostics.recordLoginFinished(
+        outcome: 'cancelled',
+        refresh: widget.reuseSession,
+        durationMs: _flowWatch.elapsedMilliseconds,
+      ),
+    );
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
@@ -119,6 +129,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
     WidgetsBinding.instance.removeObserver(this);
     if (_flowStarted && !_finished) {
       unawaited(_recordAttention('disposed'));
+      _recordCancelledFinish();
     }
     super.dispose();
   }
@@ -494,6 +505,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
                           tooltip: 'Cancel',
                           onPressed: () {
                             unawaited(_recordAttention('cancelled'));
+                            _recordCancelledFinish();
                             _finish(false);
                           },
                           icon: const Icon(Icons.close),
