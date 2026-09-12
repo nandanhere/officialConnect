@@ -33,6 +33,21 @@ class SyncDiagnostics {
     'parse_error',
   };
   static const _resultSources = {'regular', 'supplementary'};
+  static const _loginStages = {
+    'getting_ready',
+    'signing_in',
+    'scraping',
+    'finishing',
+    'needs_attention',
+  };
+  static const _attentionReasons = {
+    'visibility_guarded',
+    'manual_portal',
+    'backgrounded',
+    'cancelled',
+    'disposed',
+    'timeout',
+  };
   static const _screens = {
     'explore',
     'results',
@@ -135,6 +150,18 @@ class SyncDiagnostics {
     int? durationMs,
   }) => _emit('login_flow_finished', {
     'outcome': _safeOutcome(outcome),
+    'sync_mode': refresh ? 'refresh' : 'first_login',
+    if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
+  });
+
+  static Future<void> recordLoginAttention({
+    required String reason,
+    required String stage,
+    required bool refresh,
+    int? durationMs,
+  }) => _emit('login_flow_attention', {
+    'reason': _attentionReasons.contains(reason) ? reason : 'unknown',
+    'stage': _loginStages.contains(stage) ? stage : 'unknown',
     'sync_mode': refresh ? 'refresh' : 'first_login',
     if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
   });
