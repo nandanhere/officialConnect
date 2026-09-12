@@ -5,21 +5,11 @@ import 'package:official_connect/Screens/login_screen/student_home/settings_scre
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 const double version = 1;
 
 class SettingsInfo extends StatelessWidget {
   const SettingsInfo({Key? key}) : super(key: key);
-
-  void _launchURL(String url) async {
-    if (!await launchUrl(
-      Uri.parse(url),
-      mode: LaunchMode.externalNonBrowserApplication,
-    )) {
-      throw 'Could not launch $url';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,36 +24,6 @@ class SettingsInfo extends StatelessWidget {
     final linearGradientBG = CustomTheme.linearGradientBG(context);
     // var fullCourseName = sisData.courseFullName.split("-")[1];
     List<Element> tiles = [
-      //Element(icon: Icons.person, onPressed: () {}, text: "Student Details"),
-      //TODO add links for fee payment and wifi complaint
-      Element(
-        icon: Icons.attach_money_outlined,
-        onPressed: () {
-          _launchURL("https://google.com");
-        },
-        text: "Fee Payment",
-      ),
-      Element(
-        icon: Icons.wifi_off_outlined,
-        onPressed: () {
-          _launchURL("http://ithelpdesk.msrit.edu/");
-        },
-        text: "Register WiFi complaint",
-      ),
-
-      Element(
-        icon: Icons.brightness_6_outlined,
-        onPressed: () {},
-        text: "Theme",
-        toggle: true,
-      ),
-      Element(
-        icon: Icons.lock,
-        onPressed: () {
-          _launchURL("https://forms.gle/FyF3PZxxonNf8kUz5");
-        },
-        text: "Feedback",
-      ),
       Element(
         icon: Icons.info_outline_rounded,
         onPressed: () => showDialog(
@@ -90,7 +50,9 @@ class SettingsInfo extends StatelessWidget {
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: RefreshIndicator(
         displacement: height * 0.1,
-        backgroundColor: sisData.darkMode ? const Color(0xff101114) : Colors.white,
+        backgroundColor: sisData.darkMode
+            ? const Color(0xff101114)
+            : Colors.white,
         color: sisData.darkMode
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
@@ -122,19 +84,82 @@ class SettingsInfo extends StatelessWidget {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Neumorphic(
+                    style: neumorphicStyle,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.palette_outlined,
+                                color: Color(0xffd93b3f),
+                                size: 28,
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Appearance', style: buttonTitle),
+                                    Text(
+                                      'Choose how OfficialConnect looks',
+                                      style: CustomTheme.textStyle(context)
+                                          .copyWith(
+                                            fontSize: 12.5,
+                                            color: sisData.darkMode
+                                                ? Colors.white60
+                                                : Colors.black54,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 14),
+                          SizedBox(
+                            width: double.infinity,
+                            child: SegmentedButton<String>(
+                              key: const ValueKey('theme-selector'),
+                              showSelectedIcon: false,
+                              segments: const [
+                                ButtonSegment(
+                                  value: 'system',
+                                  icon: Icon(Icons.phone_android, size: 17),
+                                  label: Text('System'),
+                                ),
+                                ButtonSegment(
+                                  value: 'light',
+                                  icon: Icon(Icons.light_mode, size: 17),
+                                  label: Text('Light'),
+                                ),
+                                ButtonSegment(
+                                  value: 'dark',
+                                  icon: Icon(Icons.dark_mode, size: 17),
+                                  label: Text('Dark'),
+                                ),
+                              ],
+                              selected: {sisData.themeMode},
+                              onSelectionChanged: (selection) {
+                                sisData.themeMode = selection.first;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 ...tiles.map(
                   (e) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: NeumorphicButton(
-                      onPressed: e.toggle
-                          ? () {
-                              const order = ['system', 'light', 'dark'];
-                              final next = order[
-                                  (order.indexOf(sisData.themeMode) + 1) %
-                                      order.length];
-                              sisData.themeMode = next;
-                            }
-                          : e.onPressed,
+                      onPressed: e.onPressed,
                       style: neumorphicStyle,
                       child: ListTile(
                         leading: Icon(
@@ -143,36 +168,7 @@ class SettingsInfo extends StatelessWidget {
                           size: 30,
                         ),
                         title: Text(e.text, style: buttonTitle),
-                        trailing: e.toggle
-                            ? DropdownButton<String>(
-                                value: sisData.themeMode,
-                                underline: const SizedBox.shrink(),
-                                icon: const SizedBox.shrink(),
-                                style: buttonTrailing,
-                                dropdownColor: sisData.darkMode
-                                    ? const Color(0xff1e1e1e)
-                                    : Colors.white,
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: 'system',
-                                    child: Text('System'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'light',
-                                    child: Text('Light'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'dark',
-                                    child: Text('Dark'),
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    sisData.themeMode = value;
-                                  }
-                                },
-                              )
-                            : null,
+                        trailing: const Icon(Icons.chevron_right, size: 20),
                       ),
                     ),
                   ),
@@ -283,12 +279,6 @@ class SettingsInfo extends StatelessWidget {
 class Element {
   final Function() onPressed;
   final String text;
-  bool toggle;
   final IconData icon;
-  Element({
-    required this.onPressed,
-    required this.text,
-    this.toggle = false,
-    required this.icon,
-  });
+  Element({required this.onPressed, required this.text, required this.icon});
 }

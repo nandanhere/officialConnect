@@ -9,8 +9,52 @@ import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/syllabus_sub_screen/syllabus_screen.dart';
 
+typedef ExploreLinkLauncher = Future<bool> Function(Uri uri);
+
+class ExploreLink {
+  const ExploreLink({
+    required this.key,
+    required this.title,
+    required this.subtitle,
+    required this.url,
+    required this.icon,
+  });
+
+  final String key;
+  final String title;
+  final String subtitle;
+  final String url;
+  final IconData icon;
+}
+
+const campusServiceLinks = <ExploreLink>[
+  ExploreLink(
+    key: 'fee-payment',
+    title: 'Fee payment',
+    subtitle: 'Official payment links and current notices',
+    url: 'https://www.msrit.edu/',
+    icon: Icons.payments_outlined,
+  ),
+  ExploreLink(
+    key: 'wifi-helpdesk',
+    title: 'Campus helpdesk',
+    subtitle: 'Report Wi-Fi and other campus IT issues',
+    url: 'https://rithelpdesk.msrit.edu/',
+    icon: Icons.support_agent_outlined,
+  ),
+  ExploreLink(
+    key: 'app-feedback',
+    title: 'Share app feedback',
+    subtitle: 'Tell us what could work better',
+    url: 'https://forms.gle/FyF3PZxxonNf8kUz5',
+    icon: Icons.feedback_outlined,
+  ),
+];
+
 class EventsScreen extends StatelessWidget {
-  const EventsScreen({Key? key}) : super(key: key);
+  const EventsScreen({Key? key, this.linkLauncher}) : super(key: key);
+
+  final ExploreLinkLauncher? linkLauncher;
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +66,23 @@ class EventsScreen extends StatelessWidget {
     final title = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
-    void _launchURL(BuildContext context, String url) async {
-      if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
+    Future<void> openLink(String url) async {
+      final uri = Uri.parse(url);
+      final launched = await (linkLauncher?.call(uri) ?? launchUrl(uri));
+      if (!launched && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open that link. Try again.')),
+        );
+      }
     }
 
     return Container(
       decoration: BoxDecoration(gradient: linearGradientBG),
       child: RefreshIndicator(
         displacement: height * 0.1,
-        backgroundColor: sisData.darkMode ? const Color(0xff101114) : Colors.white,
+        backgroundColor: sisData.darkMode
+            ? const Color(0xff101114)
+            : Colors.white,
         color: sisData.darkMode
             ? const Color(0xffba3237)
             : const Color(0xffba3227),
@@ -44,18 +96,61 @@ class EventsScreen extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(gradient: linearGradientBG),
             padding: EdgeInsets.only(
-                left: width * 0.05,
-                right: width * 0.05,
-                top: height * 0.06,
-                bottom: height * 0.13),
+              left: width * 0.05,
+              right: width * 0.05,
+              top: height * 0.06,
+              bottom: height * 0.13,
+            ),
             child: Column(
               children: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: height * 0.015),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text('Campus services', style: title),
+                  ),
+                ),
+                ...campusServiceLinks.map(
+                  (link) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: NeumorphicButton(
+                      key: ValueKey(link.key),
+                      style: neumorphicStyle,
+                      onPressed: () => openLink(link.url),
+                      child: ListTile(
+                        leading: Icon(
+                          link.icon,
+                          color: const Color(0xffd93b3f),
+                          size: 28,
+                        ),
+                        title: Text(link.title, style: buttonTitle),
+                        subtitle: Text(
+                          link.subtitle,
+                          style: CustomTheme.textStyle(context).copyWith(
+                            fontSize: 13,
+                            color: sisData.darkMode
+                                ? Colors.white60
+                                : Colors.black54,
+                          ),
+                        ),
+                        trailing: const Icon(Icons.open_in_new, size: 18),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                  child: Divider(
+                    color: sisData.darkMode ? Colors.white38 : Colors.black26,
+                    thickness: 1.6,
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.only(bottom: height * 0.025),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      "Clubs",
+                      "Clubs and communities",
                       textAlign: TextAlign.left,
                       style: title,
                     ),
@@ -91,10 +186,7 @@ class EventsScreen extends StatelessWidget {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        title: Text(
-                          e['name']!,
-                          style: buttonTitle,
-                        ),
+                        title: Text(e['name']!, style: buttonTitle),
                         trailing: const Icon(Icons.chevron_right, size: 20),
                       ),
                     ),
@@ -116,7 +208,7 @@ class EventsScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      "Academics",
+                      "Academic resources",
                       textAlign: TextAlign.left,
                       style: title,
                     ),
@@ -130,15 +222,13 @@ class EventsScreen extends StatelessWidget {
                         FontAwesomeIcons.bookAtlas,
                         color: sisData.darkMode ? Colors.white : Colors.black,
                       ),
-                      title: Text(
-                        "Course Material",
-                        style: buttonTitle,
-                      ),
+                      title: Text("Course Material", style: buttonTitle),
                     ),
                     style: neumorphicStyle,
                     onPressed: () {
-                      _launchURL(context,
-                          "https://drive.google.com/drive/folders/1xPhB1sYr3TdHmgURiogcqBfJpj7YKyEc?usp=sharing");
+                      openLink(
+                        "https://drive.google.com/drive/folders/1xPhB1sYr3TdHmgURiogcqBfJpj7YKyEc?usp=sharing",
+                      );
                     },
                   ),
                 ),
@@ -150,15 +240,15 @@ class EventsScreen extends StatelessWidget {
                         FontAwesomeIcons.book,
                         color: sisData.darkMode ? Colors.white : Colors.black,
                       ),
-                      title: Text(
-                        "Syllabi",
-                        style: buttonTitle,
-                      ),
+                      title: Text("Syllabi", style: buttonTitle),
                     ),
                     style: neumorphicStyle,
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => const SyllabusScreen()));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (ctx) => const SyllabusScreen(),
+                        ),
+                      );
 
                       // DummyData.syllabusLinks.keys.forEach((element) {
                       //   if (RegExp(r"[\w\s]*" + fullCourseName + r"$")
