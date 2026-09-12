@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
@@ -5,6 +7,7 @@ import 'package:official_connect/Screens/login_screen/student_home/settings_scre
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 
 const double version = 1;
 
@@ -26,20 +29,24 @@ class SettingsInfo extends StatelessWidget {
     List<Element> tiles = [
       Element(
         icon: Icons.info_outline_rounded,
-        onPressed: () => showDialog(
-          builder: (context) => AboutConnectDialog(
-            sisData: sisData,
-            width: width,
-            title: title,
-            height: height,
-          ),
-          context: context,
-        ),
+        onPressed: () {
+          unawaited(SyncDiagnostics.recordFeature('about'));
+          showDialog(
+            builder: (context) => AboutConnectDialog(
+              sisData: sisData,
+              width: width,
+              title: title,
+              height: height,
+            ),
+            context: context,
+          );
+        },
         text: "About",
       ),
       Element(
         icon: Icons.update,
         onPressed: () {
+          unawaited(SyncDiagnostics.recordFeature('update_data'));
           openPortalRefresh(context);
         },
         text: "Update data",
@@ -147,6 +154,12 @@ class SettingsInfo extends StatelessWidget {
                               selected: {sisData.themeMode},
                               onSelectionChanged: (selection) {
                                 sisData.themeMode = selection.first;
+                                unawaited(
+                                  SyncDiagnostics.recordPreference(
+                                    'theme',
+                                    selection.first,
+                                  ),
+                                );
                               },
                             ),
                           ),
@@ -183,9 +196,9 @@ class SettingsInfo extends StatelessWidget {
                         color: Color(0xffd93b3f),
                         size: 30,
                       ),
-                      title: Text('Help improve updates', style: buttonTitle),
+                      title: Text('Help improve the app', style: buttonTitle),
                       subtitle: Text(
-                        'Share which sections update successfully. Student details and marks are not included.',
+                        'Share anonymous feature usage and update health. Student details and marks are not included.',
                         style: CustomTheme.textStyle(context).copyWith(
                           fontSize: 12.5,
                           color: sisData.darkMode

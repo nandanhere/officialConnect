@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:official_connect/Providers/sisdata.dart';
@@ -11,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:official_connect/Widgets/background_sync_status.dart';
 import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 
 class Unified extends StatefulWidget {
   static const String id = 'unified';
@@ -23,9 +26,17 @@ class Unified extends StatefulWidget {
 }
 
 class _UnifiedState extends State<Unified> {
+  static const _screenNames = [
+    'explore',
+    'results',
+    'home',
+    'attendance',
+    'settings',
+  ];
   late final PageController _pageController;
   final ValueNotifier<bool> _showSee = ValueNotifier(false);
   bool _automaticRefreshRequested = false;
+  bool _initialScreenRecorded = false;
 
   @override
   void initState() {
@@ -59,6 +70,13 @@ class _UnifiedState extends State<Unified> {
       );
     }
 
+    if (!_initialScreenRecorded) {
+      _initialScreenRecorded = true;
+      unawaited(
+        SyncDiagnostics.recordScreen(_screenNames[Unified.screenNumber.value]),
+      );
+    }
+
     if (!_automaticRefreshRequested &&
         sisData.hasData &&
         sisData.needToUpdate &&
@@ -83,7 +101,10 @@ class _UnifiedState extends State<Unified> {
           PageView(
             physics: const BouncingScrollPhysics(),
             controller: _pageController,
-            onPageChanged: (page) => Unified.screenNumber.value = page,
+            onPageChanged: (page) {
+              Unified.screenNumber.value = page;
+              unawaited(SyncDiagnostics.recordScreen(_screenNames[page]));
+            },
             children: [
               const EventsScreen(),
               ResultsScreen(_showSee),

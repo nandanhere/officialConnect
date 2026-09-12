@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'dart:async';
+
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/cie_details/cie_details.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/widgets/cie_graph.dart';
 import 'package:official_connect/Screens/login_screen/student_home/widgets/sync_issue_notice.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 
 class CIEScreen extends StatelessWidget {
   final height,
@@ -90,6 +93,7 @@ class CIEScreen extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: () {
+                      unawaited(SyncDiagnostics.recordFeature('cie_marks'));
                       seeOpt.value = false;
                     },
                     child: Text(
@@ -115,6 +119,9 @@ class CIEScreen extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: () {
+                      unawaited(
+                        SyncDiagnostics.recordFeature('semester_results'),
+                      );
                       seeOpt.value = true;
                     },
                     child: Text("SEE",

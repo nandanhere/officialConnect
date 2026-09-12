@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'package:official_connect/Screens/login_screen/student_home/events_screen/widgets/about_club_dialog.dart';
@@ -8,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/syllabus_sub_screen/syllabus_screen.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 
 typedef ExploreLinkLauncher = Future<bool> Function(Uri uri);
 
@@ -18,6 +21,7 @@ class ExploreLink {
     required this.subtitle,
     required this.url,
     required this.icon,
+    required this.analyticsFeature,
   });
 
   final String key;
@@ -25,6 +29,7 @@ class ExploreLink {
   final String subtitle;
   final String url;
   final IconData icon;
+  final String analyticsFeature;
 }
 
 const campusServiceLinks = <ExploreLink>[
@@ -34,6 +39,7 @@ const campusServiceLinks = <ExploreLink>[
     subtitle: 'Official payment links and current notices',
     url: 'https://www.msrit.edu/',
     icon: Icons.payments_outlined,
+    analyticsFeature: 'fee_payment',
   ),
   ExploreLink(
     key: 'wifi-helpdesk',
@@ -41,6 +47,7 @@ const campusServiceLinks = <ExploreLink>[
     subtitle: 'Report Wi-Fi and other campus IT issues',
     url: 'https://rithelpdesk.msrit.edu/',
     icon: Icons.support_agent_outlined,
+    analyticsFeature: 'campus_helpdesk',
   ),
   ExploreLink(
     key: 'app-feedback',
@@ -48,6 +55,7 @@ const campusServiceLinks = <ExploreLink>[
     subtitle: 'Tell us what could work better',
     url: 'https://forms.gle/FyF3PZxxonNf8kUz5',
     icon: Icons.feedback_outlined,
+    analyticsFeature: 'app_feedback',
   ),
 ];
 
@@ -66,7 +74,8 @@ class EventsScreen extends StatelessWidget {
     final title = CustomTheme.titleStyle(context);
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
-    Future<void> openLink(String url) async {
+    Future<void> openLink(String url, String feature) async {
+      unawaited(SyncDiagnostics.recordFeature(feature));
       final uri = Uri.parse(url);
       final launched = await (linkLauncher?.call(uri) ?? launchUrl(uri));
       if (!launched && context.mounted) {
@@ -116,7 +125,8 @@ class EventsScreen extends StatelessWidget {
                     child: NeumorphicButton(
                       key: ValueKey(link.key),
                       style: neumorphicStyle,
-                      onPressed: () => openLink(link.url),
+                      onPressed: () =>
+                          openLink(link.url, link.analyticsFeature),
                       child: ListTile(
                         leading: Icon(
                           link.icon,
@@ -161,16 +171,21 @@ class EventsScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: NeumorphicButton(
                       style: neumorphicStyle,
-                      onPressed: () => showDialog(
-                        builder: (context) => AboutClubDialog(
-                          e: e,
-                          sisData: sisData,
-                          width: width,
-                          title: title,
-                          height: height,
-                        ),
-                        context: context,
-                      ),
+                      onPressed: () {
+                        unawaited(
+                          SyncDiagnostics.recordFeature('club_details'),
+                        );
+                        showDialog(
+                          builder: (context) => AboutClubDialog(
+                            e: e,
+                            sisData: sisData,
+                            width: width,
+                            title: title,
+                            height: height,
+                          ),
+                          context: context,
+                        );
+                      },
                       child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 14,
@@ -228,6 +243,7 @@ class EventsScreen extends StatelessWidget {
                     onPressed: () {
                       openLink(
                         "https://drive.google.com/drive/folders/1xPhB1sYr3TdHmgURiogcqBfJpj7YKyEc?usp=sharing",
+                        'course_material',
                       );
                     },
                   ),
@@ -244,6 +260,7 @@ class EventsScreen extends StatelessWidget {
                     ),
                     style: neumorphicStyle,
                     onPressed: () {
+                      unawaited(SyncDiagnostics.recordFeature('syllabi'));
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (ctx) => const SyllabusScreen(),
