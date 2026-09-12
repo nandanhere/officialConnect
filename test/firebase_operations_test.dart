@@ -85,6 +85,51 @@ void main() {
     expect(events, isEmpty);
   });
 
+  test('feature analytics accepts only coarse allowlisted values', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordScreen('results');
+    await SyncDiagnostics.recordFeature('fee_payment');
+    await SyncDiagnostics.recordPreference('theme', 'dark');
+    await SyncDiagnostics.recordScreen('1MS22IS086');
+    await SyncDiagnostics.recordFeature('marks_for_1MS22IS086');
+    await SyncDiagnostics.recordPreference('theme', '24/02/2004');
+
+    expect(
+      events.any(
+        (event) =>
+            event['name'] == 'app_screen_view' && event['screen'] == 'results',
+      ),
+      isTrue,
+    );
+    expect(
+      events.any(
+        (event) =>
+            event['name'] == 'feature_opened' &&
+            event['feature'] == 'fee_payment',
+      ),
+      isTrue,
+    );
+    expect(
+      events.any(
+        (event) =>
+            event['name'] == 'preference_changed' &&
+            event['preference'] == 'theme' &&
+            event['value'] == 'dark',
+      ),
+      isTrue,
+    );
+    final encoded = events.toString();
+    expect(encoded, isNot(contains('1MS22IS086')));
+    expect(encoded, isNot(contains('24/02/2004')));
+    expect(encoded, contains('feature: unknown'));
+    expect(encoded, contains('value: unknown'));
+  });
+
   test('diagnostics sink failures never propagate', () async {
     SyncDiagnostics.configure((_, __) async => throw StateError('offline'));
     await SyncDiagnostics.setEnabled(true);

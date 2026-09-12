@@ -30,6 +30,29 @@ class SyncDiagnostics {
     'parse_error',
   };
   static const _resultSources = {'regular', 'supplementary'};
+  static const _screens = {
+    'explore',
+    'results',
+    'home',
+    'attendance',
+    'settings',
+  };
+  static const _features = {
+    'fee_payment',
+    'campus_helpdesk',
+    'app_feedback',
+    'course_material',
+    'syllabi',
+    'club_details',
+    'about',
+    'update_data',
+    'theme',
+    'cie_marks',
+    'semester_results',
+    'result_details',
+    'latest_regular_result',
+    'supplementary_results',
+  };
 
   static DiagnosticsEventSink? _sink;
   static DiagnosticsCollectionToggle? _collectionToggle;
@@ -109,6 +132,20 @@ class SyncDiagnostics {
     if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
   });
 
+  static Future<void> recordScreen(String screen) => _emit('app_screen_view', {
+    'screen': _screens.contains(screen) ? screen : 'unknown',
+  });
+
+  static Future<void> recordFeature(String feature) => _emit('feature_opened', {
+    'feature': _features.contains(feature) ? feature : 'unknown',
+  });
+
+  static Future<void> recordPreference(String preference, String value) =>
+      _emit('preference_changed', {
+        'preference': _features.contains(preference) ? preference : 'unknown',
+        'value': _safePreferenceValue(preference, value),
+      });
+
   static Future<void> _emit(String name, Map<String, Object> parameters) async {
     if (!_enabled) return;
     assert(() {
@@ -146,5 +183,13 @@ class SyncDiagnostics {
   static int _safeDuration(Object? value) {
     final duration = int.tryParse(value?.toString() ?? '') ?? 0;
     return duration.clamp(0, 600000);
+  }
+
+  static String _safePreferenceValue(String preference, Object? value) {
+    final token = _safeToken(value);
+    if (preference == 'theme' && {'system', 'light', 'dark'}.contains(token)) {
+      return token;
+    }
+    return 'unknown';
   }
 }

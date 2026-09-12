@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 
@@ -8,6 +10,7 @@ import 'package:official_connect/Screens/login_screen/student_home/results_scree
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/see_details/see_details.dart';
 import 'package:official_connect/Services/exam_result_scraper.dart';
 import 'package:official_connect/Screens/login_screen/student_home/widgets/sync_issue_notice.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 
 class SEEScreen extends StatelessWidget {
   final height,
@@ -64,13 +67,18 @@ class SEEScreen extends StatelessWidget {
                 ),
               ),
               trailing: const Icon(Icons.chevron_right, size: 20),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => LatestResultsDetails(
-                    source: source,
+              onTap: () {
+                unawaited(SyncDiagnostics.recordFeature(
+                  source == ExamResultSource.regular
+                      ? 'latest_regular_result'
+                      : 'supplementary_results',
+                ));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => LatestResultsDetails(source: source),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         );
@@ -132,6 +140,7 @@ class SEEScreen extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: () {
+                      unawaited(SyncDiagnostics.recordFeature('cie_marks'));
                       seeOpt.value = false;
                     },
                     child: Text(
@@ -157,6 +166,9 @@ class SEEScreen extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: () {
+                      unawaited(
+                        SyncDiagnostics.recordFeature('semester_results'),
+                      );
                       seeOpt.value = true;
                     },
                     child: Text(
@@ -214,6 +226,9 @@ class SEEScreen extends StatelessWidget {
                       style: neumorphicStyle,
                       child: ListTile(
                         onTap: () {
+                          unawaited(
+                            SyncDiagnostics.recordFeature('result_details'),
+                          );
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (ctx) => ResultsDetails(
