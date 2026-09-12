@@ -119,7 +119,7 @@ void main() {
         (event) =>
             event['name'] == 'preference_changed' &&
             event['preference'] == 'theme' &&
-            event['value'] == 'dark',
+            event['setting_value'] == 'dark',
       ),
       isTrue,
     );
@@ -127,7 +127,57 @@ void main() {
     expect(encoded, isNot(contains('1MS22IS086')));
     expect(encoded, isNot(contains('24/02/2004')));
     expect(encoded, contains('feature: unknown'));
-    expect(encoded, contains('value: unknown'));
+    expect(encoded, contains('setting_value: unknown'));
+  });
+
+  test('startup events wait for Firebase and flush once configured', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure(null);
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordScreen('home');
+    await SyncDiagnostics.recordFeature('cie_marks');
+    expect(events, isEmpty);
+
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await Future<void>.delayed(Duration.zero);
+
+    expect(events.length, 2);
+    expect(events.first['screen'], 'home');
+    expect(events.last['feature'], 'cie_marks');
+  });
+
+  test('opting out discards events queued before Firebase starts', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure(null);
+    await SyncDiagnostics.setEnabled(true);
+    await SyncDiagnostics.recordScreen('home');
+
+    await SyncDiagnostics.setEnabled(false);
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await Future<void>.delayed(Duration.zero);
+
+    expect(events, isEmpty);
+  });
+
+  test('startup event buffer stays bounded', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure(null);
+    await SyncDiagnostics.setEnabled(true);
+    for (var i = 0; i < 40; i++) {
+      await SyncDiagnostics.recordScreen('home');
+    }
+
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await Future<void>.delayed(Duration.zero);
+
+    expect(events, hasLength(32));
   });
 
   test('diagnostics sink failures never propagate', () async {

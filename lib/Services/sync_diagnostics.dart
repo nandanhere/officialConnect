@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 typedef DiagnosticsEventSink =
@@ -6,6 +8,7 @@ typedef DiagnosticsCollectionToggle = Future<void> Function(bool enabled);
 
 /// Emits only bounded, allowlisted operational health signals.
 class SyncDiagnostics {
+  static const _maxPendingEvents = 32;
   static const _sections = {
     'profile',
     'attendance',
@@ -57,6 +60,8 @@ class SyncDiagnostics {
   static DiagnosticsEventSink? _sink;
   static DiagnosticsCollectionToggle? _collectionToggle;
   static bool _enabled = true;
+  static final List<({String name, Map<String, Object> parameters})>
+  _pendingEvents = [];
 
   static void configure(
     DiagnosticsEventSink? sink, {
@@ -64,10 +69,22 @@ class SyncDiagnostics {
   }) {
     _sink = sink;
     _collectionToggle = collectionToggle;
+    if (sink == null) {
+      _pendingEvents.clear();
+      return;
+    }
+    if (_enabled) {
+      final pending = List.of(_pendingEvents);
+      _pendingEvents.clear();
+      for (final event in pending) {
+        unawaited(_deliver(sink, event.name, event.parameters));
+      }
+    }
   }
 
   static Future<void> setEnabled(bool enabled) async {
     _enabled = enabled;
+    if (!enabled) _pendingEvents.clear();
     try {
       await _collectionToggle?.call(enabled);
     } catch (error) {
@@ -143,7 +160,7 @@ class SyncDiagnostics {
   static Future<void> recordPreference(String preference, String value) =>
       _emit('preference_changed', {
         'preference': _features.contains(preference) ? preference : 'unknown',
-        'value': _safePreferenceValue(preference, value),
+        'setting_value': _safePreferenceValue(preference, value),
       });
 
   static Future<void> _emit(String name, Map<String, Object> parameters) async {
@@ -152,8 +169,24 @@ class SyncDiagnostics {
       debugPrint('Diagnostics: $name $parameters');
       return true;
     }());
+    final sink = _sink;
+    if (sink == null) {
+      if (_pendingEvents.length == _maxPendingEvents) {
+        _pendingEvents.removeAt(0);
+      }
+      _pendingEvents.add((name: name, parameters: Map.of(parameters)));
+      return;
+    }
+    await _deliver(sink, name, parameters);
+  }
+
+  static Future<void> _deliver(
+    DiagnosticsEventSink sink,
+    String name,
+    Map<String, Object> parameters,
+  ) async {
     try {
-      await _sink?.call(name, parameters);
+      await sink(name, parameters);
     } catch (error) {
       // Operational diagnostics must never affect login, sync, or navigation.
       debugPrint('Diagnostics event could not be recorded.');
