@@ -75,9 +75,11 @@ class EventsScreen extends StatelessWidget {
     final neumorphicStyle = CustomTheme.neumorphicStyle(context);
     final linearGradientBG = CustomTheme.linearGradientBG(context);
     Future<void> openLink(String url, String feature) async {
-      unawaited(SyncDiagnostics.recordFeature(feature));
       final uri = Uri.parse(url);
       final launched = await (linkLauncher?.call(uri) ?? launchUrl(uri));
+      if (launched) {
+        unawaited(SyncDiagnostics.recordFeature(feature));
+      }
       if (!launched && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Could not open that link. Try again.')),
