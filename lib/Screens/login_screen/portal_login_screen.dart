@@ -7,6 +7,33 @@ import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:provider/provider.dart';
 
+/// Keeps a browser-backed platform view mounted without allowing Android's
+/// platform-view compositor to paint a full-screen portal behind native UI.
+/// The full viewport is used only after the user explicitly asks to see it.
+class PortalBrowserViewport extends StatelessWidget {
+  const PortalBrowserViewport({
+    super.key,
+    required this.hidden,
+    required this.child,
+  });
+
+  final bool hidden;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: hidden ? -2 : 0,
+      top: hidden ? -2 : 0,
+      right: hidden ? null : 0,
+      bottom: hidden ? null : 0,
+      width: hidden ? 1 : null,
+      height: hidden ? 1 : null,
+      child: IgnorePointer(ignoring: hidden, child: child),
+    );
+  }
+}
+
 class PortalLoginScreen extends StatefulWidget {
   const PortalLoginScreen({
     super.key,
@@ -348,51 +375,47 @@ class _PortalLoginScreenState extends State<PortalLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final hidePortal = widget.silent || !_showPortal;
     return Scaffold(
       backgroundColor: widget.silent
           ? Colors.transparent
           : const Color(0xfff2f7f8),
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: widget.silent ? 0 : 1,
-              child: IgnorePointer(
-                ignoring: widget.silent,
-                child: InAppWebView(
-                  initialUrlRequest: URLRequest(url: WebUri('about:blank')),
-                  initialSettings: InAppWebViewSettings(
-                    javaScriptEnabled: true,
-                    javaScriptCanOpenWindowsAutomatically: true,
-                    mediaPlaybackRequiresUserGesture: false,
-                    domStorageEnabled: true,
-                    databaseEnabled: true,
-                    thirdPartyCookiesEnabled: true,
-                  ),
-                  onWebViewCreated: (controller) async {
-                    _flowWatch.start();
-                    await SyncDiagnostics.recordLoginStarted(
-                      refresh: widget.reuseSession,
-                    );
-                    _session.attachController(controller);
-                    if (!widget.reuseSession) await _session.clear();
-                    await controller.loadUrl(
-                      urlRequest: URLRequest(
-                        url: WebUri(PortalSession.loginUri.toString()),
-                      ),
-                    );
-                  },
-                  onUpdateVisitedHistory: (_, url, __) {
-                    _session.rememberPage(url);
-                  },
-                  onLoadStop: (controller, __) async {
-                    if (_finished) return;
-                    _session.rememberPage(await controller.getUrl());
-                    await _prefillPortalForm(controller);
-                    if (!_finished) await _checkSession();
-                  },
-                ),
+          PortalBrowserViewport(
+            hidden: hidePortal,
+            child: InAppWebView(
+              initialUrlRequest: URLRequest(url: WebUri('about:blank')),
+              initialSettings: InAppWebViewSettings(
+                javaScriptEnabled: true,
+                javaScriptCanOpenWindowsAutomatically: true,
+                mediaPlaybackRequiresUserGesture: false,
+                domStorageEnabled: true,
+                databaseEnabled: true,
+                thirdPartyCookiesEnabled: true,
               ),
+              onWebViewCreated: (controller) async {
+                _flowWatch.start();
+                await SyncDiagnostics.recordLoginStarted(
+                  refresh: widget.reuseSession,
+                );
+                _session.attachController(controller);
+                if (!widget.reuseSession) await _session.clear();
+                await controller.loadUrl(
+                  urlRequest: URLRequest(
+                    url: WebUri(PortalSession.loginUri.toString()),
+                  ),
+                );
+              },
+              onUpdateVisitedHistory: (_, url, __) {
+                _session.rememberPage(url);
+              },
+              onLoadStop: (controller, __) async {
+                if (_finished) return;
+                _session.rememberPage(await controller.getUrl());
+                await _prefillPortalForm(controller);
+                if (!_finished) await _checkSession();
+              },
             ),
           ),
           if (!widget.silent && !_showPortal)
