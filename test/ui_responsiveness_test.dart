@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
+import 'package:official_connect/Screens/login_screen/portal_login_screen.dart';
 import 'package:official_connect/Widgets/background_sync_status.dart';
 
 Widget _testApp({
@@ -39,6 +40,62 @@ Widget _testApp({
 }
 
 void main() {
+  testWidgets('hidden portal browser cannot cover the native login UI', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(411, 914);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: Stack(
+            children: [
+              PortalBrowserViewport(
+                hidden: true,
+                child: ColoredBox(
+                  key: ValueKey('portal-platform-view'),
+                  color: Colors.red,
+                ),
+              ),
+              Center(child: Text('Signing you in')),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final browser = find.byKey(const ValueKey('portal-platform-view'));
+    expect(tester.getSize(browser), const Size(1, 1));
+    expect(tester.getTopLeft(browser), const Offset(-2, -2));
+    expect(find.text('Signing you in'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: Stack(
+            children: [
+              PortalBrowserViewport(
+                hidden: false,
+                child: ColoredBox(
+                  key: ValueKey('portal-platform-view'),
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.getSize(browser), const Size(411, 914));
+    expect(tester.getTopLeft(browser), Offset.zero);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('background update status does not block page navigation', (
     tester,
   ) async {
