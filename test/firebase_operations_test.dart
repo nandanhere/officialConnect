@@ -110,6 +110,28 @@ void main() {
     },
   );
 
+  test('cancelled login emits a terminal funnel outcome', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordLoginStarted(refresh: false);
+    await SyncDiagnostics.recordLoginFinished(
+      outcome: 'cancelled',
+      refresh: false,
+      durationMs: 900,
+    );
+
+    expect(events.map((event) => event['name']), [
+      'login_flow_started',
+      'login_flow_finished',
+    ]);
+    expect(events.last['outcome'], 'cancelled');
+    expect(events.last['sync_mode'], 'first_login');
+  });
+
   test('disabled collection suppresses all operational events', () async {
     final events = <Map<String, Object>>[];
     SyncDiagnostics.configure((name, parameters) async {
