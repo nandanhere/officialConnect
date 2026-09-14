@@ -100,9 +100,20 @@ void main() {
     expect(find.byKey(const ValueKey('theme-selector')), findsOneWidget);
     expect(find.byType(DropdownButton<String>), findsNothing);
     await tester.tap(find.text('Dark'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(sisData.themeMode, 'dark');
+    expect(_renderedTextColor(tester, 'System'), Colors.white70);
+    expect(_renderedTextColor(tester, 'Light'), Colors.white70);
+    expect(_renderedTextColor(tester, 'Dark'), const Color(0xff4b4552));
+
+    await tester.tap(find.text('Light'));
+    await tester.pumpAndSettle();
+
+    expect(sisData.themeMode, 'light');
+    expect(_renderedTextColor(tester, 'System'), Colors.black87);
+    expect(_renderedTextColor(tester, 'Light'), const Color(0xff4b4552));
+    expect(_renderedTextColor(tester, 'Dark'), Colors.black87);
     expect(tester.takeException(), isNull);
   });
 
