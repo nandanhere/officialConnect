@@ -134,6 +134,34 @@ class SettingsInfo extends StatelessWidget {
                             child: SegmentedButton<String>(
                               key: const ValueKey('theme-selector'),
                               showSelectedIcon: false,
+                              style: ButtonStyle(
+                                foregroundColor:
+                                    WidgetStateProperty.resolveWith((states) {
+                                      if (states.contains(
+                                        WidgetState.selected,
+                                      )) {
+                                        return const Color(0xff4b4552);
+                                      }
+                                      return sisData.darkMode
+                                          ? Colors.white70
+                                          : Colors.black87;
+                                    }),
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith((states) {
+                                      return states.contains(
+                                            WidgetState.selected,
+                                          )
+                                          ? const Color(0xffe6daf7)
+                                          : Colors.transparent;
+                                    }),
+                                side: WidgetStatePropertyAll(
+                                  BorderSide(
+                                    color: sisData.darkMode
+                                        ? Colors.white38
+                                        : Colors.black45,
+                                  ),
+                                ),
+                              ),
                               segments: const [
                                 ButtonSegment(
                                   value: 'system',
