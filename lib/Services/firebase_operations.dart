@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:official_connect/Services/app_distribution.dart';
 import 'package:official_connect/Services/firebase_crash_reporting.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:official_connect/Services/firebase_sync_diagnostics.dart';
@@ -17,10 +18,12 @@ class FirebaseOperations {
           options: DefaultFirebaseOptions.currentPlatform,
         );
       }
+      final collectionEnabled =
+          enabled && AppDistribution.allowsProductionTelemetry;
       await Future.wait([
-        FirebaseSyncDiagnostics.initialize(enabled: enabled),
+        FirebaseSyncDiagnostics.initialize(enabled: collectionEnabled),
         FirebaseFeatureFlags.initialize(),
-        FirebaseCrashReporting.initialize(enabled: enabled),
+        FirebaseCrashReporting.initialize(enabled: collectionEnabled),
       ]);
       // A user can change this preference while Firebase is starting. Apply
       // the latest choice once initialization finishes instead of restoring
@@ -33,9 +36,11 @@ class FirebaseOperations {
 
   static Future<void> setDiagnosticsEnabled(bool enabled) async {
     _desiredDiagnosticsEnabled = enabled;
+    final collectionEnabled =
+        enabled && AppDistribution.allowsProductionTelemetry;
     await Future.wait([
-      FirebaseSyncDiagnostics.setEnabled(enabled),
-      FirebaseCrashReporting.setEnabled(enabled),
+      FirebaseSyncDiagnostics.setEnabled(collectionEnabled),
+      FirebaseCrashReporting.setEnabled(collectionEnabled),
     ]);
   }
 }

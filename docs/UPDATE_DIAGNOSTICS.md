@@ -29,7 +29,15 @@ Firebase project. To refresh or replace that configuration:
 1. Sign in with Firebase CLI and select or create the OfficialConnect project.
 2. Run `flutterfire configure` for Android and iOS.
 3. Enable Google Analytics for that Firebase project.
-4. Build the app normally; no Firebase build flag is required.
+4. Build Play artifacts through `scripts/android_release_check.sh
+   --build-current`. The script supplies the required
+   `OFFICIAL_CONNECT_DISTRIBUTION=production` build marker. Builds made without
+   that marker are intentionally excluded from production Analytics and
+   Crashlytics, even when compiled in release mode.
 5. Verify events in Analytics DebugView using dummy data before release.
 6. Complete the Play Data safety form and publish a privacy policy that covers
    update diagnostics and the local student-data cache.
+
+The `distribution_channel=production` user property is attached to production
+Analytics data. This makes release dashboards easier to audit without sending
+student or device identifiers from application code.
