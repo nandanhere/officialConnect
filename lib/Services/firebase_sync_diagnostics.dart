@@ -21,12 +21,21 @@ class FirebaseSyncDiagnostics {
           value: AppDistribution.channel,
         );
       }
+      await analytics.setAnalyticsCollectionEnabled(enabled);
+      if (!enabled) {
+        // Disable and discard startup events before attaching the Firebase
+        // sink. Otherwise configure() would flush events queued while the app
+        // was starting, contaminating production data from a local build.
+        await SyncDiagnostics.setEnabled(false);
+      }
       SyncDiagnostics.configure(
         (name, parameters) =>
             analytics.logEvent(name: name, parameters: parameters),
         collectionToggle: analytics.setAnalyticsCollectionEnabled,
       );
-      await SyncDiagnostics.setEnabled(enabled);
+      if (enabled) {
+        await SyncDiagnostics.setEnabled(true);
+      }
     } catch (_) {
       // Local builds remain usable before Firebase platform files are linked.
       debugPrint('Update diagnostics are unavailable in this build.');
