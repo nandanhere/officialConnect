@@ -5,6 +5,7 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 readonly BASELINE_COMMIT="e0715ba"
 readonly MIN_RECOVERY_VERSION_CODE=8
+readonly PRODUCTION_DEFINE="OFFICIAL_CONNECT_DISTRIBUTION=production"
 
 die() {
   printf 'ERROR: %s\n' "$*" >&2
@@ -94,10 +95,10 @@ build_current() {
   check_static_config
   cd "$PROJECT_DIR"
   note "Building current release app bundle"
-  flutter_cmd build appbundle --release
+  flutter_cmd build appbundle --release --dart-define="$PRODUCTION_DEFINE"
   check_native_elfs "$PROJECT_DIR/build/app/outputs/bundle/release/app-release.aab"
   note "Building current universal release APK"
-  flutter_cmd build apk --release
+  flutter_cmd build apk --release --dart-define="$PRODUCTION_DEFINE"
   check_native_elfs "$PROJECT_DIR/build/app/outputs/flutter-apk/app-release.apk"
   check_apk_zip_alignment "$PROJECT_DIR/build/app/outputs/flutter-apk/app-release.apk"
 }
@@ -211,7 +212,7 @@ DART
   # The production-era PDF plugin bundles an obsolete 32-bit pdfium binary
   # that cannot run on 16 KB devices. The recovery artifact intentionally
   # targets current 64-bit Android devices only.
-  (cd "$worktree" && flutter_cmd build appbundle --release --target-platform android-arm64 --build-name=1.0.0 --build-number="$version_code")
+  (cd "$worktree" && flutter_cmd build appbundle --release --dart-define="$PRODUCTION_DEFINE" --target-platform android-arm64 --build-name=1.0.0 --build-number="$version_code")
   artifact="$worktree/build/app/outputs/bundle/release/app-release.aab"
   check_native_elfs "$artifact"
   local staged_output="${output_path}.partial.$$"

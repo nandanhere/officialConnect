@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:official_connect/Services/app_distribution.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
 
@@ -7,6 +8,14 @@ void main() {
     FirebaseFeatureFlags.setValuesForTesting(const {});
     SyncDiagnostics.configure(null);
     FirebaseFeatureFlags.configureRefreshForTesting(null);
+  });
+
+  test('distribution marker fails closed outside production', () {
+    expect(AppDistribution.normalize('production'), 'production');
+    expect(AppDistribution.normalize(' PRODUCTION '), 'production');
+    expect(AppDistribution.normalize('internal_test'), 'local');
+    expect(AppDistribution.normalize('release'), 'local');
+    expect(AppDistribution.normalize(''), 'local');
   });
 
   test('feature controls default to enabled and compose safely', () {
