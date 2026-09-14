@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/student_home/events_screen/events_screen.dart';
@@ -24,6 +25,11 @@ Widget _screen(
       ),
     ),
   );
+}
+
+Color? _renderedTextColor(WidgetTester tester, String text) {
+  final paragraph = tester.renderObject<RenderParagraph>(find.text(text));
+  return paragraph.text.style?.color;
 }
 
 void main() {
@@ -97,6 +103,32 @@ void main() {
     await tester.pump();
 
     expect(sisData.themeMode, 'dark');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('appearance options remain readable in dark mode', (
+    tester,
+  ) async {
+    final sisData = SisData()..themeMode = 'dark';
+    addTearDown(sisData.dispose);
+    await tester.pumpWidget(_screen(const SettingsInfo(), sisData));
+
+    expect(_renderedTextColor(tester, 'System'), Colors.white70);
+    expect(_renderedTextColor(tester, 'Light'), Colors.white70);
+    expect(_renderedTextColor(tester, 'Dark'), const Color(0xff4b4552));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('appearance options retain contrast in light mode', (
+    tester,
+  ) async {
+    final sisData = SisData()..themeMode = 'light';
+    addTearDown(sisData.dispose);
+    await tester.pumpWidget(_screen(const SettingsInfo(), sisData));
+
+    expect(_renderedTextColor(tester, 'System'), Colors.black87);
+    expect(_renderedTextColor(tester, 'Dark'), Colors.black87);
+    expect(_renderedTextColor(tester, 'Light'), const Color(0xff4b4552));
     expect(tester.takeException(), isNull);
   });
 }
