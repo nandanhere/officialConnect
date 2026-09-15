@@ -7,6 +7,7 @@ void main() {
   tearDown(() {
     FirebaseFeatureFlags.setValuesForTesting(const {});
     SyncDiagnostics.configure(null);
+    SyncDiagnostics.configureCrashContext(null);
     FirebaseFeatureFlags.configureRefreshForTesting(null);
   });
 
@@ -196,6 +197,40 @@ void main() {
     expect(encoded, contains('feature: unknown'));
     expect(encoded, contains('setting_value: unknown'));
   });
+
+  test(
+    'crash context uses only coarse allowlisted navigation values',
+    () async {
+      final contexts = <Map<String, String>>[];
+      SyncDiagnostics.configureCrashContext((values) async {
+        contexts.add(Map.of(values));
+      });
+      await SyncDiagnostics.setEnabled(true);
+
+      await SyncDiagnostics.recordScreen('results');
+      await SyncDiagnostics.recordFeature('cie_marks');
+      await SyncDiagnostics.recordFeature('marks_for_1MS22IS086');
+      await SyncDiagnostics.recordLoginAttention(
+        reason: 'student_identifier_1MS22IS086',
+        stage: '24/02/2004',
+        refresh: false,
+      );
+
+      expect(contexts[0], {
+        'app_area': 'results',
+        'app_operation': 'screen_view',
+      });
+      expect(contexts[1], {
+        'app_area': 'results',
+        'app_operation': 'cie_marks',
+      });
+      expect(contexts[2]['app_operation'], 'unknown');
+      expect(contexts[3]['operation_stage'], 'unknown');
+      expect(contexts[3]['attention_reason'], 'unknown');
+      expect(contexts.toString(), isNot(contains('1MS22IS086')));
+      expect(contexts.toString(), isNot(contains('24/02/2004')));
+    },
+  );
 
   test('startup events wait for Firebase and flush once configured', () async {
     final events = <Map<String, Object>>[];
