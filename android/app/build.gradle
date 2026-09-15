@@ -52,6 +52,12 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.release
+            // Keep native stack traces readable without depending on the
+            // Crashlytics mapping upload during the Play release build.
+            minifyEnabled false
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
         }
     }
 }
