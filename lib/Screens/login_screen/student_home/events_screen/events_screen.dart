@@ -6,11 +6,11 @@ import 'package:official_connect/Screens/login_screen/student_home/events_screen
 import 'package:provider/provider.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/syllabus_sub_screen/syllabus_screen.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
+import 'package:official_connect/Services/safe_external_link.dart';
 
 typedef ExploreLinkLauncher = Future<bool> Function(Uri uri);
 
@@ -76,14 +76,13 @@ class EventsScreen extends StatelessWidget {
     final linearGradientBG = CustomTheme.linearGradientBG(context);
     Future<void> openLink(String url, String feature) async {
       final uri = Uri.parse(url);
-      final launched = await (linkLauncher?.call(uri) ?? launchUrl(uri));
+      final launched = await openExternalLink(
+        context,
+        uri,
+        launcher: linkLauncher,
+      );
       if (launched) {
         unawaited(SyncDiagnostics.recordFeature(feature));
-      }
-      if (!launched && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open that link. Try again.')),
-        );
       }
     }
 

@@ -4,13 +4,13 @@ import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:official_connect/Services/safe_external_link.dart';
 
 class BranchSyllabus extends StatelessWidget {
   final String name;
   const BranchSyllabus({Key? key, required this.name}) : super(key: key);
-  static void launchURL(String url) async {
-    if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
+  static Future<void> launchURL(BuildContext context, String url) async {
+    await openExternalLink(context, Uri.parse(url));
     // Navigator.of(context).push(
     //   MaterialPageRoute(
     //     builder: (ctx) => PDF().fromUrl(url),
@@ -36,9 +36,7 @@ class BranchSyllabus extends StatelessWidget {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Container(
-            decoration: BoxDecoration(
-              gradient: linearGradient,
-            ),
+            decoration: BoxDecoration(gradient: linearGradient),
             padding: EdgeInsets.only(
               left: width * 0.05,
               right: width * 0.05,
@@ -46,42 +44,41 @@ class BranchSyllabus extends StatelessWidget {
             ),
             child: Column(
               children: [
-                AutoSizeText(
-                  name,
-                  maxFontSize: 30,
-                  style: titleStyle,
-                ),
+                AutoSizeText(name, maxFontSize: 30, style: titleStyle),
                 Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: width * 0.16, vertical: height * 0.02),
+                    horizontal: width * 0.16,
+                    vertical: height * 0.02,
+                  ),
                   child: Divider(
                     color: sisData.darkMode ? Colors.white38 : Colors.black26,
                     thickness: 1.1,
                   ),
                 ),
                 ...DummyData.syllabusLinks[name]!
-                    .map((l) => Padding(
-                          //map
-                          padding: const EdgeInsets.all(8.0),
-                          child: NeumorphicButton(
-                            padding: EdgeInsets.only(
-                                top: height * 0.015,
-                                bottom: height * 0.015,
-                                left: width * 0.025,
-                                right: width * 0.01),
-                            onPressed: () async {
-                              launchURL(l[1]);
-                            },
-                            style: neumorphicStyle,
-                            child: ListTile(
-                              title: Text(l[0], style: buttonTitle),
-                            ),
+                    .map(
+                      (l) => Padding(
+                        //map
+                        padding: const EdgeInsets.all(8.0),
+                        child: NeumorphicButton(
+                          padding: EdgeInsets.only(
+                            top: height * 0.015,
+                            bottom: height * 0.015,
+                            left: width * 0.025,
+                            right: width * 0.01,
                           ),
-                        ))
+                          onPressed: () async {
+                            await launchURL(context, l[1]);
+                          },
+                          style: neumorphicStyle,
+                          child: ListTile(
+                            title: Text(l[0], style: buttonTitle),
+                          ),
+                        ),
+                      ),
+                    )
                     .toList(),
-                SizedBox(
-                  height: height * 0.095,
-                )
+                SizedBox(height: height * 0.095),
               ],
             ),
           ),

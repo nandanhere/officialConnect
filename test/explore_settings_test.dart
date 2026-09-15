@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/student_home/events_screen/events_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/settings_screen/settings_screen.dart';
+import 'package:official_connect/Services/safe_external_link.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,6 +81,33 @@ void main() {
       opened.map((uri) => uri.toString()),
       campusServiceLinks.map((link) => link.url),
     );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('external link failures are graceful and do not throw', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () => openExternalLink(
+                context,
+                Uri.parse('https://example.invalid'),
+                launcher: (_) async => throw StateError('unavailable'),
+              ),
+              child: const Text('Open'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Could not open that link. Try again.'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
