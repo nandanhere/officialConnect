@@ -4,6 +4,7 @@ import 'package:official_connect/Services/app_distribution.dart';
 import 'package:official_connect/Services/firebase_crash_reporting.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:official_connect/Services/firebase_sync_diagnostics.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:official_connect/firebase_options.dart';
 
 class FirebaseOperations {
@@ -25,6 +26,7 @@ class FirebaseOperations {
         FirebaseFeatureFlags.initialize(),
         FirebaseCrashReporting.initialize(enabled: collectionEnabled),
       ]);
+      SyncDiagnostics.configureCrashContext(FirebaseCrashReporting.setContext);
       // A user can change this preference while Firebase is starting. Apply
       // the latest choice once initialization finishes instead of restoring
       // the value captured at launch.
@@ -42,5 +44,10 @@ class FirebaseOperations {
       FirebaseSyncDiagnostics.setEnabled(collectionEnabled),
       FirebaseCrashReporting.setEnabled(collectionEnabled),
     ]);
+    if (!collectionEnabled) {
+      SyncDiagnostics.configureCrashContext(null);
+    } else {
+      SyncDiagnostics.configureCrashContext(FirebaseCrashReporting.setContext);
+    }
   }
 }

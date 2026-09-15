@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 typedef DiagnosticsEventSink =
     Future<void> Function(String name, Map<String, Object> parameters);
 typedef DiagnosticsCollectionToggle = Future<void> Function(bool enabled);
+typedef DiagnosticsCrashContextSink =
+    Future<void> Function(Map<String, String> values);
 
 /// Emits only bounded, allowlisted operational health signals.
 class SyncDiagnostics {
@@ -74,6 +76,8 @@ class SyncDiagnostics {
 
   static DiagnosticsEventSink? _sink;
   static DiagnosticsCollectionToggle? _collectionToggle;
+  static DiagnosticsCrashContextSink? _crashContextSink;
+  static String _currentArea = 'startup';
   static bool _enabled = true;
   static final List<({String name, Map<String, Object> parameters})>
   _pendingEvents = [];
@@ -95,6 +99,10 @@ class SyncDiagnostics {
         unawaited(_deliver(sink, event.name, event.parameters));
       }
     }
+  }
+
+  static void configureCrashContext(DiagnosticsCrashContextSink? sink) {
+    _crashContextSink = sink;
   }
 
   static Future<void> setEnabled(bool enabled) async {
@@ -139,32 +147,59 @@ class SyncDiagnostics {
     {'outcome': 'error', 'sync_mode': refresh ? 'refresh' : 'first_login'},
   );
 
-  static Future<void> recordLoginStarted({required bool refresh}) => _emit(
-    'login_flow_started',
-    {'sync_mode': refresh ? 'refresh' : 'first_login'},
-  );
+  static Future<void> recordLoginStarted({required bool refresh}) async {
+    _currentArea = 'login';
+    await _setCrashContext({
+      'app_area': _currentArea,
+      'app_operation': 'login_started',
+      'sync_mode': refresh ? 'refresh' : 'first_login',
+    });
+    await _emit('login_flow_started', {
+      'sync_mode': refresh ? 'refresh' : 'first_login',
+    });
+  }
 
   static Future<void> recordLoginFinished({
     required String outcome,
     required bool refresh,
     int? durationMs,
-  }) => _emit('login_flow_finished', {
-    'outcome': _safeOutcome(outcome),
-    'sync_mode': refresh ? 'refresh' : 'first_login',
-    if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
-  });
+  }) async {
+    final safeOutcome = _safeOutcome(outcome);
+    await _setCrashContext({
+      'app_area': 'login',
+      'app_operation': 'login_finished',
+      'operation_outcome': safeOutcome,
+      'sync_mode': refresh ? 'refresh' : 'first_login',
+    });
+    await _emit('login_flow_finished', {
+      'outcome': safeOutcome,
+      'sync_mode': refresh ? 'refresh' : 'first_login',
+      if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
+    });
+  }
 
   static Future<void> recordLoginAttention({
     required String reason,
     required String stage,
     required bool refresh,
     int? durationMs,
-  }) => _emit('login_flow_attention', {
-    'reason': _attentionReasons.contains(reason) ? reason : 'unknown',
-    'stage': _loginStages.contains(stage) ? stage : 'unknown',
-    'sync_mode': refresh ? 'refresh' : 'first_login',
-    if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
-  });
+  }) async {
+    final safeReason = _attentionReasons.contains(reason) ? reason : 'unknown';
+    final safeStage = _loginStages.contains(stage) ? stage : 'unknown';
+    await _setCrashContext({
+      'app_area': 'login',
+      'app_operation': 'login_attention',
+      'operation_stage': safeStage,
+      'attention_reason': safeReason,
+      'sync_mode': refresh ? 'refresh' : 'first_login',
+    });
+    await _emit('login_flow_attention', {
+      'reason': safeReason,
+      'stage': safeStage,
+      'sync_mode': refresh ? 'refresh' : 'first_login',
+      if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
+    });
+  }
 
   static Future<void> recordResult({
     required String source,
@@ -176,13 +211,23 @@ class SyncDiagnostics {
     if (durationMs != null) 'duration_ms': _safeDuration(durationMs),
   });
 
-  static Future<void> recordScreen(String screen) => _emit('app_screen_view', {
-    'screen': _screens.contains(screen) ? screen : 'unknown',
-  });
+  static Future<void> recordScreen(String screen) async {
+    _currentArea = _screens.contains(screen) ? screen : 'unknown';
+    await _setCrashContext({
+      'app_area': _currentArea,
+      'app_operation': 'screen_view',
+    });
+    await _emit('app_screen_view', {'screen': _currentArea});
+  }
 
-  static Future<void> recordFeature(String feature) => _emit('feature_opened', {
-    'feature': _features.contains(feature) ? feature : 'unknown',
-  });
+  static Future<void> recordFeature(String feature) async {
+    final safeFeature = _features.contains(feature) ? feature : 'unknown';
+    await _setCrashContext({
+      'app_area': _currentArea,
+      'app_operation': safeFeature,
+    });
+    await _emit('feature_opened', {'feature': safeFeature});
+  }
 
   static Future<void> recordPreference(String preference, String value) =>
       _emit('preference_changed', {
@@ -217,6 +262,15 @@ class SyncDiagnostics {
     } catch (error) {
       // Operational diagnostics must never affect login, sync, or navigation.
       debugPrint('Diagnostics event could not be recorded.');
+    }
+  }
+
+  static Future<void> _setCrashContext(Map<String, String> values) async {
+    if (!_enabled) return;
+    try {
+      await _crashContextSink?.call(values);
+    } catch (_) {
+      debugPrint('Crash context could not be recorded.');
     }
   }
 
