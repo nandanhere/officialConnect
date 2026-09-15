@@ -2,28 +2,26 @@
 
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 
-import 'package:url_launcher/url_launcher.dart';
+import 'package:official_connect/Services/safe_external_link.dart';
 
 class AboutClubDialog extends StatelessWidget {
   final Map<String, String> e;
   final height, width, sisData, title;
-  const AboutClubDialog(
-      {Key? key,
-      this.sisData,
-      required this.e,
-      this.height,
-      this.width,
-      this.title})
-      : super(key: key);
+  const AboutClubDialog({
+    Key? key,
+    this.sisData,
+    required this.e,
+    this.height,
+    this.width,
+    this.title,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
       contentPadding: const EdgeInsets.fromLTRB(22, 8, 22, 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       backgroundColor: sisData.darkMode ? Colors.black87 : Colors.white,
       title: SizedBox(
         height: height * 0.24,
@@ -53,9 +51,7 @@ class AboutClubDialog extends StatelessWidget {
           const SizedBox(height: 20),
           FilledButton.icon(
             onPressed: () async {
-              if (!await launchUrl(Uri.parse(e['linktree']!))) {
-                throw 'Could not open club links';
-              }
+              await openExternalLink(context, Uri.parse(e['linktree']!));
             },
             style: FilledButton.styleFrom(
               backgroundColor: const Color(0xffba3237),
