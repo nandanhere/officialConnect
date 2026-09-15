@@ -54,6 +54,8 @@ check_static_config() {
   if grep -Eq 'mappingFileUploadEnabled[[:space:]]+false' "$app_gradle"; then
     grep -Eq 'minifyEnabled[[:space:]]+false' "$app_gradle" || \
       die "Crashlytics mapping upload may be disabled only for an unminified release"
+    grep -Eq 'shrinkResources[[:space:]]+false' "$app_gradle" || \
+      die "Resource shrinking must be disabled when release minification is disabled"
   fi
   grep -Eq 'gradle-(8\.[7-9]|9\.)' "$wrapper" || die "Gradle wrapper is older than the supported release baseline"
   [[ -f "$PROJECT_DIR/android/app/src/main/res/values-v35/styles.xml" ]] || die "API 35 edge-to-edge theme is missing"

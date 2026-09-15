@@ -55,6 +55,7 @@ android {
             // Keep native stack traces readable without depending on the
             // Crashlytics mapping upload during the Play release build.
             minifyEnabled false
+            shrinkResources false
             firebaseCrashlytics {
                 mappingFileUploadEnabled false
             }
