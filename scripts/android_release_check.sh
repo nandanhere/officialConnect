@@ -6,6 +6,11 @@ readonly PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 readonly BASELINE_COMMIT="e0715ba"
 readonly MIN_RECOVERY_VERSION_CODE=8
 readonly PRODUCTION_DEFINE="OFFICIAL_CONNECT_DISTRIBUTION=production"
+# Single source of truth for the analytics app_version: the pubspec version
+# at build time, so release_cohort segmentation never goes stale on bump.
+app_version() {
+  sed -n 's/^version: *//p' "$PROJECT_DIR/pubspec.yaml" | tr -d '[:space:]'
+}
 
 die() {
   printf 'ERROR: %s\n' "$*" >&2
@@ -101,10 +106,10 @@ build_current() {
   check_static_config
   cd "$PROJECT_DIR"
   note "Building current release app bundle"
-  flutter_cmd build appbundle --release --dart-define="$PRODUCTION_DEFINE"
+  flutter_cmd build appbundle --release --dart-define="$PRODUCTION_DEFINE" --dart-define="APP_VERSION=$(app_version)"
   check_native_elfs "$PROJECT_DIR/build/app/outputs/bundle/release/app-release.aab"
   note "Building current universal release APK"
-  flutter_cmd build apk --release --dart-define="$PRODUCTION_DEFINE"
+  flutter_cmd build apk --release --dart-define="$PRODUCTION_DEFINE" --dart-define="APP_VERSION=$(app_version)"
   check_native_elfs "$PROJECT_DIR/build/app/outputs/flutter-apk/app-release.apk"
   check_apk_zip_alignment "$PROJECT_DIR/build/app/outputs/flutter-apk/app-release.apk"
 }

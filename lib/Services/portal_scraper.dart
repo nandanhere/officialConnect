@@ -9,7 +9,8 @@ import 'package:official_connect/Services/firebase_feature_flags.dart';
 class PortalScraper {
   PortalScraper(PortalSession session, {this.onProgress})
     : _navigateAndRead = session.navigateAndRead,
-      _fetchDataUri = session.fetchDataUri;
+      _fetchDataUri = session.fetchDataUri,
+      pageReadTimeout = const Duration(seconds: 40);
 
   /// Allows fixture tests to exercise the complete scrape without creating a
   /// native WebView. Production callers should use [PortalScraper.new].
@@ -17,12 +18,35 @@ class PortalScraper {
     required Future<String> Function(Uri uri) navigateAndRead,
     Future<String?> Function(Uri uri)? fetchDataUri,
     this.onProgress,
+    this.pageReadTimeout = const Duration(seconds: 40),
   }) : _navigateAndRead = navigateAndRead,
        _fetchDataUri = fetchDataUri ?? ((_) async => null);
+
+  /// Reads one portal page, failing fast with a `timeout` failure reason
+  /// instead of hanging the sections queued behind it. Section catch blocks
+  /// already map this to `failure_reason: 'timeout'` and continue, so the
+  /// refresh degrades to cached data per section rather than stalling whole.
+  Future<String> _readPage(Uri uri) async {
+    try {
+      return await _navigateAndRead(uri).timeout(pageReadTimeout);
+    } on TimeoutException {
+      throw PortalRequestException(uri, 'page read timed out');
+    }
+  }
 
   final Future<String> Function(Uri uri) _navigateAndRead;
   final Future<String?> Function(Uri uri) _fetchDataUri;
   final void Function(String stage)? onProgress;
+
+  /// Upper bound for a single portal page read inside [scrapeAll].
+  ///
+  /// The WebView bridge calls in `PortalSession.navigateAndRead` have no
+  /// timeout of their own, so without this cap one hung page on slow wifi
+  /// stalls every section behind it until the 90s refresh budget expires.
+  /// 40s covers the worst legitimate case (~15s navigation polling + ~12s
+  /// content wait + bridge overhead). Retune from `sync_section`
+  /// `duration_ms` p90 once measured.
+  final Duration pageReadTimeout;
 
   Future<Map<String, dynamic>> scrapeAll() async {
     final syncWatch = Stopwatch()..start();
@@ -34,6 +58,7 @@ class PortalScraper {
       int attempted = 0,
       int failed = 0,
       int durationMs = 0,
+      String? failureReason,
     }) {
       sections[name] = {
         'status': status,
@@ -41,6 +66,7 @@ class PortalScraper {
         'attempted': attempted,
         'failed': failed,
         'duration_ms': durationMs,
+        if (failureReason != null) 'failure_reason': failureReason,
       };
     }
 
@@ -48,7 +74,7 @@ class PortalScraper {
     // A previous sync normally leaves the browser on result history. Always
     // return to the signed dashboard so refreshes rediscover every current
     // attendance, CIE, fee and history link before scraping.
-    final dashboard = await _navigateAndRead(PortalSession.dashboardUri);
+    final dashboard = await _readPage(PortalSession.dashboardUri);
     final document = parser.parse(dashboard);
     final result = <String, dynamic>{};
     if (FirebaseFeatureFlags.sectionEnabled('profile')) {
@@ -90,6 +116,9 @@ class PortalScraper {
       count: profileCount,
       attempted: profileValues.length,
       failed: profileValues.length - profileCount,
+      failureReason: profileCount == profileValues.length
+          ? null
+          : 'missing_fields',
     );
 
     final links = document
@@ -104,9 +133,16 @@ class PortalScraper {
     final marksLinks = FirebaseFeatureFlags.sectionEnabled('marks')
         ? links.where((u) => u.toString().contains('ciedetails')).toList()
         : <Uri>[];
+    final timetableLinks = links
+        .where((u) => u.queryParameters['task'] == 'timetable')
+        .toList();
+    final seatingLinks = links
+        .where((u) => u.queryParameters['task'] == 'seating')
+        .toList();
 
     final attendance = <Map<String, dynamic>>[];
     var attendanceFailures = 0;
+    String? attendanceFailureReason;
     var invalidAttendancePages = 0;
     final attendanceWatch = Stopwatch()..start();
     if (attendanceLinks.isNotEmpty) {
@@ -114,7 +150,7 @@ class PortalScraper {
     }
     for (final uri in attendanceLinks) {
       try {
-        final attendanceDocument = parser.parse(await _navigateAndRead(uri));
+        final attendanceDocument = parser.parse(await _readPage(uri));
         final item = _parseAttendance(attendanceDocument);
         if (_hasCourseIdentity('${item['code']} ${item['name']}') &&
             _hasAttendanceStructure(attendanceDocument)) {
@@ -122,8 +158,9 @@ class PortalScraper {
         } else {
           invalidAttendancePages++;
         }
-      } catch (_) {
+      } catch (error) {
         attendanceFailures++;
+        attendanceFailureReason = portalFailureReason(error);
       }
     }
     attendanceWatch.stop();
@@ -133,12 +170,16 @@ class PortalScraper {
     if (attendanceLinks.isEmpty &&
         FirebaseFeatureFlags.sectionEnabled('attendance')) {
       attendanceFailures++;
+      attendanceFailureReason = 'missing_links';
     }
     // The current portal appends one intentionally blank link. Ignore that
     // shell when valid courses exist, but flag empty/extra invalid pages.
     attendanceFailures += attendance.isEmpty
         ? invalidAttendancePages
         : (invalidAttendancePages - 1).clamp(0, invalidAttendancePages);
+    if (invalidAttendancePages > 0 && attendanceFailureReason == null) {
+      attendanceFailureReason = 'invalid_content';
+    }
     result['attendance'] = attendance;
     recordSection(
       'attendance',
@@ -153,16 +194,18 @@ class PortalScraper {
       attempted: attendanceLinks.length,
       failed: attendanceFailures,
       durationMs: attendanceWatch.elapsedMilliseconds,
+      failureReason: attendanceFailures > 0 ? attendanceFailureReason : null,
     );
 
     final marks = <Map<String, dynamic>>[];
     var marksFailures = 0;
+    String? marksFailureReason;
     var invalidMarksPages = 0;
     final marksWatch = Stopwatch()..start();
     if (marksLinks.isNotEmpty) onProgress?.call('Syncing internal marks');
     for (final uri in marksLinks) {
       try {
-        final marksDocument = parser.parse(await _navigateAndRead(uri));
+        final marksDocument = parser.parse(await _readPage(uri));
         final item = _parseMarks(marksDocument);
         if (_hasCourseIdentity(item['name'].toString()) &&
             _marksCells(marksDocument).isNotEmpty) {
@@ -170,8 +213,9 @@ class PortalScraper {
         } else {
           invalidMarksPages++;
         }
-      } catch (_) {
+      } catch (error) {
         marksFailures++;
+        marksFailureReason = portalFailureReason(error);
       }
     }
     marksWatch.stop();
@@ -179,10 +223,14 @@ class PortalScraper {
     // failure rather than an authoritative empty marks response.
     if (marksLinks.isEmpty && FirebaseFeatureFlags.sectionEnabled('marks')) {
       marksFailures++;
+      marksFailureReason = 'missing_links';
     }
     marksFailures += marks.isEmpty
         ? invalidMarksPages
         : (invalidMarksPages - 1).clamp(0, invalidMarksPages);
+    if (invalidMarksPages > 0 && marksFailureReason == null) {
+      marksFailureReason = 'invalid_content';
+    }
     // The dashboard can include a trailing empty attendance/CIE link. It
     // resolves to a valid page shell, but has no course identity and must not
     // become a blank subject card in the native UI.
@@ -196,6 +244,7 @@ class PortalScraper {
       attempted: marksLinks.length,
       failed: marksFailures,
       durationMs: marksWatch.elapsedMilliseconds,
+      failureReason: marksFailures > 0 ? marksFailureReason : null,
     );
 
     Uri matchingLink(String fragment, Uri fallback) => links.firstWhere(
@@ -222,7 +271,7 @@ class PortalScraper {
         recordSection('proctor', 'disabled');
       } else {
         proctorDocument = parser.parse(
-          await _navigateAndRead(
+          await _readPage(
             matchingLink(
               'task=observation',
               Uri.parse(
@@ -240,7 +289,7 @@ class PortalScraper {
           durationMs: proctorWatch.elapsedMilliseconds,
         );
       }
-    } catch (_) {
+    } catch (error) {
       result['proctorship'] = <dynamic>[];
       recordSection(
         'proctor',
@@ -248,6 +297,7 @@ class PortalScraper {
         attempted: 1,
         failed: 1,
         durationMs: proctorWatch.elapsedMilliseconds,
+        failureReason: portalFailureReason(error),
       );
     }
 
@@ -260,7 +310,7 @@ class PortalScraper {
       onProgress?.call('Syncing fee history');
       final feeWatch = Stopwatch()..start();
       try {
-        final feeDocument = parser.parse(await _navigateAndRead(feeLink.first));
+        final feeDocument = parser.parse(await _readPage(feeLink.first));
         _parseFees(feeDocument, result);
         final feeCount = (result['fees'] as List?)?.length ?? 0;
         recordSection(
@@ -270,7 +320,7 @@ class PortalScraper {
           attempted: 1,
           durationMs: feeWatch.elapsedMilliseconds,
         );
-      } catch (_) {
+      } catch (error) {
         final dashboardFeeCount = (result['fees'] as List?)?.length ?? 0;
         recordSection(
           'fees',
@@ -279,6 +329,7 @@ class PortalScraper {
           attempted: 1,
           failed: 1,
           durationMs: feeWatch.elapsedMilliseconds,
+          failureReason: portalFailureReason(error),
         );
       }
     } else {
@@ -287,6 +338,84 @@ class PortalScraper {
         (result['fees'] as List?)?.isNotEmpty == true ? 'ok' : 'empty',
         count: (result['fees'] as List?)?.length ?? 0,
       );
+    }
+
+    final timetableWatch = Stopwatch()..start();
+    if (!FirebaseFeatureFlags.sectionEnabled('timetable')) {
+      result['timetable'] = <dynamic>[];
+      recordSection('timetable', 'disabled');
+    } else if (timetableLinks.isEmpty) {
+      result['timetable'] = <dynamic>[];
+      recordSection(
+        'timetable',
+        'error',
+        attempted: 1,
+        failed: 1,
+        failureReason: 'missing_links',
+      );
+    } else {
+      onProgress?.call('Syncing timetable');
+      try {
+        final timetableDocument = parser.parse(
+          await _readPage(timetableLinks.first),
+        );
+        result['timetable'] = _parseTimetable(timetableDocument);
+        final count = (result['timetable'] as List).length;
+        recordSection(
+          'timetable',
+          count == 0 ? 'empty' : 'ok',
+          count: count,
+          attempted: 1,
+          durationMs: timetableWatch.elapsedMilliseconds,
+        );
+      } catch (error) {
+        result['timetable'] = <dynamic>[];
+        recordSection(
+          'timetable',
+          'error',
+          attempted: 1,
+          failed: 1,
+          durationMs: timetableWatch.elapsedMilliseconds,
+          failureReason: portalFailureReason(error),
+        );
+      }
+    }
+
+    final seatingWatch = Stopwatch()..start();
+    if (!FirebaseFeatureFlags.sectionEnabled('seating')) {
+      result['seating'] = <dynamic>[];
+      recordSection('seating', 'disabled');
+    } else if (seatingLinks.isEmpty) {
+      // Seating is absent outside exam periods, so a missing dashboard link is
+      // an authoritative empty state rather than a structural failure.
+      result['seating'] = <dynamic>[];
+      recordSection('seating', 'empty');
+    } else {
+      onProgress?.call('Syncing exam seating');
+      try {
+        final seatingDocument = parser.parse(
+          await _readPage(seatingLinks.first),
+        );
+        result['seating'] = _parseSeating(seatingDocument);
+        final count = (result['seating'] as List).length;
+        recordSection(
+          'seating',
+          count == 0 ? 'empty' : 'ok',
+          count: count,
+          attempted: 1,
+          durationMs: seatingWatch.elapsedMilliseconds,
+        );
+      } catch (error) {
+        result['seating'] = <dynamic>[];
+        recordSection(
+          'seating',
+          'error',
+          attempted: 1,
+          failed: 1,
+          durationMs: seatingWatch.elapsedMilliseconds,
+          failureReason: portalFailureReason(error),
+        );
+      }
     }
 
     if (FirebaseFeatureFlags.sectionEnabled('results')) {
@@ -301,13 +430,13 @@ class PortalScraper {
         recordSection('results', 'disabled');
       } else {
         resultAttempts++;
-        resultsDocument = parser.parse(await _navigateAndRead(resultLink));
+        resultsDocument = parser.parse(await _readPage(resultLink));
         result['prevResults'] = _parsePreviousResults(resultsDocument);
         // Keep one fast retry for unusually slow portal sessions.
         if ((result['prevResults'] as List).isEmpty) {
           await Future<void>.delayed(const Duration(milliseconds: 500));
           resultAttempts++;
-          resultsDocument = parser.parse(await _navigateAndRead(resultLink));
+          resultsDocument = parser.parse(await _readPage(resultLink));
           result['prevResults'] = _parsePreviousResults(resultsDocument);
         }
         final count = (result['prevResults'] as List).length;
@@ -319,7 +448,7 @@ class PortalScraper {
           durationMs: resultsWatch.elapsedMilliseconds,
         );
       }
-    } catch (_) {
+    } catch (error) {
       result['prevResults'] = <dynamic>[];
       recordSection(
         'results',
@@ -327,6 +456,7 @@ class PortalScraper {
         attempted: resultAttempts,
         failed: 1,
         durationMs: resultsWatch.elapsedMilliseconds,
+        failureReason: portalFailureReason(error),
       );
     }
     syncWatch.stop();
@@ -641,6 +771,146 @@ class PortalScraper {
         return result;
       })
       .toList();
+
+  List<Map<String, String>> _parseTimetable(Document doc) {
+    final entries = <Map<String, String>>[];
+    for (final table in doc.querySelectorAll('table')) {
+      final header = _clean(table.text);
+      final dateMatch = RegExp(
+        r'(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)\s+(\d{2}-\d{2}-\d{4})',
+        caseSensitive: false,
+      ).firstMatch(header);
+      final rows = table.querySelectorAll('tr');
+      final columns = rows.isEmpty
+          ? <String>[]
+          : rows.first
+                .querySelectorAll('th, td')
+                .map((cell) => _label(cell.text))
+                .toList();
+      if (dateMatch == null ||
+          !columns.any((column) => column == 'time') ||
+          !columns.any((column) => column.contains('course code'))) {
+        continue;
+      }
+      final day = dateMatch.group(1)!.toUpperCase();
+      final date = _portalDateToIso(dateMatch.group(2)!);
+      for (final row in table.querySelectorAll('tr').skip(1)) {
+        final cells = row
+            .querySelectorAll('td')
+            .map((cell) => _clean(cell.text))
+            .toList();
+        if (cells.length < 2 || !RegExp(r'\d{1,2}:\d{2}').hasMatch(cells[0])) {
+          continue;
+        }
+        final courseParts = cells[1].split(RegExp(r'\s+-\s+'));
+        entries.add({
+          'date': date,
+          'day': day,
+          'time': cells[0],
+          'code': courseParts.first,
+          'name': courseParts.length > 1
+              ? courseParts.sublist(1).join(' - ')
+              : cells[1],
+          'faculty': cells.length > 2 ? cells[2] : '',
+          'room': cells.length > 3 ? cells[3] : '',
+          'batch': cells.length > 4 ? cells[4] : '',
+        });
+      }
+    }
+    return entries;
+  }
+
+  List<Map<String, String>> _parseSeating(Document doc) {
+    // Sibling cards often have no literal whitespace between closing/opening
+    // tags. Joining leaf nodes preserves the visual separation users see.
+    final text = _clean(
+      doc.body
+              ?.querySelectorAll('*')
+              .where((element) => element.children.isEmpty)
+              .map((element) => element.text)
+              .join(' ') ??
+          '',
+    );
+    final dateMatch = RegExp(
+      r'(?:MON|TUE|WED|THU|FRI|SAT|SUN)\s+(\d{1,2})\s+([A-Z]{3})\s+(\d{4})',
+      caseSensitive: false,
+    ).firstMatch(text);
+    if (dateMatch == null) return const [];
+    final details = _clean(text.substring(dateMatch.end));
+    final upperDetails = details.toUpperCase();
+    final timingIndex = upperDetails.indexOf(' TIMING ');
+    final blockIndex = upperDetails.indexOf(' BLOCK ', timingIndex + 1);
+    final roomIndex = upperDetails.indexOf(' ROOM ', blockIndex + 1);
+    if (timingIndex <= 0 ||
+        blockIndex <= timingIndex ||
+        roomIndex <= blockIndex) {
+      return const [];
+    }
+    final courseDetails = details.substring(0, timingIndex).trim();
+    final courseSeparator = courseDetails.indexOf(' ');
+    if (courseSeparator <= 0) return const [];
+    final courseCode = courseDetails.substring(0, courseSeparator);
+    final courseName = courseDetails.substring(courseSeparator + 1).trim();
+    final timingText = details
+        .substring(timingIndex + ' TIMING '.length, blockIndex)
+        .trim();
+    final block = details
+        .substring(blockIndex + ' BLOCK '.length, roomIndex)
+        .trim();
+    final room = details
+        .substring(roomIndex + ' ROOM '.length)
+        .replaceFirst(
+          RegExp(
+            r'\s+(?:Contineo|Terms of Service|Privacy Policy)\b.*$',
+            caseSensitive: false,
+          ),
+          '',
+        )
+        .replaceFirst(RegExp(r'\s+Copyright.*$', caseSensitive: false), '')
+        .trim();
+    final sessionMatch = RegExp(r'\(([^)]+)\)').firstMatch(timingText);
+    return [
+      {
+        'date': _namedDateToIso(
+          dateMatch.group(1)!,
+          dateMatch.group(2)!,
+          dateMatch.group(3)!,
+        ),
+        'course_code': courseCode.toUpperCase(),
+        'course_name': courseName,
+        'timing': _clean(timingText.replaceAll(RegExp(r'\s*\([^)]+\)'), '')),
+        'session':
+            sessionMatch?.group(1)?.replaceAll('Sesssion', 'Session') ?? '',
+        'block': block,
+        'room': room,
+      },
+    ];
+  }
+
+  String _portalDateToIso(String value) {
+    final parts = value.split('-');
+    return parts.length == 3 ? '${parts[2]}-${parts[1]}-${parts[0]}' : value;
+  }
+
+  String _namedDateToIso(String day, String month, String year) {
+    const months = {
+      'JAN': 1,
+      'FEB': 2,
+      'MAR': 3,
+      'APR': 4,
+      'MAY': 5,
+      'JUN': 6,
+      'JUL': 7,
+      'AUG': 8,
+      'SEP': 9,
+      'OCT': 10,
+      'NOV': 11,
+      'DEC': 12,
+    };
+    final monthNumber = months[month.toUpperCase()];
+    if (monthNumber == null) return '';
+    return '$year-${monthNumber.toString().padLeft(2, '0')}-${day.padLeft(2, '0')}';
+  }
 
   Map<String, dynamic> _parseProctor(Document doc) => {
     'proctor_name':

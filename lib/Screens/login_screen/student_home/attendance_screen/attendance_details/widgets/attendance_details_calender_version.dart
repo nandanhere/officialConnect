@@ -12,6 +12,45 @@ extension DateOnlyCompare on DateTime {
   }
 }
 
+/// One class slot on a calendar day.
+class DaySlot {
+  const DaySlot({required this.present, required this.time});
+
+  final bool present;
+  final String time;
+}
+
+/// Groups every [ClassDay] by calendar day (ignoring time-of-day so portal
+/// timestamps can never split or hide a slot).
+///
+/// A day counts as absent when **any** slot that day was missed, so a missed
+/// slot is never hidden behind an attended one. Slots keep portal order.
+Map<DateTime, List<DaySlot>> groupDaySlots({
+  required List<ClassDay> presentDates,
+  required List<ClassDay> absentDates,
+}) {
+  final grouped = <DateTime, List<DaySlot>>{};
+  DateTime key(DateTime value) => DateTime(value.year, value.month, value.day);
+  for (final entry in presentDates) {
+    grouped
+        .putIfAbsent(key(entry.date), () => [])
+        .add(DaySlot(present: true, time: entry.time));
+  }
+  for (final entry in absentDates) {
+    grouped
+        .putIfAbsent(key(entry.date), () => [])
+        .add(DaySlot(present: false, time: entry.time));
+  }
+  return grouped;
+}
+
+/// 1 when every slot that day was attended, 0 when any slot was missed,
+/// -1 when there are no slots.
+int dayStatus(List<DaySlot> slots) {
+  if (slots.isEmpty) return -1;
+  return slots.any((slot) => !slot.present) ? 0 : 1;
+}
+
 class AttendanceCalenderVersion extends StatelessWidget {
   final Attendance attendance;
   const AttendanceCalenderVersion({Key? key, required this.attendance})
@@ -61,15 +100,6 @@ class AttendanceCalenderVersion extends StatelessWidget {
     }
   }
 
-  bool isPresentInDates(List<ClassDay> dates, DateTime date) {
-    for (int i = 0; i < dates.length; i++) {
-      if (dates[i].date.isAtSameMomentAs(date)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -84,6 +114,10 @@ class AttendanceCalenderVersion extends StatelessWidget {
       );
     }
     List<List> allDateList = [];
+    final slotsByDay = groupDaySlots(
+      presentDates: attendance.presentDates,
+      absentDates: attendance.absentDates,
+    );
     var minAbsentDate = (attendance.absentDates.isNotEmpty)
         ? calcMinDate(attendance.absentDates)
         : DateTime.now();
@@ -102,32 +136,19 @@ class AttendanceCalenderVersion extends StatelessWidget {
     var dateDiff = toDate.difference(fromDate).inDays;
 
     for (int i = 0; i <= dateDiff.toInt(); i++) {
-      //adding colors to the allDateList
-      if (isPresentInDates(attendance.presentDates, fromDate)) {
+      //adding colors to the allDateList; every slot on the day is kept so
+      //a second class is never dropped from the agenda.
+      final day = DateTime(fromDate.year, fromDate.month, fromDate.day);
+      final slots = slotsByDay[day] ?? const <DaySlot>[];
+      if (slots.isNotEmpty) {
         allDateList.add([
-          1,
-          DateTime(fromDate.year, fromDate.month, fromDate.day),
+          dayStatus(slots),
+          day,
           fromDate.add(const Duration(hours: 7)),
-          attendance.presentDates
-              .where((element) => element.date == fromDate)
-              .first
-              .time,
-        ]);
-      } else if (isPresentInDates(attendance.absentDates, fromDate)) {
-        allDateList.add([
-          0,
-          DateTime(fromDate.year, fromDate.month, fromDate.day),
-          fromDate.add(const Duration(hours: 7)),
-          attendance.absentDates
-              .where((element) => element.date == fromDate)
-              .first
-              .time,
+          slots,
         ]);
       } else {
-        allDateList.add([
-          -1,
-          DateTime(fromDate.year, fromDate.month, fromDate.day),
-        ]);
+        allDateList.add([-1, day]);
       }
       fromDate = fromDate.add(const Duration(days: 1));
     }
@@ -147,14 +168,19 @@ class AttendanceCalenderVersion extends StatelessWidget {
 
       for (List data in allDateList) {
         if (data.length > 2) {
-          DataSource newData = DataSource(
-            data[3],
-            data[1],
-            data[2],
-            getColor(data[0]),
-            true,
-          );
-          _dataSource.add(newData);
+          // One agenda appointment per class slot so a day with two
+          // classes shows both instead of only the first.
+          for (final slot in (data[3] as List<DaySlot>)) {
+            _dataSource.add(
+              DataSource(
+                slot.time,
+                data[1],
+                data[2],
+                getColor(slot.present ? 1 : 0),
+                true,
+              ),
+            );
+          }
         } else {
           _dataSource.add(
             DataSource("No Class", data[1], data[1], Colors.grey, true),

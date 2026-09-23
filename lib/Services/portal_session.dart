@@ -1,6 +1,41 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
+
+String portalFailureReason(Object error) {
+  if (error is PortalSessionExpiredException) return 'session_expired';
+  if (error is PortalContentNotReadyException) return 'content_not_ready';
+  if (error is FormatException) return 'parse_error';
+  if (error is PortalRequestException) {
+    final reason = error.reason.toLowerCase();
+    if (reason.contains('timed out')) return 'timeout';
+    if (reason.contains('not ready')) return 'browser_not_ready';
+    if (reason.contains('empty')) return 'empty_response';
+    return 'request_error';
+  }
+  return 'unknown';
+}
+
+@visibleForTesting
+String? portalExpectedContentSelector(Uri target) {
+  final task = target.queryParameters['task'];
+  return switch (task) {
+    'timetable' => 'table.cn-time-table, table.cn-time_table',
+    'attendencelist' =>
+      '.cn-legend, table.cn-attend-list1, table.cn-attend-list2',
+    'ciedetails' => 'tr.odd, .cn-cie-stat, th[colspan="9"]',
+    'observation' => 'table.cn-res-table, .md-card-head-text',
+    'getResult' => 'table.res-table',
+    'studFee' => 'table.cn-pay-table',
+    'dashboard' => '.cn-stu-data, .cn-student-header, .cn-basic-details',
+    _ => switch (target.queryParameters['option']) {
+      'com_history' => 'table.res-table',
+      'com_fee' => 'table.cn-pay-table',
+      _ => null,
+    },
+  };
+}
 
 /// Owns the portal browser session used by the on-device scraper.
 ///
@@ -148,20 +183,11 @@ class PortalSession {
         // Wait for page-specific content rather than using a fixed delay. Most
         // pages are ready in well under a second; result history is allowed a
         // little longer because the portal initializes it asynchronously.
-        final targetText = target.toString();
-        final expectedSelector = switch (target.queryParameters['option']) {
-          'com_history' => 'table.res-table',
-          'com_fee' => 'table.cn-pay-table',
-          'com_studentdashboard' => 'table.cn-res-table, .md-card-head-text',
-          _ when targetText.contains('attendencelist') =>
-            '.cn-legend, table.cn-attend-list1, table.cn-attend-list2',
-          _ when targetText.contains('ciedetails') =>
-            'tr.odd, .cn-cie-stat, th[colspan="9"]',
-          _ => null,
-        };
+        final expectedSelector = portalExpectedContentSelector(target);
         if (expectedSelector != null) {
           final maxContentAttempts =
               target.queryParameters['option'] == 'com_history' ? 48 : 24;
+          var contentFound = false;
           for (
             var contentAttempt = 0;
             contentAttempt < maxContentAttempts;
@@ -171,8 +197,14 @@ class PortalSession {
               source:
                   '!!document.querySelector(${jsonEncode(expectedSelector)})',
             );
-            if (found == true || found?.toString() == 'true') break;
+            if (found == true || found?.toString() == 'true') {
+              contentFound = true;
+              break;
+            }
             await Future.delayed(const Duration(milliseconds: 250));
+          }
+          if (!contentFound) {
+            throw PortalContentNotReadyException(target);
           }
         } else {
           await Future.delayed(const Duration(milliseconds: 300));
@@ -339,11 +371,19 @@ class PortalSessionExpiredException implements Exception {
   String toString() => 'The portal session has expired.';
 }
 
+class PortalContentNotReadyException implements Exception {
+  const PortalContentNotReadyException(this.uri);
+  final Uri uri;
+
+  @override
+  String toString() => 'Portal content was not ready.';
+}
+
 class PortalRequestException implements Exception {
   const PortalRequestException(this.uri, this.reason);
   final Uri uri;
   final String reason;
 
   @override
-  String toString() => 'Portal request failed ($reason): $uri';
+  String toString() => 'Portal request failed ($reason).';
 }

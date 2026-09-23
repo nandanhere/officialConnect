@@ -25,7 +25,7 @@ class Unified extends StatefulWidget {
   State<Unified> createState() => _UnifiedState();
 }
 
-class _UnifiedState extends State<Unified> {
+class _UnifiedState extends State<Unified> with WidgetsBindingObserver {
   static const _screenNames = [
     'explore',
     'results',
@@ -33,22 +33,68 @@ class _UnifiedState extends State<Unified> {
     'attendance',
     'settings',
   ];
+
+  /// Width at or above which the persistent tablet navigation treatment
+  /// (NavigationRail + width-constrained content) replaces the phone
+  /// bottom navigation bar. Follows the Material breakpoint for rails.
+  static const double tabletBreakpoint = 600;
+
+  /// Maximum content width on tablet layouts so pages do not stretch
+  /// across wide screens.
+  static const double tabletMaxContentWidth = 900;
+
+  static const _destinations = [
+    (icon: Icons.explore_outlined, activeIcon: Icons.explore, label: 'Explore'),
+    (
+      icon: Icons.assessment_outlined,
+      activeIcon: Icons.assessment,
+      label: 'Results',
+    ),
+    (icon: Icons.home_outlined, activeIcon: Icons.home, label: 'Home'),
+    (
+      icon: Icons.calendar_month_outlined,
+      activeIcon: Icons.calendar_month,
+      label: 'Attendance',
+    ),
+    (
+      icon: Icons.settings_outlined,
+      activeIcon: Icons.settings,
+      label: 'Settings',
+    ),
+  ];
   late final PageController _pageController;
   final ValueNotifier<bool> _showSee = ValueNotifier(false);
   bool _automaticRefreshRequested = false;
   bool _initialScreenRecorded = false;
+  String? _activeScreen;
+  DateTime? _screenEnteredAt;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _pageController = PageController(initialPage: Unified.screenNumber.value);
   }
 
   @override
   void dispose() {
+    _flushScreenDuration();
+    WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
     _showSee.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      _flushScreenDuration();
+    } else if (state == AppLifecycleState.resumed && _activeScreen == null) {
+      _activeScreen = _screenNames[Unified.screenNumber.value];
+      _screenEnteredAt = DateTime.now();
+    }
   }
 
   @override
@@ -72,9 +118,9 @@ class _UnifiedState extends State<Unified> {
 
     if (!_initialScreenRecorded) {
       _initialScreenRecorded = true;
-      unawaited(
-        SyncDiagnostics.recordScreen(_screenNames[Unified.screenNumber.value]),
-      );
+      _activeScreen = _screenNames[Unified.screenNumber.value];
+      _screenEnteredAt = DateTime.now();
+      unawaited(SyncDiagnostics.recordScreen(_activeScreen!));
     }
 
     if (!_automaticRefreshRequested &&
@@ -92,35 +138,127 @@ class _UnifiedState extends State<Unified> {
     final navColor = sisData.darkMode
         ? Colors.black
         : NeumorphicColors.background;
-    return Scaffold(
-      backgroundColor: sisData.darkMode
-          ? const Color(0xff101114)
-          : Colors.white,
-      body: Stack(
-        children: [
-          PageView(
-            physics: const BouncingScrollPhysics(),
-            controller: _pageController,
-            onPageChanged: (page) {
-              Unified.screenNumber.value = page;
-              unawaited(SyncDiagnostics.recordScreen(_screenNames[page]));
-            },
+    final backgroundColor = sisData.darkMode
+        ? const Color(0xff101114)
+        : Colors.white;
+    // Width-based: phones keep the established bottom navigation while
+    // tablet widths get a persistent NavigationRail with constrained
+    // content instead of stretched phone UI.
+    final isTablet =
+        MediaQuery.sizeOf(context).width >= tabletBreakpoint;
+    final content = Stack(
+      children: [
+        PageView(
+          physics: const BouncingScrollPhysics(),
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          children: [
+            const EventsScreen(),
+            ResultsScreen(_showSee),
+            const HomeScreen(),
+            const AttendanceInfo(),
+            const SettingsInfo(),
+          ],
+        ),
+        const Positioned(
+          left: 16,
+          right: 16,
+          bottom: 12,
+          child: Center(child: BackgroundSyncStatus()),
+        ),
+      ],
+    );
+    if (isTablet) {
+      return Scaffold(
+        backgroundColor: backgroundColor,
+        body: SafeArea(
+          child: Row(
             children: [
-              const EventsScreen(),
-              ResultsScreen(_showSee),
-              const HomeScreen(),
-              const AttendanceInfo(),
-              const SettingsInfo(),
+              ValueListenableBuilder<int>(
+                valueListenable: Unified.screenNumber,
+                builder: (context, selected, _) => MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                    textScaler: TextScaler.linear(
+                      MediaQuery.textScalerOf(
+                        context,
+                      ).scale(1).clamp(0.8, 1.15),
+                    ),
+                  ),
+                  child: NavigationRail(
+                    backgroundColor: navColor,
+                    selectedIndex: selected,
+                    onDestinationSelected: _selectPage,
+                    labelType: NavigationRailLabelType.all,
+                    selectedIconTheme: const IconThemeData(
+                      color: Color(0xffba3237),
+                      size: 29,
+                    ),
+                    unselectedIconTheme: IconThemeData(
+                      color: sisData.darkMode
+                          ? Colors.white70
+                          : Colors.black54,
+                      size: 29,
+                    ),
+                    selectedLabelTextStyle: const TextStyle(
+                      fontFamily: 'Comfortaa',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 11,
+                      color: Color(0xffba3237),
+                    ),
+                    unselectedLabelTextStyle: TextStyle(
+                      fontFamily: 'Comfortaa',
+                      fontSize: 11,
+                      color: sisData.darkMode
+                          ? Colors.white70
+                          : Colors.black54,
+                    ),
+                    destinations: [
+                      for (final destination in _destinations)
+                        NavigationRailDestination(
+                          icon: Icon(destination.icon),
+                          selectedIcon: Icon(destination.activeIcon),
+                          label: Text(destination.label),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              const VerticalDivider(width: 1, thickness: 1),
+              Expanded(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: tabletMaxContentWidth,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // A number of the established screens scale spacing
+                        // and type from MediaQuery.width. Once the rail takes
+                        // space, that must be the content width rather than
+                        // the physical display width.
+                        final mediaQuery = MediaQuery.of(context);
+                        return MediaQuery(
+                          data: mediaQuery.copyWith(
+                            size: Size(
+                              constraints.maxWidth,
+                              mediaQuery.size.height,
+                            ),
+                          ),
+                          child: content,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-          const Positioned(
-            left: 16,
-            right: 16,
-            bottom: 12,
-            child: Center(child: BackgroundSyncStatus()),
-          ),
-        ],
-      ),
+        ),
+      );
+    }
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: content,
       bottomNavigationBar: MediaQuery(
         data: MediaQuery.of(context).copyWith(
           textScaler: TextScaler.linear(
@@ -159,45 +297,53 @@ class _UnifiedState extends State<Unified> {
                   fontWeight: FontWeight.bold,
                 ),
                 unselectedLabelStyle: const TextStyle(fontFamily: 'Comfortaa'),
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.explore_outlined),
-                    activeIcon: Icon(Icons.explore),
-                    label: 'Explore',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.assessment_outlined),
-                    activeIcon: Icon(Icons.assessment),
-                    label: 'Results',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined),
-                    activeIcon: Icon(Icons.home),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.calendar_month_outlined),
-                    activeIcon: Icon(Icons.calendar_month),
-                    label: 'Attendance',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.settings_outlined),
-                    activeIcon: Icon(Icons.settings),
-                    label: 'Settings',
-                  ),
+                items: [
+                  for (final destination in _destinations)
+                    BottomNavigationBarItem(
+                      icon: Icon(destination.icon),
+                      activeIcon: Icon(destination.activeIcon),
+                      label: destination.label,
+                    ),
                 ],
-                onTap: (index) {
-                  _pageController.animateToPage(
-                    index,
-                    curve: Curves.easeOutCubic,
-                    duration: const Duration(milliseconds: 280),
-                  );
-                },
+                onTap: _selectPage,
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _onPageChanged(int page) {
+    _flushScreenDuration();
+    Unified.screenNumber.value = page;
+    _activeScreen = _screenNames[page];
+    _screenEnteredAt = DateTime.now();
+    unawaited(SyncDiagnostics.recordScreen(_screenNames[page]));
+  }
+
+  void _selectPage(int index) {
+    _pageController.animateToPage(
+      index,
+      curve: Curves.easeOutCubic,
+      duration: const Duration(milliseconds: 280),
+    );
+  }
+
+  void _flushScreenDuration() {
+    final screen = _activeScreen;
+    final enteredAt = _screenEnteredAt;
+    if (screen == null || enteredAt == null) return;
+    _activeScreen = null;
+    _screenEnteredAt = null;
+    final duration = DateTime.now().difference(enteredAt).inMilliseconds;
+    if (duration > 0) {
+      unawaited(
+        SyncDiagnostics.recordScreenDuration(
+          screen: screen,
+          durationMs: duration,
+        ),
+      );
+    }
   }
 }

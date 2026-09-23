@@ -8,7 +8,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Providers/themes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
-import 'package:official_connect/Screens/login_screen/student_home/widgets/sync_issue_notice.dart';
+import 'package:official_connect/Screens/login_screen/student_home/home_screen/widgets/today_timetable_card.dart';
 
 extension StringCasingExtension on String {
   String toCapitalized() =>
@@ -239,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  SyncIssueNotice(sisData: sisData),
+                  TodayTimetableCard(sisData: sisData),
                   Container(
                     //line between student card and fees card
                     padding: EdgeInsets.only(

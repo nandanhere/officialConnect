@@ -377,6 +377,11 @@ class _LatestResultsDetailsState extends State<LatestResultsDetails> {
                           _stage = _ResultStage.error;
                           _error = 'The security image could not be loaded.';
                         });
+                        SyncDiagnostics.recordResult(
+                          source: _sourceName,
+                          outcome: 'error',
+                          durationMs: _fetchWatch?.elapsedMilliseconds,
+                        );
                       },
                     );
                     if (_stage != _ResultStage.result) await _startFetch();

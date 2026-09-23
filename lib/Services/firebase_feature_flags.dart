@@ -16,6 +16,8 @@ class FirebaseFeatureFlags {
     'proctor': 'scraper_proctor_enabled',
     'fees': 'scraper_fees_enabled',
     'results': 'scraper_results_enabled',
+    'timetable': 'scraper_timetable_enabled',
+    'seating': 'scraper_seating_enabled',
   };
 
   static final Map<String, bool> _values = {

@@ -8,6 +8,11 @@
         android:usesCleartextTraffic="false"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">
+        <!-- Flutter owns navigation. Manual bounded screen views avoid every
+             route appearing as MainActivity in Analytics. -->
+        <meta-data
+            android:name="google_analytics_automatic_screen_reporting_enabled"
+            android:value="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

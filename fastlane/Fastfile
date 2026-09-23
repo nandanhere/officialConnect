@@ -1,0 +1,56 @@
+opt_out_usage
+
+default_platform(:android)
+
+platform :android do
+  desc 'Upload a verified AAB through the Google Play Developer API'
+  lane :publish do |options|
+    ensure_env_vars(env_vars: %w[
+      PLAY_SERVICE_ACCOUNT_JSON
+      PLAY_TRACK
+      PLAY_PUBLISH_CONFIRM
+    ])
+
+    UI.user_error!('Set PLAY_PUBLISH_CONFIRM=YES to allow an upload.') unless
+      ENV['PLAY_PUBLISH_CONFIRM'] == 'YES'
+
+    track = ENV['PLAY_TRACK']
+    allowed_tracks = %w[internal alpha beta production]
+    UI.user_error!("PLAY_TRACK must be one of: #{allowed_tracks.join(', ')}") unless
+      allowed_tracks.include?(track)
+
+    json_key = ENV['PLAY_SERVICE_ACCOUNT_JSON']
+    UI.user_error!('PLAY_SERVICE_ACCOUNT_JSON does not point to a file.') unless
+      json_key && File.file?(json_key)
+
+    aab = options[:aab] || 'build/app/outputs/bundle/release/app-release.aab'
+    UI.user_error!("AAB was not found: #{aab}") unless File.file?(aab)
+
+    upload_options = {
+      aab: aab,
+      json_key: ENV['PLAY_SERVICE_ACCOUNT_JSON'],
+      track: track,
+      release_status: track == 'production' ? 'inProgress' : 'completed',
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    }
+
+    if track == 'production'
+      rollout = ENV['PLAY_ROLLOUT']
+      # Strict decimal-fraction check: to_f would silently accept values
+      # such as '0.5xyz' as 0.5, so require the explicit fraction shape.
+      valid_fraction = rollout &&
+                       rollout.match?(/\A(?:0\.[0-9]+|1\.0+)\z/) &&
+                       !rollout.match?(/\A0\.0+\z/) &&
+                       rollout.to_f.between?(0.01, 1.0)
+      UI.user_error!("Production requires PLAY_ROLLOUT as an explicit decimal fraction from 0.01 to 1.0 (got: #{rollout}).") unless
+        valid_fraction
+      upload_options[:rollout] = rollout.to_f
+      upload_options[:release_status] = rollout.to_f >= 1.0 ? 'completed' : 'inProgress'
+    end
+
+    upload_to_play_store(**upload_options)
+  end
+end

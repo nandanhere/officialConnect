@@ -11,17 +11,17 @@ class FeesCard extends StatelessWidget {
       subtitle,
       title,
       isDark;
-  const FeesCard(
-      {Key? key,
-      this.height,
-      this.width,
-      this.neumorphicStyle,
-      this.feeData,
-      this.buttonTrailing,
-      this.subtitle,
-      this.title,
-      this.isDark})
-      : super(key: key);
+  const FeesCard({
+    Key? key,
+    this.height,
+    this.width,
+    this.neumorphicStyle,
+    this.feeData,
+    this.buttonTrailing,
+    this.subtitle,
+    this.title,
+    this.isDark,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +29,15 @@ class FeesCard extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: NeumorphicButton(
         padding: EdgeInsets.only(
-            top: height * 0.015,
-            bottom: height * 0.015,
-            left: width * 0.025,
-            right: width * 0.01),
+          top: height * 0.015,
+          bottom: height * 0.015,
+          left: width * 0.025,
+          right: width * 0.01,
+        ),
         onPressed: () {}, //TODO receipt download maybe?
         style: neumorphicStyle,
         child: Theme(
-          data: Theme.of(context).copyWith(
-            dividerColor: Colors.transparent,
-          ),
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
             iconColor: const Color(0xffba3237),
             collapsedIconColor: isDark ? Colors.white : Colors.black,
@@ -48,7 +47,9 @@ class FeesCard extends StatelessWidget {
             ),
             subtitle: Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.02, vertical: height * 0.01),
+                horizontal: width * 0.02,
+                vertical: height * 0.01,
+              ),
               child: Text(
                 "For Year ${feeData.yearNumber} on ${feeData.date}",
                 style: subtitle,
@@ -57,14 +58,13 @@ class FeesCard extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.04, vertical: height * 0.02),
+                  horizontal: width * 0.04,
+                  vertical: height * 0.02,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Challan No:",
-                      style: title,
-                    ),
+                    Text("Challan No:", style: title),
                     Text(
                       feeData.challanNumber,
                       style: subtitle,
@@ -76,15 +76,14 @@ class FeesCard extends StatelessWidget {
               (feeData.mode != "CASH")
                   ? Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: width * 0.04, vertical: height * 0.02),
+                        horizontal: width * 0.04,
+                        vertical: height * 0.02,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Cheque No:",
-                            style: title,
-                          ),
+                          Text("Cheque No:", style: title),
                           Expanded(
                             child: Text(
                               feeData.chequeNumber,

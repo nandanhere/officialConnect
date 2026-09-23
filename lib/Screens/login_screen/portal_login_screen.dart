@@ -78,16 +78,17 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
   String? _error;
   final Stopwatch _flowWatch = Stopwatch();
   Timer? _attentionTimer;
+  Timer? _hardTimeoutTimer;
   bool _flowStarted = false;
+  bool _terminalOutcomeRecorded = false;
+  Future<void>? _startEvent;
+  final String _flowId = DateTime.now().microsecondsSinceEpoch.toRadixString(
+    36,
+  );
+  String _diagnosticStageValue = 'getting_ready';
   final Set<String> _recordedAttention = {};
 
-  String get _diagnosticStage {
-    if (_error != null) return 'needs_attention';
-    if (_stage == 'Signing you in') return 'signing_in';
-    if (_stage == 'Login complete') return 'scraping';
-    if (_stage == 'Finishing up') return 'finishing';
-    return 'getting_ready';
-  }
+  String get _diagnosticStage => _diagnosticStageValue;
 
   @override
   void initState() {
@@ -105,13 +106,15 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
     );
   }
 
-  void _recordCancelledFinish() {
-    unawaited(
-      SyncDiagnostics.recordLoginFinished(
-        outcome: 'cancelled',
-        refresh: widget.reuseSession,
-        durationMs: _flowWatch.elapsedMilliseconds,
-      ),
+  Future<void> _recordFinish(String outcome) async {
+    if (_terminalOutcomeRecorded) return;
+    _terminalOutcomeRecorded = true;
+    await _startEvent;
+    await SyncDiagnostics.recordLoginFinished(
+      outcome: outcome,
+      refresh: widget.reuseSession,
+      durationMs: _flowWatch.elapsedMilliseconds,
+      flowId: _flowId,
     );
   }
 
@@ -120,16 +123,23 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       unawaited(_recordAttention('backgrounded'));
+      if (widget.silent && !_finished) {
+        unawaited(_recordFinish('cancelled'));
+        _finish(false);
+      }
     }
   }
 
   @override
   void dispose() {
     _attentionTimer?.cancel();
+    _hardTimeoutTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     if (_flowStarted && !_finished) {
       unawaited(_recordAttention('disposed'));
-      _recordCancelledFinish();
+      unawaited(_recordFinish('cancelled'));
+      _finished = true;
+      widget.onFinished?.call(false);
     }
     super.dispose();
   }
@@ -137,6 +147,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
   void _finish(bool result) {
     if (_finished) return;
     _attentionTimer?.cancel();
+    _hardTimeoutTimer?.cancel();
     _finished = true;
     final callback = widget.onFinished;
     if (callback != null) {
@@ -158,19 +169,41 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
     });
   }
 
+  Future<void> _handleBrowserFailure(Object error) async {
+    if (_finished || _scrapeStarted) return;
+    unawaited(
+      SyncDiagnostics.recordFailure(
+        refresh: widget.reuseSession,
+        stage: _diagnosticStage,
+        reason: portalFailureReason(error),
+      ),
+    );
+    unawaited(_recordFinish('error'));
+    if (!mounted || _finished) return;
+    if (widget.silent) {
+      _finish(false);
+      return;
+    }
+    setState(() {
+      _diagnosticStageValue = 'needs_attention';
+      _error = 'Sign-in could not continue. Please try again.';
+      _stage = 'Update needs attention';
+      _detail = 'Anything already available will remain visible.';
+    });
+  }
+
   Future<void> _scrapeAndCache() async {
     if (_scrapeStarted) return;
     _scrapeStarted = true;
     final scrapeWatch = Stopwatch()..start();
     if (!FirebaseFeatureFlags.portalSyncEnabled) {
-      await SyncDiagnostics.recordLoginFinished(
-        outcome: 'disabled',
-        refresh: widget.reuseSession,
-      );
+      unawaited(_recordFinish('disabled'));
       _finish(false);
       return;
     }
+    _diagnosticStageValue = 'scraping';
     _updateStage('Login complete', detail: 'Updating your information.');
+    var scrapeCompleted = false;
     try {
       // The portal currently rejects replay of its browser session from AWS.
       // Scraping directly in this authenticated WebView avoids that failed
@@ -203,19 +236,19 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
           'scraper returned incomplete portal data',
         );
       }
+      scrapeCompleted = true;
+      _diagnosticStageValue = 'finishing';
       await Provider.of<SisData>(
         context,
         listen: false,
       ).applyPortalData(data, widget.initialUsn ?? '', widget.initialDob ?? '');
-      await SyncDiagnostics.recordSummary(
-        Map<String, dynamic>.from((data['_sync'] as Map?) ?? const {}),
-        refresh: widget.reuseSession,
+      unawaited(
+        SyncDiagnostics.recordSummary(
+          Map<String, dynamic>.from((data['_sync'] as Map?) ?? const {}),
+          refresh: widget.reuseSession,
+        ),
       );
-      await SyncDiagnostics.recordLoginFinished(
-        outcome: 'success',
-        refresh: widget.reuseSession,
-        durationMs: _flowWatch.elapsedMilliseconds,
-      );
+      unawaited(_recordFinish('success'));
       scrapeWatch.stop();
       _updateStage('Finishing up');
       assert(() {
@@ -230,12 +263,25 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
         _finish(true);
       }
     } catch (error) {
-      await SyncDiagnostics.recordFailure(refresh: widget.reuseSession);
-      await SyncDiagnostics.recordLoginFinished(
-        outcome: 'error',
-        refresh: widget.reuseSession,
-        durationMs: _flowWatch.elapsedMilliseconds,
-      );
+      if (scrapeCompleted) {
+        unawaited(
+          SyncDiagnostics.recordOperationalFailure(
+            operation: 'cache',
+            stage: _diagnosticStage,
+            reason: 'cache_write',
+            refresh: widget.reuseSession,
+          ),
+        );
+      } else {
+        unawaited(
+          SyncDiagnostics.recordFailure(
+            refresh: widget.reuseSession,
+            stage: _diagnosticStage,
+            reason: portalFailureReason(error),
+          ),
+        );
+      }
+      unawaited(_recordFinish('error'));
       assert(() {
         final detail = error is PortalRequestException ? error.reason : '';
         debugPrint('Portal scraper failed: ${error.runtimeType} $detail');
@@ -249,6 +295,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
           return;
         }
         setState(() {
+          _diagnosticStageValue = 'needs_attention';
           _error =
               'Some information could not be updated. You can show the '
               'page if it needs your attention.';
@@ -264,6 +311,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
     if (!mounted) return;
     if (authenticated) await _scrapeAndCache();
     if (!authenticated) {
+      _diagnosticStageValue = 'signing_in';
       _updateStage('Signing you in', detail: 'Finishing the sign-in steps.');
     }
   }
@@ -457,38 +505,47 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
               onWebViewCreated: (controller) async {
                 _flowWatch.start();
                 _flowStarted = true;
-                unawaited(
-                  SyncDiagnostics.recordLoginStarted(
-                    refresh: widget.reuseSession,
-                  ),
-                );
-                unawaited(
-                  SyncDiagnostics.recordLoginAttention(
-                    reason: 'visibility_guarded',
-                    stage: _diagnosticStage,
-                    refresh: widget.reuseSession,
-                    durationMs: 0,
-                  ),
+                _startEvent = SyncDiagnostics.recordLoginStarted(
+                  refresh: widget.reuseSession,
+                  flowId: _flowId,
                 );
                 _attentionTimer = Timer(const Duration(seconds: 45), () {
                   unawaited(_recordAttention('timeout'));
                 });
-                _session.attachController(controller);
-                if (!widget.reuseSession) await _session.clear();
-                await controller.loadUrl(
-                  urlRequest: URLRequest(
-                    url: WebUri(PortalSession.loginUri.toString()),
-                  ),
-                );
+                _hardTimeoutTimer = Timer(const Duration(seconds: 75), () {
+                  if (_finished) return;
+                  unawaited(_recordAttention('timeout'));
+                  unawaited(_recordFinish('timeout'));
+                  _finish(false);
+                });
+                try {
+                  _session.attachController(controller);
+                  if (!widget.reuseSession) await _session.clear();
+                  await controller.loadUrl(
+                    urlRequest: URLRequest(
+                      url: WebUri(PortalSession.loginUri.toString()),
+                    ),
+                  );
+                } catch (error) {
+                  await _handleBrowserFailure(error);
+                }
               },
               onUpdateVisitedHistory: (_, url, __) {
                 _session.rememberPage(url);
               },
               onLoadStop: (controller, __) async {
-                if (_finished) return;
-                _session.rememberPage(await controller.getUrl());
-                await _prefillPortalForm(controller);
-                if (!_finished) await _checkSession();
+                // Scraping deliberately navigates this same hidden WebView.
+                // Treat those page loads as scraper-owned; running the login
+                // detector in parallel can redirect the browser and starve the
+                // navigation that is currently being read.
+                if (_finished || _scrapeStarted) return;
+                try {
+                  _session.rememberPage(await controller.getUrl());
+                  await _prefillPortalForm(controller);
+                  if (!_finished) await _checkSession();
+                } catch (error) {
+                  await _handleBrowserFailure(error);
+                }
               },
             ),
           ),
@@ -505,7 +562,7 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
                           tooltip: 'Cancel',
                           onPressed: () {
                             unawaited(_recordAttention('cancelled'));
-                            _recordCancelledFinish();
+                            unawaited(_recordFinish('cancelled'));
                             _finish(false);
                           },
                           icon: const Icon(Icons.close),

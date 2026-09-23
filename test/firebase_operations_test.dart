@@ -8,6 +8,9 @@ void main() {
     FirebaseFeatureFlags.setValuesForTesting(const {});
     SyncDiagnostics.configure(null);
     SyncDiagnostics.configureCrashContext(null);
+    SyncDiagnostics.configureIssueReporting(null);
+    SyncDiagnostics.configureScreenReporter(null);
+    DiagnosticsRelease.resetReleaseForTesting();
     FirebaseFeatureFlags.configureRefreshForTesting(null);
   });
 
@@ -58,18 +61,18 @@ void main() {
 
     await SyncDiagnostics.recordLoginStarted(refresh: false);
     await SyncDiagnostics.recordLoginFinished(
-      outcome: 'student_identifier_1MS22IS086',
+      outcome: 'student_identifier_PRIVATE_ACCOUNT',
       refresh: false,
       durationMs: 999999999,
     );
     await SyncDiagnostics.recordLoginAttention(
-      reason: 'student_identifier_1MS22IS086',
-      stage: '24/02/2004',
+      reason: 'student_identifier_PRIVATE_ACCOUNT',
+      stage: 'PRIVATE_DATE',
       refresh: false,
       durationMs: 999999999,
     );
     await SyncDiagnostics.recordResult(
-      source: '1MS22IS086',
+      source: 'PRIVATE_ACCOUNT',
       outcome: '<html>secret</html>',
       durationMs: -12,
     );
@@ -77,12 +80,13 @@ void main() {
       'outcome': 'complete',
       'sections': {
         '1ms22is086': {'status': 'ok'},
+        'marks': {'status': 'error', 'failure_reason': 'PRIVATE_ACCOUNT'},
       },
     }, refresh: true);
 
     final encoded = events.toString();
-    expect(encoded, isNot(contains('1MS22IS086')));
-    expect(encoded, isNot(contains('1ms22is086')));
+    expect(encoded, isNot(contains('PRIVATE_ACCOUNT')));
+    expect(encoded, isNot(contains('private_account')));
     expect(encoded, isNot(contains('<html>')));
     expect(encoded, contains('outcome: unknown'));
     expect(encoded, contains('duration_ms: 600000'));
@@ -90,6 +94,7 @@ void main() {
     expect(encoded, contains('section: unknown'));
     expect(encoded, contains('reason: unknown'));
     expect(encoded, contains('stage: unknown'));
+    expect(encoded, contains('failure_reason: unknown'));
   });
 
   test(
@@ -108,15 +113,18 @@ void main() {
         durationMs: 1234,
       );
 
-      expect(events, [
-        {
-          'name': 'login_flow_attention',
-          'reason': 'manual_portal',
-          'stage': 'needs_attention',
-          'sync_mode': 'first_login',
-          'duration_ms': 1234,
-        },
-      ]);
+      expect(events, hasLength(1));
+      expect(events.single['name'], 'login_flow_attention');
+      expect(events.single['reason'], 'manual_portal');
+      expect(events.single['stage'], 'needs_attention');
+      expect(events.single['sync_mode'], 'first_login');
+      expect(events.single['duration_ms'], 1234);
+      expect(events.single['app_version'], DiagnosticsRelease.appVersion);
+      expect(
+        events.single['release_cohort'],
+        DiagnosticsRelease.releaseCohort,
+      );
+      expect(events.single['platform'], DiagnosticsRelease.platform);
     },
   );
 
@@ -142,6 +150,28 @@ void main() {
     expect(events.last['sync_mode'], 'first_login');
   });
 
+  test('timed-out login emits a terminal timeout outcome', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordLoginStarted(refresh: false);
+    await SyncDiagnostics.recordLoginFinished(
+      outcome: 'timeout',
+      refresh: false,
+      durationMs: 900,
+    );
+
+    expect(events.map((event) => event['name']), [
+      'login_flow_started',
+      'login_flow_finished',
+    ]);
+    expect(events.last['outcome'], 'timeout');
+    expect(events.last['sync_mode'], 'first_login');
+  });
+
   test('disabled collection suppresses all operational events', () async {
     final events = <Map<String, Object>>[];
     SyncDiagnostics.configure((name, parameters) async {
@@ -163,9 +193,9 @@ void main() {
     await SyncDiagnostics.recordScreen('results');
     await SyncDiagnostics.recordFeature('fee_payment');
     await SyncDiagnostics.recordPreference('theme', 'dark');
-    await SyncDiagnostics.recordScreen('1MS22IS086');
-    await SyncDiagnostics.recordFeature('marks_for_1MS22IS086');
-    await SyncDiagnostics.recordPreference('theme', '24/02/2004');
+    await SyncDiagnostics.recordScreen('PRIVATE_ACCOUNT');
+    await SyncDiagnostics.recordFeature('marks_for_PRIVATE_ACCOUNT');
+    await SyncDiagnostics.recordPreference('theme', 'PRIVATE_DATE');
 
     expect(
       events.any(
@@ -192,10 +222,159 @@ void main() {
       isTrue,
     );
     final encoded = events.toString();
-    expect(encoded, isNot(contains('1MS22IS086')));
-    expect(encoded, isNot(contains('24/02/2004')));
+    expect(encoded, isNot(contains('PRIVATE_ACCOUNT')));
+    expect(encoded, isNot(contains('PRIVATE_DATE')));
     expect(encoded, contains('feature: unknown'));
     expect(encoded, contains('setting_value: unknown'));
+  });
+
+  test('screen reporter receives only safe screen names', () async {
+    final reportedScreens = <String>[];
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    SyncDiagnostics.configureScreenReporter((screen) async {
+      reportedScreens.add(screen);
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordScreen('results');
+    await SyncDiagnostics.recordScreen('PRIVATE_ACCOUNT');
+
+    expect(reportedScreens.sublist(reportedScreens.length - 2), [
+      'results',
+      'unknown',
+    ]);
+    expect(
+      events.where((event) => event['name'] == 'app_screen_view'),
+      hasLength(2),
+    );
+  });
+
+  test(
+    'screen reporter catches the startup route after Firebase is ready',
+    () async {
+      final reportedScreens = <String>[];
+      await SyncDiagnostics.setEnabled(true);
+      await SyncDiagnostics.recordScreen('home');
+
+      SyncDiagnostics.configureScreenReporter((screen) async {
+        reportedScreens.add(screen);
+      });
+
+      expect(reportedScreens, ['home']);
+    },
+  );
+
+  test(
+    'screen reporter failures never interrupt navigation diagnostics',
+    () async {
+      final events = <Map<String, Object>>[];
+      SyncDiagnostics.configure((name, parameters) async {
+        events.add({'name': name, ...parameters});
+      });
+      SyncDiagnostics.configureScreenReporter(
+        (_) async => throw StateError('analytics unavailable'),
+      );
+      await SyncDiagnostics.setEnabled(true);
+
+      await expectLater(SyncDiagnostics.recordScreen('home'), completes);
+      expect(events.single['name'], 'app_screen_view');
+    },
+  );
+
+  test('feature state analytics cannot contain account data', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordFeatureState('timetable', 'legacy_cache');
+    await SyncDiagnostics.recordFeatureState(
+      'timetable_for_PRIVATE_ACCOUNT',
+      'PRIVATE_VALUE',
+    );
+
+    expect(events.first['name'], 'feature_state_shown');
+    expect(events.first['feature'], 'timetable');
+    expect(events.first['state'], 'legacy_cache');
+    expect(events.last['feature'], 'unknown');
+    expect(events.last['state'], 'unknown');
+    for (final event in events) {
+      expect(event['app_version'], DiagnosticsRelease.appVersion);
+      expect(event['release_cohort'], DiagnosticsRelease.releaseCohort);
+      expect(event['platform'], DiagnosticsRelease.platform);
+    }
+    expect(events.toString(), isNot(contains('PRIVATE_ACCOUNT')));
+    expect(events.toString(), isNot(contains('PRIVATE_VALUE')));
+  });
+
+  test('exam seating state analytics cannot contain account data', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordFeatureState('exam_seating', 'loaded');
+    await SyncDiagnostics.recordFeatureState('exam_seating', 'empty');
+    await SyncDiagnostics.recordFeatureState('exam_seating', 'disabled');
+    await SyncDiagnostics.recordFeatureState(
+      'exam_seating_for_PRIVATE_ACCOUNT',
+      'PRIVATE_VALUE',
+    );
+
+    expect(events[0]['feature'], 'exam_seating');
+    expect(events[0]['state'], 'loaded');
+    expect(events[1]['state'], 'empty');
+    expect(events[2]['state'], 'disabled');
+    expect(events.last['feature'], 'unknown');
+    expect(events.last['state'], 'unknown');
+    expect(events.toString(), isNot(contains('PRIVATE_ACCOUNT')));
+    expect(events.toString(), isNot(contains('PRIVATE_VALUE')));
+  });
+
+  test('disabled collection suppresses feature state events', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(false);
+    await SyncDiagnostics.recordFeatureState('exam_seating', 'loaded');
+    await SyncDiagnostics.recordFeatureState('timetable', 'error');
+    expect(events, isEmpty);
+  });
+
+  test('result fetch terminal outcomes stay allowlisted without abandonment',
+      () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordResult(source: 'regular', outcome: 'success');
+    await SyncDiagnostics.recordResult(source: 'regular', outcome: 'error');
+    await SyncDiagnostics.recordResult(
+      source: 'supplementary',
+      outcome: 'network_error',
+    );
+    await SyncDiagnostics.recordResult(source: 'regular', outcome: 'disabled');
+    // Low completion alone is not evidence of abandonment: an unrecognized
+    // outcome must stay 'unknown' rather than inventing an 'abandoned' state.
+    await SyncDiagnostics.recordResult(source: 'regular', outcome: 'abandoned');
+
+    final outcomes = events.map((event) => event['outcome']).toList();
+    expect(outcomes, [
+      'success',
+      'error',
+      'network_error',
+      'disabled',
+      'unknown',
+    ]);
+    expect(events.toString(), isNot(contains('abandoned')));
   });
 
   test(
@@ -209,28 +388,91 @@ void main() {
 
       await SyncDiagnostics.recordScreen('results');
       await SyncDiagnostics.recordFeature('cie_marks');
-      await SyncDiagnostics.recordFeature('marks_for_1MS22IS086');
+      await SyncDiagnostics.recordFeature('marks_for_PRIVATE_ACCOUNT');
       await SyncDiagnostics.recordLoginAttention(
-        reason: 'student_identifier_1MS22IS086',
-        stage: '24/02/2004',
+        reason: 'student_identifier_PRIVATE_ACCOUNT',
+        stage: 'PRIVATE_DATE',
         refresh: false,
       );
 
-      expect(contexts[0], {
-        'app_area': 'results',
-        'app_operation': 'screen_view',
-      });
-      expect(contexts[1], {
-        'app_area': 'results',
-        'app_operation': 'cie_marks',
-      });
+      expect(contexts[0]['app_area'], 'results');
+      expect(contexts[0]['app_operation'], 'screen_view');
+      expect(contexts[0]['app_version'], DiagnosticsRelease.appVersion);
+      expect(contexts[1]['app_area'], 'results');
+      expect(contexts[1]['app_operation'], 'cie_marks');
+      expect(contexts[1]['app_version'], DiagnosticsRelease.appVersion);
       expect(contexts[2]['app_operation'], 'unknown');
       expect(contexts[3]['operation_stage'], 'unknown');
       expect(contexts[3]['attention_reason'], 'unknown');
-      expect(contexts.toString(), isNot(contains('1MS22IS086')));
-      expect(contexts.toString(), isNot(contains('24/02/2004')));
+      expect(contexts.toString(), isNot(contains('PRIVATE_ACCOUNT')));
+      expect(contexts.toString(), isNot(contains('PRIVATE_DATE')));
     },
   );
+
+  test(
+    'top-level sync failures report only bounded operational context',
+    () async {
+      final events = <Map<String, Object>>[];
+      final issues = <Map<String, String>>[];
+      SyncDiagnostics.configure((name, parameters) async {
+        events.add({'name': name, ...parameters});
+      });
+      SyncDiagnostics.configureIssueReporting((values) async {
+        issues.add(Map.of(values));
+      });
+      await SyncDiagnostics.setEnabled(true);
+
+      await SyncDiagnostics.recordFailure(
+        refresh: true,
+        stage: 'scraping',
+        reason: 'student_PRIVATE_ACCOUNT',
+      );
+
+      expect(events.first['name'], 'sync_finished');
+      expect(events.first['outcome'], 'error');
+      expect(events.first['sync_mode'], 'refresh');
+      expect(events.first['failure_stage'], 'scraping');
+      expect(events.first['failure_reason'], 'unknown');
+      expect(events.first['app_version'], DiagnosticsRelease.appVersion);
+      expect(events.last['name'], 'operation_failure');
+      expect(events.last['operation'], 'sync');
+      expect(events.last['stage'], 'scraping');
+      expect(events.last['reason'], 'unknown');
+      expect(events.last['sync_mode'], 'refresh');
+      expect(events.last['app_version'], DiagnosticsRelease.appVersion);
+      expect(issues.single, {
+        'operation': 'sync',
+        'stage': 'scraping',
+        'reason': 'unknown',
+        'sync_mode': 'refresh',
+      });
+      expect('$events$issues', isNot(contains('PRIVATE_ACCOUNT')));
+    },
+  );
+
+  test('login flow identifiers are bounded and pair terminal events', () async {
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordLoginStarted(refresh: true, flowId: 'abc123');
+    await SyncDiagnostics.recordLoginFinished(
+      outcome: 'success',
+      refresh: true,
+      flowId: 'abc123',
+    );
+    await SyncDiagnostics.recordLoginStarted(
+      refresh: false,
+      flowId: 'student_PRIVATE_ACCOUNT',
+    );
+
+    expect(events[0]['flow_id'], 'abc123');
+    expect(events[1]['flow_id'], 'abc123');
+    expect(events[2]['flow_id'], 'unknown');
+    expect(events.toString(), isNot(contains('PRIVATE_ACCOUNT')));
+  });
 
   test('startup events wait for Firebase and flush once configured', () async {
     final events = <Map<String, Object>>[];
@@ -321,5 +563,95 @@ void main() {
 
     expect(attempts, 1);
     expect(FirebaseFeatureFlags.portalSyncEnabled, isTrue);
+  });
+
+  test('release context is attached to every operational event', () async {
+    DiagnosticsRelease.setReleaseForTesting(
+      appVersion: '1.1.4+12',
+      platform: 'android',
+    );
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordLoginStarted(refresh: false);
+    await SyncDiagnostics.recordScreen('home');
+
+    expect(events, hasLength(2));
+    for (final event in events) {
+      expect(event['app_version'], '1.1.4+12');
+      expect(event['release_cohort'], '1.1.4');
+      expect(event['platform'], 'android');
+    }
+  });
+
+  test('release cohort derives from the build number suffix', () async {
+    DiagnosticsRelease.setReleaseForTesting(
+      appVersion: '2.0.1+44',
+      platform: 'ios',
+    );
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordResult(source: 'regular', outcome: 'success');
+
+    expect(events.single['app_version'], '2.0.1+44');
+    expect(events.single['release_cohort'], '2.0.1');
+    expect(events.single['platform'], 'ios');
+  });
+
+  test('untrusted release values never leak into analytics', () async {
+    DiagnosticsRelease.setReleaseForTesting(
+      appVersion: 'student_PRIVATE_ACCOUNT <html>',
+      platform: 'PRIVATE_OS',
+    );
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordScreen('home');
+
+    expect(events.single['app_version'], isNot(contains('PRIVATE')));
+    expect(events.single['platform'], 'unknown');
+    expect(events.toString(), isNot(contains('PRIVATE_ACCOUNT')));
+    expect(events.toString(), isNot(contains('<html>')));
+  });
+
+  test('opt-out still suppresses versioned events', () async {
+    DiagnosticsRelease.setReleaseForTesting(
+      appVersion: '1.1.4+12',
+      platform: 'android',
+    );
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(false);
+
+    await SyncDiagnostics.recordLoginStarted(refresh: true);
+    await SyncDiagnostics.recordScreen('home');
+
+    expect(events, isEmpty);
+  });
+
+  test('crash context carries the app version for release segmentation',
+      () async {
+    DiagnosticsRelease.setReleaseForTesting(appVersion: '1.1.4+12');
+    final contexts = <Map<String, String>>[];
+    SyncDiagnostics.configureCrashContext((values) async {
+      contexts.add(Map.of(values));
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await SyncDiagnostics.recordScreen('home');
+
+    expect(contexts.single['app_version'], '1.1.4+12');
   });
 }
