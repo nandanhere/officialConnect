@@ -11,6 +11,8 @@ import 'package:official_connect/Screens/login_screen/portal_refresh.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/syllabus_sub_screen/syllabus_screen.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:official_connect/Services/safe_external_link.dart';
+import 'package:official_connect/Screens/login_screen/student_home/timetable_screen/timetable_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/seating_screen/seating_screen.dart';
 
 typedef ExploreLinkLauncher = Future<bool> Function(Uri uri);
 
@@ -58,6 +60,98 @@ const campusServiceLinks = <ExploreLink>[
     analyticsFeature: 'app_feedback',
   ),
 ];
+
+class _AcademicQuickLinks extends StatelessWidget {
+  const _AcademicQuickLinks({required this.style, required this.titleStyle});
+
+  final NeumorphicStyle style;
+  final TextStyle titleStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final sisData = context.watch<SisData>();
+    final subtitle = CustomTheme.textStyle(context).copyWith(
+      fontSize: 13,
+      color: sisData.darkMode ? Colors.white60 : Colors.black54,
+    );
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text('Academic tools', style: CustomTheme.titleStyle(context)),
+        ),
+        const SizedBox(height: 8),
+        _QuickLink(
+          key: const ValueKey('timetable'),
+          style: style,
+          icon: Icons.calendar_view_week_outlined,
+          title: 'Timetable',
+          subtitle: 'See your weekly schedule at a glance',
+          titleStyle: titleStyle,
+          subtitleStyle: subtitle,
+          onPressed: () {
+            unawaited(SyncDiagnostics.recordFeature('timetable'));
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const TimetableScreen()));
+          },
+        ),
+        _QuickLink(
+          key: const ValueKey('exam-seating'),
+          style: style,
+          icon: Icons.event_seat_outlined,
+          title: 'Exam seating',
+          subtitle: 'Find your room before the exam',
+          titleStyle: titleStyle,
+          subtitleStyle: subtitle,
+          onPressed: () {
+            unawaited(SyncDiagnostics.recordFeature('exam_seating'));
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const SeatingScreen()));
+          },
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+}
+
+class _QuickLink extends StatelessWidget {
+  const _QuickLink({
+    super.key,
+    required this.style,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.titleStyle,
+    required this.subtitleStyle,
+    required this.onPressed,
+  });
+
+  final NeumorphicStyle style;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final TextStyle titleStyle;
+  final TextStyle subtitleStyle;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5),
+    child: NeumorphicButton(
+      style: style,
+      onPressed: onPressed,
+      child: ListTile(
+        leading: Icon(icon, color: const Color(0xffd93b3f), size: 28),
+        title: Text(title, style: titleStyle),
+        subtitle: Text(subtitle, style: subtitleStyle),
+        trailing: const Icon(Icons.chevron_right, size: 20),
+      ),
+    ),
+  );
+}
 
 class EventsScreen extends StatelessWidget {
   const EventsScreen({Key? key, this.linkLauncher}) : super(key: key);
@@ -113,6 +207,17 @@ class EventsScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: height * 0.015),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text('Explore', style: title),
+                  ),
+                ),
+                _AcademicQuickLinks(
+                  style: neumorphicStyle,
+                  titleStyle: buttonTitle,
+                ),
                 Padding(
                   padding: EdgeInsets.only(bottom: height * 0.015),
                   child: Align(
@@ -223,11 +328,7 @@ class EventsScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: height * 0.025),
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      "Academic resources",
-                      textAlign: TextAlign.left,
-                      style: title,
-                    ),
+                    child: Text("More academic resources", style: title),
                   ),
                 ),
                 Padding(

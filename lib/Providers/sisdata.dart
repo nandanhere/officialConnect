@@ -9,17 +9,25 @@ import 'package:official_connect/Classes/fees_data.dart';
 import 'package:official_connect/Classes/marks.dart';
 import 'package:official_connect/Classes/previous_result.dart';
 import 'package:official_connect/Classes/sis_proctor_data.dart';
+import 'package:official_connect/Classes/timetable_entry.dart';
+import 'package:official_connect/Classes/seating_arrangement.dart';
 import 'package:official_connect/Providers/dummy_data.dart';
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:official_connect/Services/firebase_operations.dart';
 
 class SisData with ChangeNotifier {
+  static const currentCacheSchemaVersion = 2;
+  static const _cacheSchemaVersionKey = 'cacheSchemaVersion';
+
   Map<String, dynamic> _data = {};
   List<Attendance> _attendances = [];
   List<FeesData> _fees = [];
   List<Marks> _marks = [];
   List<PreviousResult> _previousResults = [];
+  List<TimetableEntry> _timetable = [];
+  List<SeatingArrangement> _seating = [];
   bool _hasData = false;
   bool isValidData = true;
   bool needToUpdate = false;
@@ -100,12 +108,11 @@ class SisData with ChangeNotifier {
       debugPrint(
         "data was there before. checking if it is older than 12 hours",
       );
-      needToUpdate =
+      final timestampNeedsRefresh =
           DateTime.fromMillisecondsSinceEpoch(
             time,
           ).difference(DateTime.now()).inMilliseconds.abs() >
           const Duration(hours: 12).inMilliseconds;
-      notifyListeners();
 
       // A missing or corrupted cache payload must never leave the app stuck
       // on the loading spinner: mark it as logged out instead.
@@ -128,9 +135,26 @@ class SisData with ChangeNotifier {
         return;
       }
       // Keep showing cached data immediately. Refresh uses the authenticated
-      // portal WebView session.
+      // portal WebView session. A cache created by an older app can still be
+      // perfectly usable, but it needs one refresh to populate newly added
+      // sections such as timetable and seating.
       await setVariables();
-      needToUpdate = false;
+      final storedSchemaVersion = prefs.getInt(_cacheSchemaVersionKey) ?? 0;
+      final missingCurrentSections =
+          !_data.containsKey('timetable') || !_data.containsKey('seating');
+      final staleCurrentSections = const ['timetable', 'seating'].any((
+        section,
+      ) {
+        final status = syncStatusFor(section);
+        return status == 'error' ||
+            (status == 'disabled' &&
+                FirebaseFeatureFlags.sectionEnabled(section));
+      });
+      needToUpdate =
+          timestampNeedsRefresh ||
+          storedSchemaVersion < currentCacheSchemaVersion ||
+          missingCurrentSections ||
+          staleCurrentSections;
 
       notifyListeners();
     }
@@ -177,6 +201,8 @@ class SisData with ChangeNotifier {
       'results': ['prevResults'],
       'fees': ['fees', 'refunds'],
       'proctor': ['proctorship'],
+      'timetable': ['timetable'],
+      'seating': ['seating'],
     };
     for (final entry in sectionKeys.entries) {
       final status = (sections[entry.key] as Map?)?['status'];
@@ -218,6 +244,7 @@ class SisData with ChangeNotifier {
     await prefs.setString('dob', _dob);
     await prefs.setBool('hasData', true);
     await prefs.setInt('timeStamp', DateTime.now().millisecondsSinceEpoch);
+    await prefs.setInt(_cacheSchemaVersionKey, currentCacheSchemaVersion);
     notifyListeners();
   }
 
@@ -283,6 +310,9 @@ class SisData with ChangeNotifier {
 
       _previousResults = PreviousResult.getList(_data['prevResults'] ?? []);
       if (debug) debugPrint("Previous Results");
+
+      _timetable = TimetableEntry.getList(_data['timetable'] ?? []);
+      _seating = SeatingArrangement.getList(_data['seating'] ?? []);
 
       _attendances = Attendance.getList(_data['attendance'] ?? []);
       if (debug) debugPrint("Attendances");
@@ -356,6 +386,7 @@ class SisData with ChangeNotifier {
     for (final key in const [
       'hasData',
       'timeStamp',
+      _cacheSchemaVersionKey,
       'usn',
       'dob',
       'proctorEmail',
@@ -437,6 +468,16 @@ class SisData with ChangeNotifier {
 
   List<PreviousResult> get previousResults {
     return _previousResults;
+  }
+
+  List<TimetableEntry> get timetable => List.unmodifiable(_timetable);
+
+  List<SeatingArrangement> get seating => List.unmodifiable(_seating);
+
+  List<TimetableEntry> timetableFor(DateTime date) {
+    final key =
+        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    return _timetable.where((entry) => entry.date == key).toList();
   }
 
   List<Attendance> get attendances {

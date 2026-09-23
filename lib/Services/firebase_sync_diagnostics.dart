@@ -33,11 +33,21 @@ class FirebaseSyncDiagnostics {
             analytics.logEvent(name: name, parameters: parameters),
         collectionToggle: analytics.setAnalyticsCollectionEnabled,
       );
+      // Use the bounded Flutter route as both name and class so the
+      // default Screens report separates routes instead of collapsing
+      // everything into one native host-activity row.
+      SyncDiagnostics.configureScreenReporter(
+        (screen) => analytics.logScreenView(
+          screenName: screen,
+          screenClass: screen,
+        ),
+      );
       if (enabled) {
         await SyncDiagnostics.setEnabled(true);
       }
     } catch (_) {
       // Local builds remain usable before Firebase platform files are linked.
+      SyncDiagnostics.configureScreenReporter(null);
       debugPrint('Update diagnostics are unavailable in this build.');
     }
   }

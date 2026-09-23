@@ -2446,19 +2446,19 @@ class DummyData {
       ],
       [
         "UG Second Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Second_Year_BArch_Syllabus.pdf"
+        "https://drive.google.com/file/d/104fldenWu9vIKX_PX3y4g51GyYd8yOOW/view"
       ],
       [
         "UG Third Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Third_Year_BArch_Syllabus.pdf"
+        "https://drive.google.com/file/d/1y0dLTt2iywM0MK0D8dm5akwrLeK4Rea4/view"
       ],
       [
         "UG Fourth Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Fourth_Year_BArch_Syllabus.pdf"
+        "https://drive.google.com/file/d/1Ur-K68ilpNLf3WPlc8ueEUvk6NaE_oxQ/view"
       ],
       [
         "UG Fifth Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Architecture/Syllabus/Final_Year_BArch_Syllabus.pdf"
+        "https://drive.google.com/file/d/1R_O1n30sLJc7NTm_C5sXtmtVXMyGV4lb/view"
       ],
       [
         "PG First Year",
@@ -2473,12 +2473,38 @@ class DummyData {
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ]
+ ,
+      [
+        "UG Third-Fourth Semester",
+        "https://drive.google.com/file/d/1shL981PNcBYGjrSrk1DcAfbC6e6MT558/view"
+      ],
+      [
+        "UG Fifth-Sixth Semester",
+        "https://drive.google.com/file/d/13DLtdi3jv_cC6ma0S42MmydDT2MJnoBM/view"
       ]
     ],
     "Department of Artificial Intelligence and Machine Learning": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ]
+ ,
+      [
+        "UG Third-Fourth Semester",
+        "https://drive.google.com/file/d/1vsV9oRJ8_yi04L9u-qRbiqMorjGL7wCB/view"
+      ],
+      [
+        "UG Fifth-Sixth Semester",
+        "https://drive.google.com/file/d/1MikxGJU-6ghWHu-FfxwBwg0Fx7-Q0LYa/view"
       ]
     ],
     "Department of Chemical Engineering": [
@@ -2487,16 +2513,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Second Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Chemical/Syllabus/III-IV+sem+Chemical+syllabus+2020-2021.pdf"
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/https://www.msrit.edu/pdf/Chemical-3-4sem2026-27Final.pdf"
       ],
       [
         "UG Third Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Chemical/Syllabus/V-VI+sem+Chemical+syllabus+2020-2021.pdf"
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/https://www.msrit.edu/pdf/Chemical-5-6sem2026-27.pdf"
       ],
       [
         "UG Fourth Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/Chemical/Syllabus/VII-VIII+sem+Chemical+syllabus+2020-2021.pdf"
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/https://www.msrit.edu/pdf/Chemical-7-8sem2026-27.pdf"
       ]
     ],
     "Department of BioTechnology": [
@@ -2505,16 +2535,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Third-Fourth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/BT/Syllabus/UG+Third-Fourth+Semester_2021-22.pdf"
+        "https://drive.google.com/file/d/1nfZGtzOVQRDX9vkRI8g-i9T9oDTYG4ev/view"
       ],
       [
         "UG Fifth-Sixth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/BT/Syllabus/UG+Fifth-Sixth+Semester_2021-22.pdf"
+        "https://drive.google.com/file/d/1pmqlk3h15OvCvKNR4Q_OJnRTmxmFqLep/view"
       ],
       [
         "UG Seventh-Eighth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/BT/Syllabus/UG+Seventh-Eighth+Semester_2021-22.pdf"
+        "https://drive.google.com/file/d/1w3aX9bRsHI6oDTs03xs6hWTZPPTcRbTa/view"
       ],
       [
         "PG Syllabus",
@@ -2535,6 +2569,10 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "CHY I-II B.E. Syllabus 2016-17",
         "http://d2e9h3gjmozu47.cloudfront.net/Departments/Chemistry/2+sem+syllabus+for+CHY+I-II+BE+syllabus+2016-17.pdf"
       ]
@@ -2545,16 +2583,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Third-Fourth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Civil/Syllabus/3+%26+4+Sem+CIVIL2021+new.pdf"
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/https://www.msrit.edu/pdf/II_year_UG_syllabus_2026-2027.pdf"
       ],
       [
         "UG Fifth-Sixth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Civil/Syllabus/5+%26+6+Sem+CIVIL2021.pdf"
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/https://www.msrit.edu/pdf/III_year_UG_syllabus_2026-2027.pdf"
       ],
       [
         "UG Seventh-Eighth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Civil/Syllabus/7+%26+8+sem+Civil+.pdf"
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/https://www.msrit.edu/pdf/IV_year_UG_syllabus_2026-2027.pdf"
       ],
       [
         "PG First-Fourth Semester",
@@ -2567,16 +2609,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Second Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/CSE/Syllabus/UG+2nd+Year+Syllabus.pdf"
+        "https://www.msrit.edu/pdf/CSE_3-4_2026-27.pdf"
       ],
       [
         "UG Third Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/CSE/Syllabus/UG+3rd+Year+Syllabus.pdf"
+        "https://www.msrit.edu/pdf/CSE_5-6_2026-27.pdf"
       ],
       [
         "UG Fourth Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/CSE/Syllabus/UG+4th+Year+Syllabus.pdf"
+        "https://www.msrit.edu/pdf/CSE_7-8_2026-27.pdf"
       ],
       [
         "PG CSE (Batch 2020-2022)",
@@ -2600,18 +2646,43 @@ class DummyData {
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
       ]
     ],
     "Department of Computer Science and Engineering (Cyber Security)": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ]
+ ,
+      [
+        "UG Second Year",
+        "https://www.msrit.edu/pdf/2025_CSE(CS)_2nd_year.pdf"
+      ],
+      [
+        "UG Third Year",
+        "https://www.msrit.edu/pdf/2024__CSE(Cyber)_3rd_year.pdf"
+      ],
+      [
+        "UG Fourth Year",
+        "https://www.msrit.edu/pdf/2023_CSE(Cyber)_final_year.pdf"
       ]
     ],
     "Department of Electronics and Communication Engineering": [
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
       ],
       [
         "Second Year",
@@ -2644,16 +2715,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Second Year",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/EIE/Syllabus/Syllabus+book+2021+sem+-+3+and+4.pdf"
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/https://www.msrit.edu/pdf/EIE_3_&_4th_Sem_Syllabus_updated.pdf"
       ],
       [
         "UG Third Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Syllabus+book+2021+sem+-+5+and+6.pdf"
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/https://www.msrit.edu/pdf/EIE_5_&_6th_Sem_FOR_PO1_11.pdf"
       ],
       [
         "UG Fourth Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EIE/Syllabus/Syllabus+book+2021+sem+-+7+and+8.pdf"
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/https://www.msrit.edu/pdf/EIE_7_&_8th_Sem.pdf"
       ],
       [
         "Open Elective - 5th and 6th Sem",
@@ -2670,16 +2745,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Second Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EEE/Syllabus/EEE+3rd+4th+Sem+Syllabus_20_21.pdf"
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/https://www.msrit.edu/pdf/EEE_3rd_4th_sem_Syllabus_2026_27.pdf"
       ],
       [
         "UG Third Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EEE/Syllabus/EEE+5th+6th+Sem+Syllabus_20_21.pdf"
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/https://www.msrit.edu/pdf/EEE_5th_6th_Sem_Syllabus_2026_27.pdf"
       ],
       [
         "UG Fourth Year",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/EEE/Syllabus/EEE+7th+8th+Sem+Syllabus_20_21.pdf"
+        "https://msrit-bucket.s3-us-west-2.amazonaws.com/https://www.msrit.edu/pdf/EEE_7th_8th_Sem_Syllabus_2026_27.pdf"
       ],
       [
         "PG Syllabus",
@@ -2696,16 +2775,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Third-Fourth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/TeleCommunication/Syllabus/3+and+4+sem.pdf"
+        "https://www.msrit.edu/pdf/ETE_syllabus_3rd_and_4th_sem_sept_2026_v1.pdf"
       ],
       [
         "UG Fifth-Sixth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/TeleCommunication/Syllabus/5+and+6+sem.pdf"
+        "https://www.msrit.edu/pdf/ETE_syllabus_5th_and_6th_sem_v1.pdf"
       ],
       [
         "UG Seventh-Eighth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/TeleCommunication/Syllabus/7+and+8+sem.pdf"
+        "https://www.msrit.edu/pdf/ETE_syllabus_7th_and_8th_sem_v1.pdf"
       ],
       [
         "PG Syllabus",
@@ -2722,6 +2805,10 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "Open Elective - Public Speaking and  Speech Acts - Syllabus",
         "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/Humanities/Syllabus/PUBLIC+SPEAKING+AND+SPEECH+ACTS+-+OPEN+ELECTIVE_SYLLABUS.pdf"
       ],
@@ -2736,16 +2823,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Third-Fourth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/iEM/Syllabus/3rd+and+4th+syllabus_2019+to+2023+batch.pdf"
+        "https://drive.google.com/file/d/1K2diisWEdh5i09WVtFDc7A3xbW2eOuri/view"
       ],
       [
         "UG Fifth-Sixth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/iEM/Syllabus/5th+and+6th_syllabus_2018_2022_batch.pdf"
+        "https://drive.google.com/file/d/1FESFZuXr3vCRZuG2cXlh3oWlrN2arWNU/view"
       ],
       [
         "UG Seventh-Eighth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/iEM/Syllabus/7th+and+8th_syllabus_2017_2021_batch.pdf"
+        "https://drive.google.com/file/d/1tBIuX3HU4Q2qJGD2cBtpVj9NlgP83fJk/view"
       ],
       [
         "PG 2020-2021",
@@ -2762,16 +2853,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Second Year",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ISE/Syllabus/BE-2nd+YearSyllabusBook-3%264-2021-22-1.pdf"
+        "https://www.msrit.edu/pdf/ISE2026-2nd-year-syllabus.pdf"
       ],
       [
         "UG Third Year",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ISE/Syllabus/BE-3rd+YearSyllabusBook-5%266-2021-22.pdf"
+        "https://www.msrit.edu/pdf/ISE2026-3rd-year-syllabus.pdf"
       ],
       [
         "UG Fourth Year",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ISE/Syllabus/BE-4th+YearSyllabusBook-7%268-2021-22-2.pdf"
+        "https://www.msrit.edu/pdf/ISE2026-4th-year-syllabus.pdf"
       ],
       [
         "PG First and Second Semester",
@@ -2794,6 +2889,10 @@ class DummyData {
       [
         "UG First Year",
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
+      ],
+      [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
       ],
       [
         "3rd Sem Syllabus",
@@ -2846,16 +2945,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Third-Fourth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ME/Syllabus/SYLLABUS+-+3r+to+4th+semester_mech_2021.pdf"
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/https://www.msrit.edu/pdf/3rd4thSemesterMESyllabusfortheyear2026-2027.pdf"
       ],
       [
         "UG Fifth-Sixth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ME/Syllabus/SYLLABUS-5+TO+6+SEMESTER_mech_2021.pdf"
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/https://www.msrit.edu/pdf/5th6thSemesterMESyllabusfortheyear2026-2027.pdf"
       ],
       [
         "UG Seventh-Eighth Semester",
-        "https://msrit-bucket.s3.us-west-2.amazonaws.com/Departments/ME/Syllabus/SYLLABUS+-+7+%26+8+SEMESTER_mech_2021.pdf"
+        "https://msrit-bucket.s3.us-west-2.amazonaws.com/https://www.msrit.edu/pdf/7th8thSemesterMSyllabusfortheyear2026-2027.pdf"
       ],
       [
         "M.Tech MSE",
@@ -2876,16 +2979,20 @@ class DummyData {
         "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/A-First-Year-Syllabus/UG_First_Year_Syllabus.pdf"
       ],
       [
+        "UG First Year (2026 Scheme)",
+        "https://www.msrit.edu/pdf/First_year_syllabus_2026-RIT.pdf"
+      ],
+      [
         "UG Third and Fourth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/2nd+Year+-+2020.pdf"
+        "https://drive.google.com/file/d/1BzITuum1_kF7E51HUvub4qeobnKt4QGD/view"
       ],
       [
         "UG Fifth and Sixth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/3rd+year+-+2020.pdf"
+        "https://drive.google.com/file/d/1e2t4PCnWDgV4tP0CPTmZIbWFb8QYFBWL/view"
       ],
       [
         "UG Seventh and Eighth Semester",
-        "https://msrit-bucket.s3-us-west-2.amazonaws.com/Departments/ML/Syllabus/4th+year+-+2020.pdf"
+        "https://drive.google.com/file/d/1ihNmcOIZvP8aGaJod9HQBO3PFYSrW-Wp/view"
       ],
       [
         "6th Sem Open Elective 2021-22",
@@ -2920,15 +3027,15 @@ class DummyData {
       "name": "MSRIT discord",
       'image': 'discord.png',
       'desc': "Discord for general discussions",
-      "website": "http://gdscrit.tech/",
+      "website": "https://discord.gg/VKKMvaWYsa",
       "linktree": "https://discord.gg/VKKMvaWYsa"
     },
     {
-      "name": "GDSC-RIT",
+      "name": "GDG on Campus RIT",
       'image': 'gdsc.png',
       'desc':
-          "GDSC RIT is the largest technical club in RIT whose main goal is to conduct events and workshops for the community that helps bring out the importance of development through the use of various technologies.",
-      "website": "http://gdscrit.tech/",
+          "GDG on Campus RIT (formerly GDSC-RIT) is a technical club in RIT whose main goal is to conduct events and workshops for the community that helps bring out the importance of development through the use of various technologies.",
+      "website": "https://linktr.ee/gdscmsrit",
       "linktree": "https://linktr.ee/gdscmsrit"
     },
     {

@@ -87,14 +87,15 @@ class CustomTheme {
   static LinearGradient linearGradient(context) {
     final sisData = Provider.of<SisData>(context);
     return LinearGradient(
-      begin: Alignment.bottomRight,
-      end: Alignment.topLeft,
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      stops: const [0.0, 0.55, 1.0],
       colors: (sisData.darkMode)
-          ? const [_darkBase, _darkBase, Color(0xff17181d), Color(0xff1d2026)]
+          ? const [Color(0xff171a20), Color(0xff12151a), _darkBase]
           : [
-              NeumorphicColors.background,
-              NeumorphicColors.background,
-              Colors.white,
+              const Color(0xfff7f9fa),
+              const Color(0xfff1f5f6),
+              const Color(0xffe9eff1),
             ],
     );
   }
@@ -102,30 +103,27 @@ class CustomTheme {
   static LinearGradient linearGradient2(context) {
     final sisData = Provider.of<SisData>(context);
     return LinearGradient(
-      begin: Alignment.bottomRight,
-      end: Alignment.topLeft,
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      stops: const [0.0, 1.0],
       colors: (sisData.darkMode)
-          ? const [_darkBase, Color(0xff17181d)]
-          : [
-              NeumorphicColors.background,
-              NeumorphicColors.background,
-              Colors.white,
-              Colors.white,
-            ],
+          ? const [Color(0xff171a20), _darkBase]
+          : [const Color(0xfff7f9fa), const Color(0xffe9eff1)],
     );
   }
 
   static LinearGradient linearGradientBG(context) {
     final sisData = Provider.of<SisData>(context);
     return LinearGradient(
-      begin: Alignment.bottomRight,
-      end: Alignment.topCenter,
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      stops: const [0.0, 0.58, 1.0],
       colors: (sisData.darkMode)
-          ? const [_darkBase, _darkBase, Color(0xff1d2026)]
+          ? const [Color(0xff171a20), Color(0xff12151a), _darkBase]
           : [
-              NeumorphicColors.background,
-              NeumorphicColors.background,
-              Colors.white,
+              const Color(0xfff7f9fa),
+              const Color(0xfff1f5f6),
+              const Color(0xffe9eff1),
             ],
     );
   }

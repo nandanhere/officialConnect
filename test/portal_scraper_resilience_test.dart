@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -25,6 +26,12 @@ class _FixturePages {
     if (uri.queryParameters['task'] == 'observation') {
       return responses['proctor']!;
     }
+    if (uri.queryParameters['task'] == 'timetable') {
+      return responses['timetable']!;
+    }
+    if (uri.queryParameters['task'] == 'seating') {
+      return responses['seating']!;
+    }
     if (uri.queryParameters['option'] == 'com_history') {
       return responses['results']!;
     }
@@ -46,6 +53,8 @@ void main() {
     'fees': _fixture('fees_variant.html'),
     'proctor': _fixture('proctor_variant.html'),
     'results': _fixture('results_variant.html'),
+    'timetable': _fixture('timetable_variant.html'),
+    'seating': _fixture('seating_variant.html'),
   };
 
   test('parses anonymized alternate portal layouts', () async {
@@ -64,6 +73,12 @@ void main() {
     expect((result['fees'] as List), hasLength(1));
     expect((result['prevResults'] as List), hasLength(1));
     expect(result['prevResults'][0]['results'][0]['Grade'], 'A');
+    expect((result['timetable'] as List), hasLength(2));
+    expect(result['timetable'][0]['room'], 'LAB 5');
+    expect((result['seating'] as List), hasLength(1));
+    expect(result['seating'][0]['room'], 'AB504');
+    expect(result['_sync']['sections']['timetable']['status'], 'ok');
+    expect(result['_sync']['sections']['seating']['status'], 'ok');
   });
 
   test('one malformed section cannot blank successful sections', () async {
@@ -80,6 +95,10 @@ void main() {
     expect(result['_sync']['outcome'], 'partial');
     expect(result['_sync']['sections']['attendance']['status'], 'partial');
     expect(result['_sync']['sections']['marks']['status'], 'partial');
+    expect(
+      result['_sync']['sections']['attendance']['failure_reason'],
+      'unknown',
+    );
   });
 
   test('disabled sections are skipped without blocking enabled data', () async {
@@ -100,6 +119,48 @@ void main() {
     expect((result['prevResults'] as List), hasLength(1));
   });
 
+  test('monday timetable tables parse with their date', () async {
+    final values = fixtures();
+    values['timetable'] = _fixture('timetable_monday_variant.html');
+    final pages = _FixturePages(values);
+    final result = await PortalScraper.forTesting(
+      navigateAndRead: pages.navigateAndRead,
+    ).scrapeAll();
+
+    final timetable = result['timetable'] as List;
+    expect(timetable, hasLength(2));
+    expect(timetable[0]['day'], 'MONDAY');
+    expect(timetable[0]['date'], '2026-09-14');
+    expect(result['_sync']['sections']['timetable']['status'], 'ok');
+  });
+
+  test('a hung page times out without stalling later sections', () async {
+    final values = fixtures();
+    final pages = _FixturePages(values);
+    Future<String> hangingRead(Uri uri) {
+      if (uri.queryParameters['task'] == 'timetable') {
+        return Completer<String>().future;
+      }
+      return pages.navigateAndRead(uri);
+    }
+
+    final watch = Stopwatch()..start();
+    final result = await PortalScraper.forTesting(
+      navigateAndRead: hangingRead,
+      pageReadTimeout: const Duration(milliseconds: 50),
+    ).scrapeAll();
+    watch.stop();
+
+    expect(watch.elapsed, lessThan(const Duration(seconds: 30)));
+    expect(result['_sync']['sections']['timetable']['status'], 'error');
+    expect(
+      result['_sync']['sections']['timetable']['failure_reason'],
+      'timeout',
+    );
+    expect(result['_sync']['sections']['seating']['status'], 'ok');
+    expect(result['_sync']['outcome'], 'partial');
+  });
+
   test(
     'missing course links are structural failures, not empty data',
     () async {
@@ -115,6 +176,14 @@ void main() {
 
       expect(result['_sync']['sections']['attendance']['status'], 'error');
       expect(result['_sync']['sections']['marks']['status'], 'error');
+      expect(
+        result['_sync']['sections']['attendance']['failure_reason'],
+        'missing_links',
+      );
+      expect(
+        result['_sync']['sections']['marks']['failure_reason'],
+        'missing_links',
+      );
       expect(result['_sync']['outcome'], 'partial');
     },
   );

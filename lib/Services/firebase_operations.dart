@@ -27,6 +27,9 @@ class FirebaseOperations {
         FirebaseCrashReporting.initialize(enabled: collectionEnabled),
       ]);
       SyncDiagnostics.configureCrashContext(FirebaseCrashReporting.setContext);
+      SyncDiagnostics.configureIssueReporting(
+        FirebaseCrashReporting.recordOperationalIssue,
+      );
       // A user can change this preference while Firebase is starting. Apply
       // the latest choice once initialization finishes instead of restoring
       // the value captured at launch.
@@ -46,8 +49,12 @@ class FirebaseOperations {
     ]);
     if (!collectionEnabled) {
       SyncDiagnostics.configureCrashContext(null);
+      SyncDiagnostics.configureIssueReporting(null);
     } else {
       SyncDiagnostics.configureCrashContext(FirebaseCrashReporting.setContext);
+      SyncDiagnostics.configureIssueReporting(
+        FirebaseCrashReporting.recordOperationalIssue,
+      );
     }
   }
 }

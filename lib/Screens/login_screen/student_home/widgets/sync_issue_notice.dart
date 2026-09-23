@@ -22,11 +22,11 @@ class SyncIssueNotice extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    if (hasVisibleData) return const SizedBox.shrink();
+
     final label = section == null
-        ? 'Some information is temporarily unavailable. We’ll keep showing everything we could retrieve.'
-        : hasVisibleData
-            ? 'This section could not be fully refreshed. Showing the latest available information.'
-            : 'This section is temporarily unavailable. We’re getting it checked.';
+        ? 'A few sections could not be updated.'
+        : 'Couldn’t update this section. Try again later.';
 
     return Container(
       margin: const EdgeInsets.only(top: 16, bottom: 8),

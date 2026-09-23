@@ -5,6 +5,7 @@ import 'package:official_connect/Providers/sisdata.dart';
 import 'package:official_connect/Screens/login_screen/login_screen.dart';
 import 'package:official_connect/Screens/login_screen/portal_login_screen.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
+import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,11 +44,15 @@ Future<void> openPortalRefresh(
   BuildContext context, {
   bool allowInteractiveFallback = true,
 }) async {
-  if (_portalRefreshInFlight) return;
+  if (_portalRefreshInFlight) {
+    unawaited(SyncDiagnostics.recordRefreshOutcome('in_flight'));
+    return;
+  }
   _portalRefreshInFlight = true;
   try {
     final messenger = ScaffoldMessenger.of(context);
     if (!FirebaseFeatureFlags.portalSyncEnabled) {
+      unawaited(SyncDiagnostics.recordRefreshOutcome('disabled'));
       if (allowInteractiveFallback) {
         messenger.showSnackBar(
           const SnackBar(
@@ -79,12 +84,14 @@ Future<void> openPortalRefresh(
     // Without a complete saved login the user must review the form, so keep
     // the original full-page flow.
     if (usn.isEmpty || dob.isEmpty || verificationValue.isEmpty) {
+      unawaited(SyncDiagnostics.recordRefreshOutcome('missing_login'));
       if (allowInteractiveFallback) await openFullSyncPage();
       return;
     }
     setBackgroundSyncState(BackgroundSyncState.updating);
     if (usn.trim().toUpperCase() == 'DUMMY') {
       await sisData.loadDummyData();
+      unawaited(SyncDiagnostics.recordRefreshOutcome('success'));
       setBackgroundSyncState(BackgroundSyncState.success);
       return;
     }
@@ -106,17 +113,31 @@ Future<void> openPortalRefresh(
               sisData.hasData &&
               sisData.usn.trim().toUpperCase() == usn.trim().toUpperCase(),
           onFinished: (result) {
-            entry.remove();
+            if (entry.mounted) entry.remove();
             if (!completion.isCompleted) completion.complete(result);
           },
         ),
       ),
     );
     Overlay.of(context, rootOverlay: true).insert(entry);
-    final synced = await completion.future;
+    var timedOut = false;
+    final synced = await completion.future.timeout(
+      const Duration(seconds: 90),
+      onTimeout: () {
+        timedOut = true;
+        if (entry.mounted) entry.remove();
+        unawaited(SyncDiagnostics.recordRefreshOutcome('timeout'));
+        return false;
+      },
+    );
     if (!context.mounted) return;
 
     if (synced == true) {
+      unawaited(
+        SyncDiagnostics.recordRefreshOutcome(
+          sisData.hasSyncIssues ? 'partial' : 'success',
+        ),
+      );
       setBackgroundSyncState(
         sisData.hasSyncIssues
             ? BackgroundSyncState.partial
@@ -132,6 +153,9 @@ Future<void> openPortalRefresh(
           ),
         );
     } else {
+      if (!timedOut) {
+        unawaited(SyncDiagnostics.recordRefreshOutcome('error'));
+      }
       setBackgroundSyncState(BackgroundSyncState.error);
       if (!allowInteractiveFallback) return;
       messenger

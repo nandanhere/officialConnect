@@ -54,11 +54,15 @@ class AttendanceGraph extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: Text(
-                    'average attendance',
-                    style: CustomTheme.textStyle(context),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: Text(
+                      'average attendance',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomTheme.textStyle(context),
+                    ),
                   ),
                 ),
               ],

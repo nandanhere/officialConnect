@@ -27,7 +27,8 @@ class Marks {
   static List<Marks> getList(List<dynamic> data) {
     final list = data
         .where((element) => (element as Map).isNotEmpty)
-        .map((e) => Marks(
+        .map(
+          (e) => Marks(
             avga1: e['class_average']["a1"],
             avga2: e['class_average']["a2"],
             avgt1: e['class_average']["t1"],
@@ -37,7 +38,9 @@ class Marks {
             a2: e['a2'],
             finalCie: e['final cie'],
             t1: e['t1'],
-            t2: e['t2']))
+            t2: e['t2'],
+          ),
+        )
         .toList();
 
     final reg = RegExp(r".*\((.*)\)");

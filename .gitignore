@@ -50,6 +50,12 @@ app.*.map.json
 /work/
 /outputs/
 
+# Release automation credentials are local-only.
+/secrets/
+/fastlane/*.json
+/fastlane/.env*
+/vendor/bundle/
+
 # Retired server-side scraper/proctor implementation. The production app is
 # intentionally on-device only; do not reintroduce local Lambda environments.
 /lambda_and_related/

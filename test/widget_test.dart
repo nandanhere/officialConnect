@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:official_connect/Classes/previous_result.dart';
@@ -7,6 +9,8 @@ import 'package:official_connect/Screens/login_screen/student_home/results_scree
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/cie_sub_screen/widgets/cie_graph.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/see_sub_screen/latest_results.dart';
 import 'package:official_connect/Screens/login_screen/student_home/results_screen/widgets/marks_card.dart';
+import 'package:official_connect/Screens/login_screen/student_home/seating_screen/seating_screen.dart';
+import 'package:official_connect/Screens/login_screen/student_home/timetable_screen/timetable_screen.dart';
 import 'package:official_connect/Screens/login_screen/student_home/unified_screen.dart';
 import 'package:official_connect/Services/exam_result_scraper.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
@@ -39,6 +43,23 @@ Map<String, dynamic> _marks(String name, {String finalCie = '40'}) => {
   'final cie': finalCie,
   'class_average': {'t1': '-', 't2': '-', 'a1': '-', 'a2': '-'},
 };
+
+Map<String, dynamic> _cachedData({bool includeCurrentSections = false}) => {
+  'name': 'Cached Student',
+  'proctorship': {'proctorial_notes': <dynamic>[], 'proctor_name': 'Not given'},
+  'prevResults': <dynamic>[],
+  'attendance': <dynamic>[],
+  'fees': <dynamic>[],
+  'marks': <dynamic>[],
+  if (includeCurrentSections) 'timetable': <dynamic>[],
+  if (includeCurrentSections) 'seating': <dynamic>[],
+};
+
+Future<void> _waitForCachedData(SisData sisData) async {
+  for (var i = 0; i < 40 && sisData.data.isEmpty; i++) {
+    await Future<void>.delayed(const Duration(milliseconds: 25));
+  }
+}
 
 void main() {
   test('cached portal data survives a simulated app restart', () async {
@@ -81,6 +102,187 @@ void main() {
     }
     expect(sisData.hasData, isFalse);
     expect(sisData.data, isEmpty);
+  });
+
+  test('a fresh legacy cache requests a schema refresh', () async {
+    SharedPreferences.setMockInitialValues({
+      'hasData': true,
+      'timeStamp': DateTime.now().millisecondsSinceEpoch,
+      'usn': 'LEGACY01',
+      'dob': '2000-01-01',
+      'data': jsonEncode(_cachedData()),
+    });
+
+    final sisData = SisData();
+    await _waitForCachedData(sisData);
+
+    expect(sisData.hasData, isTrue);
+    expect(sisData.needToUpdate, isTrue);
+    expect(sisData.syncStatusFor('timetable'), 'unknown');
+  });
+
+  test('a fresh current cache does not request another refresh', () async {
+    SharedPreferences.setMockInitialValues({
+      'hasData': true,
+      'timeStamp': DateTime.now().millisecondsSinceEpoch,
+      'cacheSchemaVersion': SisData.currentCacheSchemaVersion,
+      'usn': 'CURRENT01',
+      'dob': '2000-01-01',
+      'data': jsonEncode({
+        ..._cachedData(includeCurrentSections: true),
+        '_sync': {
+          'sections': {
+            'timetable': {'status': 'empty'},
+            'seating': {'status': 'empty'},
+          },
+        },
+      }),
+    });
+
+    final sisData = SisData();
+    await _waitForCachedData(sisData);
+
+    expect(sisData.needToUpdate, isFalse);
+    expect(sisData.syncStatusFor('timetable'), 'empty');
+  });
+
+  test('an expired current cache keeps its refresh requirement', () async {
+    SharedPreferences.setMockInitialValues({
+      'hasData': true,
+      'timeStamp': DateTime.now()
+          .subtract(const Duration(hours: 13))
+          .millisecondsSinceEpoch,
+      'cacheSchemaVersion': SisData.currentCacheSchemaVersion,
+      'data': jsonEncode(_cachedData(includeCurrentSections: true)),
+    });
+
+    final sisData = SisData();
+    await _waitForCachedData(sisData);
+
+    expect(sisData.needToUpdate, isTrue);
+  });
+
+  test('a failed timetable sync retries on the next launch', () async {
+    SharedPreferences.setMockInitialValues({
+      'hasData': true,
+      'timeStamp': DateTime.now().millisecondsSinceEpoch,
+      'cacheSchemaVersion': SisData.currentCacheSchemaVersion,
+      'data': jsonEncode({
+        ..._cachedData(includeCurrentSections: true),
+        '_sync': {
+          'sections': {
+            'timetable': {'status': 'error'},
+            'seating': {'status': 'empty'},
+          },
+        },
+      }),
+    });
+
+    final sisData = SisData();
+    await _waitForCachedData(sisData);
+
+    expect(sisData.needToUpdate, isTrue);
+    expect(sisData.syncStatusFor('timetable'), 'error');
+  });
+
+  test('a re-enabled timetable section retries on the next launch', () async {
+    FirebaseFeatureFlags.setValuesForTesting(const {
+      'scraper_timetable_enabled': true,
+    });
+    SharedPreferences.setMockInitialValues({
+      'hasData': true,
+      'timeStamp': DateTime.now().millisecondsSinceEpoch,
+      'cacheSchemaVersion': SisData.currentCacheSchemaVersion,
+      'data': jsonEncode({
+        ..._cachedData(includeCurrentSections: true),
+        '_sync': {
+          'sections': {
+            'timetable': {'status': 'disabled'},
+            'seating': {'status': 'empty'},
+          },
+        },
+      }),
+    });
+
+    final sisData = SisData();
+    await _waitForCachedData(sisData);
+
+    expect(sisData.needToUpdate, isTrue);
+    FirebaseFeatureFlags.setValuesForTesting(const {});
+  });
+
+  testWidgets('legacy timetable cache offers an update action', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final sisData = SisData();
+    await sisData.loadDummyData();
+    await sisData.applyPortalData(
+      {
+        'name': 'Legacy Cache Student',
+        '_sync': {'sections': const {}},
+      },
+      'LEGACY01',
+      '2000-01-01',
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: sisData,
+        child: const MaterialApp(home: TimetableScreen()),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('Update to load your timetable'), findsOneWidget);
+    expect(find.text('Update data'), findsOneWidget);
+    expect(find.text('No timetable available'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('legacy seating cache reports a coarse exam seating state', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final sisData = SisData();
+    await sisData.loadDummyData();
+    await sisData.applyPortalData(
+      {
+        'name': 'Legacy Cache Student',
+        '_sync': {'sections': const {}},
+      },
+      'LEGACY01',
+      '2000-01-01',
+    );
+
+    final events = <Map<String, Object>>[];
+    SyncDiagnostics.configure((name, parameters) async {
+      events.add({'name': name, ...parameters});
+    });
+    await SyncDiagnostics.setEnabled(true);
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: sisData,
+        child: const MaterialApp(home: SeatingScreen()),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+
+    final states = events
+        .where((event) => event['name'] == 'feature_state_shown')
+        .toList();
+    expect(states, hasLength(1));
+    expect(states.single['feature'], 'exam_seating');
+    expect(states.single['state'], 'legacy_cache');
+    expect(events.toString(), isNot(contains('LEGACY01')));
+    expect(events.toString(), isNot(contains('Legacy Cache Student')));
+    expect(tester.takeException(), isNull);
+
+    SyncDiagnostics.configure(null);
+    await SyncDiagnostics.setEnabled(true);
   });
 
   test('examination result HTML is converted into native result data', () {
@@ -349,6 +551,14 @@ void main() {
   testWidgets('stale cached data remains navigable during refresh', (
     WidgetTester tester,
   ) async {
+    // Phone-width surface: at tablet widths Unified shows a
+    // NavigationRail instead of the BottomNavigationBar asserted below.
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
     SharedPreferences.setMockInitialValues({});
     final sisData = SisData();
     await sisData.loadDummyData();

@@ -16,10 +16,11 @@ class SisProctorData {
   SisProctorData(this.messages, this.name, this.phone, this.email, this.branch);
   static SisProctorData proctorData(Map<String, dynamic> data) {
     return SisProctorData(
-        ProctorMessage.getMessageList(data['proctorial_notes']),
-        data['proctor_name'] ?? 'Not given',
-        data['phone'] ?? 'Not given',
-        data['email'] ?? 'Not given',
-        data['branch'] ?? 'Not given');
+      ProctorMessage.getMessageList(data['proctorial_notes']),
+      data['proctor_name'] ?? 'Not given',
+      data['phone'] ?? 'Not given',
+      data['email'] ?? 'Not given',
+      data['branch'] ?? 'Not given',
+    );
   }
 }
