@@ -145,19 +145,27 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           title: const Text('Pick a date'),
-          content: SizedBox(
-            height: size.height * 0.5,
-            width: size.width * 0.8,
-            child: Column(
-              children: <Widget>[
-                Center(child: getDateRangePicker()),
-                MaterialButton(
-                  child: const Text("OK"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+          content: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: size.height * 0.6,
+              maxWidth: size.width * 0.85,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Center(child: getDateRangePicker()),
+                  ),
+                  MaterialButton(
+                    child: const Text("OK"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -365,6 +373,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                       child: DropdownButtonFormField<String>(
                                         initialValue: verificationType,
+                                        isExpanded: true,
                                         decoration: InputDecoration(
                                           labelText: 'Verification type',
                                           labelStyle: textStyle,
@@ -374,12 +383,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                             value: "Father's mobile number",
                                             child: Text(
                                               "Father's mobile number",
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                           DropdownMenuItem(
                                             value: "Mother's mobile number",
                                             child: Text(
                                               "Mother's mobile number",
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                           DropdownMenuItem(

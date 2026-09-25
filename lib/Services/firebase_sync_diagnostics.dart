@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:official_connect/Services/app_distribution.dart';
+import 'package:official_connect/Services/firebase_crash_reporting.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:official_connect/firebase_options.dart';
 
@@ -29,8 +30,18 @@ class FirebaseSyncDiagnostics {
         await SyncDiagnostics.setEnabled(false);
       }
       SyncDiagnostics.configure(
-        (name, parameters) =>
-            analytics.logEvent(name: name, parameters: parameters),
+        (name, parameters) async {
+          await analytics.logEvent(name: name, parameters: parameters);
+          // Leave a bounded trail so a crash during a long refresh shows
+          // which section the sync reached. Never affects the event stream.
+          final crumb = FirebaseCrashReporting.breadcrumbFor(
+            name,
+            parameters,
+          );
+          if (crumb != null) {
+            await FirebaseCrashReporting.logBreadcrumb(crumb);
+          }
+        },
         collectionToggle: analytics.setAnalyticsCollectionEnabled,
       );
       // Use the bounded Flutter route as both name and class so the
