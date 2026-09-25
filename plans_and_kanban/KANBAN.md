@@ -192,6 +192,29 @@ Console-gated cards (require Firebase/GA/Crashlytics account access):
   per slot, a day with any miss colors red. `test/attendance_day_slots_test`
   3/3 pass.
 
+## Post-1.1.5: Firebase Performance Monitoring (spec)
+
+Why: GA4 cannot do percentiles on custom params; Perf gives p50/p90/p95
+per trace with zero console configuration — the permanent answer to
+"what is slow" for F3 and beyond.
+Scope: add `firebase_performance` plugin (pubspec + Android Gradle
+plugin + iOS pod), one `PerformanceTraces` wrapper next to
+`SyncDiagnostics` honoring the same fail-closed distribution gate and
+local-build suppression, ~10 custom traces (7 scrape sections + full
+sync + app start + portal login), unit tests on trace naming/allowlist
+and opt-out inertness. No console writes needed (auto-dashboard).
+Watch: SDK size + data-volume sampling defaults; verify symbolicated
+release builds still pass `android_release_check.sh`.
+Status: spec only — implement after 1.1.5 ships.
+
+## Crash breadcrumbs (landed 2026-09-23, uncommitted)
+
+`FirebaseCrashReporting.breadcrumbFor` + `logBreadcrumb`, wired into the
+Firebase event sink: every sync_section/sync_finished/operation_failure/
+refresh_finished leaves a bounded trail (`sync:timetable:ok`) so crashes
+during long refreshes show where the sync died. Unit-tested allowlist;
+inert when collection is off.
+
 ## 1.1.5 release (cutting 2026-09-23, version 1.1.5+13)
 
 Rollout gates (expedited, frequent-users-first): internal testing →
@@ -212,6 +235,32 @@ tests). Note: one widget_test needed a phone-width surface after the
 uncommitted adaptive-nav work (rail replaces bottom bar ≥600px) —
 test-only fix, flag if restyling. Blocked items stay out: replacement
 club, higher-sem syllabus (Task 5 running), F3 tuning (Sep 30+ data).
+
+## Analytics review (2026-09-23, post-1.1.5 commit)
+
+Re-read all of sync_diagnostics, firebase_sync_diagnostics,
+firebase_operations, firebase_crash_reporting, portal_refresh branches,
+and every recordScreen/recordFeature/recordResult call site. Findings:
+no product bugs — every refresh branch records its outcome, all feature
+strings and screen names are allowlisted, crash-context keys match the
+Crashlytics filter, _deliver/_reportScreen can never break login/sync,
+opt-out suppresses events+contexts+issues+screens. Two behaviors locked
+in as contract instead: refresh_finished stays background-only (full
+logins excluded by design), and the screen-reporter replay fires once on
+attach. New `test/analytics_event_contract_test.dart` emulates 7 flows
+(timeout/missing-login/full-login/screen/failure/opt-out/pending-cap);
+suite now 91/91 green, analyze clean. Uncommitted — fold into next commit.
+
+## F7 small-screen login UI (found on emulator, fixed 2026-09-23, uncommitted)
+
+- Date picker dialog used a fixed-size box → RenderFlex overflow strip on
+  320px phones (OK button unreachable). Now constrained + scrollable on
+  both axes.
+- Verification-type dropdown item ("Father's mobile number") overflowed
+  its box 163px in fallback fonts; field is now expanded with ellipsis.
+- New `test/login_date_picker_test.dart` (320x568: open, no-overflow,
+  dismiss). Suite 94/94 green, analyze clean. (No typo anywhere —
+  "temporarily" verified correct; misread screenshot.)
 
 ## Rules
 

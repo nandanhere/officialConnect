@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:official_connect/Services/app_distribution.dart';
+import 'package:official_connect/Services/firebase_crash_reporting.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
 
@@ -639,6 +640,46 @@ void main() {
     await SyncDiagnostics.recordScreen('home');
 
     expect(events, isEmpty);
+  });
+
+  test('breadcrumbs summarize sync flow with bounded tokens', () async {
+    expect(
+      FirebaseCrashReporting.breadcrumbFor('sync_section', {
+        'section': 'timetable',
+        'outcome': 'ok',
+      }),
+      'sync:timetable:ok',
+    );
+    expect(
+      FirebaseCrashReporting.breadcrumbFor('sync_finished', {
+        'outcome': 'partial',
+        'sync_mode': 'refresh',
+      }),
+      'sync:finished:partial:refresh',
+    );
+    expect(
+      FirebaseCrashReporting.breadcrumbFor('refresh_finished', {
+        'outcome': 'timeout',
+      }),
+      'refresh:timeout',
+    );
+    expect(
+      FirebaseCrashReporting.breadcrumbFor('app_screen_view', {
+        'screen': 'home',
+      }),
+      isNull,
+    );
+    expect(
+      FirebaseCrashReporting.breadcrumbFor('sync_section', {
+        'section': 'student_PRIVATE_ACCOUNT <html>',
+        'outcome': 'ok',
+      }),
+      isNull,
+    );
+  });
+
+  test('breadcrumb logging is inert when collection is off', () async {
+    await FirebaseCrashReporting.logBreadcrumb('sync:timetable:ok');
   });
 
   test('crash context carries the app version for release segmentation',
