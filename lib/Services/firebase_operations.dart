@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:official_connect/Services/app_distribution.dart';
 import 'package:official_connect/Services/firebase_crash_reporting.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
+import 'package:official_connect/Services/firebase_performance_traces.dart';
 import 'package:official_connect/Services/firebase_sync_diagnostics.dart';
 import 'package:official_connect/Services/sync_diagnostics.dart';
 import 'package:official_connect/firebase_options.dart';
@@ -25,6 +26,7 @@ class FirebaseOperations {
         FirebaseSyncDiagnostics.initialize(enabled: collectionEnabled),
         FirebaseFeatureFlags.initialize(),
         FirebaseCrashReporting.initialize(enabled: collectionEnabled),
+        FirebasePerformanceTraces.initialize(enabled: collectionEnabled),
       ]);
       SyncDiagnostics.configureCrashContext(FirebaseCrashReporting.setContext);
       SyncDiagnostics.configureIssueReporting(
@@ -46,6 +48,7 @@ class FirebaseOperations {
     await Future.wait([
       FirebaseSyncDiagnostics.setEnabled(collectionEnabled),
       FirebaseCrashReporting.setEnabled(collectionEnabled),
+      FirebasePerformanceTraces.setEnabled(collectionEnabled),
     ]);
     if (!collectionEnabled) {
       SyncDiagnostics.configureCrashContext(null);

@@ -3,6 +3,7 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart';
 import 'package:official_connect/Services/portal_session.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
+import 'package:official_connect/Services/firebase_performance_traces.dart';
 
 /// Parses the portal's authenticated HTML into the JSON shape used by the
 /// existing Flutter models. Requests are made with the WebView session cookie.
@@ -51,6 +52,8 @@ class PortalScraper {
   Future<Map<String, dynamic>> scrapeAll() async {
     final syncWatch = Stopwatch()..start();
     final sections = <String, dynamic>{};
+    // Overall sync trace; a throw before the matching stop simply drops it.
+    unawaited(FirebasePerformanceTraces.startPortalSync());
     void recordSection(
       String name,
       String status, {
@@ -68,6 +71,15 @@ class PortalScraper {
         'duration_ms': durationMs,
         if (failureReason != null) 'failure_reason': failureReason,
       };
+      // Single choke point for section completion: stops the matching
+      // performance trace (no-op when disabled or never started).
+      unawaited(
+        FirebasePerformanceTraces.stopSection(
+          name,
+          status: status,
+          count: count,
+        ),
+      );
     }
 
     onProgress?.call('Reading your profile');
@@ -77,6 +89,8 @@ class PortalScraper {
     final dashboard = await _readPage(PortalSession.dashboardUri);
     final document = parser.parse(dashboard);
     final result = <String, dynamic>{};
+    final profileWatch = Stopwatch()..start();
+    unawaited(FirebasePerformanceTraces.startSection('profile'));
     if (FirebaseFeatureFlags.sectionEnabled('profile')) {
       _parseStudentSummary(document, result);
     }
@@ -116,6 +130,7 @@ class PortalScraper {
       count: profileCount,
       attempted: profileValues.length,
       failed: profileValues.length - profileCount,
+      durationMs: profileWatch.elapsedMilliseconds,
       failureReason: profileCount == profileValues.length
           ? null
           : 'missing_fields',
@@ -145,6 +160,7 @@ class PortalScraper {
     String? attendanceFailureReason;
     var invalidAttendancePages = 0;
     final attendanceWatch = Stopwatch()..start();
+    unawaited(FirebasePerformanceTraces.startSection('attendance'));
     if (attendanceLinks.isNotEmpty) {
       onProgress?.call('Syncing attendance');
     }
@@ -202,6 +218,7 @@ class PortalScraper {
     String? marksFailureReason;
     var invalidMarksPages = 0;
     final marksWatch = Stopwatch()..start();
+    unawaited(FirebasePerformanceTraces.startSection('marks'));
     if (marksLinks.isNotEmpty) onProgress?.call('Syncing internal marks');
     for (final uri in marksLinks) {
       try {
@@ -264,6 +281,7 @@ class PortalScraper {
       onProgress?.call('Syncing proctor updates');
     }
     final proctorWatch = Stopwatch()..start();
+    unawaited(FirebasePerformanceTraces.startSection('proctor'));
     Document? proctorDocument;
     try {
       if (!FirebaseFeatureFlags.sectionEnabled('proctor')) {
@@ -309,6 +327,7 @@ class PortalScraper {
     } else if (feeLink.isNotEmpty) {
       onProgress?.call('Syncing fee history');
       final feeWatch = Stopwatch()..start();
+      unawaited(FirebasePerformanceTraces.startSection('fees'));
       try {
         final feeDocument = parser.parse(await _readPage(feeLink.first));
         _parseFees(feeDocument, result);
@@ -341,6 +360,7 @@ class PortalScraper {
     }
 
     final timetableWatch = Stopwatch()..start();
+    unawaited(FirebasePerformanceTraces.startSection('timetable'));
     if (!FirebaseFeatureFlags.sectionEnabled('timetable')) {
       result['timetable'] = <dynamic>[];
       recordSection('timetable', 'disabled');
@@ -382,6 +402,7 @@ class PortalScraper {
     }
 
     final seatingWatch = Stopwatch()..start();
+    unawaited(FirebasePerformanceTraces.startSection('seating'));
     if (!FirebaseFeatureFlags.sectionEnabled('seating')) {
       result['seating'] = <dynamic>[];
       recordSection('seating', 'disabled');
@@ -422,6 +443,7 @@ class PortalScraper {
       onProgress?.call('Syncing semester results');
     }
     final resultsWatch = Stopwatch()..start();
+    unawaited(FirebasePerformanceTraces.startSection('results'));
     Document? resultsDocument;
     var resultAttempts = 0;
     try {
@@ -464,15 +486,19 @@ class PortalScraper {
         .whereType<Map>()
         .map((section) => section['status'])
         .toList();
+    final syncOutcome =
+        statuses.any((status) => status == 'error' || status == 'partial')
+        ? 'partial'
+        : 'complete';
     result['_sync'] = {
       'version': 1,
-      'outcome':
-          statuses.any((status) => status == 'error' || status == 'partial')
-          ? 'partial'
-          : 'complete',
+      'outcome': syncOutcome,
       'duration_ms': syncWatch.elapsedMilliseconds,
       'sections': sections,
     };
+    unawaited(
+      FirebasePerformanceTraces.stopPortalSync(status: syncOutcome),
+    );
     assert(() {
       // ignore: avoid_print
       print(
