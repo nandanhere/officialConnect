@@ -242,6 +242,7 @@ class SyncDiagnostics {
         'attempted_count': _safeCount(value['attempted']),
         'failed_count': _safeCount(value['failed']),
         'duration_ms': _safeDuration(value['duration_ms']),
+        'duration_bucket': _durationBucket(value['duration_ms']),
         'sync_mode': refresh ? 'refresh' : 'first_login',
         'parser_version': _safeCount(sync['version']),
         if (value['failure_reason'] != null)
@@ -252,6 +253,7 @@ class SyncDiagnostics {
       'outcome': _safeOutcome(sync['outcome']),
       'section_count': sections.length.clamp(0, _sections.length),
       'duration_ms': _safeDuration(sync['duration_ms']),
+      'duration_bucket': _durationBucket(sync['duration_ms']),
       'sync_mode': refresh ? 'refresh' : 'first_login',
       'parser_version': _safeCount(sync['version']),
     });
@@ -534,6 +536,24 @@ class SyncDiagnostics {
   static int _safeDuration(Object? value) {
     final duration = int.tryParse(value?.toString() ?? '') ?? 0;
     return duration.clamp(0, 600000);
+  }
+
+  /// Coarse duration histogram bucket. GA4 custom metrics expose only
+  /// aggregates (no percentiles), so this dimension — once registered in
+  /// the GA4 console — makes section and sync p50/p90/p99 directly
+  /// queryable via event counts per bucket. Boundaries align with the
+  /// scraper's own caps (3s fetch, 6s content wait, 15s load poll, 40s
+  /// page read, 90s overall) so each bucket names the regime that bound
+  /// the read. Values are part of the analytics contract: never rename.
+  static String _durationBucket(Object? value) {
+    final ms = _safeDuration(value);
+    if (ms < 1000) return 'under_1s';
+    if (ms < 3000) return '1_to_3s';
+    if (ms < 6000) return '3_to_6s';
+    if (ms < 15000) return '6_to_15s';
+    if (ms < 40000) return '15_to_40s';
+    if (ms < 90000) return '40_to_90s';
+    return 'over_90s';
   }
 
   static String _safePreferenceValue(String preference, Object? value) {

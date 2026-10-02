@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:official_connect/Services/app_distribution.dart';
+import 'package:official_connect/Services/firebase_app_check.dart';
 import 'package:official_connect/Services/firebase_crash_reporting.dart';
 import 'package:official_connect/Services/firebase_feature_flags.dart';
 import 'package:official_connect/Services/firebase_performance_traces.dart';
@@ -22,6 +23,9 @@ class FirebaseOperations {
       }
       final collectionEnabled =
           enabled && AppDistribution.allowsProductionTelemetry;
+      // Attestation starts before other Firebase services issue requests so
+      // tokens are available once enforcement is enabled server-side.
+      await FirebaseAppCheckSetup.initialize();
       await Future.wait([
         FirebaseSyncDiagnostics.initialize(enabled: collectionEnabled),
         FirebaseFeatureFlags.initialize(),

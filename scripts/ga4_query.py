@@ -12,7 +12,8 @@ Auth: uses Application Default Credentials — set GOOGLE_APPLICATION_CREDENTIAL
 to a service-account JSON key that has Viewer on the GA4 property. The key
 must NEVER live in the repo. Property id via --property or GA4_PROPERTY_ID.
 
-Requires: pip install google-analytics-data
+Requires: python3 -m venv .venv; .venv/bin/pip install -r scripts/requirements-ga4.txt
+Run: source .venv/bin/activate; python scripts/ga4_query.py ...
 """
 
 import argparse
@@ -103,15 +104,21 @@ def cmd_section_timing(args) -> int:
     return 0
 
 
-# 28-day per-section mean durations (ms), measured 2026-09-25. A daily
-# mean above 2x baseline is flagged; retune after major portal changes.
+# 7-day per-section mean durations (ms), refresh syncs, measured 2026-10-02
+# (KANBAN A4 re-measure; ~1900 events/section). A daily mean above 2x
+# baseline is flagged; retune after major portal changes. These reflect the
+# released code (broken seating/results waits inflate those two); re-measure
+# again after the fast-refresh batch ships, when results/seating means
+# should collapse toward their sub-second healthy latencies.
 SECTION_BASELINES_MS = {
-    "results": 30800,
-    "fees": 10000,
-    "marks": 9500,
-    "attendance": 7900,
-    "proctor": 1900,
-    "profile": 0,  # uninstrumented upstream; excluded from checks
+    "results": 21900,
+    "seating": 16900,
+    "marks": 9600,
+    "attendance": 7000,
+    "fees": 1800,
+    "proctor": 1700,
+    "timetable": 1400,
+    "profile": 0,  # parse-only timing; excluded from checks
 }
 
 _SYNC_OK = {"ok", "complete", "success", "partial", "empty"}

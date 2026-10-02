@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:html/parser.dart' as parser;
 import 'package:official_connect/Services/portal_session.dart';
 
 void main() {
@@ -27,14 +30,35 @@ void main() {
   });
 
   test('history and fee pages retain their dedicated selectors', () {
+    final resultsUri = Uri.parse(
+      'https://parents.msrit.edu/newparents/index.php'
+      '?option=com_history&task=getResult',
+    );
+    final seatingUri = Uri.parse(
+      'https://parents.msrit.edu/newparents/index.php'
+      '?option=com_history&task=seating',
+    );
     expect(
-      portalExpectedContentSelector(
-        Uri.parse(
-          'https://parents.msrit.edu/newparents/index.php'
-          '?option=com_history&task=getResult',
-        ),
-      ),
-      'table.res-table',
+      portalExpectedContentSelector(resultsUri),
+      'table.res-table, table[data-section="semester-result"]',
+    );
+    expect(
+      portalExpectedContentSelector(seatingUri),
+      'h3, [data-section="seating"]',
+    );
+    final resultsPage = parser.parse(
+      File('test/fixtures/results_variant.html').readAsStringSync(),
+    );
+    final seatingPage = parser.parse(
+      File('test/fixtures/seating_variant.html').readAsStringSync(),
+    );
+    expect(
+      resultsPage.querySelector(portalExpectedContentSelector(resultsUri)!),
+      isNotNull,
+    );
+    expect(
+      seatingPage.querySelector(portalExpectedContentSelector(seatingUri)!),
+      isNotNull,
     );
     expect(
       portalExpectedContentSelector(
@@ -45,6 +69,53 @@ void main() {
       ),
       'table.cn-pay-table',
     );
+  });
+
+  test('attendance navigation matches the requested course link', () {
+    final firstCourse = Uri.parse(
+      'https://parents.msrit.edu/newparents/index.php'
+      '?option=com_studentdashboard&controller=studentdashboard'
+      '&task=attendencelist&id=course-a&ksign=session-a',
+    );
+    final secondCourse = Uri.parse(
+      'https://parents.msrit.edu/newparents/index.php'
+      '?option=com_studentdashboard&controller=studentdashboard'
+      '&task=attendencelist&id=course-b&ksign=session-a',
+    );
+
+    expect(portalLinkMatchesTarget(secondCourse, firstCourse), isFalse);
+    expect(portalLinkMatchesTarget(secondCourse, secondCourse), isTrue);
+    expect(
+      portalLinkMatchesTarget(
+        Uri.parse(
+          'https://parents.msrit.edu/newparents/index.php'
+          '?task=attendencelist&id=course-b',
+        ),
+        secondCourse,
+      ),
+      isTrue,
+    );
+  });
+
+  test('content waits are uniform and task-based, never option-based', () {
+    final resultsUri = Uri.parse(
+      'https://parents.msrit.edu/newparents/index.php'
+      '?option=com_history&task=getResult',
+    );
+    final seatingUri = Uri.parse(
+      'https://parents.msrit.edu/newparents/index.php'
+      '?option=com_history&task=seating',
+    );
+    final attendanceUri = Uri.parse(
+      'https://parents.msrit.edu/newparents/index.php'
+      '?option=com_studentdashboard&controller=studentdashboard'
+      '&task=attendencelist&id=course-a',
+    );
+    // Regression: seating links carry option=com_history and must not
+    // inherit the long results wait through the option fallback.
+    expect(portalContentWaitAttempts(resultsUri), 24);
+    expect(portalContentWaitAttempts(seatingUri), 24);
+    expect(portalContentWaitAttempts(attendanceUri), 24);
   });
 
   test('portal failures expose only bounded diagnostic reasons', () {

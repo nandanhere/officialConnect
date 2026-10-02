@@ -26,7 +26,8 @@ String? portalExpectedContentSelector(Uri target) {
       '.cn-legend, table.cn-attend-list1, table.cn-attend-list2',
     'ciedetails' => 'tr.odd, .cn-cie-stat, th[colspan="9"]',
     'observation' => 'table.cn-res-table, .md-card-head-text',
-    'getResult' => 'table.res-table',
+    'getResult' => 'table.res-table, table[data-section="semester-result"]',
+    'seating' => 'h3, [data-section="seating"]',
     'studFee' => 'table.cn-pay-table',
     'dashboard' => '.cn-stu-data, .cn-student-header, .cn-basic-details',
     _ => switch (target.queryParameters['option']) {
@@ -35,6 +36,33 @@ String? portalExpectedContentSelector(Uri target) {
       _ => null,
     },
   };
+}
+
+@visibleForTesting
+int portalContentWaitAttempts(Uri target) {
+  // Attempts derive from the task, never the option: seating links carry
+  // option=com_history, and an option-based rule traps them in the long
+  // results wait (fleet: ~17s per refresh on a page that can match in
+  // under a second). Every section waits the same bounded window; the
+  // background-fetch fast path (see PortalScraper) subsumes slow renders,
+  // so no section needs an extended window anymore. The target stays in
+  // the signature so a future per-task window cannot silently become an
+  // option-based one again.
+  return 24;
+}
+
+@visibleForTesting
+bool portalLinkMatchesTarget(Uri target, Uri candidate) {
+  if (target.origin != candidate.origin || target.path != candidate.path) {
+    return false;
+  }
+  // Attendance and CIE links share the same route but identify different
+  // courses with `id`. Match every requested parameter (except the opaque
+  // session signature), not only the route tuple, or every scrape can click
+  // the first course link on the dashboard.
+  return target.queryParameters.entries
+      .where((entry) => entry.key != 'ksign')
+      .every((entry) => candidate.queryParameters[entry.key] == entry.value);
 }
 
 /// Owns the portal browser session used by the on-device scraper.
@@ -153,12 +181,14 @@ class PortalSession {
           '''
         (function() {
           const target = new URL(${jsonEncode(target.toString())}, location.href);
-          const routeKeys = ['option', 'controller', 'task'];
+          const requestedParams = Array.from(target.searchParams.entries())
+            .filter(function(entry) { return entry[0] !== 'ksign'; });
           const link = Array.from(document.querySelectorAll('a[href]')).find(function(anchor) {
             const candidate = new URL(anchor.href, location.href);
-            return routeKeys.every(function(key) {
-              return !target.searchParams.has(key) ||
-                candidate.searchParams.get(key) === target.searchParams.get(key);
+            return candidate.origin === target.origin &&
+              candidate.pathname === target.pathname &&
+              requestedParams.every(function(entry) {
+                return candidate.searchParams.get(entry[0]) === entry[1];
             });
           });
           if (link) link.click();
@@ -168,25 +198,25 @@ class PortalSession {
     );
     for (var attempt = 0; attempt < 60; attempt++) {
       await Future.delayed(const Duration(milliseconds: 250));
-      final currentMarker = await controller.evaluateJavascript(
-        source: 'window.__officialConnectNavigationMarker',
-      );
-      final ready = await controller.evaluateJavascript(
-        source: 'document.readyState',
+      // One bridge round trip per poll instead of two: marker and readiness
+      // are read in a single evaluation. The marker is a microsecond clock
+      // value, so it never contains the separator.
+      final poll = await controller.evaluateJavascript(
+        source:
+            'window.__officialConnectNavigationMarker + "|" + document.readyState',
       );
       // Android WebView serializes JavaScript strings with quotes. Without
       // normalizing the marker, the old dashboard can look like a newly loaded
       // document and be returned before location.assign has even started.
-      final markerValue = currentMarker?.toString().replaceAll('"', '');
-      final readyState = ready?.toString().replaceAll('"', '');
+      final parts = poll?.toString().replaceAll('"', '').split('|') ?? const [];
+      final markerValue = parts.isNotEmpty ? parts.first : '';
+      final readyState = parts.length > 1 ? parts.last : '';
       if (markerValue != marker && readyState == 'complete') {
         // Wait for page-specific content rather than using a fixed delay. Most
-        // pages are ready in well under a second; result history is allowed a
-        // little longer because the portal initializes it asynchronously.
+        // pages are ready in well under a second.
         final expectedSelector = portalExpectedContentSelector(target);
         if (expectedSelector != null) {
-          final maxContentAttempts =
-              target.queryParameters['option'] == 'com_history' ? 48 : 24;
+          final maxContentAttempts = portalContentWaitAttempts(target);
           var contentFound = false;
           for (
             var contentAttempt = 0;
@@ -236,28 +266,40 @@ class PortalSession {
     throw PortalRequestException(target, 'browser navigation timed out');
   }
 
-  Future<String> fetchHtml(Uri uri) async {
+  Future<String> fetchHtml(
+    Uri uri, {
+    Duration timeout = const Duration(seconds: 20),
+    bool preserveHref = false,
+  }) async {
     final controller = _controller;
     if (controller == null) {
       throw PortalRequestException(uri, 'browser is not ready');
     }
-    final target = _withSession(uri);
+    final target = preserveHref ? uri : _withSession(uri);
     final result = await controller
         .callAsyncJavaScript(
           functionBody: '''
+        const abort = new AbortController();
+        const timer = setTimeout(() => abort.abort(), timeoutMs);
+        try {
         const response = await fetch(url, {
           method: 'GET',
           credentials: 'include',
           redirect: 'follow',
-          cache: 'no-store'
+          cache: 'no-store',
+          signal: abort.signal
         });
         const body = await response.text();
         return {status: response.status, url: response.url, body: body};
+        } finally { clearTimeout(timer); }
       ''',
-          arguments: {'url': target.toString()},
+          arguments: {
+            'url': target.toString(),
+            'timeoutMs': timeout.inMilliseconds,
+          },
         )
         .timeout(
-          const Duration(seconds: 20),
+          timeout + const Duration(seconds: 1),
           onTimeout: () {
             throw PortalRequestException(target, 'browser request timed out');
           },
@@ -327,28 +369,55 @@ class PortalSession {
     }
   }
 
-  Future<bool> isAuthenticated() async {
+  /// Returns the current page HTML when the browser is already showing the
+  /// signed dashboard, skipping a redundant reload. A fresh login always
+  /// lands on the dashboard, so most scrapes can read it directly instead
+  /// of navigating to it again. Returns null (caller falls back to a real
+  /// navigation) unless the dashboard markers are present right now.
+  Future<String?> currentDashboardHtml() async {
     final controller = _controller;
-    if (controller != null) {
-      try {
-        final currentPage = await controller.evaluateJavascript(
-          source: '''
+    if (controller == null) return null;
+    try {
+      final state = await controller
+          .evaluateJavascript(source: _pageStateScript)
+          .timeout(const Duration(seconds: 10));
+      if (state?.toString().replaceAll('"', '') != 'dashboard') return null;
+      return await currentHtml().timeout(const Duration(seconds: 10));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static const _pageStateScript = '''
           (function() {
             const hasLogin = !!document.querySelector('input[name="username"], #username');
             const hasDashboard = !!document.querySelector(
               '.cn-stu-data, .cn-student-header, .cn-basic-details'
             );
-            return !hasLogin && hasDashboard;
+            if (hasDashboard && !hasLogin) return 'dashboard';
+            if (hasLogin && !hasDashboard) return 'login';
+            return 'unknown';
           })();
-        ''',
+        ''';
+
+  Future<bool> isAuthenticated() async {
+    final controller = _controller;
+    if (controller != null) {
+      try {
+        final currentPage = await controller.evaluateJavascript(
+          source: _pageStateScript,
         );
-        if (currentPage == true || currentPage?.toString() == 'true') {
+        final state = currentPage?.toString().replaceAll('"', '');
+        if (state == 'dashboard') {
           final currentUrl = await controller.getUrl();
           if (currentUrl != null) {
             _authenticatedEntryUri = Uri.tryParse(currentUrl.toString());
           }
           return true;
         }
+        // A visible login form with no dashboard markers is a definitive
+        // negative: skip the dashboard fetch probe below entirely.
+        if (state == 'login') return false;
       } catch (_) {
         // Fall through to an authenticated dashboard request.
       }

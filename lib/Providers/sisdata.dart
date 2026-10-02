@@ -142,14 +142,15 @@ class SisData with ChangeNotifier {
       final storedSchemaVersion = prefs.getInt(_cacheSchemaVersionKey) ?? 0;
       final missingCurrentSections =
           !_data.containsKey('timetable') || !_data.containsKey('seating');
-      final staleCurrentSections = const ['timetable', 'seating'].any((
-        section,
-      ) {
-        final status = syncStatusFor(section);
-        return status == 'error' ||
-            (status == 'disabled' &&
-                FirebaseFeatureFlags.sectionEnabled(section));
-      });
+      final staleCurrentSections = const ['attendance', 'timetable', 'seating']
+          .any((section) {
+            final status = syncStatusFor(section);
+            return status == 'error' ||
+                status == 'partial' ||
+                status == 'pending' ||
+                (status == 'disabled' &&
+                    FirebaseFeatureFlags.sectionEnabled(section));
+          });
       needToUpdate =
           timestampNeedsRefresh ||
           storedSchemaVersion < currentCacheSchemaVersion ||
@@ -233,7 +234,13 @@ class SisData with ChangeNotifier {
     _dob = dob;
     _hasData = true;
     isValidData = true;
-    needToUpdate = false;
+    final unresolvedRefresh = const ['attendance', 'timetable', 'seating'].any((
+      section,
+    ) {
+      final status = (sections[section] as Map?)?['status'];
+      return status == 'error' || status == 'partial' || status == 'pending';
+    });
+    needToUpdate = unresolvedRefresh;
     await setVariables();
     if (!isValidData || _data.isEmpty) {
       throw const FormatException('Portal data is incompatible with the app');
@@ -572,4 +579,9 @@ class SisData with ChangeNotifier {
       return status == 'partial' || status == 'error';
     });
   }
+
+  bool get isSyncPending =>
+      ((syncMetadata['sections'] as Map?)?.values ?? const [])
+          .whereType<Map>()
+          .any((section) => section['status'] == 'pending');
 }

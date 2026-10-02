@@ -146,6 +146,45 @@ void main() {
     expect(sisData.syncStatusFor('timetable'), 'empty');
   });
 
+  test(
+    'early attendance preserves optional cache and remains retryable after restart',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'hasData': true,
+        'timeStamp': DateTime.now().millisecondsSinceEpoch,
+        'cacheSchemaVersion': SisData.currentCacheSchemaVersion,
+        'data': jsonEncode(_cachedData(includeCurrentSections: true)),
+      });
+      final sisData = SisData();
+      await _waitForCachedData(sisData);
+      final oldMarks = jsonEncode(sisData.data['marks']);
+      await sisData.applyPortalData(
+        {
+          'attendance': [_attendance('IS701', 'Updated subject', present: '9')],
+          '_sync': {
+            'outcome': 'partial',
+            'sections': {
+              'attendance': {'status': 'ok'},
+              'timetable': {'status': 'pending'},
+              'seating': {'status': 'pending'},
+              'marks': {'status': 'pending'},
+            },
+          },
+        },
+        'TEST001',
+        '2000-01-01',
+      );
+      expect(jsonEncode(sisData.data['marks']), oldMarks);
+      expect(sisData.data['attendance'][0]['present'], '9');
+      expect(sisData.isSyncPending, isTrue);
+      expect(sisData.needToUpdate, isTrue);
+      final restarted = SisData();
+      await _waitForCachedData(restarted);
+      expect(restarted.needToUpdate, isTrue);
+      expect(restarted.isSyncPending, isTrue);
+    },
+  );
+
   test('an expired current cache keeps its refresh requirement', () async {
     SharedPreferences.setMockInitialValues({
       'hasData': true,
@@ -184,6 +223,112 @@ void main() {
     expect(sisData.needToUpdate, isTrue);
     expect(sisData.syncStatusFor('timetable'), 'error');
   });
+
+  test(
+    'an attendance failure preserves saved rows and remains retryable',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'hasData': true,
+        'timeStamp': DateTime.now().millisecondsSinceEpoch,
+        'cacheSchemaVersion': SisData.currentCacheSchemaVersion,
+        'usn': 'ATTEND01',
+        'dob': '2000-01-01',
+        'data': jsonEncode({
+          ..._cachedData(includeCurrentSections: true),
+          'attendance': [_attendance('IS701', 'Saved subject')],
+          '_sync': {
+            'sections': {
+              'attendance': {'status': 'ok'},
+              'timetable': {'status': 'empty'},
+              'seating': {'status': 'empty'},
+            },
+          },
+        }),
+      });
+      final sisData = SisData();
+      await _waitForCachedData(sisData);
+
+      expect(sisData.needToUpdate, isFalse);
+      await sisData.applyPortalData(
+        {
+          'name': 'Cached Student',
+          'attendance': <dynamic>[],
+          'timetable': <dynamic>[],
+          'seating': <dynamic>[],
+          '_sync': {
+            'outcome': 'partial',
+            'sections': {
+              'attendance': {
+                'status': 'error',
+                'failure_reason': 'content_not_ready',
+              },
+              'timetable': {'status': 'empty'},
+              'seating': {'status': 'empty'},
+            },
+          },
+        },
+        'ATTEND01',
+        '2000-01-01',
+      );
+
+      expect(sisData.attendances, hasLength(1));
+      expect(sisData.attendances.single.subjectName, 'Saved subject');
+      expect(sisData.syncStatusFor('attendance'), 'error');
+      expect(sisData.hasSyncIssues, isTrue);
+    },
+  );
+
+  test(
+    'an attendance partial result keeps the cache marked for refresh',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'hasData': true,
+        'timeStamp': DateTime.now().millisecondsSinceEpoch,
+        'cacheSchemaVersion': SisData.currentCacheSchemaVersion,
+        'usn': 'ATTEND02',
+        'dob': '2000-01-01',
+        'data': jsonEncode({
+          ..._cachedData(includeCurrentSections: true),
+          '_sync': {
+            'sections': {
+              'attendance': {'status': 'ok'},
+              'timetable': {'status': 'empty'},
+              'seating': {'status': 'empty'},
+            },
+          },
+        }),
+      });
+      final sisData = SisData();
+      await _waitForCachedData(sisData);
+
+      await sisData.applyPortalData(
+        {
+          'name': 'Cached Student',
+          'attendance': <dynamic>[
+            _attendance('IS701', 'Subject', present: '2'),
+          ],
+          'timetable': <dynamic>[],
+          'seating': <dynamic>[],
+          '_sync': {
+            'outcome': 'partial',
+            'sections': {
+              'attendance': {
+                'status': 'partial',
+                'failure_reason': 'content_not_ready',
+              },
+              'timetable': {'status': 'empty'},
+              'seating': {'status': 'empty'},
+            },
+          },
+        },
+        'ATTEND02',
+        '2000-01-01',
+      );
+
+      expect(sisData.attendances, hasLength(1));
+      expect(sisData.needToUpdate, isTrue);
+    },
+  );
 
   test('a re-enabled timetable section retries on the next launch', () async {
     FirebaseFeatureFlags.setValuesForTesting(const {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart';
 import 'package:official_connect/Services/portal_session.dart';
@@ -8,26 +9,43 @@ import 'package:official_connect/Services/firebase_performance_traces.dart';
 /// Parses the portal's authenticated HTML into the JSON shape used by the
 /// existing Flutter models. Requests are made with the WebView session cookie.
 class PortalScraper {
-  PortalScraper(PortalSession session, {this.onProgress})
-    : _navigateAndRead = session.navigateAndRead,
-      _fetchDataUri = session.fetchDataUri,
-      pageReadTimeout = const Duration(seconds: 40);
+  PortalScraper(
+    PortalSession session, {
+    this.onProgress,
+    this.onAttendanceReady,
+    this.isActive,
+  }) : _navigateAndRead = session.navigateAndRead,
+       _fetchHtml = ((uri) => session.fetchHtml(
+         uri,
+         timeout: const Duration(seconds: 3),
+         preserveHref: true,
+       )),
+       _fetchDataUri = session.fetchDataUri,
+       _readCurrentDashboard = session.currentDashboardHtml,
+       pageReadTimeout = const Duration(seconds: 40);
 
   /// Allows fixture tests to exercise the complete scrape without creating a
   /// native WebView. Production callers should use [PortalScraper.new].
   PortalScraper.forTesting({
     required Future<String> Function(Uri uri) navigateAndRead,
     Future<String?> Function(Uri uri)? fetchDataUri,
+    Future<String> Function(Uri uri)? fetchHtml,
+    Future<String?> Function()? readCurrentDashboard,
     this.onProgress,
+    this.onAttendanceReady,
+    this.isActive,
     this.pageReadTimeout = const Duration(seconds: 40),
   }) : _navigateAndRead = navigateAndRead,
-       _fetchDataUri = fetchDataUri ?? ((_) async => null);
+       _fetchHtml = fetchHtml,
+       _fetchDataUri = fetchDataUri ?? ((_) async => null),
+       _readCurrentDashboard = readCurrentDashboard;
 
   /// Reads one portal page, failing fast with a `timeout` failure reason
   /// instead of hanging the sections queued behind it. Section catch blocks
   /// already map this to `failure_reason: 'timeout'` and continue, so the
   /// refresh degrades to cached data per section rather than stalling whole.
   Future<String> _readPage(Uri uri) async {
+    _checkActive();
     try {
       return await _navigateAndRead(uri).timeout(pageReadTimeout);
     } on TimeoutException {
@@ -36,17 +54,204 @@ class PortalScraper {
   }
 
   final Future<String> Function(Uri uri) _navigateAndRead;
+  final Future<String> Function(Uri uri)? _fetchHtml;
   final Future<String?> Function(Uri uri) _fetchDataUri;
+  final Future<String?> Function()? _readCurrentDashboard;
   final void Function(String stage)? onProgress;
+  final Future<void> Function(Map<String, dynamic> data)? onAttendanceReady;
+  final bool Function()? isActive;
+
+  void _checkActive() {
+    if (isActive?.call() == false) throw StateError('Portal sync cancelled');
+  }
+
+  String _courseLinkLabel(Element anchor) {
+    Element? parent = anchor.parent;
+    while (parent != null && parent.localName != 'body') {
+      if (parent.localName == 'tr') return parent.text;
+      parent = parent.parent;
+    }
+    return anchor.text;
+  }
+
+  /// Reads the link-discovery dashboard. A fresh login always lands on it,
+  /// so the current page is usually reused directly instead of reloading.
+  Future<String> _readDashboard() async {
+    _checkActive();
+    final shortcut = _readCurrentDashboard;
+    if (shortcut != null) {
+      try {
+        final html = await shortcut();
+        if (html != null) return html;
+      } catch (_) {
+        // Fall through to navigation below.
+      }
+    }
+    return _readPage(PortalSession.dashboardUri);
+  }
+
+  /// Reads a single-page section through the background fetch when the
+  /// portal serves its full content that way, falling back to a real
+  /// navigation otherwise. Any fetch failure (timeout, login redirect,
+  /// unexpected shape) silently uses navigation, so the outcome matches
+  /// [_readPage] exactly — only faster when the fetch suffices.
+  Future<Document> _readSinglePage(
+    Uri uri,
+    bool Function(Document doc) hasStructure,
+  ) async {
+    final fetch = _fetchHtml;
+    if (fetch != null) {
+      try {
+        final doc = parser.parse(await fetch(uri));
+        if (doc.querySelector('input[name="username"], input[type="password"]') ==
+                null &&
+            hasStructure(doc)) {
+          return doc;
+        }
+      } catch (_) {
+        // Fall through to navigation below.
+      }
+    }
+    return parser.parse(await _readPage(uri));
+  }
+
+  /// Semester results via background fetch when the portal serves the table
+  /// directly, else a dashboard link click. Direct navigation to the history
+  /// route is answered with the login page — only a real EXAM HISTORY click
+  /// reaches the signed history destination — so the results section runs
+  /// before any other navigation, while the browser still shows the
+  /// dashboard, and this fallback lets [PortalSession.navigateAndRead]
+  /// click it. Do not call this after course navigations have left the
+  /// dashboard: there is no way back (unsigned dashboard navigation is
+  /// refused the same way) and the click would silently become one.
+  Future<Document> _readResultsPage(Uri uri) async {
+    final fetch = _fetchHtml;
+    if (fetch != null) {
+      try {
+        final doc = parser.parse(await fetch(uri));
+        if (_parsePreviousResults(doc).isNotEmpty) return doc;
+      } catch (_) {
+        // Fall through to the dashboard click below.
+      }
+    }
+    return parser.parse(await _readPage(uri));
+  }
+
+  // Probe against navigation on every refresh. Only verifiable course pages
+  // use the fast path; the rest retain serialized navigation. Attendance
+  // matches each fetched page against its dashboard link label; marks pages
+  // carry no dashboard-matchable identity, so they are accepted when they
+  // parse to a distinct course (a fetch that returned one shared page for
+  // every URL would collapse to a single identity and fall back).
+  Future<List<String?>> _coursePages(
+    List<Uri> links,
+    Document dashboard, {
+    required String sectionLabel,
+    required Map<String, dynamic> Function(Document doc) parseCourse,
+    required bool Function(Document doc) hasCourseStructure,
+    required String Function(Map<String, dynamic> course) courseIdentity,
+    bool Function(String identity, String labels)? labelMatches,
+  }) async {
+    final pages = List<String?>.filled(links.length, null);
+    if (links.isEmpty || _fetchHtml == null) return pages;
+    // Identities accepted so far, starting with the navigation-verified
+    // probe page. Guards the no-label fast path against a fetch endpoint
+    // that answers every course URL with the same page.
+    final seenIdentities = <String>{};
+    try {
+      final fetched = await _fetchHtml(links.first);
+      final navigated = await _readPage(links.first);
+      pages[0] = navigated;
+      final probeCourse = parseCourse(parser.parse(fetched));
+      if (!hasCourseStructure(parser.parse(fetched)) ||
+          jsonEncode(probeCourse) !=
+              jsonEncode(parseCourse(parser.parse(navigated)))) {
+        onProgress?.call('Using standard $sectionLabel sync');
+        return pages;
+      }
+      seenIdentities.add(courseIdentity(probeCourse));
+      onProgress?.call('Background $sectionLabel fetch verified');
+      // Fetch in pairs, and finish both before any fallback navigation.
+      // Validation runs sequentially after each pair so identity checks
+      // observe every previously accepted page.
+      for (var start = 1; start < links.length; start += 2) {
+        _checkActive();
+        final fetchedPair = await Future.wait([
+          for (
+            var index = start;
+            index < links.length && index < start + 2;
+            index++
+          )
+            (() async {
+              try {
+                return (index, await _fetchHtml(links[index]));
+              } catch (_) {
+                // Failed fetches are retried by ordinary navigation below.
+                return (index, null);
+              }
+            })(),
+        ]);
+        for (final (index, html) in fetchedPair) {
+          if (html == null) continue;
+          final page = parser.parse(html);
+          final identity = courseIdentity(parseCourse(page));
+          var matches = identity.isNotEmpty;
+          var identityClaimed = false;
+          if (matches) {
+            if (labelMatches != null) {
+              final labels = _clean(
+                dashboard
+                    .querySelectorAll('a[href]')
+                    .where(
+                      (a) =>
+                          PortalSession.loginUri.resolve(
+                            a.attributes['href']!,
+                          ) ==
+                          links[index],
+                    )
+                    .map(_courseLinkLabel)
+                    .join(' '),
+              );
+              matches = labelMatches(identity, labels);
+            } else {
+              matches = seenIdentities.add(identity);
+              identityClaimed = matches;
+            }
+          }
+          if (page.querySelector(
+                    'input[name="username"], input[type="password"]',
+                  ) ==
+                  null &&
+              hasCourseStructure(page) &&
+              matches) {
+            pages[index] = html;
+          } else if (identityClaimed) {
+            // A structurally rejected page must not poison the identity
+            // set for a later retry of the same course.
+            seenIdentities.remove(identity);
+          }
+        }
+      }
+      onProgress?.call(
+        'Background $sectionLabel accepted ${pages.skip(1).whereType<String>().length}/${links.length - 1} pages',
+      );
+    } catch (_) {
+      onProgress?.call('Using standard $sectionLabel sync');
+    }
+    return pages;
+  }
 
   /// Upper bound for a single portal page read inside [scrapeAll].
   ///
   /// The WebView bridge calls in `PortalSession.navigateAndRead` have no
   /// timeout of their own, so without this cap one hung page on slow wifi
   /// stalls every section behind it until the 90s refresh budget expires.
-  /// 40s covers the worst legitimate case (~15s navigation polling + ~12s
-  /// content wait + bridge overhead). Retune from `sync_section`
-  /// `duration_ms` p90 once measured.
+  /// 40s covers the worst legitimate case (~15s navigation polling + ~6s
+  /// content wait + bridge overhead). Reviewed 2026-10-02 against 7d of
+  /// fleet data: healthy reads take ~0.5-1.5s, timeouts (~1%) are fixed
+  /// pathologies plus backgrounded sessions, so the 40s hang protection
+  /// stays; the duration_bucket dimension (once registered) enables a
+  /// future p99-based trim.
   final Duration pageReadTimeout;
 
   Future<Map<String, dynamic>> scrapeAll() async {
@@ -86,7 +291,7 @@ class PortalScraper {
     // A previous sync normally leaves the browser on result history. Always
     // return to the signed dashboard so refreshes rediscover every current
     // attendance, CIE, fee and history link before scraping.
-    final dashboard = await _readPage(PortalSession.dashboardUri);
+    final dashboard = await _readDashboard();
     final document = parser.parse(dashboard);
     final result = <String, dynamic>{};
     final profileWatch = Stopwatch()..start();
@@ -99,17 +304,16 @@ class PortalScraper {
     }
     // The portal serves the student photo only to its authenticated browser
     // session, so plain HTTP image loading in the UI fails. Download it here
-    // through the WebView and store a self-contained data URI instead.
+    // through the WebView and store a self-contained data URI instead. The
+    // download starts now but is awaited after the attendance scrape, so it
+    // overlaps the course reads instead of delaying them.
     final studentImageUrl = result['studentImage']?.toString();
-    if (studentImageUrl != null && studentImageUrl.startsWith('http')) {
-      try {
-        final dataUri = await _fetchDataUri(Uri.parse(studentImageUrl));
-        if (dataUri != null) result['studentImage'] = dataUri;
-      } catch (_) {
-        // A protected or temporarily unavailable photo must never prevent the
-        // rest of the student's data from being returned.
-      }
-    }
+    final Future<String?>? pendingPhoto =
+        studentImageUrl != null && studentImageUrl.startsWith('http')
+        ? _fetchDataUri(
+            Uri.parse(studentImageUrl),
+          ).then((dataUri) => dataUri, onError: (_) => null)
+        : null;
     final profileValues = [
       result['name'],
       result['courseSmall'],
@@ -155,6 +359,53 @@ class PortalScraper {
         .where((u) => u.queryParameters['task'] == 'seating')
         .toList();
 
+    // Semester results run before any course navigation, while the browser
+    // still shows the dashboard: the history route is answered with the
+    // login page unless it is followed as a real EXAM HISTORY link click,
+    // and the click is only possible from the dashboard. (Live browser
+    // evidence also disproved the old "result endpoint initializes slowly"
+    // theory — tables appear in the first observation after a proper
+    // click — so reading results first costs nothing but its own page.)
+    final resultLink = links.firstWhere(
+      (uri) => uri.queryParameters['task'] == 'getResult',
+      orElse: () => Uri.parse(
+        'https://parents.msrit.edu/newparents/index.php?option=com_history&task=getResult',
+      ),
+    );
+    if (FirebaseFeatureFlags.sectionEnabled('results')) {
+      onProgress?.call('Syncing semester results');
+    }
+    final resultsWatch = Stopwatch()..start();
+    unawaited(FirebasePerformanceTraces.startSection('results'));
+    Document? resultsDocument;
+    try {
+      if (!FirebaseFeatureFlags.sectionEnabled('results')) {
+        result['prevResults'] = <dynamic>[];
+        recordSection('results', 'disabled');
+      } else {
+        resultsDocument = await _readResultsPage(resultLink);
+        result['prevResults'] = _parsePreviousResults(resultsDocument);
+        final count = (result['prevResults'] as List).length;
+        recordSection(
+          'results',
+          count == 0 ? 'empty' : 'ok',
+          count: count,
+          attempted: 1,
+          durationMs: resultsWatch.elapsedMilliseconds,
+        );
+      }
+    } catch (error) {
+      result['prevResults'] = <dynamic>[];
+      recordSection(
+        'results',
+        'error',
+        attempted: 1,
+        failed: 1,
+        durationMs: resultsWatch.elapsedMilliseconds,
+        failureReason: portalFailureReason(error),
+      );
+    }
+
     final attendance = <Map<String, dynamic>>[];
     var attendanceFailures = 0;
     String? attendanceFailureReason;
@@ -164,9 +415,27 @@ class PortalScraper {
     if (attendanceLinks.isNotEmpty) {
       onProgress?.call('Syncing attendance');
     }
-    for (final uri in attendanceLinks) {
+    final attendancePages = await _coursePages(
+      attendanceLinks,
+      document,
+      sectionLabel: 'attendance',
+      parseCourse: _parseAttendance,
+      hasCourseStructure: _hasAttendanceStructure,
+      courseIdentity: (course) => _clean(course['code']?.toString() ?? ''),
+      labelMatches: (identity, labels) =>
+          identity.isNotEmpty &&
+          RegExp(
+            '(^|[^a-z0-9])${RegExp.escape(identity)}([^a-z0-9]|\$)',
+            caseSensitive: false,
+          ).hasMatch(labels),
+    );
+    for (var index = 0; index < attendanceLinks.length; index++) {
+      final uri = attendanceLinks[index];
+      _checkActive();
       try {
-        final attendanceDocument = parser.parse(await _readPage(uri));
+        final attendanceDocument = parser.parse(
+          attendancePages[index] ?? await _readPage(uri),
+        );
         final item = _parseAttendance(attendanceDocument);
         if (_hasCourseIdentity('${item['code']} ${item['name']}') &&
             _hasAttendanceStructure(attendanceDocument)) {
@@ -196,6 +465,16 @@ class PortalScraper {
     if (invalidAttendancePages > 0 && attendanceFailureReason == null) {
       attendanceFailureReason = 'invalid_content';
     }
+    // Collect the photo download that ran concurrently with the course reads
+    // above, so both the early and the final payload keep the data URI. A
+    // protected or temporarily unavailable photo must never prevent the
+    // rest of the student's data from being returned.
+    if (pendingPhoto != null) {
+      try {
+        final dataUri = await pendingPhoto;
+        if (dataUri != null) result['studentImage'] = dataUri;
+      } catch (_) {}
+    }
     result['attendance'] = attendance;
     recordSection(
       'attendance',
@@ -212,17 +491,58 @@ class PortalScraper {
       durationMs: attendanceWatch.elapsedMilliseconds,
       failureReason: attendanceFailures > 0 ? attendanceFailureReason : null,
     );
+    _checkActive();
+    if (attendance.isNotEmpty && onAttendanceReady != null) {
+      await onAttendanceReady!({
+        'attendance': attendance,
+        '_sync': {
+          'version': 1,
+          'outcome': 'partial',
+          'duration_ms': syncWatch.elapsedMilliseconds,
+          'sections': {
+            'attendance': sections['attendance'],
+            // Results run before attendance (dashboard click), so their
+            // real outcome is already known here.
+            'results': sections['results'],
+            for (final name in [
+              'marks',
+              'fees',
+              'proctor',
+              'timetable',
+              'seating',
+            ])
+              name: {'status': 'pending'},
+          },
+        },
+      });
+    }
 
     final marks = <Map<String, dynamic>>[];
+    _checkActive();
     var marksFailures = 0;
     String? marksFailureReason;
     var invalidMarksPages = 0;
     final marksWatch = Stopwatch()..start();
     unawaited(FirebasePerformanceTraces.startSection('marks'));
     if (marksLinks.isNotEmpty) onProgress?.call('Syncing internal marks');
-    for (final uri in marksLinks) {
+    final marksPages = await _coursePages(
+      marksLinks,
+      document,
+      sectionLabel: 'marks',
+      parseCourse: _parseMarks,
+      hasCourseStructure: (doc) =>
+          _hasCourseIdentity(_parseMarks(doc)['name'].toString()) &&
+          _marksCells(doc).isNotEmpty,
+      courseIdentity: (course) =>
+          _clean(course['name']?.toString() ?? '').toLowerCase(),
+    );
+    for (var index = 0; index < marksLinks.length; index++) {
+      final uri = marksLinks[index];
+      _checkActive();
       try {
-        final marksDocument = parser.parse(await _readPage(uri));
+        final marksDocument = parser.parse(
+          marksPages[index] ?? await _readPage(uri),
+        );
         final item = _parseMarks(marksDocument);
         if (_hasCourseIdentity(item['name'].toString()) &&
             _marksCells(marksDocument).isNotEmpty) {
@@ -268,15 +588,6 @@ class PortalScraper {
       (uri) => uri.toString().contains(fragment),
       orElse: () => fallback,
     );
-    final resultLink = matchingLink(
-      'com_history',
-      Uri.parse(
-        'https://parents.msrit.edu/newparents/index.php?option=com_history&task=getResult',
-      ),
-    );
-    // The portal's result endpoint is not ready immediately after login. Visit
-    // the lighter authenticated pages first so result history can initialize
-    // in the background instead of waiting through a guaranteed empty shell.
     if (FirebaseFeatureFlags.sectionEnabled('proctor')) {
       onProgress?.call('Syncing proctor updates');
     }
@@ -285,30 +596,32 @@ class PortalScraper {
     Document? proctorDocument;
     try {
       if (!FirebaseFeatureFlags.sectionEnabled('proctor')) {
-        result['proctorship'] = <dynamic>[];
+        result['proctorship'] = _emptyProctor();
         recordSection('proctor', 'disabled');
       } else {
-        proctorDocument = parser.parse(
-          await _readPage(
-            matchingLink(
-              'task=observation',
-              Uri.parse(
-                'https://parents.msrit.edu/newparents/index.php?option=com_studentdashboard&controller=studentdashboard&task=observation',
-              ),
+        proctorDocument = await _readSinglePage(
+          matchingLink(
+            'task=observation',
+            Uri.parse(
+              'https://parents.msrit.edu/newparents/index.php?option=com_studentdashboard&controller=studentdashboard&task=observation',
             ),
           ),
+          (doc) =>
+              doc.querySelector('table.cn-res-table, .md-card-head-text') !=
+              null,
         );
-        result['proctorship'] = _parseProctor(proctorDocument);
+        final proctorData = _parseProctor(proctorDocument);
+        result['proctorship'] = proctorData;
         recordSection(
           'proctor',
           'ok',
-          count: 1,
+          count: (proctorData['proctorial_notes'] as List).length,
           attempted: 1,
           durationMs: proctorWatch.elapsedMilliseconds,
         );
       }
     } catch (error) {
-      result['proctorship'] = <dynamic>[];
+      result['proctorship'] = _emptyProctor();
       recordSection(
         'proctor',
         'error',
@@ -329,8 +642,26 @@ class PortalScraper {
       final feeWatch = Stopwatch()..start();
       unawaited(FirebasePerformanceTraces.startSection('fees'));
       try {
-        final feeDocument = parser.parse(await _readPage(feeLink.first));
+        final feeDocument = await _readSinglePage(
+          feeLink.first,
+          (doc) =>
+              doc.querySelector(
+                'table.cn-pay-table, table[data-section="fees"], '
+                'table[data-section="refunds"]',
+              ) !=
+              null,
+        );
+        final dashboardFees = (result['fees'] as List?) ?? [];
+        final dashboardRefunds = (result['refunds'] as List?) ?? [];
         _parseFees(feeDocument, result);
+        // An empty fee page must not wipe fees already read from the
+        // dashboard: keep the dashboard rows when the page yields nothing.
+        if ((result['fees'] as List?)?.isEmpty != false &&
+            (result['refunds'] as List?)?.isEmpty != false &&
+            (dashboardFees.isNotEmpty || dashboardRefunds.isNotEmpty)) {
+          result['fees'] = dashboardFees;
+          result['refunds'] = dashboardRefunds;
+        }
         final feeCount = (result['fees'] as List?)?.length ?? 0;
         recordSection(
           'fees',
@@ -376,8 +707,9 @@ class PortalScraper {
     } else {
       onProgress?.call('Syncing timetable');
       try {
-        final timetableDocument = parser.parse(
-          await _readPage(timetableLinks.first),
+        final timetableDocument = await _readSinglePage(
+          timetableLinks.first,
+          (doc) => _parseTimetable(doc).isNotEmpty,
         );
         result['timetable'] = _parseTimetable(timetableDocument);
         final count = (result['timetable'] as List).length;
@@ -414,8 +746,9 @@ class PortalScraper {
     } else {
       onProgress?.call('Syncing exam seating');
       try {
-        final seatingDocument = parser.parse(
-          await _readPage(seatingLinks.first),
+        final seatingDocument = await _readSinglePage(
+          seatingLinks.first,
+          (doc) => _parseSeating(doc).isNotEmpty,
         );
         result['seating'] = _parseSeating(seatingDocument);
         final count = (result['seating'] as List).length;
@@ -439,48 +772,6 @@ class PortalScraper {
       }
     }
 
-    if (FirebaseFeatureFlags.sectionEnabled('results')) {
-      onProgress?.call('Syncing semester results');
-    }
-    final resultsWatch = Stopwatch()..start();
-    unawaited(FirebasePerformanceTraces.startSection('results'));
-    Document? resultsDocument;
-    var resultAttempts = 0;
-    try {
-      if (!FirebaseFeatureFlags.sectionEnabled('results')) {
-        result['prevResults'] = <dynamic>[];
-        recordSection('results', 'disabled');
-      } else {
-        resultAttempts++;
-        resultsDocument = parser.parse(await _readPage(resultLink));
-        result['prevResults'] = _parsePreviousResults(resultsDocument);
-        // Keep one fast retry for unusually slow portal sessions.
-        if ((result['prevResults'] as List).isEmpty) {
-          await Future<void>.delayed(const Duration(milliseconds: 500));
-          resultAttempts++;
-          resultsDocument = parser.parse(await _readPage(resultLink));
-          result['prevResults'] = _parsePreviousResults(resultsDocument);
-        }
-        final count = (result['prevResults'] as List).length;
-        recordSection(
-          'results',
-          count == 0 ? 'empty' : 'ok',
-          count: count,
-          attempted: resultAttempts,
-          durationMs: resultsWatch.elapsedMilliseconds,
-        );
-      }
-    } catch (error) {
-      result['prevResults'] = <dynamic>[];
-      recordSection(
-        'results',
-        'error',
-        attempted: resultAttempts,
-        failed: 1,
-        durationMs: resultsWatch.elapsedMilliseconds,
-        failureReason: portalFailureReason(error),
-      );
-    }
     syncWatch.stop();
     final statuses = sections.values
         .whereType<Map>()
@@ -496,9 +787,7 @@ class PortalScraper {
       'duration_ms': syncWatch.elapsedMilliseconds,
       'sections': sections,
     };
-    unawaited(
-      FirebasePerformanceTraces.stopPortalSync(status: syncOutcome),
-    );
+    unawaited(FirebasePerformanceTraces.stopPortalSync(status: syncOutcome));
     assert(() {
       // ignore: avoid_print
       print(
@@ -569,7 +858,7 @@ class PortalScraper {
     final summary =
         doc
             .querySelector(
-              '.cn-stu-data p, [data-student-summary], .student-summary',
+              '.cn-stu-data p, .cn-stu-data1 p, [data-student-summary], .student-summary',
             )
             ?.text
             .split(',')
@@ -938,13 +1227,60 @@ class PortalScraper {
     return '$year-${monthNumber.toString().padLeft(2, '0')}-${day.padLeft(2, '0')}';
   }
 
-  Map<String, dynamic> _parseProctor(Document doc) => {
-    'proctor_name':
-        doc.querySelector('h3.md-card-head-text')?.text.trim() ?? 'No data',
+  Map<String, dynamic> _emptyProctor() => {
+    'proctor_name': 'No data',
     'branch': 'No data',
     'email': 'No data',
     'phone': 'No data',
-    'proctorial_notes': doc.querySelectorAll('table.cn-res-table tbody tr').map(
+    'proctorial_notes': <dynamic>[],
+  };
+
+  Map<String, dynamic> _parseProctor(Document doc) {
+    // Live header shape: bare name text node, then department, email and
+    // phone each in their own span. Classify spans by pattern so missing
+    // parts degrade to 'No data' instead of shifting positions.
+    var name = 'No data';
+    var branch = 'No data';
+    var email = 'No data';
+    var phone = 'No data';
+    final header = doc.querySelector('h3.md-card-head-text');
+    if (header != null) {
+      final directText = header.nodes
+          .where((node) => node is! Element)
+          .map((node) => node.text?.trim() ?? '')
+          .where((text) => text.isNotEmpty)
+          .join(' ');
+      final spans = header
+          .querySelectorAll('span')
+          .map((e) => e.text.replaceAll(RegExp(r'\s+'), ' ').trim())
+          .where((text) => text.isNotEmpty)
+          .toList();
+      if (directText.isNotEmpty) {
+        name = directText;
+      } else if (spans.isNotEmpty) {
+        name = spans.removeAt(0);
+      } else {
+        name = header.text.replaceAll(RegExp(r'\s+'), ' ').trim();
+        if (name.isEmpty) name = 'No data';
+      }
+      for (final span in spans) {
+        if (email == 'No data' && span.contains('@')) {
+          email = span;
+        } else if (phone == 'No data' &&
+            RegExp(r'^[\d\s+\-().]{7,}$').hasMatch(span)) {
+          phone = span;
+        } else if (branch == 'No data') {
+          branch = span;
+        }
+      }
+    }
+    return {
+      'proctor_name': name,
+      'branch': branch,
+      'email': email,
+      'phone': phone,
+      'proctorial_notes':
+          doc.querySelectorAll('table.cn-res-table tbody tr').map(
       (row) {
         final cells = row
             .querySelectorAll('td')
@@ -957,5 +1293,6 @@ class PortalScraper {
         };
       },
     ).toList(),
-  };
+    };
+  }
 }
