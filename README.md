@@ -44,3 +44,17 @@ The **latest result** shortcuts are separate from the parent portal. They use th
 The former server-side scraper contract is no longer valid: the old `/eresultseven/` route returns 404, the root page now represents the currently published regular cycle, and both the current regular page and the legacy supplementary page require a session-bound image security code. The app therefore keeps a hidden WebView for the examination-site session, fills the cached USN, displays only the site's security image in native UI, submits the user-entered code in that same session, parses the returned table, and renders native result cards. It caches a successful parsed result by USN and source; reopening is instant, while the refresh action deliberately requests a new live result.
 
 Do not attempt to solve or bypass the examination site's security code. If upstream changes again, update the URLs, selectors, and HTML parser in `lib/Services/exam_result_scraper.dart` and keep the WebView/session boundary intact.
+
+## Contributor Firebase setup
+
+`android/app/google-services.json` and `ios/Runner/GoogleService-Info.plist`
+are intentionally untracked (see `android/.gitignore` and `ios/.gitignore`).
+Debug builds need a config file in place: use a stub with your own test
+project, or ask a maintainer for the project config. Release builds restore
+the real config from maintainer secrets before running
+`scripts/android_release_check.sh --build-current`; never commit either file.
+
+App Check ships in monitor mode (unenforced). Debug builds use the debug
+provider and print a debug token to logcat on first run — register it in
+Firebase Console → App Check → Apps → the debug app entry. Never commit or
+ship debug tokens.

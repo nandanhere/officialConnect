@@ -11,3 +11,6 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+# Firebase client config: contributors build with a stub (see README).
+# The real file is restored from maintainer secrets at release time.
+app/google-services.json

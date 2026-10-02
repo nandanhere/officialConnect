@@ -112,3 +112,145 @@ The checkout contains many pre-existing user changes and untracked files,
 including app features, tests, Fastlane files, and generated tooling. Preserve
 all unrelated work. Do not reset, clean, delete, commit, push, publish, or
 change credentials unless separately authorized.
+
+## Refresh emulator check (2026-10-01)
+
+- Android 15 API 35 debug emulator used an already authenticated, consented
+  portal session. No account identifiers, credentials, or page HTML were added
+  to this repository.
+- Two pre-fix manual/background refreshes took 47.4s and 48.3s end to end.
+  Exam seating spent about 14.0s each time, ending `content_not_ready`.
+  Attendance succeeded for all 10 discovered courses in about 4–4.7s.
+- `portalExpectedContentSelector` used the generic `com_history` result-table
+  selector for `task=seating`. The seating page has a different layout. Added
+  page-specific seating readiness and the parser-supported result-table
+  variant in `lib/Services/portal_session.dart`.
+- Three post-fix refreshes took 31.6s, 35.5s, and 32.8s. Seating completed
+  in about 0.44s with one parsed entry. The full refresh average fell from
+  47.9s to 33.3s on this emulator; this is a small local sample, not a fleet
+  latency claim.
+- Semester results still take about 14s and end `content_not_ready`; profile
+  remains partial due to two missing fields. The overall sync remains partial.
+  Investigate the live result page/redirect before changing its timeout or
+  treating an absent table as an authoritative empty result.
+- Current scraper navigates one authenticated WebView serially. Parallel
+  page loads in that same WebView would replace each other's documents. A
+  separate-WebView or authenticated-request approach needs a session and
+  correctness experiment before implementation.
+
+## Separate WebView experiment (2026-10-02)
+
+Superseded for the speed strategy by the successful same-authenticated-WebView
+fetch approach: see FAST_REFRESH_REPORT.md. The separate-view failure below
+remains historical evidence, not the current implementation.
+Final retained emulator build: attendance available at 8.642s including login,
+full refresh 30.152s; 10 attendance courses. All 103 Flutter tests passed.
+Marks remains serial after fetched identity validation rejected 9/9 pages;
+semester results still wait ~14s and fail readiness. Not published.
+
+- One temporary debug build tried loading semester results in a second hidden
+  WebView while the primary WebView scraped the other sections. The second
+  view did not reach the authenticated dashboard within 11.5s, so results
+  ended `browser_not_ready` without a successful parallel scrape.
+- The experimental refresh took 42.7s end to end. Attendance and marks each
+  parsed 10 courses; proctor and timetable returned `content_not_ready`, fees
+  were partial, and seating appeared empty. This is worse than the previous
+  day's 31.6–35.5s single-view sample, but conditions were not controlled.
+- The app started an automatic retry after the partial result; it was stopped.
+  A subsequent normal single-view recovery run hit the 75s flow limit while
+  portal pages were unusually slow, so it did not replace the partial cache
+  on this emulator. Real devices and production builds were not changed.
+- All experimental code was removed, and the ordinary debug APK was rebuilt
+  and reinstalled. A future parallel design needs to establish how a second
+  WebView acquires a valid signed session and verify section correctness under
+  simultaneous navigation before optimizing for elapsed time.
+
+## Fast-refresh batch (2026-10-02, Muse, uncommitted)
+
+- Fleet GA4 (7d, ~1900 refreshes/section): results 22.0s avg at 96%
+  `content_not_ready`, seating 16.9s at ~100% (released build lacks the Oct 1
+  seating selector fix), marks 9.6s, attendance 7.0s, singles ~1.4-1.8s.
+- Emulator baseline (current tree, API35, saved login): 31.3s end to end
+  (sign-in ~6s, scrape 25.4s). Attendance visible at 4.6s; results alone
+  burned 14.0s with `content_not_ready`.
+- Shipped in tree: stale onLoadStop session probes suppressed during scrape;
+  dashboard reuses the current page when already loaded; photo download
+  overlaps attendance; marks fast path via probe + distinct-course validation
+  (dashboard labels proved unmatchable, 0/9 before); fetch-first reads for
+  proctor/fees/timetable/seating/results with navigation fallback; uniform
+  6s content waits (retired the 12s results window); single-evaluation
+  navigation polling; login-form fast-negative auth check; autofill retry
+  short-circuit.
+- Emulator after (two runs): 18.9s end to end, scrape 12.7s both runs.
+  Attendance visible at ~2.0s; marks 9/9 fetched (~1.7s); singles all
+  fetch-served (0.1-0.6s); results 7.6s still failing. All section counts
+  identical to baseline (10/10/10/66/1, cached results kept).
+- Suite 109/109 green, analyzer clean. Remaining: results root cause needs
+  the live portal flow (Codex browser Task 17 dispatched via mailbox); then
+  the results wait can be replaced by the correct read instead of shortened
+  further blindly.
+
+## Results read fix (2026-10-02, Muse, uncommitted)
+
+- Result 17 (Codex browser): the history route answers direct navigation
+  with the login page; only a dashboard EXAM HISTORY click reaches the
+  signed destination (5 tables: 1 backlog + 4 semester). The old "slow
+  endpoint init" theory is disproved. exam.msrit.edu not needed.
+- Implemented results-first ordering: results read while the browser still
+  shows the dashboard (fetch, else dashboard click). A dashboard revisit
+  was tried first and failed the same way (unsigned dashboard navigation
+  is refused too), which fixed the ordering. No retry: content-match
+  implies non-empty parse. Early-attendance payload now carries the real
+  results outcome. Order pinned by a navigation-sequence regression test.
+- Emulator (3 runs): results ok, 5/5 tables, 209/226ms via fetch and
+  457ms via forced click fallback. Full refresh 11-13s end to end
+  (scrape ~5.2s), attendance visible ~2.1s. Suite 110/110, analyze clean.
+- Residual: dashboard-marker shortcut can false-positive on detail pages
+  (proven harmless for the initial read across 6 runs, but unhardened);
+  backlog table parses as a term entry (kept: hiding user data is worse).
+
+## Proctor/fees parse audit (2026-10-02, Muse, uncommitted)
+
+- Privacy-safe live probes (counts/shapes only): proctor observation page
+  carries 1 cn-res-table with caption + 1 header row and an EMPTY tbody
+  (genuinely zero notes, not selector rot); fees page carries the
+  1 cn-pay-table (10/10 rows parsed) plus a 4-row student-info table that
+  holds no fee data (correctly ignored). Fees empty path already honest.
+- Rot fixed: proctor section hardcoded count 1 (now the parsed note
+  count); disabled/error paths emitted proctorship as `[]` while the
+  contract is a Map (now `_emptyProctor()`); `SisProctorData.proctorData`
+  crashed on legacy `[]` caches and missing keys (now normalizes to the
+  empty map with 'Not given' defaults). Failing-first tests added
+  (3 scraper + 2 consumer + 1 fees characterization).
+- Emulator: proctor ok count 0 (was 1), fees ok 10, all other sections
+  unchanged. Suite 118/118, analyze clean. Probes removed.
+- Follow-up (same day, approved test-creds content read): the 110-char
+  header is name (bare text node) + department/email/phone spans; the
+  parser stuffed the whole blob into proctor_name. `_parseProctor` now
+  splits by structure + pattern (email/phone/branch degrade to 'No data'
+  when parts are missing), pinned by a span-shape regression test. Live:
+  name 12 chars, branch/email/phone populated (were 'No data').
+- Follow-up: empty fee page no longer wipes dashboard fees (fallback
+  keeps dashboard rows when the page yields zero of both fees and
+  refunds; genuinely-empty stays 'empty'). Failing-first test added.
+  Suite 120/120, analyze clean. Content probes removed.
+
+## Release 1.1.6+15 (2026-10-02, committed, upload staged)
+
+- Dirty-tree review: 18 modified + 5 new files, all identified (fast
+  batch, results-first, profile/proctor/fees fixes, duration_bucket,
+  pending/partial UI honesty, Firebase config untracking, docs). No
+  foreign code, no secrets in new docs. README gained the contributor
+  Firebase/App Check setup section the gitignore comments reference.
+- App Check client enrolment rides this release: Play Integrity (prod)
+  / debug provider, App Attest / debug, activated before other Firebase
+  services. Enforcement stays OFF (monitor mode). Debug activation
+  verified on emulator via redacted logcat (provider present, no token
+  recorded). Provider-selection regression tests added.
+- Checks at commit: suite 122/122, analyzer clean, static release
+  config pass, signed AAB+APK rebuilt from the committed tree with ELF
+  + zipalign pass. Supervised browser upload dispatched as mailbox
+  Task 22; Crashlytics re-verify (Task 19), App Check console
+  registration (Task 20), allowlist test-project validation (Task 21)
+  dispatched alongside. Task 18 (duration_bucket registration) still
+  OPEN with Codex.

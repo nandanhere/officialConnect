@@ -32,3 +32,6 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+# Firebase client config: contributors build with a stub (see README).
+# The real file is restored from maintainer secrets at release time.
+Runner/GoogleService-Info.plist

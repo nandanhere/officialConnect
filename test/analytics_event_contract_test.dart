@@ -165,6 +165,36 @@ void main() {
     await enable();
   });
 
+  test('summary emits cap-aligned duration buckets', () async {
+    await enable();
+
+    await SyncDiagnostics.recordSummary(const {
+      'outcome': 'partial',
+      'duration_ms': 57597,
+      'sections': {
+        'attendance': {'status': 'ok', 'duration_ms': 1809},
+        'results': {'status': 'ok', 'duration_ms': 209},
+        'timetable': {'status': 'timeout', 'duration_ms': 60449},
+        'marks': {'status': 'ok', 'duration_ms': 3000},
+        'fees': {'status': 'ok', 'duration_ms': 90000},
+        'proctor': {'status': 'ok'},
+      },
+    }, refresh: true);
+
+    final sections = events
+        .where((e) => e['name'] == 'sync_section')
+        .toList();
+    expect(sections, hasLength(6));
+    expect(sections[0]['duration_bucket'], '1_to_3s');
+    expect(sections[1]['duration_bucket'], 'under_1s');
+    expect(sections[2]['duration_bucket'], '40_to_90s');
+    expect(sections[3]['duration_bucket'], '3_to_6s');
+    expect(sections[4]['duration_bucket'], 'over_90s');
+    expect(sections[5]['duration_bucket'], 'under_1s');
+    final finished = events.singleWhere((e) => e['name'] == 'sync_finished');
+    expect(finished['duration_bucket'], '40_to_90s');
+  });
+
   test('pending queue drops oldest beyond its cap', () async {
     await enable();
     SyncDiagnostics.configure(null);

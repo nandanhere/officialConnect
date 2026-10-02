@@ -133,23 +133,37 @@ Future<void> openPortalRefresh(
     if (!context.mounted) return;
 
     if (synced == true) {
+      final attendanceStatus = sisData.syncStatusFor('attendance');
+      final attendanceNeedsAttention =
+          attendanceStatus == 'partial' || attendanceStatus == 'error';
+      final hasIssues = sisData.hasSyncIssues;
       unawaited(
-        SyncDiagnostics.recordRefreshOutcome(
-          sisData.hasSyncIssues ? 'partial' : 'success',
-        ),
+        SyncDiagnostics.recordRefreshOutcome(hasIssues ? 'partial' : 'success'),
       );
       setBackgroundSyncState(
-        sisData.hasSyncIssues
-            ? BackgroundSyncState.partial
-            : BackgroundSyncState.success,
+        hasIssues ? BackgroundSyncState.partial : BackgroundSyncState.success,
       );
       messenger
         ..hideCurrentSnackBar()
         ..showSnackBar(
-          const SnackBar(
+          SnackBar(
             behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 2),
-            content: Text('Your information is up to date.'),
+            duration: const Duration(seconds: 4),
+            content: Text(
+              attendanceNeedsAttention
+                  ? 'Attendance could not be fully updated. Previously saved attendance is still available.'
+                  : hasIssues
+                  ? 'Some information could not be updated. Previously saved information is still available.'
+                  : 'Your information is up to date.',
+            ),
+            action: attendanceNeedsAttention && allowInteractiveFallback
+                ? SnackBarAction(
+                    label: 'Open sync',
+                    onPressed: () {
+                      if (context.mounted) openFullSyncPage();
+                    },
+                  )
+                : null,
           ),
         );
     } else {

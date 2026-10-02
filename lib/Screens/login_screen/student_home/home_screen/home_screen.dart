@@ -226,7 +226,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    'Information up to date',
+                                    sisData.isSyncPending
+                                        ? 'Updating other information'
+                                        : sisData.hasSyncIssues
+                                        ? 'Some information needs updating'
+                                        : 'Information up to date',
                                     style: subtitle.copyWith(
                                       color: const Color(0xffba3237),
                                       fontWeight: FontWeight.w600,

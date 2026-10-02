@@ -204,6 +204,8 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
     _diagnosticStageValue = 'scraping';
     _updateStage('Login complete', detail: 'Updating your information.');
     var scrapeCompleted = false;
+    if (!mounted || _finished) return;
+    final sisData = Provider.of<SisData>(context, listen: false);
     try {
       // The portal currently rejects replay of its browser session from AWS.
       // Scraping directly in this authenticated WebView avoids that failed
@@ -211,7 +213,25 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
       final data = await PortalScraper(
         _session,
         onProgress: (stage) => _updateStage(stage),
+        isActive: () => mounted && !_finished,
+        onAttendanceReady: (data) async {
+          if (!mounted || _finished || !widget.reuseSession || !sisData.hasData) {
+            return;
+          }
+          await sisData.applyPortalData(
+            data,
+            widget.initialUsn ?? '',
+            widget.initialDob ?? '',
+          );
+          assert(() {
+            debugPrint(
+              'Portal attendance available in ${scrapeWatch.elapsedMilliseconds}ms',
+            );
+            return true;
+          }());
+        },
       ).scrapeAll();
+      if (!mounted || _finished) return;
       assert(() {
         debugPrint(
           'Portal scraper sections: '
@@ -238,10 +258,11 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
       }
       scrapeCompleted = true;
       _diagnosticStageValue = 'finishing';
-      await Provider.of<SisData>(
-        context,
-        listen: false,
-      ).applyPortalData(data, widget.initialUsn ?? '', widget.initialDob ?? '');
+      await sisData.applyPortalData(
+        data,
+        widget.initialUsn ?? '',
+        widget.initialDob ?? '',
+      );
       unawaited(
         SyncDiagnostics.recordSummary(
           Map<String, dynamic>.from((data['_sync'] as Map?) ?? const {}),
@@ -463,14 +484,17 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
       })();
     """;
     // The portal may attach/replace its form after onLoadStop. Retry briefly
-    // so autofill remains reliable on slower emulator/network runs.
-    for (final delay in const [
-      Duration.zero,
-      Duration(milliseconds: 350),
-      Duration(milliseconds: 900),
-    ]) {
-      if (delay != Duration.zero) await Future.delayed(delay);
-      if (!mounted || _finished) return;
+    // so autofill remains reliable on slower emulator/network runs. Once the
+    // form is present, the first script run already handled it, so later
+    // retries stop instead of burning their delays.
+    for (var attempt = 0; attempt < 3; attempt++) {
+      if (attempt == 1) {
+        await Future.delayed(const Duration(milliseconds: 350));
+      } else if (attempt == 2) {
+        await Future.delayed(const Duration(milliseconds: 900));
+      }
+      if (!mounted || _finished || _scrapeStarted) return;
+      if (attempt > 0 && await _portalFormPresent(controller)) return;
       try {
         await controller.evaluateJavascript(source: script);
       } catch (_) {
@@ -478,6 +502,26 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
         if (!mounted || _finished) return;
         rethrow;
       }
+    }
+  }
+
+  /// Whether the login or verification form is already in the DOM. Used to
+  /// skip pointless autofill retries (and their delays) on the common path.
+  Future<bool> _portalFormPresent(InAppWebViewController controller) async {
+    try {
+      final present = await controller.evaluateJavascript(
+        source: '''
+          (function() {
+            if (document.getElementById('username')) return true;
+            if (!document.body || !document.body.innerText) return false;
+            return document.body.innerText.toLowerCase()
+              .includes('select verification type');
+          })();
+        ''',
+      );
+      return present == true || present?.toString() == 'true';
+    } catch (_) {
+      return false;
     }
   }
 
@@ -542,7 +586,12 @@ class _PortalLoginScreenState extends State<PortalLoginScreen>
                 try {
                   _session.rememberPage(await controller.getUrl());
                   await _prefillPortalForm(controller);
-                  if (!_finished) await _checkSession();
+                  // onLoadStop callbacks pile up across the login redirect
+                  // chain and land after the scrape starts. Re-check here so
+                  // stale callbacks cannot inject session probes that race
+                  // the scraper's navigations on this same WebView.
+                  if (_finished || _scrapeStarted) return;
+                  await _checkSession();
                 } catch (error) {
                   await _handleBrowserFailure(error);
                 }

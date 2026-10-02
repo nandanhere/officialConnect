@@ -8,6 +8,10 @@
 - [x] Add a genuine adaptive tablet navigation treatment.
 - [x] Test phone/tablet navigation, selection, and 200% text scaling.
 - [x] Add guarded Play API release workflow without publishing.
+- [x] Fix profile summary selector (live portal nests it under
+  `.cn-stu-data1`) so refreshes report profile ok instead of
+  partial/missing_fields; live-shape regression test, emulator-verified
+  3/3 on 2026-10-02.
 
 ## Blocked
 
@@ -100,8 +104,36 @@ Console-gated cards (require Firebase/GA/Crashlytics account access):
     40s (bridge calls have no timeout of their own) and maps the stall to
     `failure_reason: 'timeout'`; later sections still run. Hung-page test
     included. 40s covers worst-legitimate ~27s; retune from analytics p90.
+  - 2026-10-02 timeout review (7d fleet, ~1900 refreshes/section): p90 is
+    NOT directly measurable — duration_ms is metric-only and metric
+    filters apply post-aggregation. Added cap-aligned `duration_bucket`
+    dimension to sync_section + sync_finished (console registration
+    pending via mailbox Task 18) for true p50/p90/p99 next cycle.
+    Healthy reads ~0.5-1.5s; timeouts ~1% (fixed pathologies plus
+    backgrounded 125-600s tails). Verdict: keep 40s page / 3s fetch /
+    6s content / 15s load-poll / 75s flow / 90s overall — inner caps
+    generous, 90s backstop binds ~never (2 events). Baselines
+    re-measured in ga4_query.py (released-code shapes; re-measure again
+    after the fast batch ships).
 - [ ] F3 (P2): Refresh speed from measured numbers (waits/session reuse).
   Depends on F2 and the D3 timing query.
+  - 2026-10-02 authenticated same-WebView fetch implemented with first-page
+    navigation comparison, max-two concurrency, validated fallback, early
+    attendance persistence and pending/restart/lifecycle protections. Live
+    attendance accepted 9/9 remaining fetches; available ~8–9s including login,
+    before full refresh ends. See FAST_REFRESH_REPORT.md for evidence and
+    remaining marks/results limits. No production publish.
+  - 2026-10-01 emulator check: fixed seating's wrong readiness selector;
+    observed 14.0s failed wait become ~0.44s successful load, with full
+    refresh average 47.9s → 33.3s across a small before/after sample.
+    Attendance remained 10/10 successful. Results still wait ~14s then fail
+    `content_not_ready`; inspect live result route/redirect next. Parallel
+    loads require separate authenticated WebViews or a proven request path.
+  - 2026-10-02 one-off second-WebView spike: failed. Secondary dashboard did
+    not authenticate within 11.5s (`browser_not_ready`); full refresh took
+    42.7s and several primary sections failed. Temporary code was removed and
+    normal debug build restored. Next: inspect signed-session sharing and
+    second-view page state before attempting parallel scraping again.
   - 2026-09-23 (Codex console pass, `/tmp/codex-analytics.md`): standard GA
     reports can't slice custom params — durations/splits unavailable; need
     a free-form exploration (median/avg/max; GA4 has no p90). `sync_finished`
@@ -163,6 +195,20 @@ Console-gated cards (require Firebase/GA/Crashlytics account access):
   - Result 4 VERIFIED NEGATIVE: after a real refresh, `refresh_finished`
     absent from full Realtime list on two checks. App-side investigation
     opened (recordRefreshOutcome path).
+  - 2026-10-02 fast-refresh batch (Muse, uncommitted, emulator-verified):
+    stale login-detector probes suppressed during scrape, dashboard/page
+    reuse, photo overlap, marks parallel fetch via probe + distinct-course
+    validation (9/9 accepted live), fetch-first singles + results with nav
+    fallback, uniform 6s content waits. Refresh 31.3s → 18.9s end to end
+    (scrape 25.4s → 12.7s, two stable runs), attendance visible ~2.0s,
+    all counts unchanged. Suite 109/109, analyze clean. Results still fail
+    (7.6s); root-cause browser task dispatched as mailbox Task 17.
+  - 2026-10-02 results fix (Muse, uncommitted, emulator-verified): Result 17
+    showed direct history navigation returns the login page — only a
+    dashboard EXAM HISTORY click works. Results now read first while
+    dashboard-current (fetch, else click); revisit attempt failed the same
+    way and fixed the ordering. Results ok 5/5 tables in ~0.2s (fetch)
+    / 0.5s (forced click); refresh 11-13s end to end. Suite 110/110.
   - Resolution 2026-09-23: NOT an app bug. `refresh_finished` fires only
     on the background-refresh path (`openPortalRefresh` covers all its
     branches); full-login syncs emit `login_flow_*` + `sync_*` but never

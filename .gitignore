@@ -59,3 +59,6 @@ app.*.map.json
 # Retired server-side scraper/proctor implementation. The production app is
 # intentionally on-device only; do not reintroduce local Lambda environments.
 /lambda_and_related/
+
+# Project-local Python env for scripts/ tooling (e.g. ga4_query.py).
+.venv/
