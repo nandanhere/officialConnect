@@ -48,4 +48,52 @@ void main() {
     expect(find.byKey(const ValueKey('dob')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  for (final width in [320.0, 390.0, 800.0]) {
+    testWidgets('every year cell fits the dialog at ${width.toInt()}px wide', (
+      WidgetTester tester,
+    ) async {
+      tester.view.physicalSize = Size(width, 844);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ChangeNotifierProvider(
+            create: (_) => SisData(),
+            child: const Scaffold(body: LoginScreen()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Student Login'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('dob')));
+      await tester.pumpAndSettle();
+
+      // The picker opens on the page containing maxDate (now - 15y) with
+      // 12-year pages starting at minDate (now - 32y).
+      final minYear = DateTime.now().year - 32;
+      final maxYear = DateTime.now().year - 15;
+      final page = ((maxYear - minYear + 1) / 12).ceil() - 1;
+      final startYear = minYear + page * 12;
+
+      // Every cell of the page must be on-screen (a clipped third column
+      // lands outside the visible bounds and can never be tapped).
+      for (var year = startYear; year < startYear + 12; year++) {
+        final cell = find.text('$year');
+        expect(cell, findsOneWidget, reason: 'year $year present');
+        final center = tester.getCenter(cell);
+        expect(
+          center.dx,
+          inInclusiveRange(0.0, width),
+          reason: 'year $year on-screen horizontally',
+        );
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
