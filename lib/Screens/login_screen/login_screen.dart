@@ -140,6 +140,16 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       builder: (BuildContext context) {
         final size = MediaQuery.of(context).size;
+        // Fit the 3-column year grid to the dialog: default insets (2x40)
+        // plus content padding (2x24) consume 128px; the card caps at 640.
+        // The box is tight in BOTH dimensions on purpose: AlertDialog
+        // measures content intrinsics, and a tight finite box answers from
+        // its constraints without consulting the picker's viewport (which
+        // cannot return intrinsics and crashes layout). Heights mirror the
+        // package's own portrait/landscape caps. The horizontal scroll view
+        // stays as a fallback if dialog geometry ever drifts.
+        final pickerWidth = (size.width - 128).clamp(120.0, 592.0).toDouble();
+        final pickerHeight = size.height >= size.width ? 402.0 : 300.0;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -156,7 +166,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: <Widget>[
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Center(child: getDateRangePicker()),
+                    child: Center(
+                      child: SizedBox(
+                        width: pickerWidth,
+                        height: pickerHeight,
+                        child: getDateRangePicker(),
+                      ),
+                    ),
                   ),
                   MaterialButton(
                     child: const Text("OK"),

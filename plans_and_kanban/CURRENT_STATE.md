@@ -254,3 +254,49 @@ semester results still wait ~14s and fail readiness. Not published.
   registration (Task 20), allowlist test-project validation (Task 21)
   dispatched alongside. Task 18 (duration_bucket registration) still
   OPEN with Codex.
+
+## Zero-touch monitoring finish (2026-10-02, Muse via API, no commit needed)
+
+- Used the machine's existing firebase-tools login (nanspyro@gmail.com,
+  cloud-platform scope; token never printed or stored) — zero human
+  action for everything below. No repo changes; tree still clean at
+  3713821.
+- Task 19 DONE: getIamPolicy proves nanspyro@gmail.com is roles/owner
+  (includes firebase.projects.update) — Result 14's banner was stale;
+  no grant needed or possible. Email pref already selected. Visual
+  confirmation folded into Task 22 step 0.
+- Task 20 DONE: App Check REST shows playIntegrityConfig (Android) +
+  appAttestConfig (iOS) already registered (3600s TTL, permissive
+  defaults; PATCH idempotent). Enforcement untouched/OFF everywhere.
+- Task 21 DONE: prod mobile keys pruned 25→6 APIs (firebase,
+  firebaseappcheck, firebaseinstallations, firebaseremoteconfig [+realtime],
+  logging) after emulator validation against a sandbox project with a
+  6-restricted test key + registered debug token; two post-prune prod
+  refreshes verified clean. Browser key untouched (unused by the app).
+  Sandbox restored pristine; scratch secrets scrubbed.
+- Residuals: orphan empty GCP project oc-keytest-20261002 (API-created,
+  API-invisible, free; delete in console if convenient); the ONLY
+  remaining human cost in the whole release is the single supervised
+  browser sitting (Task 22 upload + Task 18/19 visual checks).
+
+## Date-picker third-column fix (2026-10-02, Muse, uncommitted)
+
+- Report ("can't pick dates after 2008") + user screenshot: the DOB
+  year grid showed only 2 of 3 columns (2008/2011/2014/2017 cut off).
+  Root cause: date_picker_plus is fixed 328px wide while the dialog
+  content is ~192-262px on phones; the F7 horizontal scroll made it
+  scrollable but undiscoverable. Bounds were never the issue
+  (1994-2011 all along).
+- Fix: bound the picker to a computed finite box (width from dialog
+  geometry, height mirroring the package's 402/300 caps) so the grid
+  squeezes to 3 fitted columns. Tight-in-both-dimensions also fixes a
+  latent intrinsic-measurement crash (debug-only assertion; in release
+  it silently produced the clipped layout). Tried and rejected:
+  bare width box, LayoutBuilder (both crash on intrinsics).
+- Regression tests at 320/390/800px assert every year cell is
+  on-screen (failed pre-fix); golden screenshot verified 3 fitted
+  columns. Suite 125/125, analyze clean. Emulator session preserved
+  (prefs backup/restore verified with home-screen proof).
+- Gradient-adjust parked per user (2026-10-03); 1.1.6+15 already
+  submitted for review, so this fix ships in 1.1.7+16 (new AAB hash →
+  Task 23), superseding v15 before anything reaches users.
