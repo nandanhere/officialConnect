@@ -62,3 +62,7 @@ app.*.map.json
 
 # Project-local Python env for scripts/ tooling (e.g. ga4_query.py).
 .venv/
+
+# Generated Firebase options carry live API keys. Contributors copy
+# lib/firebase_options.dart.example (or run `flutterfire configure`).
+lib/firebase_options.dart

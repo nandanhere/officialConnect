@@ -257,11 +257,11 @@ semester results still wait ~14s and fail readiness. Not published.
 
 ## Zero-touch monitoring finish (2026-10-02, Muse via API, no commit needed)
 
-- Used the machine's existing firebase-tools login (***REMOVED***,
+- Used the machine's existing firebase-tools login (owner account,
   cloud-platform scope; token never printed or stored) — zero human
   action for everything below. No repo changes; tree still clean at
   3713821.
-- Task 19 DONE: getIamPolicy proves ***REMOVED*** is roles/owner
+- Task 19 DONE: getIamPolicy proves the owner account is roles/owner
   (includes firebase.projects.update) — Result 14's banner was stale;
   no grant needed or possible. Email pref already selected. Visual
   confirmation folded into Task 22 step 0.
