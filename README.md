@@ -1,20 +1,29 @@
-# official_connect
-
-The Official Student information system app for MSRIT students
-## Getting Started
-#todo : we need to make a proper todo for documentation purpose.
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
 # Official Connect
+
+[![CI](https://github.com/nandanhere/officialConnect/actions/workflows/ci.yml/badge.svg)](https://github.com/nandanhere/officialConnect/actions/workflows/ci.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
+The unofficial student information system app for MSRIT students —
+attendance, marks, timetable, fees, results, and exam seating from the
+parent portal, in one fast on-device app.
+
+## Getting started (contributors)
+
+```sh
+flutter pub get
+cp lib/firebase_options.dart.example lib/firebase_options.dart
+flutter analyze lib test
+flutter test
+flutter build apk --debug   # needs android/app/google-services.json, see below
+```
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before your first PR, and
+[SECURITY.md](SECURITY.md) before reporting a vulnerability.
+
+Releases are automatic: tagging `v<version>` (exactly the pubspec version)
+builds signed artifacts and publishes a GitHub Release. Maintainers: see
+[docs/RELEASE_SECRETS.md](docs/RELEASE_SECRETS.md) for the one-time secrets
+setup. License: [GPL-3.0](LICENSE).
 
 ## Portal login integration notes
 
@@ -47,12 +56,17 @@ Do not attempt to solve or bypass the examination site's security code. If upstr
 
 ## Contributor Firebase setup
 
-`android/app/google-services.json` and `ios/Runner/GoogleService-Info.plist`
-are intentionally untracked (see `android/.gitignore` and `ios/.gitignore`).
-Debug builds need a config file in place: use a stub with your own test
-project, or ask a maintainer for the project config. Release builds restore
-the real config from maintainer secrets before running
-`scripts/android_release_check.sh --build-current`; never commit either file.
+`android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`,
+and `lib/firebase_options.dart` are intentionally untracked (see
+`android/.gitignore`, `ios/.gitignore`, and `.gitignore`) — they carry keys
+that must never be committed. For `firebase_options.dart`, copy
+`lib/firebase_options.dart.example` and fill in your own test project (or
+run `flutterfire configure`); placeholder values compile and run with
+Firebase features inert. Debug builds need a `google-services.json` in
+place: use a stub with your own test project, or ask a maintainer.
+Release builds restore the real config from maintainer secrets (CI) or
+before running `scripts/android_release_check.sh --build-current` (local);
+never commit any of these files.
 
 App Check ships in monitor mode (unenforced). Debug builds use the debug
 provider and print a debug token to logcat on first run — register it in
