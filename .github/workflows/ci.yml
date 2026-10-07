@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.2"
+          cache: true
+
+      # Firebase config files are gitignored (they carry live keys), so CI
+      # builds against placeholder config. Placeholder keys compile and run;
+      # Firebase features stay inert. Signed release builds use real secrets
+      # in release.yml instead.
+      - name: Placeholder Firebase config
+        run: |
+          cp lib/firebase_options.dart.example lib/firebase_options.dart
+          cat > android/app/google-services.json <<'EOF'
+          {
+            "project_info": {
+              "project_number": "000000000000",
+              "project_id": "placeholder",
+              "storage_bucket": "placeholder.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+                  "android_client_info": {
+                    "package_name": "com.nandan.msritconnect"
+                  }
+                },
+                "api_key": [{ "current_key": "PLACEHOLDER" }]
+              }
+            ]
+          }
+          EOF
+
+      - run: flutter pub get
+      - run: flutter analyze lib test
+      - run: flutter test
+      - run: flutter build apk --debug
