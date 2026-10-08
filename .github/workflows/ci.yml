@@ -63,4 +63,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
+      # The Gitleaks GitHub Action requires a commercial license for
+      # organization-owned repositories. Invoke the maintained OSS scanner
+      # directly instead, so the complete checked-out history is still scanned.
+      - name: Scan complete Git history for secrets
+        run: |
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/repo:ro" \
+            --workdir /repo \
+            ghcr.io/trufflesecurity/trufflehog:3.96.0 \
+            git file:///repo \
+            --fail \
+            --no-update \
+            --github-actions \
+            --results=verified,unknown
