@@ -1,7 +1,8 @@
 # Install OfficialConnect on an iPhone
 
-This package contains OfficialConnect **1.1.0 (build 7)** for iPhones running
-**iOS 15 or later**. No jailbreak is required.
+This package contains OfficialConnect for iPhones running **iOS 15 or
+later** (check the file name or release notes for the exact version). No
+jailbreak is required.
 
 ## What you send
 

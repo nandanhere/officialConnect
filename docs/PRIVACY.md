@@ -32,9 +32,10 @@ before sending. Google Analytics retains this data for at most 14 months.
 
 ## Builds that send nothing
 
-Only releases built with the production release script send telemetry.
-Developer and contributor builds collect nothing — analytics collection is
-fail-closed and defaults to off.
+Only production-marked release builds send telemetry — the `Release`
+workflow and `scripts/android_release_check.sh --build-current` both set
+the production marker. Developer and contributor builds collect nothing:
+analytics collection is fail-closed and defaults to off.
 
 ## Your control
 

@@ -21,8 +21,8 @@ scripts/android_release_check.sh --build-current
 
 The second command builds both the signed release AAB and universal APK, then
 checks their native libraries. It requires the ignored local signing files
-`android/key.properties` and `upload-keystore.jks` for a distributable build.
-Never commit either file.
+`android/key.properties` and `android/upload-keystore.jks` for a
+distributable build. Never commit either file.
 
 Before uploading, also confirm that:
 
@@ -34,30 +34,34 @@ Before uploading, also confirm that:
 
 ## Emergency recovery bundle
 
-The known production baseline is commit `e0715ba` (`1.0.0+6`). If candidate
-version code 7 must be replaced, build the old source as a new, higher version
-without touching the current checkout:
+> Stale: the pinned baseline commit `e0715ba` is absent from this history,
+> and the version codes below predate the current release line. The owner
+> must designate a fresh verified baseline (script `BASELINE_COMMIT`) and a
+> minimum recovery version code above anything already uploaded before
+> relying on this procedure.
+
+The procedure builds old source as a new, higher version without touching
+the current checkout:
 
 ```sh
 mkdir -p outputs/recovery
 scripts/android_release_check.sh --build-recovery \
-  "$PWD/outputs/recovery/officialconnect-recovery-1.0.0+8.aab" 8
+  "$PWD/outputs/recovery/officialconnect-recovery-<version>.aab" <version-code>
 ```
 
 The script verifies the commit, creates a temporary detached Git worktree,
 keeps the baseline application source, and overlays the current verified
 Android build harness inside that disposable worktree. This is necessary
-because the baseline's Gradle 8.3 setup is no longer accepted by current
-Flutter. The temporary build also raises only `fluttertoast` and
-`shared_preferences`, whose old Android implementations reference embedding
-APIs removed from current Flutter; the caller's dependency files are untouched.
+because the baseline's old Gradle setup is no longer accepted by current
+Flutter. The temporary build also raises several pinned plugin versions
+whose old Android implementations reference embedding APIs removed from
+current Flutter; the caller's dependency files are untouched.
 It then copies local Android build/signing configuration, builds with the
 supplied version code for 64-bit Android devices, verifies 16 KB ELF alignment,
 copies out the AAB, and
 removes the worktree. It does not switch branches, change tracked files, create
 a tag, or push anything.
 
-Version code 8 is reserved for recovery from candidate 7. If Play has already
-seen code 8, pass a larger unused version code. Inspect the resulting AAB and
-upload it only after deciding to invoke recovery; building it does not alter a
-Play rollout.
+Always pass an explicit version code higher than every artifact already
+uploaded to Play. Inspect the resulting AAB and upload it only after
+deciding to invoke recovery; building it does not alter a Play rollout.

@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Only the latest Play release (and `main`) receives fixes. Older versions
+Only the latest release (and `main`) receives fixes. Older versions
 are unsupported — please update before reporting.
 
 ## Reporting a vulnerability

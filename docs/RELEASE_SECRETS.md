@@ -27,12 +27,5 @@ gh secret set FIREBASE_OPTIONS_DART < lib/firebase_options.dart
 
 ## Releasing
 
-1. Bump `version:` in `pubspec.yaml`, commit, push to `main`.
-2. Tag exactly that version: `git tag v1.2.3+4 && git push origin v1.2.3+4`.
-3. The pipeline verifies the tag matches pubspec, runs tests, builds the
-   signed AAB + APK, and publishes a GitHub Release with both attached
-   plus SHA-256 checksums.
-4. To validate without publishing: Actions → Release → Run workflow
-   (dry run — artifacts land on the workflow run, no Release is made).
-
-Play uploads stay manual for now (see `docs/PLAY_API_RELEASES.md`).
+Follow `docs/RELEASE_PROCESS.md` (release PR → tag → GitHub Release →
+supervised Play submission). This file covers secrets setup only.

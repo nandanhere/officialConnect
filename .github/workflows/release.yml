@@ -86,8 +86,13 @@ jobs:
 
       - name: Signed release builds
         run: |
-          flutter build appbundle --release
-          flutter build apk --release
+          APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}')"
+          flutter build appbundle --release \
+            --dart-define=OFFICIAL_CONNECT_DISTRIBUTION=production \
+            --dart-define=APP_VERSION="$APP_VERSION"
+          flutter build apk --release \
+            --dart-define=OFFICIAL_CONNECT_DISTRIBUTION=production \
+            --dart-define=APP_VERSION="$APP_VERSION"
           bash scripts/android_release_check.sh --check-artifact \
             build/app/outputs/bundle/release/app-release.aab
           bash scripts/android_release_check.sh --check-artifact \
