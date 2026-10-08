@@ -85,6 +85,23 @@ release, or account changes made.
   D1–D5 explorations (C1), crash triage (C2), `1.1.4` baseline marking (C3),
   and the 7d post-fix re-measure (A4).
 
+## Open-source and CI handoff (2026-10-08)
+
+- Canonical public repository: `https://github.com/official-connect/officialConnect`.
+  The old `nandanhere/officialConnect` URL redirects to it; local `origin` was
+  updated during the transfer.
+- Contributor templates, release guidance, public integration documentation,
+  and a pull-request template are committed. GitHub issues #17, #21, and #22
+  were closed after the organization transfer checks completed.
+- CodeRabbit is installed for this repository only. Main requires the `verify`
+  and `history` checks; force-pushes and deletion are disabled.
+- The secret-history CI job uses the maintained OSS TruffleHog container over a
+  full checkout because the previous Gitleaks GitHub Action requires an
+  organization license. The hosted CI run passed analysis, tests, debug APK
+  build, and history scanning after this change.
+- CI now uses `actions/checkout@v5` and `actions/setup-java@v5`. The only
+  remaining runner notice is the scheduled `ubuntu-latest` image migration.
+
 ## Feedback fixes (2026-09-23, in-repo)
 
 Plan: `plans_and_kanban/REFRESH_TIMETABLE_PLAN.md`, cards F1–F6 in `KANBAN.md`.
